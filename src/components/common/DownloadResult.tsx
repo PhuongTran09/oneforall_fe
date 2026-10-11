@@ -46,18 +46,18 @@ export function DownloadResult({
   }
 
   return (
-    <div className="w-full max-w-3xl mx-auto p-6 sm:p-8 rounded-2xl bg-white border border-slate-200/80 space-y-6 animate-in fade-in zoom-in-95 duration-200">
+    <div className="w-full max-w-3xl mx-auto p-6 sm:p-8 rounded-2xl bg-[#14141b] border border-[#2a2a35] space-y-6 animate-in fade-in zoom-in-95 duration-200">
       {/* Header status */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-slate-100">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-[#2a2a35]/60">
         <div className="flex items-center gap-3.5">
           <div className="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 shrink-0">
             <CheckCircle2 className="w-6 h-6" />
           </div>
           <div>
-            <h3 className="font-bold text-slate-900 text-lg sm:text-xl">
+            <h3 className="font-bold text-white text-lg sm:text-xl">
               Xử lý thành công!
             </h3>
-            <p className="text-xs sm:text-sm text-slate-500">
+            <p className="text-xs sm:text-sm text-slate-400">
               Tệp kết quả đã sẵn sàng để tải xuống lưu trữ về máy tính của bạn.
             </p>
           </div>
@@ -76,10 +76,10 @@ export function DownloadResult({
       </div>
 
       {/* File Details & Preview */}
-      <div className="p-4 sm:p-5 rounded-xl bg-slate-50 border border-slate-200/80 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="p-4 sm:p-5 rounded-xl bg-[#1a1a24] border border-[#2a2a35] flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-4 w-full sm:w-auto">
           {previewUrl ? (
-            <div className="w-16 h-16 rounded-lg overflow-hidden border border-slate-200 shrink-0 bg-white">
+            <div className="w-16 h-16 rounded-lg overflow-hidden border border-[#2a2a35] shrink-0 bg-[#14141b]">
               <img
                 src={previewUrl}
                 alt="Kết quả"
@@ -92,10 +92,10 @@ export function DownloadResult({
             </div>
           )}
           <div className="space-y-1 min-w-0 flex-1">
-            <p className="font-semibold text-slate-800 text-sm sm:text-base truncate">
+            <p className="font-semibold text-slate-100 text-sm sm:text-base truncate">
               {fileName}
             </p>
-            <div className="flex items-center gap-2 text-xs text-slate-500 font-mono">
+            <div className="flex items-center gap-2 text-xs text-slate-400 font-mono">
               {fileSize && <span>{fileSize}</span>}
               {format && (
                 <>

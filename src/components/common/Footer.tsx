@@ -32,7 +32,7 @@ export function Footer() {
   ]
 
   return (
-    <footer className="w-full border-t border-slate-200 bg-white mt-auto">
+    <footer className="w-full border-t border-[#2a2a35] bg-[#0a0a0f] mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 mb-12">
           {/* Brand Info (col-span-2) */}
@@ -41,11 +41,11 @@ export function Footer() {
               <div className="w-10 h-10   flex items-center justify-center">
                 <img src="/ofa.png" alt="OneForAll Logo" className="w-full h-full object-contain" />
               </div>
-              <span className="font-bold text-xl tracking-tight text-slate-900">
+              <span className="font-bold text-xl tracking-tight text-white">
                 One<span className="text-brand-gradient">ForAll</span>
               </span>
             </Link>
-            <p className="text-sm text-slate-500 leading-relaxed max-w-sm">
+            <p className="text-sm text-slate-400 leading-relaxed max-w-sm">
               Nền tảng công cụ trực tuyến tất-cả-trong-một: Tải video YouTube, TikTok, chuyển đổi định dạng tài liệu, xử lý và nén ảnh tốc độ cao với FastAPI backend.
             </p>
             <div className="flex items-center gap-3 pt-2">
@@ -53,7 +53,7 @@ export function Footer() {
                 href="https://github.com"
                 target="_blank"
                 rel="noreferrer"
-                className="w-9 h-9 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors"
+                className="w-9 h-9 rounded-lg bg-[#1a1a24] hover:bg-[#ff3b30]/15 text-slate-400 flex items-center justify-center transition-colors"
                 aria-label="GitHub Repository"
               >
                 <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24" aria-hidden="true">
@@ -64,14 +64,14 @@ export function Footer() {
                 href="https://discord.com"
                 target="_blank"
                 rel="noreferrer"
-                className="w-9 h-9 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors"
+                className="w-9 h-9 rounded-lg bg-[#1a1a24] hover:bg-[#ff3b30]/15 text-slate-400 flex items-center justify-center transition-colors"
                 aria-label="Discord Community"
               >
                 <MessageSquare className="w-4 h-4" />
               </a>
               <a
                 href="mailto:support@oneforall.app"
-                className="w-9 h-9 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors"
+                className="w-9 h-9 rounded-lg bg-[#1a1a24] hover:bg-[#ff3b30]/15 text-slate-400 flex items-center justify-center transition-colors"
                 aria-label="Email Support"
               >
                 <Mail className="w-4 h-4" />
@@ -81,7 +81,7 @@ export function Footer() {
 
           {/* Column 1: YouTube Tools */}
           <div>
-            <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-3">
+            <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-3">
               YouTube
             </h4>
             <ul className="space-y-2">
@@ -89,7 +89,7 @@ export function Footer() {
                 <li key={item.to}>
                   <Link
                     to={item.to}
-                    className="text-xs sm:text-sm text-slate-600 hover:text-[#FF3B30] transition-colors"
+                    className="text-xs sm:text-sm text-slate-400 hover:text-[#FF3B30] transition-colors"
                   >
                     {item.label}
                   </Link>
@@ -100,7 +100,7 @@ export function Footer() {
 
           {/* Column 2: TikTok Tools */}
           <div>
-            <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-3">
+            <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-3">
               TikTok
             </h4>
             <ul className="space-y-2">
@@ -108,7 +108,7 @@ export function Footer() {
                 <li key={item.to}>
                   <Link
                     to={item.to}
-                    className="text-xs sm:text-sm text-slate-600 hover:text-[#FF3B30] transition-colors"
+                    className="text-xs sm:text-sm text-slate-400 hover:text-[#FF3B30] transition-colors"
                   >
                     {item.label}
                   </Link>
@@ -119,7 +119,7 @@ export function Footer() {
 
           {/* Column 3: Chuyển đổi File */}
           <div>
-            <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-3">
+            <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-3">
               Chuyển đổi
             </h4>
             <ul className="space-y-2">
@@ -127,7 +127,7 @@ export function Footer() {
                 <li key={item.to}>
                   <Link
                     to={item.to}
-                    className="text-xs sm:text-sm text-slate-600 hover:text-[#FF3B30] transition-colors"
+                    className="text-xs sm:text-sm text-slate-400 hover:text-[#FF3B30] transition-colors"
                   >
                     {item.label}
                   </Link>
@@ -138,7 +138,7 @@ export function Footer() {
 
           {/* Column 4: Xử lý Ảnh */}
           <div>
-            <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-3">
+            <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-3">
               Ảnh & Media
             </h4>
             <ul className="space-y-2">
@@ -146,7 +146,7 @@ export function Footer() {
                 <li key={item.to}>
                   <Link
                     to={item.to}
-                    className="text-xs sm:text-sm text-slate-600 hover:text-[#FF3B30] transition-colors"
+                    className="text-xs sm:text-sm text-slate-400 hover:text-[#FF3B30] transition-colors"
                   >
                     {item.label}
                   </Link>
@@ -157,7 +157,7 @@ export function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 border-t border-slate-200/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+        <div className="pt-8 border-t border-[#2a2a35]/60 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
           <div className="flex items-center gap-1.5 text-emerald-600 font-medium">
             <ShieldCheck className="w-4 h-4" />
             <span>Mã hóa bảo mật đầu cuối • Tự động dọn dẹp sau 24h</span>

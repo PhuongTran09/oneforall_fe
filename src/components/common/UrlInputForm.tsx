@@ -81,7 +81,7 @@ export function UrlInputForm({
 
   return (
     <form onSubmit={handleSubmit} className="w-full max-w-3xl mx-auto space-y-4">
-      <div className="relative flex flex-col sm:flex-row items-stretch sm:items-center bg-white rounded-2xl border-2 border-slate-200/90 hover:border-amber-200/60 focus-within:border border-slate-200/80 focus-within:shadow-brand-sm p-1.5 sm:p-2 transition-all">
+      <div className="relative flex flex-col sm:flex-row items-stretch sm:items-center bg-[#14141b] rounded-2xl border-2 border-[#ff3b30]/30 hover:border-[#ff3b30]/50 focus-within:border-[#ff3b30]/50 p-1.5 sm:p-2 transition-all">
         <div className="flex items-center flex-1 px-3 py-2 sm:py-1">
           <Link2 className="w-5 h-5 text-slate-400 shrink-0 mr-2.5" />
           <input
@@ -93,7 +93,7 @@ export function UrlInputForm({
             }}
             placeholder={placeholderText}
             disabled={disabled || isLoading}
-            className="w-full bg-transparent text-sm sm:text-base text-slate-800 placeholder-slate-400 focus:outline-none"
+            className="w-full bg-transparent text-sm sm:text-base text-slate-100 placeholder-slate-400 focus:outline-none"
             aria-label="URL input"
           />
           {url ? (
@@ -103,7 +103,7 @@ export function UrlInputForm({
                 setUrl('')
                 setValidationError(null)
               }}
-              className="p-1 text-slate-400 hover:text-slate-600 rounded-lg"
+              className="p-1 text-slate-400 hover:text-slate-200 rounded-lg"
               title="Xóa"
             >
               <X className="w-4 h-4" />
@@ -112,7 +112,7 @@ export function UrlInputForm({
             <button
               type="button"
               onClick={handlePaste}
-              className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-slate-600 hover:text-[#FF3B30] bg-slate-100 hover:bg-slate-200/80 rounded-lg transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-slate-300 hover:text-[#FF3B30] bg-[#1a1a24] hover:bg-[#ff3b30]/10 rounded-lg transition-colors cursor-pointer"
               title="Dán từ bộ nhớ tạm"
             >
               <Clipboard className="w-3.5 h-3.5" />
@@ -121,7 +121,7 @@ export function UrlInputForm({
           )}
         </div>
 
-        <div className="flex items-center gap-2 pt-2 sm:pt-0 sm:pl-2 border-t sm:border-t-0 sm:border-l border-slate-100">
+        <div className="flex items-center gap-2 pt-2 sm:pt-0 sm:pl-2 border-t sm:border-t-0 sm:border-l border-[#2a2a35]/60">
           <Button
             type="submit"
             variant="primary"
@@ -139,7 +139,7 @@ export function UrlInputForm({
       {/* Format Selection Pills */}
       {formats.length > 1 && (
         <div className="flex items-center justify-center sm:justify-start gap-2 flex-wrap text-xs">
-          <span className="text-slate-500 font-medium mr-1">Định dạng đầu ra:</span>
+          <span className="text-slate-400 font-medium mr-1">Định dạng đầu ra:</span>
           {formats.map((fmt) => (
             <button
               key={fmt}
@@ -147,8 +147,8 @@ export function UrlInputForm({
               onClick={() => setSelectedFormat(fmt)}
               className={`px-3 py-1 rounded-full font-mono text-xs font-semibold uppercase transition-all cursor-pointer ${
                 selectedFormat === fmt
-                  ? 'bg-brand-gradient text-white shadow-xs'
-                  : 'bg-white text-slate-600 border border-slate-200 hover:border-slate-300'
+                  ? 'bg-brand-gradient text-white'
+                  : 'bg-[#14141b] text-slate-300 border border-[#2a2a35] hover:border-[#ff3b30]/30'
               }`}
             >
               .{fmt}
@@ -159,7 +159,7 @@ export function UrlInputForm({
 
       {/* Validation Error Message */}
       {validationError && (
-        <div className="flex items-center gap-2 p-3 rounded-xl bg-red-50 border border-red-200 text-red-600 text-xs sm:text-sm">
+        <div className="flex items-center gap-2 p-3 rounded-xl bg-[#ff3b30]/10 border border-[#ff3b30]/30 text-red-400 text-xs sm:text-sm">
           <AlertCircle className="w-4 h-4 shrink-0" />
           <span>{validationError}</span>
         </div>

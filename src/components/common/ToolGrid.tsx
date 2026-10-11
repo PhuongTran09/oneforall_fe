@@ -38,8 +38,8 @@ export function ToolGrid({ tools, showCategoryFilter = true }: ToolGridProps) {
               onClick={() => setSelectedCategory(cat.id)}
               className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-medium whitespace-nowrap transition-all cursor-pointer ${
                 selectedCategory === cat.id
-                  ? 'bg-brand-gradient text-white shadow-brand-sm font-semibold'
-                  : 'bg-white text-slate-600 hover:text-slate-900 border border-slate-200/90 hover:bg-slate-50'
+                  ? 'bg-brand-gradient text-white font-semibold'
+                  : 'bg-[#14141b] text-slate-300 hover:text-white border border-[#2a2a35] hover:bg-[#ff3b30]/10'
               }`}
             >
               {cat.label}

@@ -19,13 +19,13 @@ export function RelatedTools({
   if (tools.length === 0) return null
 
   return (
-    <section className="py-12 sm:py-16 border-t border-slate-200/80">
+    <section className="py-12 sm:py-16 border-t border-[#2a2a35]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-12 space-y-2">
-          <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
+          <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
             {title}
           </h2>
-          <p className="text-xs sm:text-sm text-slate-500 leading-relaxed">
+          <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
             {description}
           </p>
         </div>

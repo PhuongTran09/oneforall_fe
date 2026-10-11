@@ -48,7 +48,7 @@ export function Navbar({ onOpenAuth }: NavbarProps) {
 
   return (
     <>
-      <header className="sticky top-0 z-40 w-full border-b border-slate-200/80 bg-white/95 backdrop-blur-md shadow-xs">
+      <header className="sticky top-0 z-40 w-full border-b border-[#2a2a35] bg-[#0a0a0f]/95 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           {/* Logo Brand */}
           <Link to="/" className="flex items-center gap-2.5 group">
@@ -56,9 +56,9 @@ export function Navbar({ onOpenAuth }: NavbarProps) {
               <img src="/ofa.png" alt="OneForAll Logo" className="w-full h-full object-contain" />
             </div>
             <div className="flex flex-col">
-              <span className="font-bold text-xl tracking-tight text-slate-900 flex items-center gap-1.5">
+              <span className="font-bold text-xl tracking-tight text-white flex items-center gap-1.5">
                 One<span className="text-brand-gradient">ForAll</span>
-                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-red-50 text-[#FF3B30] border border-red-200 font-semibold">
+                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#ff3b30]/10 text-[#FF3B30] border border-[#ff3b30]/30 font-semibold">
                   Tools
                 </span>
               </span>
@@ -75,8 +75,8 @@ export function Navbar({ onOpenAuth }: NavbarProps) {
                   to={item.to}
                   className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
                     isActive
-                      ? 'text-[#FF3B30] bg-red-50/80 font-semibold'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/80'
+                      ? 'text-[#FF3B30] bg-[#ff3b30]/15 font-semibold'
+                      : 'text-slate-300 hover:text-white hover:bg-[#ff3b30]/10'
                   }`}
                 >
                   {item.icon}
@@ -113,7 +113,7 @@ export function Navbar({ onOpenAuth }: NavbarProps) {
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-100 focus:outline-none"
+              className="p-2 text-slate-300 hover:text-white rounded-lg hover:bg-[#ff3b30]/10 focus:outline-none"
               aria-label={mobileMenuOpen ? 'Đóng menu' : 'Mở menu'}
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -123,21 +123,21 @@ export function Navbar({ onOpenAuth }: NavbarProps) {
 
         {/* Mobile Dropdown Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-b border-slate-200 bg-white px-4 pt-3 pb-6 animate-in slide-in-from-top-2 duration-200 shadow-lg">
+          <div className="md:hidden border-b border-[#2a2a35] bg-[#0a0a0f] px-4 pt-3 pb-6 animate-in slide-in-from-top-2 duration-200">
             <nav className="flex flex-col space-y-1 mb-4">
               {navCategories.map((item) => (
                 <Link
                   key={item.to}
                   to={item.to}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium text-slate-700 hover:text-[#FF3B30] hover:bg-red-50/60 rounded-xl transition-colors"
+                  className="flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium text-slate-200 hover:text-[#FF3B30] hover:bg-[#ff3b30]/10 rounded-xl transition-colors"
                 >
                   {item.icon}
                   <span>{item.label}</span>
                 </Link>
               ))}
             </nav>
-            <div className="flex flex-col gap-2 pt-2 border-t border-slate-100">
+            <div className="flex flex-col gap-2 pt-2 border-t border-[#2a2a35]/60">
               <Button
                 variant="secondary"
                 fullWidth
