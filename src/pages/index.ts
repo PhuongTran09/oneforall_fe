@@ -1,0 +1,6 @@
+export { HomePage } from './HomePage'
+export { ImagePage } from './ImagePage'
+export { VideoPage } from './VideoPage'
+export { ConvertPage } from './ConvertPage'
+export { NotFoundPage } from './NotFoundPage'
+export { ToolLandingPage } from './ToolLandingPage'

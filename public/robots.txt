@@ -1,0 +1,26 @@
+# robots.txt for OneForAll SEO Landing Pages
+User-agent: *
+Allow: /
+Allow: /youtube-to-mp4
+Allow: /youtube-to-mp3
+Allow: /youtube-downloader
+Allow: /tiktok-to-mp4
+Allow: /tiktok-to-mp3
+Allow: /tiktok-downloader
+Allow: /convert
+Allow: /image-converter
+Allow: /video-converter
+Allow: /audio-converter
+Allow: /document-converter
+Allow: /pdf-converter
+Allow: /remove-background
+Allow: /image-compressor
+Allow: /image-resizer
+
+# Disallow private user jobs, download links, internal APIs, and error routes
+Disallow: /api/
+Disallow: /jobs/
+Disallow: /files/
+Disallow: /404
+
+Sitemap: https://oneforall.app/sitemap.xml
