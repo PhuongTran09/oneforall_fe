@@ -34,38 +34,38 @@ export function FeaturesSection() {
   ]
 
   return (
-    <section id="features" className="py-16 sm:py-24 bg-slate-50/60">
+    <section id="features" className="py-16 sm:py-24 bg-[#0a0a0f]/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold bg-white text-[#FF3B30]">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold bg-[#14141b] text-[#FF3B30]">
             ƯU ĐIỂM CỐT LÕI
           </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
             Thiết kế tối ưu cho hiệu suất và độ tin cậy
           </h2>
-          <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+          <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
             OneForAll kết hợp giao diện React hiện đại cùng sức mạnh backend FastAPI để mang đến nền tảng xử lý file tin cậy và linh hoạt.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
           {features.map((feat) => (
-            <Card key={feat.title} className="p-2 sm:p-4 bg-white border border-slate-200/80">
+            <Card key={feat.title} className="p-2 sm:p-4 bg-[#14141b] border border-[#2a2a35] card-3d">
               <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                <div className="w-12 h-12 flex items-center justify-center shrink-0">
+                <div className="w-12 h-12 flex items-center justify-center shrink-0 bg-[#0a0a0f]">
                   {feat.icon}
                 </div>
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
-                    <CardTitle className="text-lg text-slate-900">{feat.title}</CardTitle>
+                    <CardTitle className="text-lg text-white">{feat.title}</CardTitle>
                   </div>
-                  <span className="inline-block text-[11px] font-mono font-medium text-slate-500">
+                  <span className="inline-block text-[11px] font-mono font-medium text-slate-400">
                     {feat.badge}
                   </span>
                 </div>
               </CardHeader>
               <div className="px-6 pb-6 pt-1">
-                <CardDescription className="text-sm text-slate-600 leading-relaxed">
+                <CardDescription className="text-sm text-slate-300 leading-relaxed">
                   {feat.description}
                 </CardDescription>
               </div>

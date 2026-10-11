@@ -40,11 +40,11 @@ export function BackendStatus() {
 
   return (
     <div
-      className="hidden sm:inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-xs font-mono bg-slate-100/90 border border-slate-200 text-slate-700"
+      className="hidden sm:inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-xs font-mono bg-[#1a1a24] border border-[#2a2a35] text-slate-200"
       title={`API Target: ${env.apiBaseUrl} (Proxy: ${env.apiProxyTarget})`}
     >
       <span className={`w-2 h-2 rounded-full ${dotColors[status]}`} aria-hidden="true" />
-      <span className="text-[11px] font-medium tracking-tight text-slate-600">
+      <span className="text-[11px] font-medium tracking-tight text-slate-300">
         {statusLabels[status]}
       </span>
     </div>

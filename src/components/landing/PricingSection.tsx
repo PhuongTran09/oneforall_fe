@@ -51,16 +51,16 @@ export function PricingSection({ onSelectFree, onSelectPremium }: PricingSection
   ]
 
   return (
-    <section id="pricing" className="py-16 sm:py-24 bg-slate-50/60">
+    <section id="pricing" className="py-16 sm:py-24 bg-[#0a0a0f]/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold bg-white text-[#FF3B30]">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold bg-[#14141b] text-[#FF3B30]">
             BẢNG GIÁ MINH BẠCH
           </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
             Gói dịch vụ phù hợp với mọi nhu cầu
           </h2>
-          <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+          <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
             Chọn gói cước linh hoạt, không chi phí ẩn, bắt đầu miễn phí và nâng cấp khi cần mở rộng quy mô.
           </p>
         </div>
@@ -69,14 +69,14 @@ export function PricingSection({ onSelectFree, onSelectPremium }: PricingSection
           {plans.map((plan) => (
             <Card
               key={plan.id}
-              className={`flex flex-col justify-between p-2 sm:p-4 bg-white ${
+              className={`flex flex-col justify-between p-2 sm:p-4 bg-[#14141b] ${
                 plan.isPopular
-                  ? 'border border-slate-200/80 relative overflow-hidden'
-                  : 'border border-slate-200/80'
+                  ? 'border border-[#2a2a35] relative overflow-hidden card-3d'
+                  : 'border border-[#2a2a35]'
               }`}
             >
               {plan.isPopular && (
-                <div className="absolute top-0 right-0 bg-brand-gradient text-white text-[10px] font-bold px-3 py-1 rounded-bl-[8px] tracking-wider uppercase flex items-center gap-1 border-l-2 border-b-2 border border-slate-200/80">
+                <div className="absolute top-0 right-0 bg-brand-gradient text-white text-[10px] font-bold px-3 py-1 rounded-bl-[8px] tracking-wider uppercase flex items-center gap-1 border-l-2 border-b-2 border border-[#2a2a35]">
                   <Sparkles className="w-3 h-3" />
                   {plan.badge}
                 </div>
@@ -85,32 +85,32 @@ export function PricingSection({ onSelectFree, onSelectPremium }: PricingSection
               <div>
                 <CardHeader>
                   <div className="flex items-center justify-between mb-2">
-                    <CardTitle className="text-xl text-slate-900">{plan.name}</CardTitle>
+                    <CardTitle className="text-xl text-white">{plan.name}</CardTitle>
                     {!plan.isPopular && (
-                      <span className="text-xs font-mono font-medium text-slate-500 px-2 py-0.5 rounded bg-slate-100">
+                      <span className="text-xs font-mono font-medium text-slate-400 px-2 py-0.5 rounded bg-[#1a1a24]">
                         {plan.badge}
                       </span>
                     )}
                   </div>
-                  <CardDescription className="text-sm text-slate-500">
+                  <CardDescription className="text-sm text-slate-300">
                     {plan.description}
                   </CardDescription>
 
                   <div className="pt-6 pb-2 flex items-baseline gap-1.5">
-                    <span className="text-4xl font-extrabold text-slate-900 tracking-tight">
+                    <span className="text-4xl font-extrabold text-white tracking-tight">
                       {plan.price}
                     </span>
-                    <span className="text-slate-500 text-sm">{plan.period}</span>
+                    <span className="text-slate-400 text-sm">{plan.period}</span>
                   </div>
                 </CardHeader>
 
                 <CardContent className="space-y-3 pt-2">
-                  <p className="text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                  <p className="text-xs font-semibold text-slate-200 uppercase tracking-wider">
                     Quyền lợi bao gồm:
                   </p>
                   <ul className="space-y-2.5">
                     {plan.features.map((feature) => (
-                      <li key={feature} className="flex items-start gap-2.5 text-sm text-slate-600">
+                      <li key={feature} className="flex items-start gap-2.5 text-sm text-slate-300">
                         <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                         <span>{feature}</span>
                       </li>

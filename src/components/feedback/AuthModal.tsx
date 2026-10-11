@@ -35,23 +35,23 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
       <div
-        className="relative w-full max-w-md p-6 sm:p-8 bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl shadow-black/60"
+        className="relative w-full max-w-md p-6 sm:p-8 bg-[#14141b] border border-[#2a2a35] rounded-2xl"
         role="dialog"
         aria-modal="true"
       >
         <button
           type="button"
           onClick={onClose}
-          className="absolute top-4 right-4 p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors"
+          className="absolute top-4 right-4 p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-[#1a1a24] transition-colors"
           aria-label="Đóng"
         >
           <X className="w-5 h-5" />
         </button>
 
         <div className="text-center mb-6">
-          <div className="inline-flex items-center justify-center w-12 h-12 mb-3 rounded-xl bg-indigo-500/10 border border-indigo-500/30 text-indigo-400">
+          <div className="inline-flex items-center justify-center w-12 h-12 mb-3 rounded-xl bg-[#ff3b30]/10 border border-[#ff3b30]/30 text-[#FF3B30]">
             <Sparkles className="w-6 h-6" />
           </div>
           <h3 className="text-2xl font-bold text-white tracking-tight">
@@ -84,7 +84,7 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@example.com"
-                  className="w-full pl-10 pr-4 py-2.5 bg-slate-950/80 border border-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl text-sm text-slate-100 placeholder-slate-500 outline-none transition-all"
+                  className="w-full pl-10 pr-4 py-2.5 bg-[#0a0a0f] border border-[#ff3b30]/30 focus:border-[#ff3b30] focus:ring-1 focus:ring-[#ff3b30] rounded-xl text-sm text-slate-100 placeholder-slate-500 outline-none transition-all"
                 />
               </div>
             </div>
@@ -102,7 +102,7 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-10 pr-4 py-2.5 bg-slate-950/80 border border-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl text-sm text-slate-100 placeholder-slate-500 outline-none transition-all"
+                  className="w-full pl-10 pr-4 py-2.5 bg-[#0a0a0f] border border-[#ff3b30]/30 focus:border-[#ff3b30] focus:ring-1 focus:ring-[#ff3b30] rounded-xl text-sm text-slate-100 placeholder-slate-500 outline-none transition-all"
                 />
               </div>
             </div>
@@ -125,7 +125,7 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
                   <button
                     type="button"
                     onClick={() => setMode('register')}
-                    className="text-indigo-400 hover:text-indigo-300 font-medium hover:underline"
+                    className="text-[#FF6B4A] hover:text-[#FF3B30] font-medium hover:underline"
                   >
                     Đăng ký ngay
                   </button>
@@ -136,7 +136,7 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
                   <button
                     type="button"
                     onClick={() => setMode('login')}
-                    className="text-indigo-400 hover:text-indigo-300 font-medium hover:underline"
+                    className="text-[#FF6B4A] hover:text-[#FF3B30] font-medium hover:underline"
                   >
                     Đăng nhập
                   </button>

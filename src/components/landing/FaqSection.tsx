@@ -33,16 +33,16 @@ export function FaqSection() {
   }
 
   return (
-    <section id="faq" className="py-16 sm:py-24 bg-white border-t border-slate-200/80">
+    <section id="faq" className="py-16 sm:py-24 bg-[#0a0a0f] border-t border-[#2a2a35]">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold bg-white text-[#FF3B30]">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold bg-[#14141b] text-[#FF3B30]">
             HỎI ĐÁP THƯỜNG GẶP
           </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
             Giải đáp thắc mắc về OneForAll
           </h2>
-          <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+          <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
             Những thông tin cần thiết giúp bạn hiểu rõ hơn về tính năng, bảo mật và khả năng xử lý tệp của hệ thống.
           </p>
         </div>
@@ -54,8 +54,8 @@ export function FaqSection() {
               <Card
                 key={faq.q}
                 hoverEffect={false}
-                className={`transition-colors border-slate-200/90 ${
-                  isOpen ? 'bg-red-50/20 border-[#FF3B30]/30' : 'bg-white'
+                className={`transition-colors ${
+                  isOpen ? 'bg-[#ff3b30]/10 border-[#FF3B30]/30' : 'bg-[#14141b] border-[#2a2a35]'
                 }`}
               >
                 <button
@@ -66,7 +66,7 @@ export function FaqSection() {
                 >
                   <div className="flex items-center gap-3">
                     <HelpCircle className="w-5 h-5 text-[#FF3B30] shrink-0" />
-                    <span className="font-bold text-slate-900 text-base sm:text-lg">
+                    <span className="font-bold text-white text-base sm:text-lg">
                       {faq.q}
                     </span>
                   </div>
@@ -78,8 +78,8 @@ export function FaqSection() {
                 </button>
 
                 {isOpen && (
-                  <div className="px-5 sm:px-6 pb-6 pt-0 border-t border-slate-100 mt-1">
-                    <p className="text-sm text-slate-600 leading-relaxed pt-3">
+                  <div className="px-5 sm:px-6 pb-6 pt-0 border-t border-[#2a2a35]/60 mt-1">
+                    <p className="text-sm text-slate-300 leading-relaxed pt-3">
                       {faq.a}
                     </p>
                   </div>
