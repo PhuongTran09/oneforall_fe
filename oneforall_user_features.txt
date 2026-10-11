@@ -1,0 +1,161 @@
+ONEFORALL - DANH SACH CHUC NANG DANH CHO USER
+
+Phạm vi: Chỉ bao gồm các chức năng dành cho người dùng thông thường, không bao gồm chức năng quản trị Admin.
+Lưu ý: Danh sách được tổng hợp từ README và các API trong repository oneforall_be. Các tính năng phụ thuộc vào cấu hình backend hoặc cần kiểm thử thực tế được ghi chú rõ.
+
+==================================================
+1. VIDEO & AUDIO DOWNLOADER
+==================================================
+1. YouTube to MP4 - Tải video YouTube.
+2. YouTube to MP3 - Trích xuất âm thanh YouTube sang MP3.
+3. YouTube to WAV - Trích xuất âm thanh YouTube sang WAV (cần kiểm thử thực tế).
+4. YouTube to AAC - Trích xuất âm thanh YouTube sang AAC (cần kiểm thử thực tế).
+5. YouTube to M4A - Trích xuất âm thanh YouTube sang M4A (cần kiểm thử thực tế).
+6. TikTok to MP4 - Tải video TikTok.
+7. TikTok to MP3 - Trích xuất âm thanh TikTok sang MP3.
+8. TikTok to WAV - Chuyển âm thanh TikTok sang WAV (cần kiểm thử thực tế).
+9. TikTok to AAC - Chuyển âm thanh TikTok sang AAC (cần kiểm thử thực tế).
+10. TikTok to M4A - Chuyển âm thanh TikTok sang M4A (cần kiểm thử thực tế).
+
+API chính: POST /api/v1/media/process
+Thao tác tải từ URL: operation=url_download, params.format chọn định dạng đầu ra.
+
+==================================================
+2. VIDEO TOOLS
+==================================================
+11. Video Converter - Chuyển đổi định dạng video.
+12. Video Compressor - Nén video, giảm dung lượng tùy thiết lập.
+13. Video to MP3 - Tách âm thanh từ video sang MP3.
+14. Video to WAV - Tách âm thanh từ video sang WAV.
+15. Video to AAC - Tách âm thanh từ video sang AAC.
+16. Video to OGG - Tách âm thanh từ video sang OGG.
+17. Video to FLAC - Tách âm thanh từ video sang FLAC.
+18. Video to M4A - Tách âm thanh từ video sang M4A.
+19. Video Thumbnail Generator - Trích xuất ảnh tại mốc thời gian được chỉ định.
+20. Video Codec Converter - Chuyển codec video.
+21. Audio Codec Converter - Chọn codec âm thanh khi xử lý video.
+
+Định dạng video được tài liệu đề cập: MP4, MKV, WEBM, AVI.
+Các thao tác chính: transcode, extract-audio, thumbnail.
+API chính: POST /api/v1/media/process
+
+==================================================
+3. IMAGE TOOLS
+==================================================
+22. Image Compressor - Nén ảnh, giảm dung lượng.
+23. Image Resizer - Thay đổi kích thước ảnh.
+24. Image Cropper - Cắt ảnh theo vùng chọn.
+25. Image Format Converter - Chuyển đổi định dạng ảnh được hỗ trợ.
+26. JPG to PNG - Chuyển JPG sang PNG.
+27. JPG to WEBP - Chuyển JPG sang WEBP.
+28. PNG to JPG - Chuyển PNG sang JPG.
+29. PNG to WEBP - Chuyển PNG sang WEBP.
+30. PNG to SVG - Vector hóa ảnh PNG thành SVG.
+31. AI Background Remover - Xóa nền ảnh bằng AI BiRefNet.
+32. Image Quality Adjustment - Điều chỉnh chất lượng ảnh khi xử lý.
+33. Custom Image Dimensions - Tự đặt chiều rộng và chiều cao ảnh.
+
+Thao tác chính: compress, resize, crop, remove_background.
+API xử lý ảnh: POST /api/v1/image/process
+API chuyển đổi định dạng ảnh: POST /api/v1/convert-file
+
+==================================================
+4. DOCUMENT & SPREADSHEET CONVERTER
+==================================================
+34. DOCX to PDF - Chuyển Word DOCX sang PDF.
+35. DOC to PDF - Chuyển DOC sang PDF.
+36. TXT to PDF - Chuyển văn bản TXT sang PDF.
+37. TXT to DOCX - Chuyển TXT sang Word DOCX.
+38. TXT to DOC - Xuất văn bản sang DOC (theo danh sách định dạng được công bố; cần xác nhận hỗ trợ thực tế).
+39. XLSX to CSV - Xuất Excel sang CSV.
+40. XLSX to JSON - Xuất Excel sang JSON.
+41. XLSX to PDF - Chuyển Excel sang PDF.
+42. Excel Sheet Selection - Chọn sheet Excel cần xử lý.
+43. Excel Export All Sheets - Xuất toàn bộ sheet thành cấu trúc JSON.
+44. PNG to SVG Vectorizer - Vector hóa PNG, tùy chỉnh chế độ vector.
+45. Automatic Format Detection - Tự nhận diện định dạng file nguồn khi có thể.
+
+Các cặp chuyển đổi được tài liệu công bố; không mặc định mọi định dạng đều chuyển đổi qua lại được.
+API chính: POST /api/v1/convert-file
+Tham số định dạng đầu ra: to
+
+==================================================
+5. FILE UPLOAD & DOWNLOAD
+==================================================
+46. Upload File - Tải file lên để xử lý.
+47. Direct-to-Storage Upload - Upload trực tiếp lên R2 bằng presigned URL.
+48. Download Converted File - Tải file kết quả đã xử lý.
+49. Direct File Streaming - Tải file trực tiếp qua backend.
+50. Direct Storage Download - Tải file qua presigned URL của storage.
+51. Automatic Temporary File Cleanup - Tự động dọn file kết quả hết hạn theo chính sách backend.
+52. Retry Download - Có thể thử tải lại nếu lượt tải trực tiếp bị gián đoạn và file vẫn còn.
+53. Output Filename - Tạo tên file đầu ra phù hợp khi tải về.
+
+API liên quan:
+- POST /api/v1/files/presigned-upload-url
+- POST /api/v1/files/presigned-download-url
+- GET /api/v1/files/{job_id}/download
+- POST /api/v1/files/{job_id}/consumed
+
+Theo README, file kết quả có TTL mặc định khoảng 3 phút; cần thông báo người dùng tải kịp thời.
+
+==================================================
+6. JOB PROCESSING
+==================================================
+54. Background Processing - Xử lý file bằng hàng đợi nền.
+55. Job Status Tracking - Theo dõi trạng thái tác vụ.
+56. Job Progress Display - Hiển thị tiến độ nếu backend trả về thông tin tiến độ.
+57. Job Completion State - Hiển thị khi xử lý hoàn thành.
+58. Job Failure Handling - Hiển thị khi xử lý thất bại.
+59. Result Download - Cho tải kết quả sau khi Job hoàn thành.
+
+Trạng thái Job: queued, processing, completed, failed.
+API theo dõi: GET /api/v1/jobs/{job_id}
+
+==================================================
+7. USER ACCOUNT
+==================================================
+60. View Profile - Xem hồ sơ cá nhân.
+61. Update Profile - Cập nhật hồ sơ cá nhân.
+62. Update Full Name - Cập nhật tên hiển thị.
+63. Update Username - Cập nhật username.
+64. View Account Email - Xem email tài khoản.
+
+API liên quan:
+- GET /api/v1/users/me
+- PATCH /api/v1/users/me
+
+Đăng nhập, đăng ký và OAuth được xử lý qua Supabase Auth hoặc luồng xác thực hiện có; các endpoint hồ sơ bên trên không đại diện cho toàn bộ chức năng xác thực.
+
+==================================================
+8. PAYMENT & SUBSCRIPTION
+==================================================
+65. Upgrade Plan - Gửi yêu cầu nâng cấp gói.
+66. PayOS Payment - Tạo liên kết thanh toán PayOS.
+67. Payment Return Handling - Xử lý giao diện khi người dùng quay về từ trang thanh toán.
+
+API liên quan:
+- POST /api/v1/payments/payos
+- POST /api/v1/payments/payos/webhook
+
+Lưu ý: Chưa thể khẳng định chỉ từ các endpoint đã xem rằng đã có đầy đủ lịch sử giao dịch, tự động gia hạn, hủy gói hoặc toàn bộ luồng subscription.
+
+==================================================
+9. DANH MỤC ĐỀ XUẤT CHO GIAO DIỆN USER
+==================================================
+1. Video Downloader
+2. Audio Downloader
+3. Video Tools
+4. Audio Tools
+5. Image Tools
+6. AI Tools
+7. Document Converter
+8. Spreadsheet Converter
+9. File Converter
+10. My Account
+11. Upgrade Plan
+
+Ghi chú cuối:
+- Đây là danh sách chức năng dành cho USER thường, không bao gồm chức năng quản trị Admin.
+- Một số mục là cách đặt tên/gom nhóm tính năng cho giao diện frontend, không nhất thiết là endpoint độc lập.
+- Cần kiểm thử trên backend thật để xác nhận mọi định dạng, tùy chọn và luồng thanh toán hoạt động đúng trước khi công bố.
