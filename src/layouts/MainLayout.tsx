@@ -12,7 +12,7 @@ export function MainLayout() {
   }, [location.pathname])
 
   return (
-    <div className="min-h-screen flex flex-col bg-white text-slate-900 selection:bg-[#FF3B30] selection:text-white antialiased">
+    <div className="min-h-screen flex flex-col bg-[#0a0a0f] text-white selection:bg-[#FF3B30] selection:text-white antialiased">
       <Navbar onOpenAuth={(mode) => setAuthMode(mode)} />
       <main className="flex-1 w-full">
         <div key={location.pathname} className="animate-page-enter">

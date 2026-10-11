@@ -14,7 +14,7 @@ export function NotFoundPage() {
   ]
 
   return (
-    <div className="min-h-[70vh] flex items-center justify-center px-4 py-16">
+    <div className="min-h-[70vh] flex items-center justify-center px-4 py-16 bg-[#0a0a0f]">
       <SEOHead
         title="404 - Trang không tồn tại | OneForAll"
         description="Trang bạn tìm kiếm không tồn tại hoặc đã được thay đổi. Khám phá các công cụ trực tuyến miễn phí của OneForAll."
@@ -22,26 +22,26 @@ export function NotFoundPage() {
         noindex={true}
       />
 
-      <Card className="max-w-lg w-full p-8 text-center bg-white border border-slate-200/80 space-y-6">
-        <div className="w-16 h-16 rounded-2xl bg-red-50 border border-red-200 text-[#FF3B30] flex items-center justify-center mx-auto">
+      <Card className="max-w-lg w-full p-8 text-center bg-[#14141b] border border-[#2a2a35] space-y-6">
+        <div className="w-16 h-16 rounded-2xl bg-[#ff3b30]/10 border border-[#ff3b30]/30 text-[#FF3B30] flex items-center justify-center mx-auto">
           <AlertCircle className="w-8 h-8" />
         </div>
 
         <div className="space-y-2">
-          <span className="text-xs font-mono font-semibold px-2.5 py-0.5 rounded-full bg-red-50 text-[#FF3B30] border border-red-200">
+          <span className="text-xs font-mono font-semibold px-2.5 py-0.5 rounded-full bg-[#ff3b30]/10 text-[#FF3B30] border border-[#ff3b30]/30">
             LỖI 404
           </span>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
             Trang không tồn tại
           </h1>
-          <p className="text-sm text-slate-500 leading-relaxed max-w-sm mx-auto">
+          <p className="text-sm text-slate-400 leading-relaxed max-w-sm mx-auto">
             Đường dẫn bạn yêu cầu không tìm thấy hoặc đã được chuyển đi. Bạn có thể quay về trang chủ hoặc chọn nhanh các công cụ phổ biến bên dưới.
           </p>
         </div>
 
         {/* Popular Tools Navigation */}
-        <div className="pt-2 border-t border-slate-100 text-left space-y-2">
-          <p className="text-xs font-semibold text-slate-600 uppercase tracking-wider">
+        <div className="pt-2 border-t border-[#2a2a35] text-left space-y-2">
+          <p className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
             Công cụ phổ biến gợi ý:
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -49,7 +49,7 @@ export function NotFoundPage() {
               <Link
                 key={tool.to}
                 to={tool.to}
-                className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 hover:bg-red-50/50 border border-slate-200/80 hover:border-[#FF3B30]/40 text-xs font-medium text-slate-700 hover:text-[#FF3B30] transition-colors"
+                className="flex items-center justify-between p-2.5 rounded-xl bg-[#1a1a24] hover:bg-[#ff3b30]/10 border border-[#2a2a35] hover:border-[#FF3B30]/40 text-xs font-medium text-slate-200 hover:text-[#FF3B30] transition-colors"
               >
                 <span>{tool.label}</span>
                 <ArrowRight className="w-3.5 h-3.5 text-slate-400" />

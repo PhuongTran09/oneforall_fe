@@ -36,8 +36,8 @@ export function VideoWorkspace() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-10 sm:py-16">
-      <Card className="bg-slate-900/80 border-slate-800 p-6 sm:p-8">
-        <CardHeader className="p-0 pb-6 border-b border-slate-800">
+      <Card className="bg-[#14141b] border-[#2a2a35] p-6 sm:p-8">
+        <CardHeader className="p-0 pb-6 border-b border-[#2a2a35]">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400">
               <VideoIcon className="w-5 h-5" />
@@ -55,7 +55,7 @@ export function VideoWorkspace() {
         <CardContent className="p-0 pt-6 space-y-6">
           <label
             htmlFor="video-file-input"
-            className="flex flex-col items-center justify-center border-2 border-dashed border-slate-800 hover:border-purple-500/60 rounded-2xl p-8 sm:p-12 text-center cursor-pointer bg-slate-950/50 hover:bg-slate-950/80 transition-all group"
+            className="flex flex-col items-center justify-center border-2 border-dashed border-[#2a2a35] hover:border-purple-500/60 rounded-2xl p-8 sm:p-12 text-center cursor-pointer bg-[#0a0a0f] hover:bg-[#1a1a24] transition-all group"
           >
             <input
               id="video-file-input"
@@ -76,10 +76,10 @@ export function VideoWorkspace() {
               </div>
             ) : (
               <div className="space-y-1">
-                <p className="text-sm font-medium text-slate-200">
+                <p className="text-sm font-medium text-slate-100">
                   Kéo thả hoặc nhấp để chọn tệp video
                 </p>
-                <p className="text-xs text-slate-500">Hỗ trợ MP4, MOV, MKV, AVI, WEBM</p>
+                <p className="text-xs text-slate-400">Hỗ trợ MP4, MOV, MKV, AVI, WEBM</p>
               </div>
             )}
           </label>
@@ -111,8 +111,8 @@ export function VideoWorkspace() {
           )}
 
           {task && (
-            <div className="p-4 rounded-xl bg-slate-950/80 border border-slate-800 space-y-2">
-              <h4 className="text-sm font-semibold text-slate-200">Thông tin tác vụ:</h4>
+            <div className="p-4 rounded-xl bg-[#0a0a0f] border border-[#2a2a35] space-y-2">
+              <h4 className="text-sm font-semibold text-slate-100">Thông tin tác vụ:</h4>
               <p className="text-xs text-slate-400">
                 Mã tác vụ: <code className="text-purple-400">{task.id}</code>
               </p>

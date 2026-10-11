@@ -168,7 +168,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
   const canonicalUrl = `https://oneforall.app${tool.slug}`
 
   return (
-    <div className="w-full min-h-screen bg-white">
+    <div className="w-full min-h-screen bg-[#0a0a0f]">
       {/* 1. Dynamic SEO Metadata & Schema JSON-LD */}
       <SEOHead
         title={tool.title}
@@ -188,18 +188,18 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center max-w-3xl mx-auto space-y-4 mb-8 sm:mb-10">
             {/* Badge */}
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold bg-white text-[#FF3B30]">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold bg-[#14141b] text-[#FF3B30]">
               <Zap className="w-3.5 h-3.5" />
               <span>{tool.badge}</span>
             </div>
 
             {/* Semantic Single H1 Header */}
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight">
               {tool.h1}
             </h1>
 
             {/* Subtitle */}
-            <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl mx-auto">
+            <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-2xl mx-auto">
               {tool.subtitle}
             </p>
           </div>
@@ -234,8 +234,8 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
 
                 {/* Error message */}
                 {errorMessage && (
-                  <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm flex items-start gap-2.5">
-                    <Info className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+                  <div className="p-4 rounded-xl bg-[#ff3b30]/10 border border-[#ff3b30]/30 text-rose-300 text-sm flex items-start gap-2.5">
+                    <Info className="w-5 h-5 text-[#ff3b30] shrink-0 mt-0.5" />
                     <div>
                       <p className="font-semibold">Đã xảy ra lỗi</p>
                       <p className="text-xs sm:text-sm mt-0.5">{errorMessage}</p>
@@ -272,13 +272,13 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
       </section>
 
       {/* 3. How It Works Section */}
-      <section className="py-14 sm:py-20 bg-white border-y border-slate-200/80">
+      <section className="py-14 sm:py-20 bg-[#0a0a0f] border-y border-[#2a2a35]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16 space-y-3">
-            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
               Hướng dẫn sử dụng {tool.badge}
             </h2>
-            <p className="text-sm text-slate-500 leading-relaxed">
+            <p className="text-sm text-slate-400 leading-relaxed">
               Chỉ với 4 bước đơn giản, bạn có thể hoàn tất tác vụ chỉ trong chớp mắt mà không cần kiến thức kỹ thuật.
             </p>
           </div>
@@ -287,15 +287,15 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
             {tool.howItWorksSteps.map((step) => (
               <div
                 key={step.step}
-                className="relative p-6 rounded-2xl bg-white border border-slate-200/80 transition-all space-y-3"
+                className="relative p-6 rounded-2xl bg-[#14141b] border border-[#2a2a35] transition-all space-y-3"
               >
                 <div className="w-10 h-10 flex items-center justify-center font-mono font-bold text-sm text-[#FF3B30]">
                   {step.step}
                 </div>
-                <h3 className="font-bold text-slate-900 text-base">
+                <h3 className="font-bold text-white text-base">
                   {step.title}
                 </h3>
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
                   {step.desc}
                 </p>
               </div>
@@ -308,10 +308,10 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
       <section className="py-14 sm:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-12 space-y-3">
-            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
               Tại sao nên chọn OneForAll?
             </h2>
-            <p className="text-sm text-slate-500 leading-relaxed">
+            <p className="text-sm text-slate-400 leading-relaxed">
               Tối ưu cho cả người dùng phổ thông lẫn các nhà sáng tạo nội dung chuyên nghiệp.
             </p>
           </div>
@@ -320,15 +320,15 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
             {tool.features.map((feat) => (
               <div
                 key={feat.title}
-                className="p-6 rounded-2xl bg-white border border-slate-200/80 space-y-3"
+                className="p-6 rounded-2xl bg-[#14141b] border border-[#2a2a35] space-y-3"
               >
-                <div className="w-10 h-10 rounded-xl bg-red-50 border border-red-200 flex items-center justify-center text-[#FF3B30]">
+                <div className="w-10 h-10 rounded-xl bg-[#ff3b30]/10 border border-[#ff3b30]/30 flex items-center justify-center text-[#FF3B30]">
                   <Check className="w-5 h-5" />
                 </div>
-                <h3 className="font-bold text-slate-900 text-lg">
+                <h3 className="font-bold text-white text-lg">
                   {feat.title}
                 </h3>
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
                   {feat.desc}
                 </p>
               </div>
@@ -338,19 +338,19 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
       </section>
 
       {/* 5. Supported Formats & Security Notice */}
-      <section className="py-12 bg-white border-y border-slate-200/80">
+      <section className="py-12 bg-[#0a0a0f] border-y border-[#2a2a35]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="p-6 sm:p-8 rounded-2xl bg-slate-50 border border-slate-200/90 space-y-4">
+          <div className="p-6 sm:p-8 rounded-2xl bg-[#14141b] border border-[#2a2a35] space-y-4">
             <div className="flex items-center gap-3">
               <ShieldCheck className="w-6 h-6 text-emerald-600 shrink-0" />
-              <h3 className="font-bold text-slate-900 text-base sm:text-lg">
+              <h3 className="font-bold text-white text-base sm:text-lg">
                 Định dạng hỗ trợ & Quy chuẩn an toàn
               </h3>
             </div>
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
               {tool.supportedFormatsDesc}
             </p>
-            <div className="pt-2 border-t border-slate-200 text-xs text-slate-500 flex flex-wrap gap-4">
+            <div className="pt-2 border-t border-[#2a2a35] text-xs text-slate-400 flex flex-wrap gap-4">
               <span>• Mã hóa SSL 256-bit trong quá trình truyền tải</span>
               <span>• Tự động xóa tệp sau khi hoàn thành</span>
               <span>• Miễn phí 100%, không dính quảng cáo che khuất</span>
@@ -364,10 +364,10 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
         <section className="py-14 sm:py-20">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-10 space-y-2">
-              <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
+              <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
                 Câu hỏi thường gặp
               </h2>
-              <p className="text-xs sm:text-sm text-slate-500">
+              <p className="text-xs sm:text-sm text-slate-400">
                 Giải đáp mọi thắc mắc khi sử dụng {tool.badge}
               </p>
             </div>
@@ -378,12 +378,12 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
                 return (
                   <div
                     key={faq.q}
-                    className="rounded-2xl border border-slate-200 bg-white overflow-hidden transition-colors"
+                    className="rounded-2xl border border-[#2a2a35] bg-[#14141b] overflow-hidden transition-colors"
                   >
                     <button
                       type="button"
                       onClick={() => setOpenFaqIndex(isOpen ? null : index)}
-                      className="w-full p-5 text-left font-semibold text-slate-900 text-sm sm:text-base flex items-center justify-between gap-4 cursor-pointer hover:bg-slate-50/60"
+                      className="w-full p-5 text-left font-semibold text-white text-sm sm:text-base flex items-center justify-between gap-4 cursor-pointer hover:bg-[#ff3b30]/5"
                     >
                       <span>{faq.q}</span>
                       <ChevronDown
@@ -393,7 +393,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
                       />
                     </button>
                     {isOpen && (
-                      <div className="px-5 pb-5 pt-1 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-100 bg-slate-50/40">
+                      <div className="px-5 pb-5 pt-1 text-xs sm:text-sm text-slate-300 leading-relaxed border-t border-[#2a2a35] bg-[#0a0a0f]">
                         {faq.a}
                       </div>
                     )}

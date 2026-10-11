@@ -51,8 +51,8 @@ export function ConvertWorkspace() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-10 sm:py-16">
-      <Card className="bg-slate-900/80 border-slate-800 p-6 sm:p-8">
-        <CardHeader className="p-0 pb-6 border-b border-slate-800">
+      <Card className="bg-[#14141b] border-[#2a2a35] p-6 sm:p-8">
+        <CardHeader className="p-0 pb-6 border-b border-[#2a2a35]">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 rounded-xl bg-pink-500/10 border border-pink-500/30 flex items-center justify-center text-pink-400">
               <FileType className="w-5 h-5" />
@@ -70,7 +70,7 @@ export function ConvertWorkspace() {
         <CardContent className="p-0 pt-6 space-y-6">
           <label
             htmlFor="convert-file-input"
-            className="flex flex-col items-center justify-center border-2 border-dashed border-slate-800 hover:border-pink-500/60 rounded-2xl p-8 sm:p-12 text-center cursor-pointer bg-slate-950/50 hover:bg-slate-950/80 transition-all group"
+            className="flex flex-col items-center justify-center border-2 border-dashed border-[#2a2a35] hover:border-pink-500/60 rounded-2xl p-8 sm:p-12 text-center cursor-pointer bg-[#0a0a0f] hover:bg-[#1a1a24] transition-all group"
           >
             <input
               id="convert-file-input"
@@ -90,21 +90,21 @@ export function ConvertWorkspace() {
               </div>
             ) : (
               <div className="space-y-1">
-                <p className="text-sm font-medium text-slate-200">
+                <p className="text-sm font-medium text-slate-100">
                   Kéo thả hoặc nhấp để chọn tệp cần chuyển đổi
                 </p>
-                <p className="text-xs text-slate-500">Tài liệu, âm thanh, video hoặc bảng tính dữ liệu</p>
+                <p className="text-xs text-slate-400">Tài liệu, âm thanh, video hoặc bảng tính dữ liệu</p>
               </div>
             )}
           </label>
 
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 p-4 rounded-xl bg-slate-950/60 border border-slate-800/80">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 p-4 rounded-xl bg-[#0a0a0f] border border-[#2a2a35]">
             <div className="flex items-center gap-3">
-              <span className="text-xs font-medium text-slate-300">Định dạng muốn chuyển đổi:</span>
+              <span className="text-xs font-medium text-slate-200">Định dạng muốn chuyển đổi:</span>
               <select
                 value={targetFormat}
                 onChange={(e) => setTargetFormat(e.target.value as SupportedFormat)}
-                className="px-3 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs font-mono text-white focus:outline-none focus:border-indigo-500"
+                className="px-3 py-1.5 bg-[#14141b] border border-[#2a2a35] rounded-lg text-xs font-mono text-white focus:outline-none focus:border-indigo-500"
               >
                 {AVAILABLE_FORMATS.map((fmt) => (
                   <option key={fmt} value={fmt}>
@@ -140,8 +140,8 @@ export function ConvertWorkspace() {
           )}
 
           {task && (
-            <div className="p-4 rounded-xl bg-slate-950/80 border border-slate-800 space-y-2">
-              <h4 className="text-sm font-semibold text-slate-200">Kết quả:</h4>
+            <div className="p-4 rounded-xl bg-[#0a0a0f] border border-[#2a2a35] space-y-2">
+              <h4 className="text-sm font-semibold text-slate-100">Kết quả:</h4>
               <p className="text-xs text-slate-400">
                 Trạng thái: <strong className="text-emerald-400">{task.status}</strong>
               </p>
