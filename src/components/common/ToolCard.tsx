@@ -48,15 +48,15 @@ export function ToolCard({ tool }: ToolCardProps) {
   return (
     <Link
       to={tool.slug}
-      className="group flex flex-col justify-between p-5 sm:p-6 rounded-2xl bg-[#14141b] border border-[#2a2a35] hover:border-[#FF3B30]/50 transition-all duration-200 card-3d"
+      className="group flex flex-col justify-between p-5 sm:p-6 bg-[#14141b] border border-[rgba(255,59,48,0.22)] hover:border-[rgba(255,59,48,0.55)] transition-all duration-200 card-3d clip-corner-card"
     >
       <div>
         {/* Top Header */}
         <div className="flex items-center justify-between gap-2 mb-3.5">
-          <div className="w-10 h-10 rounded-xl bg-[#0a0a0f] border border-[#2a2a35] flex items-center justify-center group-hover:scale-105 group-hover:bg-[#ff3b30]/10 transition-all">
+          <div className="w-10 h-10 bg-[#0a0a0f] border border-[#2a2a35] flex items-center justify-center group-hover:scale-105 group-hover:bg-[#ff3b30]/10 transition-all">
             {getToolIcon(tool.category, tool.slug)}
           </div>
-          <span className="text-[11px] font-medium font-mono px-2 py-0.5 rounded-full bg-[#1a1a24] text-slate-300 group-hover:bg-[#ff3b30]/10 group-hover:text-[#FF3B30] transition-colors">
+          <span className="text-[11px] font-medium font-mono px-2 py-0.5 bg-[#1a1a24] text-slate-300 group-hover:bg-[#ff3b30]/10 group-hover:text-[#FF3B30] transition-colors">
             {tool.badge}
           </span>
         </div>
@@ -73,12 +73,12 @@ export function ToolCard({ tool }: ToolCardProps) {
       </div>
 
       {/* Footer Info */}
-      <div className="pt-4 mt-4 border-t border-[#2a2a35]/60 flex items-center justify-between">
+      <div className="pt-4 mt-4 border-t border-[#2a2a35]/50 flex items-center justify-between">
         <div className="flex items-center gap-1.5 flex-wrap">
           {tool.outputFormats.slice(0, 3).map((fmt) => (
             <span
               key={fmt}
-              className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#1a1a24] text-slate-300 uppercase"
+              className="text-[10px] font-mono px-1.5 py-0.5 bg-[#1a1a24] text-slate-400 uppercase border border-[#2a2a35]"
             >
               .{fmt}
             </span>

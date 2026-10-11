@@ -54,7 +54,7 @@ export function PricingSection({ onSelectFree, onSelectPremium }: PricingSection
     <section id="pricing" className="py-16 sm:py-24 bg-[#0a0a0f]/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold bg-[#14141b] text-[#FF3B30]">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold bg-[#14141b] border border-[rgba(255,59,48,0.35)] text-[#FF3B30] badge-angular">
             BẢNG GIÁ MINH BẠCH
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
@@ -69,14 +69,14 @@ export function PricingSection({ onSelectFree, onSelectPremium }: PricingSection
           {plans.map((plan) => (
             <Card
               key={plan.id}
-              className={`flex flex-col justify-between p-2 sm:p-4 bg-[#14141b] ${
+              className={`flex flex-col justify-between p-2 sm:p-4 bg-[#14141b] clip-corner-card ${
                 plan.isPopular
-                  ? 'border border-[#2a2a35] relative overflow-hidden card-3d'
-                  : 'border border-[#2a2a35]'
+                  ? 'border border-[rgba(255,59,48,0.55)] relative overflow-hidden card-3d'
+                  : 'border border-[rgba(255,59,48,0.22)] card-3d card-3d-dim'
               }`}
             >
               {plan.isPopular && (
-                <div className="absolute top-0 right-0 bg-brand-gradient text-white text-[10px] font-bold px-3 py-1 rounded-bl-[8px] tracking-wider uppercase flex items-center gap-1 border-l-2 border-b-2 border border-[#2a2a35]">
+                <div className="absolute top-0 right-0 bg-brand-gradient text-white text-[10px] font-bold px-3 py-1 tracking-wider uppercase flex items-center gap-1 border-l border-b border-[rgba(255,59,48,0.4)]">
                   <Sparkles className="w-3 h-3" />
                   {plan.badge}
                 </div>
@@ -87,7 +87,7 @@ export function PricingSection({ onSelectFree, onSelectPremium }: PricingSection
                   <div className="flex items-center justify-between mb-2">
                     <CardTitle className="text-xl text-white">{plan.name}</CardTitle>
                     {!plan.isPopular && (
-                      <span className="text-xs font-mono font-medium text-slate-400 px-2 py-0.5 rounded bg-[#1a1a24]">
+                      <span className="text-xs font-mono font-medium text-slate-400 px-2 py-0.5 bg-[#1a1a24]">
                         {plan.badge}
                       </span>
                     )}

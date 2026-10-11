@@ -13,10 +13,10 @@ export function Card({
   children,
   ...props
 }: CardProps) {
-  const baseStyles = 'relative rounded-2xl bg-[#14141b] transition-all duration-300 card-3d'
-  const borderStyles = bordered ? 'border border-[#2a2a35]' : ''
+  const baseStyles = 'relative bg-[#14141b] transition-all duration-300 card-3d clip-corner-card'
+  const borderStyles = bordered ? 'border border-[rgba(255,59,48,0.25)]' : ''
   const hoverStyles = hoverEffect
-    ? 'hover:border-[#ff3b30]/40 hover:-translate-y-0.5'
+    ? 'hover:border-[rgba(255,59,48,0.55)] hover:-translate-y-0.5'
     : ''
 
   return (

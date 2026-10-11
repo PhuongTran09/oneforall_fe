@@ -58,7 +58,7 @@ export function Navbar({ onOpenAuth }: NavbarProps) {
             <div className="flex flex-col">
               <span className="font-bold text-xl tracking-tight text-white flex items-center gap-1.5">
                 One<span className="text-brand-gradient">ForAll</span>
-                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#ff3b30]/10 text-[#FF3B30] border border-[#ff3b30]/30 font-semibold">
+                <span className="text-[10px] font-mono px-1.5 py-0.5 bg-[#ff3b30]/10 text-[#FF3B30] border border-[#ff3b30]/30 font-semibold clip-corner-btn">
                   Tools
                 </span>
               </span>
@@ -73,7 +73,7 @@ export function Navbar({ onOpenAuth }: NavbarProps) {
                 <Link
                   key={item.to}
                   to={item.to}
-                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium transition-colors clip-corner-btn ${
                     isActive
                       ? 'text-[#FF3B30] bg-[#ff3b30]/15 font-semibold'
                       : 'text-slate-300 hover:text-white hover:bg-[#ff3b30]/10'
@@ -93,7 +93,7 @@ export function Navbar({ onOpenAuth }: NavbarProps) {
               variant="ghost"
               size="sm"
               onClick={() => handleAuthClick('login')}
-              leftIcon={<LogIn className="w-4 h-4 text-slate-500" />}
+              leftIcon={<LogIn className="w-4 h-4" />}
             >
               Đăng nhập
             </Button>
@@ -113,7 +113,7 @@ export function Navbar({ onOpenAuth }: NavbarProps) {
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 text-slate-300 hover:text-white rounded-lg hover:bg-[#ff3b30]/10 focus:outline-none"
+              className="p-2 text-slate-300 hover:text-white hover:bg-[#ff3b30]/10 focus:outline-none clip-corner-btn"
               aria-label={mobileMenuOpen ? 'Đóng menu' : 'Mở menu'}
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -130,7 +130,7 @@ export function Navbar({ onOpenAuth }: NavbarProps) {
                   key={item.to}
                   to={item.to}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium text-slate-200 hover:text-[#FF3B30] hover:bg-[#ff3b30]/10 rounded-xl transition-colors"
+                  className="flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium text-slate-200 hover:text-[#FF3B30] hover:bg-[#ff3b30]/10 transition-colors clip-corner-btn"
                 >
                   {item.icon}
                   <span>{item.label}</span>

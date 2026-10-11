@@ -37,7 +37,7 @@ export function FeaturesSection() {
     <section id="features" className="py-16 sm:py-24 bg-[#0a0a0f]/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold bg-[#14141b] text-[#FF3B30]">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold bg-[#14141b] border border-[rgba(255,59,48,0.35)] text-[#FF3B30] badge-angular">
             ƯU ĐIỂM CỐT LÕI
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
@@ -50,9 +50,9 @@ export function FeaturesSection() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
           {features.map((feat) => (
-            <Card key={feat.title} className="p-2 sm:p-4 bg-[#14141b] border border-[#2a2a35] card-3d">
+            <Card key={feat.title} className="p-2 sm:p-4 bg-[#14141b] border border-[rgba(255,59,48,0.22)] card-3d clip-corner-card">
               <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                <div className="w-12 h-12 flex items-center justify-center shrink-0 bg-[#0a0a0f]">
+                <div className="w-12 h-12 flex items-center justify-center shrink-0 bg-[#0a0a0f] border border-[#2a2a35] clip-corner-btn">
                   {feat.icon}
                 </div>
                 <div className="space-y-1">

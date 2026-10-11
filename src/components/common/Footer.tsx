@@ -53,7 +53,7 @@ export function Footer() {
                 href="https://github.com"
                 target="_blank"
                 rel="noreferrer"
-                className="w-9 h-9 rounded-lg bg-[#1a1a24] hover:bg-[#ff3b30]/15 text-slate-400 flex items-center justify-center transition-colors"
+                className="w-9 h-9 bg-[#1a1a24] hover:bg-[#ff3b30]/15 text-slate-400 flex items-center justify-center transition-colors clip-corner-btn"
                 aria-label="GitHub Repository"
               >
                 <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24" aria-hidden="true">
@@ -64,14 +64,14 @@ export function Footer() {
                 href="https://discord.com"
                 target="_blank"
                 rel="noreferrer"
-                className="w-9 h-9 rounded-lg bg-[#1a1a24] hover:bg-[#ff3b30]/15 text-slate-400 flex items-center justify-center transition-colors"
+                className="w-9 h-9 bg-[#1a1a24] hover:bg-[#ff3b30]/15 text-slate-400 flex items-center justify-center transition-colors clip-corner-btn"
                 aria-label="Discord Community"
               >
                 <MessageSquare className="w-4 h-4" />
               </a>
               <a
                 href="mailto:support@oneforall.app"
-                className="w-9 h-9 rounded-lg bg-[#1a1a24] hover:bg-[#ff3b30]/15 text-slate-400 flex items-center justify-center transition-colors"
+                className="w-9 h-9 bg-[#1a1a24] hover:bg-[#ff3b30]/15 text-slate-400 flex items-center justify-center transition-colors clip-corner-btn"
                 aria-label="Email Support"
               >
                 <Mail className="w-4 h-4" />

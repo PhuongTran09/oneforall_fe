@@ -50,16 +50,16 @@ export function ConvertWorkspace() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-10 sm:py-16">
-      <Card className="bg-[#14141b] border-[#2a2a35] p-6 sm:p-8">
+    <div className="page-container">
+      <Card className="bg-[#14141b] border border-[rgba(255,59,48,0.25)] p-6 sm:p-8">
         <CardHeader className="p-0 pb-6 border-b border-[#2a2a35]">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 rounded-xl bg-pink-500/10 border border-pink-500/30 flex items-center justify-center text-pink-400">
+            <div className="w-10 h-10 bg-[#ff3b30]/10 border border-[rgba(255,59,48,0.30)] flex items-center justify-center text-[#FF6B4A] clip-corner-btn">
               <FileType className="w-5 h-5" />
             </div>
             <div>
               <CardTitle className="text-2xl">Chuyển đổi định dạng</CardTitle>
-              <span className="text-xs font-mono text-pink-400">Universal File Converter</span>
+              <span className="text-xs font-mono text-[#FF6B4A]">Universal File Converter</span>
             </div>
           </div>
           <CardDescription>
@@ -70,7 +70,7 @@ export function ConvertWorkspace() {
         <CardContent className="p-0 pt-6 space-y-6">
           <label
             htmlFor="convert-file-input"
-            className="flex flex-col items-center justify-center border-2 border-dashed border-[#2a2a35] hover:border-pink-500/60 rounded-2xl p-8 sm:p-12 text-center cursor-pointer bg-[#0a0a0f] hover:bg-[#1a1a24] transition-all group"
+            className="flex flex-col items-center justify-center border-2 border-dashed border-[rgba(255,59,48,0.30)] hover:border-[rgba(255,59,48,0.60)] p-8 sm:p-12 text-center cursor-pointer bg-[#0a0a0f] hover:bg-[#ff3b30]/5 transition-all group clip-corner-lg input-3d"
           >
             <input
               id="convert-file-input"
@@ -78,7 +78,7 @@ export function ConvertWorkspace() {
               className="hidden"
               onChange={handleFileChange}
             />
-            <div className="w-14 h-14 rounded-2xl bg-pink-500/10 border border-pink-500/20 flex items-center justify-center text-pink-400 group-hover:scale-110 transition-transform mb-3">
+            <div className="w-14 h-14 bg-[#ff3b30]/10 border border-[rgba(255,59,48,0.25)] flex items-center justify-center text-[#FF6B4A] group-hover:scale-110 transition-transform mb-3 clip-corner-card">
               <UploadCloud className="w-7 h-7" />
             </div>
             {selectedFile ? (
@@ -98,13 +98,14 @@ export function ConvertWorkspace() {
             )}
           </label>
 
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 p-4 rounded-xl bg-[#0a0a0f] border border-[#2a2a35]">
+          {/* Format selector row */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 p-4 bg-[#0a0a0f] border border-[rgba(255,59,48,0.22)] clip-corner-lg">
             <div className="flex items-center gap-3">
               <span className="text-xs font-medium text-slate-200">Định dạng muốn chuyển đổi:</span>
               <select
                 value={targetFormat}
                 onChange={(e) => setTargetFormat(e.target.value as SupportedFormat)}
-                className="px-3 py-1.5 bg-[#14141b] border border-[#2a2a35] rounded-lg text-xs font-mono text-white focus:outline-none focus:border-indigo-500"
+                className="px-3 py-1.5 bg-[#14141b] border border-[#2a2a35] text-xs font-mono text-white focus:outline-none focus:border-[#ff3b30] clip-corner-btn"
               >
                 {AVAILABLE_FORMATS.map((fmt) => (
                   <option key={fmt} value={fmt}>
@@ -128,10 +129,10 @@ export function ConvertWorkspace() {
 
           {message && (
             <div
-              className={`p-4 rounded-xl text-sm border flex items-center gap-3 ${
+              className={`p-4 text-sm border flex items-center gap-3 clip-corner-card ${
                 message.isError
-                  ? 'bg-rose-500/10 border-rose-500/30 text-rose-300'
-                  : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'
+                  ? 'bg-[#ff3b30]/10 border-[#ff3b30]/30 text-rose-300'
+                  : 'bg-emerald-500/10 border-emerald-600/30 text-emerald-300'
               }`}
             >
               {!message.isError && <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />}
@@ -140,7 +141,7 @@ export function ConvertWorkspace() {
           )}
 
           {task && (
-            <div className="p-4 rounded-xl bg-[#0a0a0f] border border-[#2a2a35] space-y-2">
+            <div className="p-4 bg-[#0a0a0f] border border-[#2a2a35] space-y-2 clip-corner-card">
               <h4 className="text-sm font-semibold text-slate-100">Kết quả:</h4>
               <p className="text-xs text-slate-400">
                 Trạng thái: <strong className="text-emerald-400">{task.status}</strong>
@@ -150,7 +151,7 @@ export function ConvertWorkspace() {
                   href={task.resultUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="text-xs font-semibold text-indigo-400 hover:text-indigo-300 underline"
+                  className="text-xs font-semibold text-[#FF6B4A] hover:text-[#FF3B30] underline"
                 >
                   Tải tệp thành phẩm ({task.targetFormat.toUpperCase()})
                 </a>

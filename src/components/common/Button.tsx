@@ -26,19 +26,19 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ref,
   ) => {
     const baseStyles =
-      'inline-flex items-center justify-center font-medium rounded-xl transition-all duration-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0f] focus-visible:ring-[#FF3B30] disabled:opacity-50 disabled:cursor-not-allowed select-none active:scale-[0.98]'
+      'inline-flex items-center justify-center font-medium transition-all duration-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0f] focus-visible:ring-[#FF3B30] disabled:opacity-50 disabled:cursor-not-allowed select-none'
 
     const variantStyles = {
       primary:
-        'bg-brand-gradient text-white hover:brightness-105 border-0 btn-3d',
+        'bg-brand-gradient text-white hover:brightness-110 border-0 btn-3d clip-corner-btn',
       secondary:
-        'bg-[#14141b] text-slate-200 border border-[#2a2a35] hover:bg-[#ff3b30]/5 hover:border-[#ff3b30]/40',
+        'bg-[#14141b] text-slate-200 border border-[rgba(255,59,48,0.35)] hover:bg-[#ff3b30]/5 hover:border-[rgba(255,59,48,0.6)] clip-corner-btn',
       outline:
-        'bg-transparent text-[#FF3B30] border border-[#FF3B30]/40 hover:bg-[#FF3B30]/5 hover:border-[#FF3B30]',
+        'bg-transparent text-[#FF3B30] border border-[#FF3B30]/50 hover:bg-[#FF3B30]/5 hover:border-[#FF3B30] clip-corner-btn',
       ghost:
-        'bg-transparent text-slate-300 hover:bg-[#ff3b30]/10 hover:text-white border-transparent',
+        'bg-transparent text-slate-300 hover:bg-[#ff3b30]/10 hover:text-white border-transparent clip-corner-btn',
       glow:
-        'bg-brand-gradient text-white hover:brightness-105 font-semibold btn-3d',
+        'bg-brand-gradient text-white hover:brightness-110 font-semibold btn-3d clip-corner-btn',
     }
 
     const sizeStyles = {

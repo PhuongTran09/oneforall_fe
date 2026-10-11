@@ -37,21 +37,21 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
       <div
-        className="relative w-full max-w-md p-6 sm:p-8 bg-[#14141b] border border-[#2a2a35] rounded-2xl"
+        className="relative w-full max-w-md p-6 sm:p-8 bg-[#14141b] border border-[rgba(255,59,48,0.35)] clip-corner-lg card-3d"
         role="dialog"
         aria-modal="true"
       >
         <button
           type="button"
           onClick={onClose}
-          className="absolute top-4 right-4 p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-[#1a1a24] transition-colors"
+          className="absolute top-4 right-4 p-1.5 text-slate-400 hover:text-white hover:bg-[#1a1a24] transition-colors clip-corner-btn"
           aria-label="Đóng"
         >
           <X className="w-5 h-5" />
         </button>
 
         <div className="text-center mb-6">
-          <div className="inline-flex items-center justify-center w-12 h-12 mb-3 rounded-xl bg-[#ff3b30]/10 border border-[#ff3b30]/30 text-[#FF3B30]">
+          <div className="inline-flex items-center justify-center w-12 h-12 mb-3 bg-[#ff3b30]/10 border border-[#ff3b30]/30 text-[#FF3B30] clip-corner-btn">
             <Sparkles className="w-6 h-6" />
           </div>
           <h3 className="text-2xl font-bold text-white tracking-tight">
@@ -65,7 +65,7 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
         </div>
 
         {successMessage ? (
-          <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 flex items-center gap-3 text-sm">
+          <div className="p-4 bg-emerald-500/10 border border-emerald-600/30 text-emerald-300 flex items-center gap-3 text-sm clip-corner-card">
             <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
             <span>{successMessage}</span>
           </div>
@@ -76,7 +76,7 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
                 Email
               </label>
               <div className="relative">
-                <Mail className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   id="auth-email"
                   type="email"
@@ -84,7 +84,7 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@example.com"
-                  className="w-full pl-10 pr-4 py-2.5 bg-[#0a0a0f] border border-[#ff3b30]/30 focus:border-[#ff3b30] focus:ring-1 focus:ring-[#ff3b30] rounded-xl text-sm text-slate-100 placeholder-slate-500 outline-none transition-all"
+                  className="w-full pl-10 pr-4 py-2.5 bg-[#0a0a0f] border border-[#ff3b30]/30 focus:border-[#ff3b30] focus:ring-1 focus:ring-[#ff3b30] text-sm text-slate-100 placeholder-slate-500 outline-none transition-all clip-corner-btn"
                 />
               </div>
             </div>
@@ -94,7 +94,7 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
                 Mật khẩu
               </label>
               <div className="relative">
-                <Lock className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   id="auth-password"
                   type="password"
@@ -102,7 +102,7 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-10 pr-4 py-2.5 bg-[#0a0a0f] border border-[#ff3b30]/30 focus:border-[#ff3b30] focus:ring-1 focus:ring-[#ff3b30] rounded-xl text-sm text-slate-100 placeholder-slate-500 outline-none transition-all"
+                  className="w-full pl-10 pr-4 py-2.5 bg-[#0a0a0f] border border-[#ff3b30]/30 focus:border-[#ff3b30] focus:ring-1 focus:ring-[#ff3b30] text-sm text-slate-100 placeholder-slate-500 outline-none transition-all clip-corner-btn"
                 />
               </div>
             </div>

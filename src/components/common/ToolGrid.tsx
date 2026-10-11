@@ -36,10 +36,10 @@ export function ToolGrid({ tools, showCategoryFilter = true }: ToolGridProps) {
               key={cat.id}
               type="button"
               onClick={() => setSelectedCategory(cat.id)}
-              className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-medium whitespace-nowrap transition-all cursor-pointer ${
+              className={`px-4 py-2 text-xs sm:text-sm font-medium whitespace-nowrap transition-all cursor-pointer clip-corner-btn ${
                 selectedCategory === cat.id
                   ? 'bg-brand-gradient text-white font-semibold'
-                  : 'bg-[#14141b] text-slate-300 hover:text-white border border-[#2a2a35] hover:bg-[#ff3b30]/10'
+                  : 'bg-[#14141b] text-slate-300 hover:text-white border border-[#2a2a35] hover:bg-[#ff3b30]/10 hover:border-[rgba(255,59,48,0.40)]'
               }`}
             >
               {cat.label}

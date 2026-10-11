@@ -17,19 +17,19 @@ export function JobProgress({ job, onRetry }: JobProgressProps) {
   if (job.status === 'completed') return null
 
   return (
-    <div className="w-full max-w-3xl mx-auto p-6 rounded-2xl bg-[#14141b] border border-[#2a2a35] space-y-4 animate-fade-in">
+    <div className="w-full max-w-3xl mx-auto p-6 bg-[#14141b] border border-[rgba(255,59,48,0.25)] space-y-4 animate-fade-in clip-corner-lg card-3d card-3d-dim">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           {isFailed ? (
-            <div className="w-10 h-10 rounded-xl bg-[#ff3b30]/10 border border-[#ff3b30]/30 text-red-600 flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 bg-[#ff3b30]/10 border border-[#ff3b30]/30 text-[#FF3B30] flex items-center justify-center shrink-0 clip-corner-btn">
               <AlertCircle className="w-5 h-5" />
             </div>
           ) : isPending ? (
-            <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-500 flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 bg-amber-500/10 border border-amber-500/30 text-amber-400 flex items-center justify-center shrink-0 clip-corner-btn">
               <Clock className="w-5 h-5" />
             </div>
           ) : (
-            <div className="w-10 h-10 rounded-xl bg-[#ff3b30]/10 border border-[#ff3b30]/30 text-[#FF3B30] flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 bg-[#ff3b30]/10 border border-[#ff3b30]/30 text-[#FF3B30] flex items-center justify-center shrink-0 clip-corner-btn">
               <Loader2 className="w-5 h-5 animate-spin" />
             </div>
           )}
@@ -69,7 +69,7 @@ export function JobProgress({ job, onRetry }: JobProgressProps) {
 
       {/* Error message */}
       {isFailed && (
-        <div className="p-3.5 rounded-xl bg-[#ff3b30]/10 border border-[#ff3b30]/30 text-red-400 text-xs sm:text-sm space-y-2">
+        <div className="p-3.5 bg-[#ff3b30]/10 border border-[#ff3b30]/30 text-red-400 text-xs sm:text-sm space-y-2 clip-corner-btn">
           <p>{job.error || 'Đã có lỗi xảy ra trong quá trình xử lý tệp. Vui lòng kiểm tra lại liên kết hoặc tệp nguồn.'}</p>
           {onRetry && (
             <Button variant="secondary" size="sm" onClick={onRetry}>

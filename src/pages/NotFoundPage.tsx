@@ -23,12 +23,12 @@ export function NotFoundPage() {
       />
 
       <Card className="max-w-lg w-full p-8 text-center bg-[#14141b] border border-[#2a2a35] space-y-6">
-        <div className="w-16 h-16 rounded-2xl bg-[#ff3b30]/10 border border-[#ff3b30]/30 text-[#FF3B30] flex items-center justify-center mx-auto">
+        <div className="w-16 h-16 bg-[#ff3b30]/10 border border-[#ff3b30]/30 text-[#FF3B30] flex items-center justify-center mx-auto clip-corner-card">
           <AlertCircle className="w-8 h-8" />
         </div>
 
         <div className="space-y-2">
-          <span className="text-xs font-mono font-semibold px-2.5 py-0.5 rounded-full bg-[#ff3b30]/10 text-[#FF3B30] border border-[#ff3b30]/30">
+          <span className="text-xs font-mono font-semibold px-2.5 py-0.5 bg-[#ff3b30]/10 text-[#FF3B30] border border-[#ff3b30]/30 clip-corner-btn">
             LỖI 404
           </span>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
@@ -49,7 +49,7 @@ export function NotFoundPage() {
               <Link
                 key={tool.to}
                 to={tool.to}
-                className="flex items-center justify-between p-2.5 rounded-xl bg-[#1a1a24] hover:bg-[#ff3b30]/10 border border-[#2a2a35] hover:border-[#FF3B30]/40 text-xs font-medium text-slate-200 hover:text-[#FF3B30] transition-colors"
+              className="flex items-center justify-between p-2.5 bg-[#1a1a24] hover:bg-[#ff3b30]/10 border border-[#2a2a35] hover:border-[rgba(255,59,48,0.40)] text-xs font-medium text-slate-200 hover:text-[#FF3B30] transition-colors clip-corner-btn"
               >
                 <span>{tool.label}</span>
                 <ArrowRight className="w-3.5 h-3.5 text-slate-400" />

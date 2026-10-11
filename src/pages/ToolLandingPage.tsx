@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react'
 import { useLocation } from 'react-router-dom'
 import { Check, ShieldCheck, Zap, Info, ChevronDown } from 'lucide-react'
 import { SEO_TOOLS, type ToolConfig } from '../config/seoTools'
+import { detectFileFormat, resolveRoute } from '../config/conversionMatrix'
 import {
   Breadcrumbs,
   SEOHead,
@@ -43,8 +44,8 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
   if (!tool) {
     return (
       <div className="py-20 text-center">
-        <h1 className="text-2xl font-bold text-slate-800">Không tìm thấy công cụ</h1>
-        <p className="text-sm text-slate-500 mt-2">Vui lòng quay lại trang chủ.</p>
+        <h1 className="text-2xl font-bold text-slate-100">Không tìm thấy công cụ</h1>
+        <p className="text-sm text-slate-400 mt-2">Vui lòng quay lại trang chủ.</p>
       </div>
     )
   }
@@ -130,12 +131,22 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
         }
 
         accepted = await imageApi.processImage(file, op, opts)
-      } else if (tool.slug === '/video-converter' || tool.slug === '/audio-converter') {
-        const op = tool.slug === '/audio-converter' ? 'extract-audio' : 'transcode'
-        accepted = await mediaApi.processMediaFile(file, op, { format: targetFormat })
       } else {
-        // Convert file document / general convert
-        accepted = await convertApi.convertFile(file, targetFormat)
+        const sourceFormat = detectFileFormat(file)
+        const route = resolveRoute(sourceFormat, targetFormat)
+
+        if (!route) {
+          throw new Error(
+            `Chưa hỗ trợ chuyển đổi từ ${
+              sourceFormat ? `.${sourceFormat}` : 'tệp không xác định'
+            } sang .${targetFormat}.`,
+          )
+        }
+
+        accepted =
+          route.endpoint === 'media-process'
+            ? await mediaApi.processMediaFile(file, route.operation, { format: targetFormat })
+            : await convertApi.convertFile(file, targetFormat)
       }
 
       setDownloadToken(accepted.download_token || null)
@@ -188,7 +199,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center max-w-3xl mx-auto space-y-4 mb-8 sm:mb-10">
             {/* Badge */}
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold bg-[#14141b] text-[#FF3B30]">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold bg-[#14141b] border border-[rgba(255,59,48,0.35)] text-[#FF3B30] badge-angular">
               <Zap className="w-3.5 h-3.5" />
               <span>{tool.badge}</span>
             </div>
@@ -223,6 +234,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
                     acceptedTypes={tool.acceptedFileTypes}
                     outputFormats={tool.outputFormats}
                     defaultFormat={tool.defaultFormat}
+                    filterTargetsBySource={tool.backendType !== 'image_process'}
                     onSubmit={handleFileSubmit}
                     isLoading={isLoading}
                     disabled={isLoading}
@@ -234,7 +246,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
 
                 {/* Error message */}
                 {errorMessage && (
-                  <div className="p-4 rounded-xl bg-[#ff3b30]/10 border border-[#ff3b30]/30 text-rose-300 text-sm flex items-start gap-2.5">
+                  <div className="p-4 bg-[#ff3b30]/10 border border-[#ff3b30]/30 text-rose-300 text-sm flex items-start gap-2.5 clip-corner-card">
                     <Info className="w-5 h-5 text-[#ff3b30] shrink-0 mt-0.5" />
                     <div>
                       <p className="font-semibold">Đã xảy ra lỗi</p>
@@ -287,7 +299,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
             {tool.howItWorksSteps.map((step) => (
               <div
                 key={step.step}
-                className="relative p-6 rounded-2xl bg-[#14141b] border border-[#2a2a35] transition-all space-y-3"
+                className="relative p-6 bg-[#14141b] border border-[rgba(255,59,48,0.22)] transition-all space-y-3 card-3d clip-corner-card"
               >
                 <div className="w-10 h-10 flex items-center justify-center font-mono font-bold text-sm text-[#FF3B30]">
                   {step.step}
@@ -320,9 +332,9 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
             {tool.features.map((feat) => (
               <div
                 key={feat.title}
-                className="p-6 rounded-2xl bg-[#14141b] border border-[#2a2a35] space-y-3"
+                className="p-6 bg-[#14141b] border border-[rgba(255,59,48,0.22)] space-y-3 card-3d clip-corner-card"
               >
-                <div className="w-10 h-10 rounded-xl bg-[#ff3b30]/10 border border-[#ff3b30]/30 flex items-center justify-center text-[#FF3B30]">
+                <div className="w-10 h-10 bg-[#ff3b30]/10 border border-[#ff3b30]/30 flex items-center justify-center text-[#FF3B30] clip-corner-btn">
                   <Check className="w-5 h-5" />
                 </div>
                 <h3 className="font-bold text-white text-lg">
@@ -340,7 +352,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
       {/* 5. Supported Formats & Security Notice */}
       <section className="py-12 bg-[#0a0a0f] border-y border-[#2a2a35]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="p-6 sm:p-8 rounded-2xl bg-[#14141b] border border-[#2a2a35] space-y-4">
+          <div className="p-6 sm:p-8 bg-[#14141b] border border-[rgba(255,59,48,0.25)] space-y-4 clip-corner-lg card-3d card-3d-dim">
             <div className="flex items-center gap-3">
               <ShieldCheck className="w-6 h-6 text-emerald-600 shrink-0" />
               <h3 className="font-bold text-white text-base sm:text-lg">
@@ -378,7 +390,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
                 return (
                   <div
                     key={faq.q}
-                    className="rounded-2xl border border-[#2a2a35] bg-[#14141b] overflow-hidden transition-colors"
+                    className="border border-[#2a2a35] bg-[#14141b] overflow-hidden transition-colors clip-corner-card"
                   >
                     <button
                       type="button"
