@@ -1,8 +1,13 @@
-import { useState, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { Check, ShieldCheck, Zap, Info, ChevronDown } from 'lucide-react'
 import { SEO_TOOLS, type ToolConfig } from '../config/seoTools'
 import { detectFileFormat, resolveRoute } from '../config/conversionMatrix'
+import {
+  getInitialParamValues,
+  getParamFields,
+  type ParamOptions,
+} from '../config/conversionParams'
 import {
   Breadcrumbs,
   SEOHead,
@@ -19,6 +24,7 @@ import {
   imageApi,
   jobsApi,
   filesApi,
+  JobPollCancelled,
   type JobPublicResponse,
 } from '../services'
 
@@ -29,7 +35,6 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
   const [isLoading, setIsLoading] = useState(false)
   const [job, setJob] = useState<JobPublicResponse | null>(null)
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null)
-  const [downloadToken, setDownloadToken] = useState<string | null>(null)
   const [resultFileName, setResultFileName] = useState<string>('')
   const [resultFormat, setResultFormat] = useState<string>('')
   const [originalImagePreview, setOriginalImagePreview] = useState<string | null>(null)
@@ -41,6 +46,58 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
     [tool],
   )
 
+  const toolSlug = tool?.slug
+  const resolveParamFields = useCallback(
+    (sourceFormat: string | null, targetFormat: string) =>
+      getParamFields({ sourceFormat, targetFormat, toolSlug }),
+    [toolSlug],
+  )
+
+  // Luồng theo dõi hiện tại (SSE, polling là đường lùi). Controller cũ bị hủy mỗi lần gửi
+  // tệp mới, đổi tool, hoặc unmount để không bao giờ có hai luồng theo dõi cùng chạy.
+  const trackControllerRef = useRef<AbortController | null>(null)
+
+  const beginTracking = useCallback(() => {
+    trackControllerRef.current?.abort()
+    const controller = new AbortController()
+    trackControllerRef.current = controller
+    return controller
+  }, [])
+
+  const isCurrentTracking = useCallback(
+    (controller: AbortController) => trackControllerRef.current === controller,
+    [],
+  )
+
+  const applyFinishedJob = useCallback(
+    (
+      finishedJob: JobPublicResponse,
+      token: string | null | undefined,
+      failureMessage = 'Chuyển đổi tệp thất bại. Vui lòng thử lại.',
+    ) => {
+      setJob(finishedJob)
+      if (finishedJob.status === 'completed') {
+        setDownloadUrl(filesApi.getDirectDownloadUrl(finishedJob.id, token))
+        return
+      }
+      // cancelled/expired không mang error text từ backend, nên cần lời riêng.
+      setErrorMessage(
+        finishedJob.error ??
+          (finishedJob.status === 'failed'
+            ? failureMessage
+            : 'Tác vụ đã bị hủy hoặc kết quả đã hết hạn. Vui lòng thử lại.'),
+      )
+    },
+    [],
+  )
+
+  useEffect(() => {
+    return () => {
+      trackControllerRef.current?.abort()
+      trackControllerRef.current = null
+    }
+  }, [toolSlug])
+
   if (!tool) {
     return (
       <div className="py-20 text-center">
@@ -51,15 +108,18 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
   }
 
   const handleReset = () => {
+    trackControllerRef.current?.abort()
+    trackControllerRef.current = null
     setJob(null)
     setDownloadUrl(null)
-    setDownloadToken(null)
+    if (originalImagePreview) URL.revokeObjectURL(originalImagePreview)
     setOriginalImagePreview(null)
     setErrorMessage(null)
     setIsLoading(false)
   }
 
   const handleUrlSubmit = async (url: string, format: string) => {
+    const controller = beginTracking()
     setIsLoading(true)
     setErrorMessage(null)
     setJob(null)
@@ -70,45 +130,43 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
       const operation = tool.backendOperation === 'extract-audio' ? 'extract-audio' : 'url_download'
       const accepted = await mediaApi.processUrl(url, operation, { format })
 
-      setDownloadToken(accepted.download_token || null)
       setResultFormat(format)
       setResultFileName(`oneforall_${format}_${Date.now()}.${format}`)
 
-      // Bắt đầu polling trạng thái job
-      const finishedJob = await jobsApi.pollJob(
-        accepted.job_id,
-        accepted.download_token,
-        (progressJob) => {
-          setJob(progressJob)
-        },
-      )
+      const finishedJob = await jobsApi.trackJob(accepted.job_id, {
+        token: accepted.download_token,
+        signal: controller.signal,
+        onJob: setJob,
+      })
 
-      setJob(finishedJob)
-      if (finishedJob.status === 'completed') {
-        const finalUrl = filesApi.getDirectDownloadUrl(finishedJob.id, accepted.download_token)
-        setDownloadUrl(finalUrl)
-      } else if (finishedJob.status === 'failed') {
-        setErrorMessage(finishedJob.error || 'Xử lý video thất bại. Vui lòng kiểm tra lại đường dẫn.')
-      }
+      if (!isCurrentTracking(controller)) return
+
+      applyFinishedJob(finishedJob, accepted.download_token, 'Xử lý video thất bại. Vui lòng kiểm tra lại đường dẫn.')
     } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Có lỗi xảy ra khi xử lý tác vụ'
-      setErrorMessage(msg)
+      if (!isCurrentTracking(controller) || err instanceof JobPollCancelled) return
+      setErrorMessage(err instanceof Error ? err.message : 'Có lỗi xảy ra khi xử lý tác vụ')
     } finally {
-      setIsLoading(false)
+      if (isCurrentTracking(controller)) {
+        trackControllerRef.current = null
+        setIsLoading(false)
+      }
     }
   }
 
-  const handleFileSubmit = async (file: File, format: string) => {
+  const handleFileSubmit = async (
+    file: File,
+    format: string,
+    options: ParamOptions = {},
+  ) => {
+    const controller = beginTracking()
     setIsLoading(true)
     setErrorMessage(null)
     setJob(null)
     setDownloadUrl(null)
 
-    // Lưu preview nếu là hình ảnh
-    if (file.type.startsWith('image/')) {
-      const origPreview = URL.createObjectURL(file)
-      setOriginalImagePreview(origPreview)
-    }
+    // Thu hồi blob cũ để không giữ ảnh gốc trong bộ nhớ sau khi thay tệp
+    if (originalImagePreview) URL.revokeObjectURL(originalImagePreview)
+    setOriginalImagePreview(file.type.startsWith('image/') ? URL.createObjectURL(file) : null)
 
     try {
       let accepted
@@ -117,20 +175,18 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
       setResultFileName(`oneforall_${file.name.replace(/\.[^/.]+$/, '')}.${targetFormat}`)
 
       if (tool.backendType === 'image_process') {
-        let op: 'compress' | 'resize' | 'remove_background' | 'crop' = 'compress'
-        let opts = {}
+        const operation = (tool.backendOperation ?? 'compress') as
+          | 'compress'
+          | 'resize'
+          | 'remove_background'
+          | 'crop'
 
-        if (tool.slug === '/remove-background') {
-          op = 'remove_background'
-        } else if (tool.slug === '/image-compressor') {
-          op = 'compress'
-          opts = { quality: 80 }
-        } else if (tool.slug === '/image-resizer') {
-          op = 'resize'
-          opts = { width: 1200 }
-        }
-
-        accepted = await imageApi.processImage(file, op, opts)
+        // Background removal always returns PNG and ignores every other option.
+        accepted = await imageApi.processImage(
+          file,
+          operation,
+          operation === 'remove_background' ? {} : { format: targetFormat, ...options },
+        )
       } else {
         const sourceFormat = detectFileFormat(file)
         const route = resolveRoute(sourceFormat, targetFormat)
@@ -143,35 +199,38 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
           )
         }
 
-        accepted =
-          route.endpoint === 'media-process'
-            ? await mediaApi.processMediaFile(file, route.operation, { format: targetFormat })
-            : await convertApi.convertFile(file, targetFormat)
+        if (route.endpoint === 'media-process') {
+          accepted = await mediaApi.processMediaFile(file, route.operation, {
+            format: targetFormat,
+            ...options,
+          })
+        } else if (route.endpoint === 'image-process') {
+          accepted = await imageApi.processImage(file, route.operation, {
+            format: route.format,
+            ...options,
+          })
+        } else {
+          accepted = await convertApi.convertFile(file, targetFormat, sourceFormat ?? undefined, options)
+        }
       }
 
-      setDownloadToken(accepted.download_token || null)
+      const finishedJob = await jobsApi.trackJob(accepted.job_id, {
+        token: accepted.download_token,
+        signal: controller.signal,
+        onJob: setJob,
+      })
 
-      // Bắt đầu polling trạng thái job
-      const finishedJob = await jobsApi.pollJob(
-        accepted.job_id,
-        accepted.download_token,
-        (progressJob) => {
-          setJob(progressJob)
-        },
-      )
+      if (!isCurrentTracking(controller)) return
 
-      setJob(finishedJob)
-      if (finishedJob.status === 'completed') {
-        const finalUrl = filesApi.getDirectDownloadUrl(finishedJob.id, accepted.download_token)
-        setDownloadUrl(finalUrl)
-      } else if (finishedJob.status === 'failed') {
-        setErrorMessage(finishedJob.error || 'Chuyển đổi tệp thất bại. Vui lòng thử lại.')
-      }
+      applyFinishedJob(finishedJob, accepted.download_token, 'Chuyển đổi tệp thất bại. Vui lòng thử lại.')
     } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Có lỗi xảy ra khi xử lý tệp tin'
-      setErrorMessage(msg)
+      if (!isCurrentTracking(controller) || err instanceof JobPollCancelled) return
+      setErrorMessage(err instanceof Error ? err.message : 'Có lỗi xảy ra khi xử lý tệp tin')
     } finally {
-      setIsLoading(false)
+      if (isCurrentTracking(controller)) {
+        trackControllerRef.current = null
+        setIsLoading(false)
+      }
     }
   }
 
@@ -231,10 +290,13 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
                   />
                 ) : (
                   <FileUploader
+                    key={tool.slug}
                     acceptedTypes={tool.acceptedFileTypes}
                     outputFormats={tool.outputFormats}
                     defaultFormat={tool.defaultFormat}
                     filterTargetsBySource={tool.backendType !== 'image_process'}
+                    resolveFields={resolveParamFields}
+                    initialParams={getInitialParamValues(tool.slug)}
                     onSubmit={handleFileSubmit}
                     isLoading={isLoading}
                     disabled={isLoading}
@@ -269,12 +331,10 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
                 )}
 
                 <DownloadResult
-                  jobId={job?.id || 'job-completed'}
-                  downloadToken={downloadToken}
                   downloadUrl={downloadUrl}
                   fileName={resultFileName}
                   format={resultFormat}
-                  previewUrl={tool.category === 'image' ? originalImagePreview : null}
+                  previewUrl={tool.category === 'image' ? downloadUrl : null}
                   onReset={handleReset}
                 />
               </div>

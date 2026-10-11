@@ -3,14 +3,17 @@
  *
  * Source of truth lives in oneforall_be — re-check these when the matrix changes:
  *   app/services/format_detector.py  FORMAT_ALIASES, KNOWN_EXTENSIONS, SUPPORTED_CONVERSIONS
- *   app/worker/processors/video.py   VIDEO_CODECS_BY_CONTAINER, AUDIO_ENCODERS
+ *   app/worker/processors/image.py   Pillow branches (resize / crop / compress + save format)
+ *   app/worker/tasks/image.py        content-type -> output extension map
+ *   app/worker/processors/video.py   VIDEO_CODECS_BY_CONTAINER, AUDIO_ENCODERS, thumbnail
  */
 
 export type FileKind = 'image' | 'video' | 'audio' | 'document' | 'other'
 
 export type ConvertRoute =
   | { endpoint: 'convert-file' }
-  | { endpoint: 'media-process'; operation: 'transcode' | 'extract-audio' }
+  | { endpoint: 'media-process'; operation: 'transcode' | 'extract-audio' | 'thumbnail' }
+  | { endpoint: 'image-process'; operation: 'compress'; format: string }
 
 /** Backend collapses these to a canonical format before matching pairs. */
 const FORMAT_ALIASES: Record<string, string> = {
@@ -62,6 +65,23 @@ export const VIDEO_TARGETS: readonly string[] = ['mp4', 'mov', 'mkv', 'webm', 'a
 /** Audio targets served by media-process/extract-audio. */
 export const AUDIO_TARGETS: readonly string[] = ['mp3', 'wav', 'aac', 'm4a', 'flac', 'ogg']
 
+/**
+ * Raster formats image-process can emit with a correct filename: tasks/image.py only maps
+ * image/jpeg, image/png and image/webp to an extension, anything else lands in a wrong one.
+ */
+const RASTER_IMAGE_TARGETS: readonly string[] = ['png', 'jpg', 'webp']
+
+/**
+ * Raster sources Pillow opens on the worker. HEIC/HEIF need pillow-heif (not installed) and
+ * SVG needs a rasterizer, so those stay out.
+ */
+const RASTER_IMAGE_SOURCES: ReadonlySet<string> = new Set([
+  'png', 'jpg', 'webp', 'gif', 'bmp', 'tiff', 'ico',
+])
+
+/** Still frame that media-process/thumbnail writes out of a video. */
+const VIDEO_STILL_TARGET = 'jpg'
+
 export function normalizeFormat(raw: string | null | undefined): string {
   const clean = (raw ?? '').trim().toLowerCase().replace(/^\./, '')
   return FORMAT_ALIASES[clean] ?? clean
@@ -94,19 +114,30 @@ export function getSupportedTargets(sourceFormat: string | null): string[] {
   if (!sourceFormat) return []
 
   const kind = classifyFormat(sourceFormat)
-  if (kind === 'video') return [...VIDEO_TARGETS, ...AUDIO_TARGETS]
+  if (kind === 'video') {
+    return [...VIDEO_TARGETS, VIDEO_STILL_TARGET, ...AUDIO_TARGETS]
+  }
   if (kind === 'audio') return [...AUDIO_TARGETS]
 
   const from = normalizeFormat(sourceFormat)
-  return [...CONVERT_PAIRS]
+  const targets = [...CONVERT_PAIRS]
     .filter((pair) => pair.startsWith(`${from}>`))
     .map((pair) => pair.slice(from.length + 1))
+
+  if (kind === 'image' && RASTER_IMAGE_SOURCES.has(from)) {
+    for (const target of RASTER_IMAGE_TARGETS) {
+      if (!targets.includes(target)) targets.push(target)
+    }
+  }
+
+  return targets
 }
 
 /**
  * Which endpoint and operation a conversion needs.
  * Audio targets always go through extract-audio: transcode would feed an audio-only input
  * to a video encoder, and an mp3 container cannot hold H.264.
+ * convert-file is tried before image-process, so documented pairs keep their endpoint.
  */
 export function resolveRoute(
   sourceFormat: string | null,
@@ -115,6 +146,7 @@ export function resolveRoute(
   if (!sourceFormat) return null
 
   const to = normalizeFormat(target)
+  const from = normalizeFormat(sourceFormat)
   const kind = classifyFormat(sourceFormat)
 
   if (AUDIO_TARGETS.includes(to)) {
@@ -127,7 +159,17 @@ export function resolveRoute(
     return kind === 'video' ? { endpoint: 'media-process', operation: 'transcode' } : null
   }
 
-  return CONVERT_PAIRS.has(`${normalizeFormat(sourceFormat)}>${to}`)
-    ? { endpoint: 'convert-file' }
-    : null
+  if (to === VIDEO_STILL_TARGET && kind === 'video') {
+    return { endpoint: 'media-process', operation: 'thumbnail' }
+  }
+
+  if (CONVERT_PAIRS.has(`${from}>${to}`)) {
+    return { endpoint: 'convert-file' }
+  }
+
+  if (kind === 'image' && RASTER_IMAGE_SOURCES.has(from) && RASTER_IMAGE_TARGETS.includes(to)) {
+    return { endpoint: 'image-process', operation: 'compress', format: to }
+  }
+
+  return null
 }

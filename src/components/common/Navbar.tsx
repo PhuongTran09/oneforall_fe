@@ -10,7 +10,6 @@ import {
   ArrowRight,
 } from 'lucide-react'
 import { Button } from './Button'
-import { BackendStatus } from '../feedback/BackendStatus'
 import { AuthModal } from '../feedback/AuthModal'
 
 function YoutubeIcon({ className = 'w-4 h-4' }: { className?: string }) {
@@ -88,7 +87,6 @@ export function Navbar({ onOpenAuth }: NavbarProps) {
 
           {/* Right Action Buttons */}
           <div className="hidden md:flex items-center gap-3">
-            <BackendStatus />
             <Button
               variant="ghost"
               size="sm"
@@ -109,7 +107,6 @@ export function Navbar({ onOpenAuth }: NavbarProps) {
 
           {/* Mobile Menu Toggle Button */}
           <div className="flex md:hidden items-center gap-2">
-            <BackendStatus />
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}

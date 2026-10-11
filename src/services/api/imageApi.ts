@@ -6,7 +6,9 @@ export interface ImageProcessOptions {
   width?: number
   height?: number
   format?: string
-  model?: string
+  lossless?: boolean
+  /** Extra keys are forwarded as-is; src/config/conversionParams.ts lists what the worker reads. */
+  [key: string]: string | number | boolean | undefined
 }
 
 export const imageApi = {

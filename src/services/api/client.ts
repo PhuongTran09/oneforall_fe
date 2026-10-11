@@ -5,7 +5,9 @@ import {
   type RequestOptions,
 } from './types'
 
-function resolveUrl(endpoint: string, params?: RequestOptions['params']): string {
+const REQUEST_TIMEOUT_MS = 30000
+
+export function resolveUrl(endpoint: string, params?: RequestOptions['params']): string {
   const base = env.apiBaseUrl.replace(/\/+$/, '')
   let path = endpoint.trim()
 
@@ -72,14 +74,15 @@ export class ApiClient {
     options?: RequestOptions,
   ): Promise<T> {
     const url = resolveUrl(endpoint, options?.params)
-    const timeoutMs = options?.timeoutMs ?? 30000
 
     const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), timeoutMs)
+    const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS)
 
     // Kết hợp signal nếu caller cung cấp signal riêng
+    let relayAbort: (() => void) | undefined
     if (options?.signal) {
-      options.signal.addEventListener('abort', () => controller.abort())
+      relayAbort = () => controller.abort()
+      options.signal.addEventListener('abort', relayAbort, { once: true })
     }
 
     const headers = new Headers(init.headers)
@@ -109,6 +112,9 @@ export class ApiClient {
       return await parseResponseData<T>(response)
     } finally {
       clearTimeout(timeoutId)
+      if (relayAbort && options?.signal) {
+        options.signal.removeEventListener('abort', relayAbort)
+      }
     }
   }
 
@@ -189,19 +195,6 @@ export class ApiClient {
       },
       options,
     )
-  }
-
-  /**
-   * Health check nhanh kết nối backend FastAPI (/api/health hoặc /health)
-   */
-  public async checkHealth(): Promise<{ status: string; ok: boolean }> {
-    try {
-      const res = await this.get<{ status: string }>('/health', { timeoutMs: 5000 })
-      return { status: res?.status || 'ok', ok: true }
-    } catch (err) {
-      const message = err instanceof Error ? err.message : 'Unknown error'
-      return { status: message, ok: false }
-    }
   }
 }
 

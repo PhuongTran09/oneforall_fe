@@ -1,4 +1,10 @@
-export type JobStatus = 'pending' | 'processing' | 'completed' | 'failed'
+export type JobStatus =
+  | 'queued'
+  | 'processing'
+  | 'completed'
+  | 'failed'
+  | 'cancelled'
+  | 'expired'
 
 export interface JobAccepted {
   job_id: string
@@ -26,7 +32,6 @@ export interface PresignedUrlResponse {
 
 export interface RequestOptions extends Omit<RequestInit, 'body'> {
   params?: Record<string, string | number | boolean | undefined | null>
-  timeoutMs?: number
 }
 
 export interface ApiErrorDetail {

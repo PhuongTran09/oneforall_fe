@@ -12,11 +12,6 @@ export const env = {
   apiBaseUrl: import.meta.env.VITE_API_BASE_URL || '/api',
 
   /**
-   * Target chuyển tiếp của dev proxy (chỉ dùng trong vite.config.ts / dev).
-   */
-  apiProxyTarget: import.meta.env.VITE_API_PROXY_TARGET || 'http://localhost:8000',
-
-  /**
    * Kiểm tra môi trường hiện tại
    */
   isDev: import.meta.env.DEV,

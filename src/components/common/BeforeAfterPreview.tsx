@@ -103,6 +103,7 @@ export function BeforeAfterPreview({
             <img
               src={processedUrl}
               alt={processedLabel}
+              referrerPolicy="no-referrer"
               className="max-h-full max-w-full object-contain pointer-events-none"
             />
           </div>
@@ -174,6 +175,7 @@ export function BeforeAfterPreview({
               <img
                 src={processedUrl}
                 alt={processedLabel}
+                referrerPolicy="no-referrer"
                 className="max-h-full max-w-full object-contain"
               />
             </div>

@@ -1,7 +1,15 @@
 import { useMemo, useState, useRef, type ChangeEvent, type DragEvent } from 'react'
 import { UploadCloud, File as FileIcon, X, ArrowRight } from 'lucide-react'
 import { Button } from './Button'
+import { AdvancedParamsPanel } from './AdvancedParamsPanel'
 import { detectFileFormat, getSupportedTargets } from '../../config/conversionMatrix'
+import {
+  buildParamOptions,
+  findInvalidParam,
+  type ParamField,
+  type ParamOptions,
+  type ParamValues,
+} from '../../config/conversionParams'
 
 export interface FileUploaderProps {
   acceptedTypes?: string
@@ -14,7 +22,10 @@ export interface FileUploaderProps {
    * because their chips describe the operation output rather than a conversion pair.
    */
   filterTargetsBySource?: boolean
-  onSubmit: (file: File, format: string) => void
+  /** Extra options the backend honors for the current source + target. Empty list hides the panel. */
+  resolveFields?: (sourceFormat: string | null, targetFormat: string) => ParamField[]
+  initialParams?: ParamValues
+  onSubmit: (file: File, format: string, options: ParamOptions) => void
   isLoading?: boolean
   disabled?: boolean
 }
@@ -25,12 +36,15 @@ export function FileUploader({
   defaultFormat,
   actionLabel = 'Bắt đầu xử lý',
   filterTargetsBySource = false,
+  resolveFields,
+  initialParams,
   onSubmit,
   isLoading = false,
   disabled = false,
 }: FileUploaderProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [pickedFormat, setPickedFormat] = useState<string | null>(null)
+  const [paramValues, setParamValues] = useState<ParamValues>(initialParams ?? {})
   const [isDragging, setIsDragging] = useState(false)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -51,6 +65,23 @@ export function FileUploader({
       : availableFormats.includes(defaultFormat)
         ? defaultFormat
         : (availableFormats[0] ?? '')
+
+  const paramFields = useMemo(
+    () => resolveFields?.(sourceFormat, activeFormat) ?? [],
+    [resolveFields, sourceFormat, activeFormat],
+  )
+
+  // Options are built from the visible fields only, so a value left behind when the user
+  // switches target can never reach the wire.
+  const invalidParam = findInvalidParam(paramFields, paramValues)
+
+  const handleParamChange = (key: string, value: string | boolean) => {
+    setParamValues((previous) => ({ ...previous, [key]: value }))
+  }
+
+  const handleParamsReset = () => {
+    setParamValues(initialParams ?? {})
+  }
 
   const handleFile = (file: File) => {
     setSelectedFile(file)
@@ -91,14 +122,15 @@ export function FileUploader({
     }
     setSelectedFile(null)
     setPreviewUrl(null)
+    setParamValues(initialParams ?? {})
     if (fileInputRef.current) {
       fileInputRef.current.value = ''
     }
   }
 
   const handleSubmit = () => {
-    if (selectedFile && activeFormat) {
-      onSubmit(selectedFile, activeFormat)
+    if (selectedFile && activeFormat && !invalidParam) {
+      onSubmit(selectedFile, activeFormat, buildParamOptions(paramFields, paramValues))
     }
   }
 
@@ -189,29 +221,39 @@ export function FileUploader({
         )}
       </div>
 
-      {/* Format Selection & Submit Action */}
+      {/* Format Selection, Advanced Options & Submit Action */}
       {selectedFile && (
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 p-4 bg-[#14141b] border border-[rgba(255,59,48,0.25)] animate-fade-in clip-corner-lg">
+        <div className="p-4 bg-[#14141b] border border-[rgba(255,59,48,0.25)] space-y-4 animate-fade-in clip-corner-lg">
           {availableFormats.length > 0 ? (
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xs font-semibold text-slate-300">Định dạng đích:</span>
-              <div className="flex items-center gap-1.5 flex-wrap">
-                {availableFormats.map((fmt) => (
-                  <button
-                    key={fmt}
-                    type="button"
-                    onClick={() => setPickedFormat(fmt)}
-                    className={`px-3 py-1 font-mono text-xs font-semibold uppercase transition-all cursor-pointer clip-corner-btn ${
-                      activeFormat === fmt
-                        ? 'bg-brand-gradient text-white'
-                        : 'bg-[#1a1a24] text-slate-200 hover:bg-[#ff3b30]/15 border border-[#2a2a35] hover:border-[rgba(255,59,48,0.40)]'
-                    }`}
-                  >
-                    .{fmt}
-                  </button>
-                ))}
+            <>
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-xs font-semibold text-slate-300">Định dạng đích:</span>
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  {availableFormats.map((fmt) => (
+                    <button
+                      key={fmt}
+                      type="button"
+                      onClick={() => setPickedFormat(fmt)}
+                      className={`px-3 py-1 font-mono text-xs font-semibold uppercase transition-all cursor-pointer clip-corner-btn ${
+                        activeFormat === fmt
+                          ? 'bg-brand-gradient text-white'
+                          : 'bg-[#1a1a24] text-slate-200 hover:bg-[#ff3b30]/15 border border-[#2a2a35] hover:border-[rgba(255,59,48,0.40)]'
+                      }`}
+                    >
+                      .{fmt}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+
+              <AdvancedParamsPanel
+                fields={paramFields}
+                values={paramValues}
+                onChange={handleParamChange}
+                onReset={handleParamsReset}
+                disabled={disabled || isLoading}
+              />
+            </>
           ) : (
             <p className="text-xs text-slate-400 leading-relaxed">
               {sourceFormat
@@ -220,17 +262,27 @@ export function FileUploader({
             </p>
           )}
 
-          <Button
-            variant="primary"
-            size="md"
-            isLoading={isLoading}
-            disabled={disabled || isLoading || availableFormats.length === 0}
-            onClick={handleSubmit}
-            rightIcon={<ArrowRight className="w-4 h-4" />}
-            className="w-full sm:w-auto px-6 py-2.5"
-          >
-            {actionLabel}
-          </Button>
+          {invalidParam && (
+            <p role="alert" className="text-xs text-[#FF3B30]">
+              Kiểm lại mục "{invalidParam.label}" trong Tùy chọn nâng cao trước khi chuyển đổi.
+            </p>
+          )}
+
+          <div className="flex justify-end">
+            <Button
+              variant="primary"
+              size="md"
+              isLoading={isLoading}
+              disabled={
+                disabled || isLoading || availableFormats.length === 0 || invalidParam !== null
+              }
+              onClick={handleSubmit}
+              rightIcon={<ArrowRight className="w-4 h-4" />}
+              className="w-full sm:w-auto px-6 py-2.5"
+            >
+              {actionLabel}
+            </Button>
+          </div>
         </div>
       )}
     </div>

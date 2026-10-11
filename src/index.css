@@ -240,9 +240,20 @@
   animation: page-enter 220ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+/* ─── Indeterminate progress ───────────────────────────────────────────── */
+@keyframes loading-sweep {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(350%); }
+}
+
+.animate-loading-sweep {
+  animation: loading-sweep 1.4s ease-in-out infinite;
+}
+
 /* ─── Reduced motion ─────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .animate-page-enter { animation: none; }
+  .animate-loading-sweep { animation: none; width: 100%; opacity: 0.35; }
   .btn-3d,
   .btn-3d::after     { transition: none; }
 }

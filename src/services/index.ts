@@ -9,7 +9,8 @@ export type {
   PresignedUrlResponse,
   RequestOptions,
 } from './api/types'
-export { jobsApi } from './api/jobsApi'
+export { jobsApi, JobPollCancelled } from './api/jobsApi'
+export type { PollJobOptions } from './api/jobsApi'
 export { convertApi } from './api/convertApi'
 export { imageApi } from './api/imageApi'
 export type { ImageProcessOptions } from './api/imageApi'

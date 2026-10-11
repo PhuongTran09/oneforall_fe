@@ -1,10 +1,7 @@
-import { useState } from 'react'
-import { Download, CheckCircle2, Copy, Check, Clock, RotateCcw, ExternalLink } from 'lucide-react'
+import { Download, CheckCircle2, Clock, RotateCcw } from 'lucide-react'
 import { Button } from './Button'
 
 export interface DownloadResultProps {
-  jobId: string
-  downloadToken?: string | null
   downloadUrl: string
   fileName?: string
   fileSize?: string
@@ -14,7 +11,6 @@ export interface DownloadResultProps {
 }
 
 export function DownloadResult({
-  jobId,
   downloadUrl,
   fileName = 'file_ket_qua',
   fileSize,
@@ -22,24 +18,14 @@ export function DownloadResult({
   previewUrl,
   onReset,
 }: DownloadResultProps) {
-  const [copied, setCopied] = useState(false)
-
-  const handleCopyLink = async () => {
-    try {
-      await navigator.clipboard.writeText(downloadUrl)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    } catch {
-      // Fallback nếu clipboard API bị chặn
-    }
-  }
-
   const handleDownload = () => {
     // Kích hoạt tải tệp trực tiếp
     const a = document.createElement('a')
     a.href = downloadUrl
     a.download = fileName
     a.target = '_blank'
+    // Không gửi Referer mang token sang R2/CDN
+    a.rel = 'noreferrer'
     document.body.appendChild(a)
     a.click()
     document.body.removeChild(a)
@@ -79,11 +65,12 @@ export function DownloadResult({
       <div className="p-4 sm:p-5 bg-[#1a1a24] border border-[#2a2a35] flex flex-col sm:flex-row items-center justify-between gap-4 clip-corner-card">
         <div className="flex items-center gap-4 w-full sm:w-auto">
           {previewUrl ? (
-            <div className="w-16 h-16 overflow-hidden border border-[#2a2a35] shrink-0 bg-[#14141b] clip-corner-btn">
+            <div className="w-16 h-16 overflow-hidden border border-[#2a2a35] shrink-0 bg-[linear-gradient(45deg,#1a1a24_25%,transparent_25%),linear-gradient(-45deg,#1a1a24_25%,transparent_25%),linear-gradient(45deg,transparent_75%,#1a1a24_75%),linear-gradient(-45deg,transparent_75%,#1a1a24_75%)] bg-[size:10px_10px] bg-[position:0_0,0_5px,5px_-5px,-5px_0] bg-[#14141b] clip-corner-btn">
               <img
                 src={previewUrl}
                 alt="Kết quả"
-                className="w-full h-full object-cover"
+                referrerPolicy="no-referrer"
+                className="w-full h-full object-contain"
               />
             </div>
           ) : (
@@ -97,14 +84,10 @@ export function DownloadResult({
             </p>
             <div className="flex items-center gap-2 text-xs text-slate-400 font-mono">
               {fileSize && <span>{fileSize}</span>}
+              {fileSize && format && <span>•</span>}
               {format && (
-                <>
-                  <span>•</span>
-                  <span className="uppercase text-[#FF3B30] font-semibold">{format}</span>
-                </>
+                <span className="uppercase text-[#FF3B30] font-semibold">{format}</span>
               )}
-              <span>•</span>
-              <span className="truncate">Job ID: {jobId.slice(0, 8)}...</span>
             </div>
           </div>
         </div>
@@ -112,22 +95,10 @@ export function DownloadResult({
         {/* Action Buttons */}
         <div className="flex items-center gap-2.5 w-full sm:w-auto">
           <Button
-            variant="secondary"
-            size="md"
-            onClick={handleCopyLink}
-            leftIcon={copied ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
-            className="flex-1 sm:flex-initial"
-            title="Sao chép liên kết tải xuống"
-          >
-            {copied ? 'Đã sao chép' : 'Sao chép link'}
-          </Button>
-
-          <Button
             variant="primary"
             size="md"
             onClick={handleDownload}
             leftIcon={<Download className="w-4 h-4" />}
-            rightIcon={<ExternalLink className="w-3.5 h-3.5 opacity-70" />}
             className="flex-1 sm:flex-initial"
           >
             Tải về ngay

@@ -21,6 +21,10 @@ export { UrlInputForm } from './common/UrlInputForm'
 export type { UrlInputFormProps } from './common/UrlInputForm'
 export { FileUploader } from './common/FileUploader'
 export type { FileUploaderProps } from './common/FileUploader'
+export { AdvancedParamsPanel } from './common/AdvancedParamsPanel'
+export type { AdvancedParamsPanelProps } from './common/AdvancedParamsPanel'
+export { ParamFieldControl } from './common/ParamFieldControl'
+export type { ParamFieldControlProps } from './common/ParamFieldControl'
 export { JobProgress } from './common/JobProgress'
 export type { JobProgressProps } from './common/JobProgress'
 export { DownloadResult } from './common/DownloadResult'
@@ -35,7 +39,6 @@ export { RelatedTools } from './common/RelatedTools'
 export type { RelatedToolsProps } from './common/RelatedTools'
 
 // Feedback components
-export { BackendStatus } from './feedback/BackendStatus'
 export { AuthModal } from './feedback/AuthModal'
 export type { AuthModalProps } from './feedback/AuthModal'
 

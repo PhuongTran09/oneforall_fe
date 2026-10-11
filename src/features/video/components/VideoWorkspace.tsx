@@ -114,9 +114,6 @@ export function VideoWorkspace() {
             <div className="p-4 bg-[#0a0a0f] border border-[#2a2a35] space-y-2 clip-corner-card">
               <h4 className="text-sm font-semibold text-slate-100">Thông tin tác vụ:</h4>
               <p className="text-xs text-slate-400">
-                Mã tác vụ: <code className="text-[#FF6B4A]">{task.id}</code>
-              </p>
-              <p className="text-xs text-slate-400">
                 Trạng thái: <strong className="text-emerald-400">{task.status}</strong>
               </p>
             </div>

@@ -3,10 +3,14 @@ import type { JobAccepted } from './types'
 
 export interface MediaProcessParams {
   format?: string
-  quality?: string
-  audio_only?: boolean
-  codec?: string
+  /** yt-dlp preferredquality, only honored for URL downloads. */
+  quality?: string | number
+  vcodec?: string
+  acodec?: string
+  crf?: string | number
   time?: string
+  /** Extra keys are forwarded as-is; src/config/conversionParams.ts lists what ffmpeg gets. */
+  [key: string]: string | number | boolean | undefined
 }
 
 export const mediaApi = {
@@ -33,7 +37,7 @@ export const mediaApi = {
    */
   async processMediaFile(
     file: File,
-    operation: 'transcode' | 'extract-audio' = 'transcode',
+    operation: 'transcode' | 'extract-audio' | 'thumbnail' = 'transcode',
     params?: MediaProcessParams,
   ): Promise<JobAccepted> {
     const formData = new FormData()
