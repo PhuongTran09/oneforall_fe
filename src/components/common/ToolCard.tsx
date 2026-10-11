@@ -48,43 +48,43 @@ export function ToolCard({ tool }: ToolCardProps) {
   return (
     <Link
       to={tool.slug}
-      className="group flex flex-col justify-between p-5 sm:p-6 rounded-2xl bg-white border border-slate-200/90 hover:border-[#FF3B30]/50 hover:shadow-md transition-all duration-200"
+      className="group flex flex-col justify-between p-5 sm:p-6 rounded-2xl bg-[#14141b] border border-[#2a2a35] hover:border-[#FF3B30]/50 transition-all duration-200 card-3d"
     >
       <div>
         {/* Top Header */}
         <div className="flex items-center justify-between gap-2 mb-3.5">
-          <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center group-hover:scale-105 group-hover:bg-red-50/50 transition-all">
+          <div className="w-10 h-10 rounded-xl bg-[#0a0a0f] border border-[#2a2a35] flex items-center justify-center group-hover:scale-105 group-hover:bg-[#ff3b30]/10 transition-all">
             {getToolIcon(tool.category, tool.slug)}
           </div>
-          <span className="text-[11px] font-medium font-mono px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 group-hover:bg-red-50 group-hover:text-[#FF3B30] transition-colors">
+          <span className="text-[11px] font-medium font-mono px-2 py-0.5 rounded-full bg-[#1a1a24] text-slate-300 group-hover:bg-[#ff3b30]/10 group-hover:text-[#FF3B30] transition-colors">
             {tool.badge}
           </span>
         </div>
 
         {/* Title */}
-        <h3 className="font-bold text-slate-900 text-base group-hover:text-[#FF3B30] transition-colors leading-snug mb-1.5">
+        <h3 className="font-bold text-white text-base group-hover:text-[#FF3B30] transition-colors leading-snug mb-1.5">
           {tool.h1}
         </h3>
 
         {/* Subtitle / Description */}
-        <p className="text-xs sm:text-sm text-slate-500 line-clamp-2 leading-relaxed">
+        <p className="text-xs sm:text-sm text-slate-400 line-clamp-2 leading-relaxed">
           {tool.subtitle}
         </p>
       </div>
 
       {/* Footer Info */}
-      <div className="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between">
+      <div className="pt-4 mt-4 border-t border-[#2a2a35]/60 flex items-center justify-between">
         <div className="flex items-center gap-1.5 flex-wrap">
           {tool.outputFormats.slice(0, 3).map((fmt) => (
             <span
               key={fmt}
-              className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 uppercase"
+              className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#1a1a24] text-slate-300 uppercase"
             >
               .{fmt}
             </span>
           ))}
           {tool.outputFormats.length > 3 && (
-            <span className="text-[10px] text-slate-400">+{tool.outputFormats.length - 3}</span>
+            <span className="text-[10px] text-slate-500">+{tool.outputFormats.length - 3}</span>
           )}
         </div>
 

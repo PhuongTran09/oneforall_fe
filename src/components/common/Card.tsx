@@ -13,10 +13,10 @@ export function Card({
   children,
   ...props
 }: CardProps) {
-  const baseStyles = 'relative rounded-2xl bg-white transition-all duration-300'
-  const borderStyles = bordered ? 'border border-slate-200/80 shadow-xs' : ''
+  const baseStyles = 'relative rounded-2xl bg-[#14141b] transition-all duration-300 card-3d'
+  const borderStyles = bordered ? 'border border-[#2a2a35]' : ''
   const hoverStyles = hoverEffect
-    ? 'hover:border-slate-300 hover:shadow-md hover:-translate-y-0.5'
+    ? 'hover:border-[#ff3b30]/40 hover:-translate-y-0.5'
     : ''
 
   return (
@@ -44,7 +44,7 @@ export function CardTitle({
   ...props
 }: HTMLAttributes<HTMLHeadingElement>) {
   return (
-    <h3 className={`text-lg font-bold text-slate-900 tracking-tight ${className}`} {...props}>
+    <h3 className={`text-lg font-bold text-white tracking-tight ${className}`} {...props}>
       {children}
     </h3>
   )
@@ -56,7 +56,7 @@ export function CardDescription({
   ...props
 }: HTMLAttributes<HTMLParagraphElement>) {
   return (
-    <p className={`mt-1.5 text-sm text-slate-500 leading-relaxed ${className}`} {...props}>
+    <p className={`mt-1.5 text-sm text-slate-400 leading-relaxed ${className}`} {...props}>
       {children}
     </p>
   )

@@ -26,19 +26,19 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ref,
   ) => {
     const baseStyles =
-      'inline-flex items-center justify-center font-medium rounded-xl transition-all duration-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#FF3B30] disabled:opacity-50 disabled:cursor-not-allowed select-none active:scale-[0.98]'
+      'inline-flex items-center justify-center font-medium rounded-xl transition-all duration-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0f] focus-visible:ring-[#FF3B30] disabled:opacity-50 disabled:cursor-not-allowed select-none active:scale-[0.98]'
 
     const variantStyles = {
       primary:
-        'bg-brand-gradient text-white shadow-brand-sm hover:shadow-brand-md hover:brightness-105 border-0',
+        'bg-brand-gradient text-white hover:brightness-105 border-0 btn-3d',
       secondary:
-        'bg-white text-slate-700 border border-slate-200/90 hover:bg-slate-50 hover:border-slate-300 shadow-xs',
+        'bg-[#14141b] text-slate-200 border border-[#2a2a35] hover:bg-[#ff3b30]/5 hover:border-[#ff3b30]/40',
       outline:
         'bg-transparent text-[#FF3B30] border border-[#FF3B30]/40 hover:bg-[#FF3B30]/5 hover:border-[#FF3B30]',
       ghost:
-        'bg-transparent text-slate-600 hover:bg-slate-100 hover:text-slate-900 border-transparent',
+        'bg-transparent text-slate-300 hover:bg-[#ff3b30]/10 hover:text-white border-transparent',
       glow:
-        'bg-brand-gradient text-white shadow-brand-md hover:shadow-brand-lg hover:brightness-105 font-semibold',
+        'bg-brand-gradient text-white hover:brightness-105 font-semibold btn-3d',
     }
 
     const sizeStyles = {

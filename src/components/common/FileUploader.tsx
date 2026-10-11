@@ -91,12 +91,12 @@ export function FileUploader({
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         onClick={() => !selectedFile && fileInputRef.current?.click()}
-        className={`relative border-2 border-dashed rounded-2xl p-6 sm:p-10 text-center transition-all cursor-pointer ${
+        className={`relative border-2 border-dashed rounded-2xl p-6 sm:p-10 text-center transition-all cursor-pointer input-3d ${
           isDragging
-            ? 'border border-slate-200/80 bg-red-50/50 shadow-brand-sm'
+            ? 'border border-[#ff3b30]/50 bg-[#ff3b30]/10'
             : selectedFile
-            ? 'border-slate-300 bg-white shadow-xs cursor-default'
-            : 'border-slate-200 hover:border-amber-200/70 bg-white hover:bg-slate-50/50'
+            ? 'border-[#2a2a35] bg-[#14141b] cursor-default'
+            : 'border-[#ff3b30]/30 hover:border-[#ff3b30]/60 bg-[#14141b] hover:bg-[#ff3b30]/5'
         }`}
       >
         <input
@@ -116,18 +116,18 @@ export function FileUploader({
                 <img
                   src={previewUrl}
                   alt="Xem trước ảnh"
-                  className="w-16 h-16 object-cover rounded-xl border border-slate-200 shrink-0"
+                  className="w-16 h-16 object-cover rounded-xl border border-[#2a2a35] shrink-0"
                 />
               ) : (
-                <div className="w-14 h-14 rounded-xl bg-red-50 border border-red-200 flex items-center justify-center text-[#FF3B30] shrink-0">
+                <div className="w-14 h-14 rounded-xl bg-[#ff3b30]/10 border border-[#ff3b30]/30 flex items-center justify-center text-[#FF3B30] shrink-0">
                   <FileIcon className="w-7 h-7" />
                 </div>
               )}
               <div className="space-y-0.5 max-w-sm sm:max-w-md">
-                <p className="font-semibold text-slate-800 text-sm sm:text-base truncate">
+                <p className="font-semibold text-slate-100 text-sm sm:text-base truncate">
                   {selectedFile.name}
                 </p>
-                <p className="text-xs text-slate-500 font-mono">
+                <p className="text-xs text-slate-400 font-mono">
                   Dung lượng: {formatFileSize(selectedFile.size)}
                 </p>
               </div>
@@ -140,7 +140,7 @@ export function FileUploader({
                 handleClear()
               }}
               disabled={isLoading}
-              className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+              className="p-1.5 text-slate-500 hover:text-red-500 hover:bg-[#ff3b30]/10 rounded-lg transition-colors cursor-pointer"
               title="Gỡ bỏ tệp"
             >
               <X className="w-5 h-5" />
@@ -148,15 +148,15 @@ export function FileUploader({
           </div>
         ) : (
           <div className="space-y-3">
-            <div className="w-16 h-16 mx-auto rounded-2xl bg-red-50/80 border border-red-200/80 flex items-center justify-center text-[#FF3B30] group-hover:scale-105 transition-transform">
+            <div className="w-16 h-16 mx-auto rounded-2xl bg-[#ff3b30]/10 border border-[#ff3b30]/30 flex items-center justify-center text-[#FF3B30] group-hover:scale-105 transition-transform">
               <UploadCloud className="w-8 h-8" />
             </div>
             <div className="space-y-1">
-              <p className="text-base font-semibold text-slate-800">
+              <p className="text-base font-semibold text-slate-100">
                 Kéo thả tệp tin vào đây, hoặc{' '}
                 <span className="text-[#FF3B30] underline underline-offset-2">duyệt từ thiết bị</span>
               </p>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-400">
                 Hỗ trợ tải lên tối đa 50MB (Miễn phí) • Bảo mật và xóa tự động sau 24 giờ
               </p>
             </div>
@@ -166,10 +166,10 @@ export function FileUploader({
 
       {/* Format Selection & Submit Action */}
       {selectedFile && (
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 p-4 rounded-2xl bg-white border border-slate-200/80 shadow-xs animate-fade-in">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 p-4 rounded-2xl bg-[#14141b] border border-[#2a2a35] animate-fade-in">
           {outputFormats.length > 0 && (
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xs font-semibold text-slate-600">Định dạng đích:</span>
+              <span className="text-xs font-semibold text-slate-300">Định dạng đích:</span>
               <div className="flex items-center gap-1.5 flex-wrap">
                 {outputFormats.map((fmt) => (
                   <button
@@ -178,8 +178,8 @@ export function FileUploader({
                     onClick={() => setSelectedFormat(fmt)}
                     className={`px-3 py-1 rounded-lg font-mono text-xs font-semibold uppercase transition-all cursor-pointer ${
                       selectedFormat === fmt
-                        ? 'bg-brand-gradient text-white shadow-xs'
-                        : 'bg-slate-100 text-slate-700 hover:bg-slate-200/80'
+                        ? 'bg-brand-gradient text-white'
+                        : 'bg-[#1a1a24] text-slate-200 hover:bg-[#ff3b30]/15'
                     }`}
                   >
                     .{fmt}
