@@ -11,6 +11,7 @@
  */
 
 import { classifyFormat, normalizeFormat, resolveRoute } from './conversionMatrix'
+import { t } from '../i18n/langStore'
 
 export type ParamKind = 'text' | 'int' | 'select' | 'bool'
 
@@ -40,8 +41,8 @@ function qualityField(backendDefault: number): ParamField {
   return {
     key: 'quality',
     kind: 'int',
-    label: 'Chất lượng ảnh xuất',
-    hint: `Từ 1 đến 100. Để trống thì hệ thống dùng ${backendDefault}.`,
+    label: t('params.qualityLabel'),
+    hint: t('params.qualityHint', { default: backendDefault }),
     min: 1,
     max: 100,
     presets: [95, 90, 80, 70, 60],
@@ -52,16 +53,16 @@ function qualityField(backendDefault: number): ParamField {
 const LOSSLESS_FIELD: ParamField = {
   key: 'lossless',
   kind: 'bool',
-  label: 'Không nén mất dữ liệu',
-  hint: 'Giữ 100% chi tiết ảnh, đổi lại file sẽ nặng hơn.',
+  label: t('params.losslessLabel'),
+  hint: t('params.losslessHint'),
 }
 
 const RESIZE_FIELDS: ParamField[] = [
   {
     key: 'width',
     kind: 'int',
-    label: 'Chiều rộng (px)',
-    hint: 'Tùy chọn. Để trống thì giữ nguyên chiều rộng gốc.',
+    label: t('params.widthLabel'),
+    hint: t('params.widthHint'),
     min: 1,
     max: 8192,
     placeholder: '1200',
@@ -69,8 +70,8 @@ const RESIZE_FIELDS: ParamField[] = [
   {
     key: 'height',
     kind: 'int',
-    label: 'Chiều cao (px)',
-    hint: 'Tùy chọn. Chỉ nhập một chiều sẽ tự giữ tỷ lệ gốc.',
+    label: t('params.heightLabel'),
+    hint: t('params.heightHint'),
     min: 1,
     max: 8192,
     placeholder: '800',
@@ -80,17 +81,17 @@ const RESIZE_FIELDS: ParamField[] = [
 const TITLE_FIELD: ParamField = {
   key: 'title',
   kind: 'text',
-  label: 'Tiêu đề tài liệu',
-  hint: 'In trên trang PDF hoặc làm heading của văn bản.',
-  placeholder: 'Tài liệu',
+  label: t('params.titleLabel'),
+  hint: t('params.titleHint'),
+  placeholder: t('params.titlePlaceholder'),
   max: TEXT_MAX_LENGTH,
 }
 
 const SHEET_FIELD: ParamField = {
   key: 'sheet_name',
   kind: 'text',
-  label: 'Tên sheet',
-  hint: 'Để trống dùng sheet đang mở. Tên sheet phải khớp chính xác với file Excel.',
+  label: t('params.sheetLabel'),
+  hint: t('params.sheetHint'),
   placeholder: 'Sheet1',
   max: TEXT_MAX_LENGTH,
 }
@@ -98,34 +99,34 @@ const SHEET_FIELD: ParamField = {
 const ALL_SHEETS_FIELD: ParamField = {
   key: 'all_sheets',
   kind: 'bool',
-  label: 'Xuất tất cả sheet',
-  hint: 'Bỏ qua ô "Tên sheet" và gộp mọi sheet vào kết quả.',
+  label: t('params.allSheetsLabel'),
+  hint: t('params.allSheetsHint'),
 }
 
 const SVG_FIELDS: ParamField[] = [
   {
     key: 'colormode',
     kind: 'select',
-    label: 'Màu sắc vector',
+    label: t('params.colorModeLabel'),
     choices: [
-      { value: 'color', label: 'Giữ màu gốc' },
-      { value: 'binary', label: 'Đen trắng' },
+      { value: 'color', label: t('params.colorKeep') },
+      { value: 'binary', label: t('params.colorBinary') },
     ],
   },
   {
     key: 'mode',
     kind: 'select',
-    label: 'Độ mượt đường viền',
+    label: t('params.edgeLabel'),
     choices: [
-      { value: 'spline', label: 'Cong (spline)' },
-      { value: 'polygon', label: 'Góc cạnh (polygon)' },
-      { value: 'none', label: 'Theo pixel' },
+      { value: 'spline', label: t('params.edgeSpline') },
+      { value: 'polygon', label: t('params.edgePolygon') },
+      { value: 'none', label: t('params.edgePixel') },
     ],
   },
 ]
 
 const VIDEO_CODEC_CHOICES = [
-  { value: '', label: 'Tự động theo container' },
+  { value: '', label: t('params.codecAuto') },
   { value: 'libx264', label: 'H.264 (libx264)' },
   { value: 'libx265', label: 'H.265 (libx265)' },
   { value: 'libvpx', label: 'VP8 (libvpx)' },
@@ -134,7 +135,7 @@ const VIDEO_CODEC_CHOICES = [
 ]
 
 const AUDIO_CODEC_CHOICES = [
-  { value: '', label: 'Tự động theo container' },
+  { value: '', label: t('params.codecAuto') },
   { value: 'aac', label: 'AAC' },
   { value: 'libmp3lame', label: 'MP3' },
   { value: 'libopus', label: 'Opus' },
@@ -144,15 +145,15 @@ const TRANSCODE_FIELDS: ParamField[] = [
   {
     key: 'vcodec',
     kind: 'select',
-    label: 'Bộ mã hóa video',
-    hint: 'Mỗi container chỉ nhận một số codec; WebM không nhận H.264.',
+    label: t('params.vcodecLabel'),
+    hint: t('params.vcodecHint'),
     choices: VIDEO_CODEC_CHOICES,
   },
   {
     key: 'crf',
     kind: 'int',
-    label: 'Chất lượng video (CRF)',
-    hint: '0–51, số càng nhỏ càng nét và file càng nặng. Mặc định 23 (VP9: 30).',
+    label: t('params.crfLabel'),
+    hint: t('params.crfHint'),
     min: 0,
     max: 51,
     presets: [18, 23, 28, 35],
@@ -161,7 +162,7 @@ const TRANSCODE_FIELDS: ParamField[] = [
   {
     key: 'acodec',
     kind: 'select',
-    label: 'Bộ mã hóa âm thanh',
+    label: t('params.acodecLabel'),
     choices: AUDIO_CODEC_CHOICES,
   },
 ]
@@ -170,8 +171,8 @@ const THUMBNAIL_FIELDS: ParamField[] = [
   {
     key: 'time',
     kind: 'text',
-    label: 'Thời điểm lấy khung hình',
-    hint: 'Định dạng HH:MM:SS (00:00:12) hoặc giây (12). Mặc định 00:00:01.',
+    label: t('params.timeLabel'),
+    hint: t('params.timeHint'),
     placeholder: '00:00:01',
     max: 20,
   },

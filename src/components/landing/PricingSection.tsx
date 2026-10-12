@@ -1,6 +1,7 @@
 import { Check, Sparkles, ArrowRight } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '../common/Card'
 import { Button } from '../common/Button'
+import { t } from '../../i18n/langStore'
 
 export interface PricingSectionProps {
   onSelectFree: () => void
@@ -12,18 +13,18 @@ export function PricingSection({ onSelectFree, onSelectPremium }: PricingSection
     {
       id: 'free',
       name: 'Free Starter',
-      badge: 'Miễn phí vĩnh viễn',
-      price: '0 đ',
-      period: '/ tháng',
-      description: 'Phù hợp cho cá nhân xử lý tệp nhanh chóng mà không cần đăng ký tài khoản trả phí.',
+      badge: t('pricing.freeBadge'),
+      price: t('pricing.freePrice'),
+      period: t('pricing.period'),
+      description: t('pricing.freeDesc'),
       features: [
-        'Dung lượng tải lên tối đa 50MB / tệp',
-        'Đầy đủ các công cụ: YouTube, TikTok, File, Ảnh',
-        'Tốc độ hàng đợi tiêu chuẩn FastAPI',
-        'Lưu trữ tệp tải về an toàn trong 3 phút',
-        'Không yêu cầu đăng nhập đối với công cụ miễn phí',
+        t('pricing.freeF1'),
+        t('pricing.freeF2'),
+        t('pricing.freeF3'),
+        t('pricing.freeF4'),
+        t('pricing.freeF5'),
       ],
-      ctaText: 'Bắt đầu miễn phí',
+      ctaText: t('pricing.freeCta'),
       ctaVariant: 'secondary' as const,
       isPopular: false,
       onAction: onSelectFree,
@@ -31,19 +32,19 @@ export function PricingSection({ onSelectFree, onSelectPremium }: PricingSection
     {
       id: 'premium',
       name: 'Professional',
-      badge: 'Phổ biến nhất',
-      price: '99.000 đ',
-      period: '/ tháng',
-      description: 'Dành cho người sáng tạo nội dung và doanh nghiệp cần dung lượng lớn và ưu tiên tối đa.',
+      badge: t('pricing.proBadge'),
+      price: t('pricing.proPrice'),
+      period: t('pricing.period'),
+      description: t('pricing.proDesc'),
       features: [
-        'Dung lượng tải lên lên tới 2GB / tệp',
-        'Ưu tiên hàng đợi Celery cao nhất',
-        'Xử lý song song không giới hạn',
-        'Tải video YouTube/TikTok độ phân giải 4K',
-        'Lưu trữ liên kết tải về an toàn tới 7 ngày',
-        'Hỗ trợ kỹ thuật 24/7',
+        t('pricing.proF1'),
+        t('pricing.proF2'),
+        t('pricing.proF3'),
+        t('pricing.proF4'),
+        t('pricing.proF5'),
+        t('pricing.proF6'),
       ],
-      ctaText: 'Nâng cấp gói Pro',
+      ctaText: t('pricing.proCta'),
       ctaVariant: 'primary' as const,
       isPopular: true,
       onAction: onSelectPremium,
@@ -51,17 +52,17 @@ export function PricingSection({ onSelectFree, onSelectPremium }: PricingSection
   ]
 
   return (
-    <section id="pricing" className="py-16 sm:py-24 bg-[#0a0a0f]/80">
+    <section id="pricing" className="py-16 sm:py-24 bg-page/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold bg-[#14141b] border border-[rgba(255,59,48,0.35)] text-[#FF3B30] badge-angular">
-            BẢNG GIÁ MINH BẠCH
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold bg-surface border border-[rgba(255,59,48,0.35)] text-[#FF3B30] badge-angular">
+            {t('pricing.badge')}
           </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-            Gói dịch vụ phù hợp với mọi nhu cầu
+          <h2 className="text-2xl sm:text-4xl font-extrabold text-ink tracking-tight">
+            {t('pricing.title')}
           </h2>
-          <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
-            Chọn gói cước linh hoạt, không chi phí ẩn, bắt đầu miễn phí và nâng cấp khi cần mở rộng quy mô.
+          <p className="text-slate-300 text-xs sm:text-base leading-relaxed">
+            {t('pricing.desc')}
           </p>
         </div>
 
@@ -69,10 +70,11 @@ export function PricingSection({ onSelectFree, onSelectPremium }: PricingSection
           {plans.map((plan) => (
             <Card
               key={plan.id}
-              className={`flex flex-col justify-between p-2 sm:p-4 bg-[#14141b] clip-corner-card ${
+              bordered={false}
+              className={`flex flex-col justify-between p-2 sm:p-4 ${
                 plan.isPopular
-                  ? 'border border-[rgba(255,59,48,0.55)] relative overflow-hidden card-3d'
-                  : 'border border-[rgba(255,59,48,0.22)] card-3d card-3d-dim'
+                  ? 'border border-[rgba(255,59,48,0.55)] relative overflow-hidden card-tilt'
+                  : 'border border-[rgba(255,59,48,0.22)] card-3d-dim'
               }`}
             >
               {plan.isPopular && (
@@ -85,19 +87,19 @@ export function PricingSection({ onSelectFree, onSelectPremium }: PricingSection
               <div>
                 <CardHeader>
                   <div className="flex items-center justify-between mb-2">
-                    <CardTitle className="text-xl text-white">{plan.name}</CardTitle>
+                    <CardTitle className="text-lg sm:text-xl text-ink">{plan.name}</CardTitle>
                     {!plan.isPopular && (
-                      <span className="text-xs font-mono font-medium text-slate-400 px-2 py-0.5 bg-[#1a1a24]">
+                      <span className="text-xs font-mono font-medium text-slate-400 px-2 py-0.5 bg-elev">
                         {plan.badge}
                       </span>
                     )}
                   </div>
-                  <CardDescription className="text-sm text-slate-300">
+                  <CardDescription className="text-xs sm:text-sm text-slate-300">
                     {plan.description}
                   </CardDescription>
 
                   <div className="pt-6 pb-2 flex items-baseline gap-1.5">
-                    <span className="text-4xl font-extrabold text-white tracking-tight">
+                    <span className="text-3xl sm:text-4xl font-extrabold text-ink tracking-tight">
                       {plan.price}
                     </span>
                     <span className="text-slate-400 text-sm">{plan.period}</span>
@@ -106,11 +108,11 @@ export function PricingSection({ onSelectFree, onSelectPremium }: PricingSection
 
                 <CardContent className="space-y-3 pt-2">
                   <p className="text-xs font-semibold text-slate-200 uppercase tracking-wider">
-                    Quyền lợi bao gồm:
+                    {t('pricing.includes')}
                   </p>
                   <ul className="space-y-2.5">
                     {plan.features.map((feature) => (
-                      <li key={feature} className="flex items-start gap-2.5 text-sm text-slate-300">
+                      <li key={feature} className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-300">
                         <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                         <span>{feature}</span>
                       </li>

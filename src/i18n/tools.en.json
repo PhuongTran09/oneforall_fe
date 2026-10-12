@@ -1,0 +1,345 @@
+{
+  "/youtube-to-mp4": {
+    "title": "Free YouTube to MP4 Converter in HD Quality | OneForAll",
+    "metaDescription": "Free online tool to convert and download YouTube videos to MP4 in 1080p or 720p. High speed, no software installation, safe and secure.",
+    "h1": "Download YouTube Videos to MP4 Fast",
+    "subtitle": "Turn any YouTube video link into a high-quality MP4 file saved to your computer or phone in seconds.",
+    "badge": "YouTube to MP4 HD",
+    "supportedFormatsDesc": "Works with all standard YouTube video links (watch?v=...), Shorts, and short youtu.be links.",
+    "howItWorksSteps": [
+      { "step": "01", "title": "Paste your YouTube link", "desc": "Copy the URL of the YouTube video you want to save and paste it into the input box below." },
+      { "step": "02", "title": "Choose MP4 quality", "desc": "The system analyzes the video automatically and lets you pick a high-definition MP4 format." },
+      { "step": "03", "title": "Processed via FastAPI", "desc": "A backend Celery worker picks up the job and extracts the video stream at high speed." },
+      { "step": "04", "title": "Download to your device", "desc": "Get a clean, watermark-free MP4 file and save it with ease." }
+    ],
+    "features": [
+      { "title": "Optimized resolution", "desc": "Supports MP4 video quality from 720p up to 1080p, depending on the original video." },
+      { "title": "No installation required", "desc": "Runs right in Chrome, Safari, or Edge with no extra software needed." },
+      { "title": "Privacy protected", "desc": "Your personal download history is never stored, and links self-destruct once the job is done." }
+    ],
+    "faqList": [
+      { "q": "Can this tool download YouTube videos in 1080p?", "a": "Yes. When the original video supports 1080p, the system automatically merges the highest-quality video and audio streams into a complete MP4 file." },
+      { "q": "Do I need an account to download YouTube videos as MP4?", "a": "No account needed. OneForAll converts for free on the spot, with no sign-in required." },
+      { "q": "What is the copyright policy for using this tool?", "a": "The tool only supports downloading content you own, Creative Commons videos, or content the creator has licensed for legal use." }
+    ]
+  },
+  "/youtube-to-mp3": {
+    "title": "Free YouTube to MP3 Converter Online - 320kbps | OneForAll",
+    "metaDescription": "Extract MP3 audio from YouTube videos at top speed with 320kbps/192kbps sound quality. 100% free, instant conversion, no junk ads.",
+    "h1": "Extract High-Quality MP3 Audio from YouTube",
+    "subtitle": "Convert music videos, podcasts, or lectures from YouTube into MP3 audio files and listen offline anytime, anywhere.",
+    "badge": "YouTube to MP3 Audio",
+    "supportedFormatsDesc": "Output audio formats: MP3, WAV, M4A, AAC. Compatible with all standard YouTube videos.",
+    "howItWorksSteps": [
+      { "step": "01", "title": "Copy the YouTube link", "desc": "Copy the link of the song, podcast, or video you want to rip audio from." },
+      { "step": "02", "title": "Paste it into OneForAll", "desc": "Paste the link into the search box and hit the Extract MP3 button." },
+      { "step": "03", "title": "Audio extraction", "desc": "The system extracts the audio stream and encodes it to a standard bitrate." },
+      { "step": "04", "title": "Download the audio file", "desc": "Save the MP3 to your phone or computer and enjoy it right away." }
+    ],
+    "features": [
+      { "title": "Faithful sound quality", "desc": "Preserves the original audio frequency with bitrates up to 320kbps." },
+      { "title": "Blazing-fast extraction", "desc": "Thanks to an async backend architecture, each song takes just seconds." },
+      { "title": "Works on every device", "desc": "MP3 files play perfectly on iPhone, Android, in-car systems, and music players." }
+    ],
+    "faqList": [
+      { "q": "Is the MP3 audio compressed at reduced quality?", "a": "The system extracts the best audio stream available from YouTube and packages it as studio-standard MP3." },
+      { "q": "Can I extract audio from YouTube Shorts videos?", "a": "Yes. Just copy the Shorts link and paste it into the tool as usual." }
+    ]
+  },
+  "/youtube-downloader": {
+    "title": "All-in-One YouTube Video & Audio Downloader | OneForAll",
+    "metaDescription": "A versatile YouTube downloader for high-quality MP4 video and MP3 audio. Simple, safe, and free of malware.",
+    "h1": "Universal Online YouTube Downloader",
+    "subtitle": "An all-in-one platform for downloading YouTube video and audio. Pick whichever video or audio format you want.",
+    "badge": "Universal YouTube Downloader",
+    "supportedFormatsDesc": "Supports MP4 (720p, 1080p), WebM, MP3 (128kbps, 320kbps), WAV.",
+    "howItWorksSteps": [
+      { "step": "01", "title": "Enter the video link", "desc": "Paste any YouTube link into the converter box." },
+      { "step": "02", "title": "Pick a format", "desc": "Choose MP4 to watch the video, or MP3 if you only want the audio." },
+      { "step": "03", "title": "System processing", "desc": "A Celery worker prepares the file and optimizes its size." },
+      { "step": "04", "title": "Safe download", "desc": "Click the download button to get your file straight from Cloudflare R2 storage." }
+    ],
+    "features": [
+      { "title": "Flexible multi-format", "desc": "Download the video or grab just the audio with a single click." },
+      { "title": "No download limits", "desc": "Free to use every day for study and personal work needs." },
+      { "title": "Device protection", "desc": "No malicious ad pop-ups and no extension installs required." }
+    ],
+    "faqList": [
+      { "q": "Where are downloaded videos saved?", "a": "Files are saved automatically to the default Downloads folder on your device." },
+      { "q": "Why do some videos take longer to download?", "a": "Long videos (over 1 hour) need extra time on the server to merge audio and video before the download link is created." }
+    ]
+  },
+  "/tiktok-to-mp4": {
+    "title": "Free HD TikTok Video Downloader - No Watermark | OneForAll",
+    "metaDescription": "Download TikTok videos with no logo or watermark in crisp HD quality. Save TikTok MP4 videos fast on iPhone, Android, and PC.",
+    "h1": "Download TikTok Videos Without the Watermark",
+    "subtitle": "Save your favorite TikTok videos in original picture quality with the logo removed - completely free.",
+    "badge": "TikTok No Watermark",
+    "supportedFormatsDesc": "Supports TikTok links in the form vm.tiktok.com, vt.tiktok.com, and tiktok.com/@user/video/...",
+    "howItWorksSteps": [
+      { "step": "01", "title": "Copy the TikTok link", "desc": "Open the TikTok app or website, tap Share, and choose Copy Link." },
+      { "step": "02", "title": "Paste it into OneForAll", "desc": "Paste the TikTok URL into the box below and hit the Download video button." },
+      { "step": "03", "title": "Clean video processing", "desc": "The system automatically removes the watermark and optimally compresses the MP4." },
+      { "step": "04", "title": "Save it to your device", "desc": "Download the HD video to your photo library or computer." }
+    ],
+    "features": [
+      { "title": "No TikTok logo", "desc": "Your downloaded video stays clean, with no bouncing TikTok watermark covering the screen." },
+      { "title": "True Full HD sharpness", "desc": "Keeps the creator's original crispness and 9:16 vertical aspect ratio." },
+      { "title": "Works great on iOS & Android", "desc": "Save straight to your gallery with no third-party apps needed." }
+    ],
+    "faqList": [
+      { "q": "How do I download a TikTok video on iPhone?", "a": "Paste the link into OneForAll in Safari, tap Download, then open the file in Downloads and choose Save Video to your Photos library." },
+      { "q": "Does downloading TikTok videos without the logo cost anything?", "a": "It is 100% free, with no limit on how many videos you can download." }
+    ]
+  },
+  "/tiktok-to-mp3": {
+    "title": "Fastest TikTok to MP3 Ringtone Downloader | OneForAll",
+    "metaDescription": "Extract and download trending TikTok sounds as high-quality MP3. Save viral TikTok songs as your phone ringtone with ease.",
+    "h1": "Extract High-Quality MP3 from TikTok Sounds",
+    "subtitle": "Pull the trending track, voiceover, or one-of-a-kind sound effect out of any TikTok video into a handy MP3 file.",
+    "badge": "TikTok Audio Extractor",
+    "supportedFormatsDesc": "Supported output formats: MP3, WAV, M4A.",
+    "howItWorksSteps": [
+      { "step": "01", "title": "Grab the TikTok video link", "desc": "Copy the link of the video with the sound you love." },
+      { "step": "02", "title": "Paste the link into the system", "desc": "Paste the URL and choose MP3 as the output format." },
+      { "step": "03", "title": "Audio separation", "desc": "The algorithm extracts the original audio stream and normalizes the bitrate." },
+      { "step": "04", "title": "Download and preview", "desc": "Save the audio file to use as a ringtone or listen offline." }
+    ],
+    "features": [
+      { "title": "Capture every trending sound", "desc": "Save the hottest remixes, acoustic takes, and voiceovers on TikTok." },
+      { "title": "Crystal-clear audio", "desc": "A smart filter normalizes the frequency range and strips out excess noise." },
+      { "title": "Perfect for ringtones", "desc": "Easily set it as your alarm tone or incoming call ringtone." }
+    ],
+    "faqList": [
+      { "q": "Is the extracted audio file good quality?", "a": "Quality depends on the original sound the TikTok creator uploaded, typically 128kbps to 192kbps web standard." },
+      { "q": "Can I download audio from a hidden TikTok video?", "a": "Only videos set to Public can have their audio extracted." }
+    ]
+  },
+  "/tiktok-downloader": {
+    "title": "All-in-One TikTok Downloader: MP4 Video & MP3 Audio | OneForAll",
+    "metaDescription": "An all-in-one TikTok downloader. Download watermark-free videos or extract MP3 audio fast, with a clean, friendly interface.",
+    "h1": "Online TikTok Video & Audio Downloader",
+    "subtitle": "The most convenient way to download TikTok video and audio right in your browser. No app to install, completely safe.",
+    "badge": "All-in-One TikTok Tool",
+    "supportedFormatsDesc": "Supports MP4 video format and MP3 audio format.",
+    "howItWorksSteps": [
+      { "step": "01", "title": "Copy the URL", "desc": "Grab the video link from the TikTok app or a web browser." },
+      { "step": "02", "title": "Paste the link", "desc": "Paste it into OneForAll and choose to download the video or the MP3." },
+      { "step": "03", "title": "Data processing", "desc": "The server analyzes and securely prepares your download file." },
+      { "step": "04", "title": "Get your file", "desc": "Hit the Download button to save the file to your computer or phone." }
+    ],
+    "features": [
+      { "title": "Two tools in one", "desc": "Download high-quality watermark-free video and extract the background music." },
+      { "title": "Extremely fast", "desc": "Link analysis and processing take just 1-3 seconds." },
+      { "title": "Cross-platform compatibility", "desc": "Runs smoothly on iPhone, iPad, Android phones, macOS, and Windows." }
+    ],
+    "faqList": [
+      { "q": "Does the downloaded video have a user ID on it?", "a": "No, the feature automatically removes the watermark and the moving user ID from the video." },
+      { "q": "Is there a daily limit on TikTok downloads?", "a": "There is no download limit for valid tasks." }
+    ]
+  },
+  "/convert": {
+    "title": "Universal Online File Format Converter | OneForAll",
+    "metaDescription": "Convert files online for free: Word documents, Excel, PDF, images, video, and audio. Only the destination formats the system supports for your file are shown.",
+    "h1": "Universal Online File Format Converter",
+    "subtitle": "Convert between images, video, audio, and office documents in just a few simple steps, at lightning speed.",
+    "badge": "Universal Converter",
+    "supportedFormatsDesc": "Supported output formats: PDF, DOCX, DOC, CSV, JSON, PNG, JPG, WEBP, SVG, MP4, MOV, MKV, WEBM, AVI, MP3, WAV, AAC, M4A, FLAC, OGG.",
+    "howItWorksSteps": [
+      { "step": "01", "title": "Upload your file", "desc": "Drag and drop or pick any file from your computer or phone." },
+      { "step": "02", "title": "Choose the target format", "desc": "Select the format you want to convert to (e.g., PDF, DOCX, WEBP...)." },
+      { "step": "03", "title": "Start converting", "desc": "The FastAPI backend converts your file structure safely and accurately." },
+      { "step": "04", "title": "Download the result", "desc": "Get your converted file and save it to your device instantly." }
+    ],
+    "features": [
+      { "title": "Automatic source detection", "desc": "The system detects your uploaded file's format automatically via its header signature." },
+      { "title": "Layout fully preserved", "desc": "Tables, fonts, and images keep their layout without shifting." },
+      { "title": "Self-destructs after download", "desc": "Uploaded and converted files are cleaned up automatically to keep your data secure." }
+    ],
+    "faqList": [
+      { "q": "What is the maximum file size I can convert?", "a": "The system supports files up to 50MB for free users and up to 2GB on the Professional plan." },
+      { "q": "Could anyone peek at my files?", "a": "Every conversion runs fully automated on an isolated worker - no one can access the contents of your files." }
+    ]
+  },
+  "/image-converter": {
+    "title": "Image Format Converter: PNG, JPG, WebP, GIF, BMP, SVG | OneForAll",
+    "metaDescription": "Convert images online for free between PNG, JPG, WebP, GIF, BMP, TIFF, and ICO, and export SVG from PNG. Original resolution is kept and transparency is supported.",
+    "h1": "Online Image Format Converter",
+    "subtitle": "Switch your images to WebP for a faster website, or to PNG/JPG that works in every design tool.",
+    "badge": "Image Format Converter",
+    "supportedFormatsDesc": "PNG, JPG, WEBP, GIF, BMP, TIFF, ICO to PNG, JPG, WEBP. PNG can additionally be exported as SVG.",
+    "howItWorksSteps": [
+      { "step": "01", "title": "Upload your image", "desc": "Select the PNG, JPG, WebP, GIF, BMP, TIFF, or ICO file you want to convert." },
+      { "step": "02", "title": "Choose the target format", "desc": "Pick your desired output format such as WebP, PNG, JPG, or SVG." },
+      { "step": "03", "title": "Pixel conversion", "desc": "The tool re-renders the pixel matrix with the most accurate colors." },
+      { "step": "04", "title": "Download the new image", "desc": "Save the optimized result to your computer." }
+    ],
+    "features": [
+      { "title": "Optimized for web SEO", "desc": "Converting images to WebP significantly cuts page load weight." },
+      { "title": "Handles legacy formats", "desc": "GIF, BMP, TIFF, and ICO images all convert to PNG, JPG, or WebP." },
+      { "title": "Transparency supported", "desc": "The alpha transparency channel is preserved when converting to PNG or WebP." }
+    ],
+    "faqList": [
+      { "q": "Why should I convert images to WebP?", "a": "WebP is a modern image format developed by Google. It delivers JPG/PNG-equivalent quality at a much smaller file size, which makes websites load faster." },
+      { "q": "Will a white background image change color when exported as JPG?", "a": "It can. JPG does not store transparent areas, so any transparent background is filled with white when exported as JPG." }
+    ]
+  },
+  "/video-converter": {
+    "title": "Video Format Converter: MP4, MOV, MKV, WebM, AVI | OneForAll",
+    "metaDescription": "Convert videos online to MP4, WebM, MKV, or AVI fast. Optimized bitrates shrink file size without losing quality.",
+    "h1": "Online Video Format Converter",
+    "subtitle": "Convert video flexibly to MP4 for compatibility with every mobile device, TV, and social network.",
+    "badge": "Video Transcoder",
+    "supportedFormatsDesc": "MP4, MOV, MKV, AVI, WEBM, FLV, WMV, M4V to MP4, MOV, MKV, WEBM, AVI, MP3, JPG.",
+    "howItWorksSteps": [
+      { "step": "01", "title": "Upload your video", "desc": "Choose a video file from your computer (MP4, MOV, AVI, MKV, WMV...)." },
+      { "step": "02", "title": "Choose the format", "desc": "Pick standard H.264 MP4 or browser-optimized WebM." },
+      { "step": "03", "title": "Video transcoding", "desc": "The system uses FFmpeg to process the frame stream at high speed." },
+      { "step": "04", "title": "Download the result", "desc": "Get a finished video that plays in any media player." }
+    ],
+    "features": [
+      { "title": "Standard H.264 / AAC codecs", "desc": "Output video plays smoothly on iPhone, Android, Smart TV, and YouTube." },
+      { "title": "Optimal size compression", "desc": "Trims the bulky size of your original video so it is easy to email or upload." },
+      { "title": "Extract audio or a cover frame", "desc": "Export straight to MP3 for the audio, or to JPG to grab a frame as a cover image." }
+    ],
+    "faqList": [
+      { "q": "How long does video conversion take?", "a": "It depends on the video's length and resolution; short videos under 5 minutes usually take just 10 to 30 seconds." },
+      { "q": "What do I get from exporting a JPG from a video?", "a": "The system grabs a single frame (by default at the first second) and saves it as a JPG image you can use as a thumbnail." }
+    ]
+  },
+  "/audio-converter": {
+    "title": "Audio Converter: MP3, WAV, AAC, FLAC, M4A | OneForAll",
+    "metaDescription": "Convert audio files online for free between MP3, WAV, AAC, M4A, OGG, and FLAC. The original sound quality is faithfully preserved.",
+    "h1": "Online Audio Format Converter",
+    "subtitle": "Change audio formats in a snap to listen to music on any device or use in video editing.",
+    "badge": "Audio Format Converter",
+    "supportedFormatsDesc": "MP3, WAV, AAC, M4A, FLAC, OGG.",
+    "howItWorksSteps": [
+      { "step": "01", "title": "Select your audio file", "desc": "Upload a song, voice recording, or any audio file you need converted." },
+      { "step": "02", "title": "Choose the format", "desc": "Pick everyday MP3, lossless WAV, or AAC for the Apple ecosystem." },
+      { "step": "03", "title": "Audio processing", "desc": "The backend converts the sample rate and bitrate precisely." },
+      { "step": "04", "title": "Download the new file", "desc": "Save the optimized audio file to your computer." }
+    ],
+    "features": [
+      { "title": "High bitrates up to 320kbps", "desc": "Keeps the bass and treble ranges distortion-free after export." },
+      { "title": "Handles voice recordings", "desc": "Convert iPhone m4a recordings to MP3 for playback on your computer." },
+      { "title": "Fast and secure", "desc": "The whole conversion finishes instantly, in seconds." }
+    ],
+    "faqList": [
+      { "q": "What is the difference between MP3 and WAV?", "a": "WAV is an uncompressed (lossless) format that keeps 100% of the audio detail but has large file sizes. MP3 is an optimized compressed format with a compact size that is perfect for everyday listening." }
+    ]
+  },
+  "/document-converter": {
+    "title": "Document Converter: Word, Excel, TXT, CSV, PDF | OneForAll",
+    "metaDescription": "Convert office documents online for free between Word (DOCX, DOC), Excel (XLSX), TXT, CSV, JSON, and PDF. Content and data tables stay intact.",
+    "h1": "Online Office Document Converter",
+    "subtitle": "Convert flexibly between popular office document formats without distorting tables or formulas.",
+    "badge": "Document Office Suite",
+    "supportedFormatsDesc": "DOCX, DOC, XLSX, TXT to PDF, DOCX, DOC, CSV, JSON.",
+    "howItWorksSteps": [
+      { "step": "01", "title": "Upload your document", "desc": "Select the Word (DOCX, DOC), Excel (XLSX), or TXT text file you want to convert." },
+      { "step": "02", "title": "Choose the target format", "desc": "Pick PDF for printing, DOCX for further editing, or CSV/JSON for data processing." },
+      { "step": "03", "title": "Structure conversion", "desc": "The system automatically translates the text and data tables into the new format." },
+      { "step": "04", "title": "Download the finished document", "desc": "Get your new document, ready for work or study." }
+    ],
+    "features": [
+      { "title": "Text content preserved", "desc": "Paragraphs, headings, and lists stay intact when moving between TXT, DOCX, and PDF." },
+      { "title": "Excel tables kept intact", "desc": "Data cells in XLSX files convert accurately to CSV, JSON, or PDF." },
+      { "title": "Business-grade document security", "desc": "Files are deleted from the server when your session ends." }
+    ],
+    "faqList": [
+      { "q": "Does converting Word to PDF break Vietnamese fonts?", "a": "No. The system ships with a complete standard Unicode font set, so Vietnamese diacritics always render perfectly." },
+      { "q": "Can I convert an Excel file to JSON?", "a": "Yes. XLSX files can be exported to JSON to feed a data pipeline, or to CSV for other spreadsheet tools." }
+    ]
+  },
+  "/pdf-converter": {
+    "title": "Free Word, Excel & TXT to PDF Converter Online | OneForAll",
+    "metaDescription": "Convert DOCX, DOC, XLSX, and TXT to PDF online for free. Document structure is kept, no software to install, files are cleaned up after download.",
+    "h1": "Convert Documents to PDF",
+    "subtitle": "Turn Word (.docx, .doc), Excel (.xlsx), and text (.txt) files into PDFs for sharing, archiving, or e-signing - fast, with nothing to install.",
+    "badge": "Docs to PDF",
+    "supportedFormatsDesc": "DOCX, DOC, XLSX, TXT to PDF.",
+    "howItWorksSteps": [
+      { "step": "01", "title": "Upload your file", "desc": "Choose the Word, Excel, or TXT text file you want exported to PDF." },
+      { "step": "02", "title": "PDF is the target format", "desc": "Every source format supported above exports to PDF." },
+      { "step": "03", "title": "PDF rendering", "desc": "The backend reads the content and rebuilds the PDF pages along with the document title." },
+      { "step": "04", "title": "Download your PDF", "desc": "Open the PDF with any reader or attach it to an email." }
+    ],
+    "features": [
+      { "title": "Text structure preserved", "desc": "Paragraphs, headings, and lists are faithfully rebuilt in the PDF document." },
+      { "title": "Choose which sheet to export", "desc": "Specify which sheet to render when converting an Excel file to PDF." },
+      { "title": "Cleaned up after download", "desc": "Source and output files are removed from temporary storage per the backend's TTL policy." }
+    ],
+    "faqList": [
+      { "q": "Can I convert PDF to Word?", "a": "Not yet. This tool only takes documents and exports them to PDF; the reverse direction requires page layout analysis and is not implemented yet." },
+      { "q": "Are my files kept?", "a": "No. Files are processed on an isolated worker and automatically removed from storage after download or when they expire." }
+    ]
+  },
+  "/remove-background": {
+    "title": "Free Automatic AI Background Remover (Transparent PNG) | OneForAll",
+    "metaDescription": "Remove image backgrounds online with AI in just 3 seconds. Automatically cut out people, products, and vehicles, and export high-quality transparent PNG images.",
+    "h1": "Automatic AI Background Remover with Transparency",
+    "subtitle": "Cut people, e-commerce products, signatures, or objects out of their background with hair-level precision.",
+    "badge": "AI Background Remover",
+    "supportedFormatsDesc": "PNG, JPG, JPEG, WEBP. The result is exported as a transparent PNG image.",
+    "howItWorksSteps": [
+      { "step": "01", "title": "Upload your image", "desc": "Upload a portrait, product photo, or object shot." },
+      { "step": "02", "title": "AI analyzes the subject", "desc": "Deep learning algorithms detect the subject's outline and remove the background." },
+      { "step": "03", "title": "Compare the preview", "desc": "Check the cutout edge between the original and the transparent image." },
+      { "step": "04", "title": "Download the PNG", "desc": "Save the transparent image to drop into design banners or Shopee/Lazada listings." }
+    ],
+    "features": [
+      { "title": "100% automatic", "desc": "No manual brushing needed - AI removes the background the moment you upload." },
+      { "title": "Handles tricky details", "desc": "Smoothly processes hard details like fine hair, pet fur, and transparent edges." },
+      { "title": "High-resolution PNG output", "desc": "Keeps the original size and sharpness of your photo." }
+    ],
+    "faqList": [
+      { "q": "Does removing the background reduce the image resolution?", "a": "The system fully preserves the original image resolution without shrinking it." },
+      { "q": "Can the tool handle product photos for selling online?", "a": "Perfect for that! Most sellers use OneForAll to cut products onto a white background for marketplace listings." }
+    ]
+  },
+  "/image-compressor": {
+    "title": "Online Image Compressor: 80% Smaller, Same Sharpness | OneForAll",
+    "metaDescription": "Compress JPG, PNG, and WebP images online with maximum size reduction the naked eye cannot detect. A highly effective way to speed up page load times.",
+    "h1": "Smart Online Image Compressor",
+    "subtitle": "Shrink image files by up to 80% to save storage, send emails faster, and boost your Google PageSpeed score.",
+    "badge": "Smart Image Compressor",
+    "supportedFormatsDesc": "JPG, JPEG, PNG, WEBP, AVIF, GIF.",
+    "howItWorksSteps": [
+      { "step": "01", "title": "Upload the image to compress", "desc": "Pick a heavy image file (JPG, PNG, WebP) from your library." },
+      { "step": "02", "title": "Smart compression algorithm", "desc": "The system strips out redundant metadata and optimizes the compression matrix." },
+      { "step": "03", "title": "Review the compression ratio", "desc": "See how many KB you saved compared to the original size." },
+      { "step": "04", "title": "Save the lightweight image", "desc": "Download the ultra-light image, ready to use." }
+    ],
+    "features": [
+      { "title": "Outstanding compression ratio", "desc": "Cuts file size by 60% to 85% with no visible difference to the naked eye." },
+      { "title": "Google PageSpeed optimization", "desc": "The ideal solution for developers and site owners who need a faster website." },
+      { "title": "Extremely fast processing", "desc": "Under 1 second per image on the FastAPI server." }
+    ],
+    "faqList": [
+      { "q": "Does compressing an image blur the details?", "a": "We use a smart (selectively lossy) compression algorithm that fully preserves the necessary color ranges and contrast." }
+    ]
+  },
+  "/image-resizer": {
+    "title": "Image Resizer: Exact Pixels & Aspect Ratio | OneForAll",
+    "metaDescription": "Resize images online precisely by width, height, or percentage. Guaranteed no distortion or loss of sharpness.",
+    "h1": "Precise Image Resizer",
+    "subtitle": "Adjust pixel dimensions for avatars, Facebook banners, YouTube thumbnails, or profile pictures in a flash.",
+    "badge": "Precision Image Resizer",
+    "supportedFormatsDesc": "JPG, PNG, WEBP, AVIF, BMP.",
+    "howItWorksSteps": [
+      { "step": "01", "title": "Choose the image to resize", "desc": "Upload any image from your device." },
+      { "step": "02", "title": "Pick the size you want", "desc": "Choose a standard size (e.g., 1200x630, 800x800, 1920x1080)." },
+      { "step": "03", "title": "Pixel interpolation", "desc": "The Lanczos algorithm recreates razor-sharp edges." },
+      { "step": "04", "title": "Download the resized image", "desc": "Save the perfectly sized image and post it right away." }
+    ],
+    "features": [
+      { "title": "Aspect ratio lock", "desc": "The matching height is calculated automatically from the width to avoid distortion." },
+      { "title": "Social media sizes built in", "desc": "Suggested standard sizes for Facebook, Instagram, YouTube, and TikTok." },
+      { "title": "High pixel quality", "desc": "Advanced interpolation keeps images sharp after scaling." }
+    ],
+    "faqList": [
+      { "q": "How do I keep my image from distorting when resizing?", "a": "The system keeps the aspect ratio locked by default. When you enter a width, the height is calculated automatically in sync." }
+    ]
+  }
+}

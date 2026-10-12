@@ -1,6 +1,8 @@
 import { useState, type FormEvent } from 'react'
 import { Link2, Clipboard, X, ArrowRight, AlertCircle } from 'lucide-react'
 import { Button } from './Button'
+import { SegmentedControl } from './SegmentedControl'
+import { t } from '../../i18n/langStore'
 
 export interface UrlInputFormProps {
   platform?: 'youtube' | 'tiktok'
@@ -38,25 +40,25 @@ export function UrlInputForm({
   const validateUrl = (value: string): boolean => {
     const trimmed = value.trim()
     if (!trimmed) {
-      setValidationError('Vui lòng nhập hoặc dán đường dẫn video.')
+      setValidationError(t('urlInput.empty'))
       return false
     }
 
     try {
       new URL(trimmed)
     } catch {
-      setValidationError('Đường dẫn không hợp lệ. Vui lòng nhập URL bắt đầu bằng https://')
+      setValidationError(t('urlInput.invalid'))
       return false
     }
 
     if (platform === 'youtube') {
       if (!trimmed.includes('youtube.com') && !trimmed.includes('youtu.be')) {
-        setValidationError('Vui lòng nhập liên kết hợp lệ từ YouTube (youtube.com hoặc youtu.be).')
+        setValidationError(t('urlInput.youtubeOnly'))
         return false
       }
     } else if (platform === 'tiktok') {
       if (!trimmed.includes('tiktok.com')) {
-        setValidationError('Vui lòng nhập liên kết video hợp lệ từ TikTok (tiktok.com).')
+        setValidationError(t('urlInput.tiktokOnly'))
         return false
       }
     }
@@ -74,14 +76,14 @@ export function UrlInputForm({
 
   const placeholderText =
     platform === 'youtube'
-      ? 'Dán liên kết video YouTube tại đây (ví dụ: https://www.youtube.com/watch?v=...)'
+      ? t('urlInput.placeholderYoutube')
       : platform === 'tiktok'
-      ? 'Dán liên kết video TikTok tại đây (ví dụ: https://www.tiktok.com/@user/video/...)'
-      : 'Dán đường dẫn URL cần xử lý...'
+      ? t('urlInput.placeholderTiktok')
+      : t('urlInput.placeholderGeneric')
 
   return (
     <form onSubmit={handleSubmit} className="w-full max-w-3xl mx-auto space-y-4">
-      <div className="relative flex flex-col sm:flex-row items-stretch sm:items-center bg-[#14141b] border-2 border-[rgba(255,59,48,0.30)] hover:border-[rgba(255,59,48,0.55)] focus-within:border-[rgba(255,59,48,0.55)] p-1.5 sm:p-2 transition-all clip-corner-lg input-3d">
+      <div className="relative flex flex-col sm:flex-row items-stretch sm:items-center bg-surface border-2 border-[rgba(255,59,48,0.30)] hover:border-[rgba(255,59,48,0.55)] focus-within:border-[rgba(255,59,48,0.55)] p-1.5 sm:p-2 transition-all clip-corner-lg input-3d">
         <div className="flex items-center flex-1 px-3 py-2 sm:py-1">
           <Link2 className="w-5 h-5 text-slate-400 shrink-0 mr-2.5" />
           <input
@@ -94,7 +96,7 @@ export function UrlInputForm({
             placeholder={placeholderText}
             disabled={disabled || isLoading}
             className="w-full bg-transparent text-sm sm:text-base text-slate-100 placeholder-slate-400 focus:outline-none"
-            aria-label="URL input"
+            aria-label={t('urlInput.aria')}
           />
           {url ? (
             <button
@@ -104,7 +106,7 @@ export function UrlInputForm({
                 setValidationError(null)
               }}
               className="p-1 text-slate-400 hover:text-slate-200 clip-corner-btn"
-              title="Xóa"
+              title={t('common.clear')}
             >
               <X className="w-4 h-4" />
             </button>
@@ -112,16 +114,16 @@ export function UrlInputForm({
             <button
               type="button"
               onClick={handlePaste}
-              className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-slate-300 hover:text-[#FF3B30] bg-[#1a1a24] hover:bg-[#ff3b30]/10 border border-[#2a2a35] transition-colors cursor-pointer clip-corner-btn"
-              title="Dán từ bộ nhớ tạm"
+              className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-slate-300 hover:text-[#FF3B30] bg-elev hover:bg-[#ff3b30]/10 border border-edge transition-colors cursor-pointer clip-corner-btn"
+              title={t('urlInput.pasteFromClipboard')}
             >
               <Clipboard className="w-3.5 h-3.5" />
-              <span>Dán</span>
+              <span>{t('urlInput.paste')}</span>
             </button>
           )}
         </div>
 
-        <div className="flex items-center gap-2 pt-2 sm:pt-0 sm:pl-2 border-t sm:border-t-0 sm:border-l border-[#2a2a35]/60">
+        <div className="flex items-center gap-2 pt-2 sm:pt-0 sm:pl-2 border-t sm:border-t-0 sm:border-l border-edge/60">
           <Button
             type="submit"
             variant="primary"
@@ -131,29 +133,21 @@ export function UrlInputForm({
             rightIcon={<ArrowRight className="w-4 h-4" />}
             className="w-full sm:w-auto px-6 py-2.5"
           >
-            Bắt đầu tải
+            {t('urlInput.startDownload')}
           </Button>
         </div>
       </div>
 
-      {/* Format Selection Pills */}
+      {/* Format Segmented Control */}
       {formats.length > 1 && (
-        <div className="flex items-center justify-center sm:justify-start gap-2 flex-wrap text-xs">
-          <span className="text-slate-400 font-medium mr-1">Định dạng đầu ra:</span>
-          {formats.map((fmt) => (
-            <button
-              key={fmt}
-              type="button"
-              onClick={() => setSelectedFormat(fmt)}
-              className={`px-3 py-1 font-mono text-xs font-semibold uppercase transition-all cursor-pointer clip-corner-btn ${
-                selectedFormat === fmt
-                  ? 'bg-brand-gradient text-white'
-                  : 'bg-[#14141b] text-slate-300 border border-[#2a2a35] hover:border-[rgba(255,59,48,0.40)]'
-              }`}
-            >
-              .{fmt}
-            </button>
-          ))}
+        <div className="flex items-center justify-center sm:justify-start gap-4 flex-wrap text-xs">
+          <span className="text-slate-400 font-medium whitespace-nowrap">{t('urlInput.outputFormat')}</span>
+          <SegmentedControl
+            options={formats}
+            value={selectedFormat}
+            onChange={setSelectedFormat}
+            ariaLabel={t('urlInput.outputFormat')}
+          />
         </div>
       )}
 

@@ -32,11 +32,11 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       primary:
         'bg-brand-gradient text-white hover:brightness-110 border-0 btn-3d clip-corner-btn',
       secondary:
-        'bg-[#14141b] text-slate-200 border border-[rgba(255,59,48,0.35)] hover:bg-[#ff3b30]/5 hover:border-[rgba(255,59,48,0.6)] clip-corner-btn',
+        'bg-surface text-slate-200 border border-[rgba(255,59,48,0.35)] hover:bg-[#ff3b30]/5 hover:border-[rgba(255,59,48,0.6)] clip-corner-btn',
       outline:
         'bg-transparent text-[#FF3B30] border border-[#FF3B30]/50 hover:bg-[#FF3B30]/5 hover:border-[#FF3B30] clip-corner-btn',
       ghost:
-        'bg-transparent text-slate-300 hover:bg-[#ff3b30]/10 hover:text-white border-transparent clip-corner-btn',
+        'bg-transparent text-slate-300 hover:bg-[#ff3b30]/10 hover:text-ink border-transparent clip-corner-btn',
       glow:
         'bg-brand-gradient text-white hover:brightness-110 font-semibold btn-3d clip-corner-btn',
     }

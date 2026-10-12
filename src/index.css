@@ -1,5 +1,49 @@
 @import "tailwindcss";
 
+/* iPad mini portrait = 744px, nằm ngay dưới md mặc định (768px) nên bị xếp vào
+   layout mobile 1 cột dù màn rộng. Hạ md xuống 740px để khu tablet bật đúng. */
+@theme {
+  --breakpoint-md: 740px;
+
+  /* Semantic surface/ink utilities (bg-page, bg-surface, bg-elev, border-edge,
+     text-ink). Values reference the runtime tokens below so html[data-theme]
+     overrides cascade into every utility automatically. */
+  --color-page: var(--bg-base);
+  --color-surface: var(--bg-surface);
+  --color-elev: var(--bg-elevated);
+  --color-edge: var(--border-subtle);
+  --color-ink: var(--text-ink);
+}
+
+/* Light theme: override runtime tokens + flip the slate/soft-accent scales
+   (Tailwind v4 emits text-slate-* as var(--color-slate-*), so one override
+   re-themes all secondary text without touching components). */
+html[data-theme='light'] {
+  color-scheme: light;
+
+  --bg-base: #f3f4f9;
+  --bg-surface: #ffffff;
+  --bg-elevated: #e9ebf4;
+  --border-subtle: #d8dbe8;
+  --text-primary: #2a2f3d;
+  --text-muted: #5b6472;
+  --text-ink: #171a24;
+
+  --color-slate-100: #202637;
+  --color-slate-200: #2b3346;
+  --color-slate-300: #3a4459;
+  --color-slate-400: #55607a;
+  --color-slate-500: #4d566b;
+  --color-slate-600: #3f4757;
+
+  --color-emerald-400: #059669;
+  --color-amber-400: #b45309;
+  --color-indigo-400: #4f46e5;
+  --color-indigo-500: #4338ca;
+  --color-rose-300: #e11d48;
+  --color-rose-400: #be123c;
+}
+
 @layer base {
   :root {
     color-scheme: dark;
@@ -12,6 +56,7 @@
     /* Text */
     --text-primary:       #e8e9ed;
     --text-muted:         #9ca3af;
+    --text-ink:           #ffffff;
 
     /* Brand palette */
     --brand-red:          #ff3b30;
@@ -152,9 +197,33 @@
 /*
   Two thin offset lines (bottom + right) drawn via ::after.
   Clipped shapes carry through clip-path: inherit.
+
+  Hover system (one source of truth): pointer tilt/spotlight are written by
+  cardMotion.ts into --rx/--ry/--gx/--gy; lift & glow are composed here in CSS.
+  Only .card-tilt elements receive rotation from JS.
 */
 .card-3d {
   position: relative;
+  transform: perspective(700px)
+    rotateX(var(--rx, 0deg))
+    rotateY(var(--ry, 0deg))
+    translateY(var(--lift, 0px));
+  transition: transform 0.25s ease-out, border-color 0.25s ease-out, filter 0.25s ease-out;
+}
+
+/* Soft red spotlight that follows the pointer (hidden on dim cards) */
+.card-3d:not(.card-3d-dim)::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    240px 180px at var(--gx, 50%) var(--gy, 30%),
+    rgba(255, 59, 48, 0.09),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.25s ease-out;
+  pointer-events: none;
 }
 
 .card-3d::after {
@@ -173,12 +242,44 @@
   border-radius: inherit;
   pointer-events: none;
   z-index: 0;
+  transition: border-color 0.25s ease-out;
 }
 
 /* Dimmer variant for secondary / non-interactive cards */
 .card-3d-dim::after {
   border-right-color:  var(--border-edge-dim);
   border-bottom-color: var(--border-edge-dim);
+}
+
+@media (hover: hover) {
+  .card-3d:not(.card-3d-dim):not([data-disabled]):not([aria-disabled="true"]):hover {
+    --lift: -3px;
+    filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.5));
+  }
+  .card-3d:not(.card-3d-dim):not([data-disabled]):not([aria-disabled="true"]):hover::before {
+    opacity: 1;
+  }
+  .card-3d:not(.card-3d-dim):not([data-disabled]):not([aria-disabled="true"]):hover::after {
+    border-right-color:  rgba(255, 107, 74, 0.8);
+    border-bottom-color: rgba(255, 107, 74, 0.8);
+  }
+  /* Press feedback: card settles back onto the surface */
+  .card-3d:not(.card-3d-dim):active {
+    --lift: 0px;
+  }
+}
+
+/* Keyboard focus stays visible despite the clip-path */
+.card-3d:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--border-brand-vivid);
+}
+
+/* Disabled: dimmed, no hover behavior (hover rules above exclude it) */
+.card-3d[data-disabled],
+.card-3d[aria-disabled="true"] {
+  opacity: 0.55;
+  filter: none;
 }
 
 /* ─── 3-D Extrusion: upload zones / large inputs ────────────────────────── */
@@ -230,14 +331,269 @@
   }
 }
 
+/* ─── Hidden scrollbar (cuộn cảm ứng/trackpad vẫn hoạt động) ─────────────── */
+.scrollbar-none {
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
 /* ─── Page transition ────────────────────────────────────────────────────── */
-@keyframes page-enter {
-  0%   { opacity: 0; transform: translateY(6px); }
+@keyframes page-enter {  0%   { opacity: 0; transform: translateY(6px); }
   100% { opacity: 1; transform: translateY(0);   }
 }
 
 .animate-page-enter {
   animation: page-enter 220ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ─── Heading reveal + hơi ơ gradient quét nhẹ một lượt khi vào trang ────── */
+@keyframes heading-in {
+  0%   { opacity: 0; transform: translateY(8px); }
+  100% { opacity: 1; transform: translateY(0);   }
+}
+
+.heading-in {
+  animation: heading-in 500ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* .text-brand-gradient đặt background: một màu gradient cố định, nên lớp này
+   chỉ thêm size/position để animation "shine" chạy được trên chữ. */
+.text-brand-gradient.text-shine {
+  background-size: 200% auto;
+  animation:
+    heading-in 500ms cubic-bezier(0.16, 1, 0.3, 1) both,
+    shine 2.4s ease-out 0.35s 1;
+}
+
+@keyframes shine {
+  0%   { background-position: 0% center; }
+  100% { background-position: 100% center; }
+}
+
+/* ─── Theme toggle: rail góc cạnh theo house style (clip + crimson) ─────── */
+/* Trạng thái đọc từ html[data-theme] (theme.ts set) nên màu nền/thumb đổi
+   theo đúng theme thật của site, không cần class on/off từ React. */
+.theme-toggle {
+  position: relative;
+  width: 64px;
+  height: 32px;
+  border: 1px solid var(--border-subtle);
+  background: linear-gradient(180deg, #1b1b23 0%, var(--bg-surface) 100%);
+  box-shadow:
+    inset 0 2px 5px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 2px 6px rgba(0, 0, 0, 0.35);
+  transition: background 250ms ease, border-color 250ms ease, box-shadow 250ms ease, transform 120ms ease;
+}
+
+.theme-toggle:active {
+  transform: scale(0.97);
+}
+
+.theme-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #252530;
+  color: #cbd0da;
+  /* cùng ngôn ngữ vát góc với clip-corner-btn, bo 5px trên thumb 24px */
+  clip-path: polygon(0 0, calc(100% - 5px) 0, 100% 5px, 100% 100%, 5px 100%, 0 calc(100% - 5px));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 -2px 6px rgba(255, 59, 48, 0.18);
+  transition: transform 250ms cubic-bezier(0.4, 0, 0.2, 1), background 250ms ease, color 250ms ease, box-shadow 250ms ease;
+}
+
+html[data-theme='light'] .theme-toggle {
+  border-color: #d8dbe8;
+  background: linear-gradient(180deg, #eef0f4 0%, #e5e7eb 100%);
+  box-shadow:
+    inset 0 2px 4px rgba(0, 0, 0, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 2px 6px rgba(15, 23, 42, 0.12);
+}
+
+html[data-theme='light'] .theme-thumb {
+  transform: translateX(32px);
+  background: #ffffff;
+  color: #ff6b4a;
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    inset 0 -2px 0 rgba(255, 107, 74, 0.35),
+    0 2px 4px rgba(15, 23, 42, 0.2);
+}
+
+/* ─── Animated workflow pipeline ────────────────────────────────────────── */
+/*
+  CHỈ là minh họa quy trình — không phản ánh tiến trình job thật, không ghi đè
+  telemetry (JobProgress/SSE giữ nguyên). Đồng bộ bằng animation-delay theo --step
+  (0..3) đặt inline trên wrapper; một chu kỳ 8s, mỗi bước 2s, không JS timer.
+*/
+.pipeline-step {
+  position: relative;
+  animation: step-lift 8s ease-in-out infinite;
+  animation-delay: calc(var(--step) * 2s);
+}
+
+/* Đoạn nối nằm trong gap của grid nên không bao giờ đè card/no bị clip-path cắt */
+.pipeline-step::before {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  background: rgba(255, 59, 48, 0.15);
+}
+
+/* Luồng sáng: opacity 0 mặc định → reduced-motion (animation:none) là vô hình,
+   chỉ còn line tĩnh */
+.pipeline-step::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  opacity: 0;
+  animation: beam-y 8s linear infinite;
+  animation-delay: calc(var(--step) * 2s - 2s);
+}
+
+.pipeline-first::before,
+.pipeline-first::after {
+  display: none;
+}
+
+/* Mobile: pipeline dọc, segment đứng giữa 2 card */
+.pipeline-step::before {
+  top: -1.5rem;
+  left: 50%;
+  margin-left: -1px;
+  width: 2px;
+  height: 1.5rem;
+}
+.pipeline-step::after {
+  top: -1.35rem;
+  left: 50%;
+  margin-left: -1px;
+  width: 2px;
+  height: 0.9rem;
+  background: linear-gradient(180deg, transparent, #ff6b4a 35%, #ff3b30 65%, transparent);
+  box-shadow: 0 0 8px rgba(255, 59, 48, 0.55);
+}
+
+/* Khung sáng trên card khi luồng chạy tới (overlay riêng để không cướp
+   border-hover của .card-3d) */
+.pipeline-flare {
+  border: 1px solid transparent;
+  opacity: 0;
+  animation: flare-frame 8s ease-out infinite;
+  animation-delay: calc(var(--step) * 2s);
+}
+
+.pipeline-step .step-num {
+  animation: flare-num 8s ease-in-out infinite;
+  animation-delay: calc(var(--step) * 2s);
+}
+.pipeline-step .step-icon {
+  animation: flare-icon 8s ease-in-out infinite;
+  animation-delay: calc(var(--step) * 2s);
+}
+
+@keyframes step-lift {
+  0%, 22%, 100% { transform: translateY(0); }
+  5%, 14%       { transform: translateY(-2px); }
+}
+@keyframes flare-frame {
+  0%, 100%          { opacity: 0; border-color: transparent; box-shadow: none; }
+  5%, 14%           { opacity: 1; border-color: rgba(255, 107, 74, 0.7);
+                      box-shadow: inset 0 1px 0 rgba(255, 107, 74, 0.5), 0 0 18px rgba(255, 59, 48, 0.10); }
+  20%               { opacity: 0; }
+}
+@keyframes flare-num {
+  0%, 22%, 100% { text-shadow: none; }
+  5%, 14%       { text-shadow: 0 0 14px rgba(255, 90, 60, 0.9); }
+}
+@keyframes flare-icon {
+  0%, 22%, 100% { box-shadow: none; }
+  5%, 14%       { box-shadow: inset 0 0 0 1px rgba(255, 59, 48, 0.6), 0 0 10px rgba(255, 59, 48, 0.25); }
+}
+@keyframes beam-y {
+  0%           { transform: translateY(-6px); opacity: 0; }
+  4%           { opacity: 1; }
+  21%          { transform: translateY(6px); opacity: 1; }
+  25%, 100%    { transform: translateY(6px); opacity: 0; }
+}
+@keyframes beam-x {
+  0%           { transform: translateX(-6px); opacity: 0; }
+  4%           { opacity: 1; }
+  21%          { transform: translateX(10px); opacity: 1; }
+  25%, 100%    { transform: translateX(10px); opacity: 0; }
+}
+
+/* Tablet 2 cột: card cột phải nối ngang, card mở đầu hàng mới nối dọc xuống
+   theo đúng hướng luồng 2 → 3 */
+@media (min-width: 768px) {
+  .pipeline-step:not(.pipeline-first)::before {
+    top: 50%;
+    left: -1.5rem;
+    right: auto;
+    margin: -1px 0 0 0;
+    width: 1.5rem;
+    height: 2px;
+  }
+  .pipeline-step:not(.pipeline-first)::after {
+    top: calc(50% - 1px);
+    left: -1.5rem;
+    right: auto;
+    margin: 0;
+    width: 0.9rem;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #ff6b4a 35%, #ff3b30 65%, transparent);
+    animation-name: beam-x;
+  }
+  .pipeline-step:nth-child(odd):not(.pipeline-first)::before {
+    top: -1.5rem;
+    left: auto;
+    right: -0.8rem;
+    width: 2px;
+    height: 1.5rem;
+  }
+  .pipeline-step:nth-child(odd):not(.pipeline-first)::after {
+    top: -1.35rem;
+    left: auto;
+    right: -0.8rem;
+    width: 2px;
+    height: 0.9rem;
+    background: linear-gradient(180deg, transparent, #ff6b4a 35%, #ff3b30 65%, transparent);
+    animation-name: beam-y;
+  }
+}
+
+/* Desktop 4 cột: tất cả nối ngang */
+@media (min-width: 1024px) {
+  .pipeline-step:nth-child(odd):not(.pipeline-first)::before,
+  .pipeline-step:not(.pipeline-first)::before {
+    top: 50%;
+    left: -1.5rem;
+    right: auto;
+    margin: -1px 0 0 0;
+    width: 1.5rem;
+    height: 2px;
+  }
+  .pipeline-step:nth-child(odd):not(.pipeline-first)::after,
+  .pipeline-step:not(.pipeline-first)::after {
+    top: calc(50% - 1px);
+    left: -1.5rem;
+    right: auto;
+    margin: 0;
+    width: 0.9rem;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #ff6b4a 35%, #ff3b30 65%, transparent);
+    animation-name: beam-x;
+  }
 }
 
 /* ─── Indeterminate progress ───────────────────────────────────────────── */
@@ -250,10 +606,58 @@
   animation: loading-sweep 1.4s ease-in-out infinite;
 }
 
+/* ─── Toast ──────────────────────────────────────────────────────────────── */
+.toast-item {
+  filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.35));
+}
+html[data-theme='light'] .toast-item {
+  filter: drop-shadow(0 8px 20px rgba(15, 23, 42, 0.16));
+}
+.toast-enter {
+  animation: toast-in 200ms cubic-bezier(0.21, 1.02, 0.73, 1) both;
+}
+.toast-leave {
+  animation: toast-out 160ms ease-in both;
+}
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateX(16px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes toast-out {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: translateX(16px) scale(0.98);
+  }
+}
+
 /* ─── Reduced motion ─────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .animate-page-enter { animation: none; }
+  .toast-enter, .toast-leave { animation: none; }
   .animate-loading-sweep { animation: none; width: 100%; opacity: 0.35; }
+  .heading-in { animation: none; }
+  .text-brand-gradient.text-shine { animation: none; background-size: auto; }
+  .theme-toggle,
+  .theme-thumb { transition: none; }
   .btn-3d,
   .btn-3d::after     { transition: none; }
+  .card-3d           { transform: none; transition: border-color 0.25s ease-out; }
+  .card-3d::before   { display: none; }
+  .card-3d:hover     { filter: none; }
+  /* Pipeline: giữ line tĩnh + thứ tự số rõ, tắt toàn bộ chuyển động */
+  .pipeline-step,
+  .pipeline-flare,
+  .pipeline-step .step-num,
+  .pipeline-step .step-icon { animation: none; }
+  .pipeline-step::after { display: none; }
 }

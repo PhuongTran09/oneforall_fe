@@ -1,6 +1,7 @@
-import { useMemo, useState, useRef, type ChangeEvent, type DragEvent } from 'react'
+import { useEffect, useMemo, useState, useRef, type ChangeEvent, type DragEvent } from 'react'
 import { UploadCloud, File as FileIcon, X, ArrowRight } from 'lucide-react'
 import { Button } from './Button'
+import { SegmentedControl } from './SegmentedControl'
 import { AdvancedParamsPanel } from './AdvancedParamsPanel'
 import { detectFileFormat, getSupportedTargets } from '../../config/conversionMatrix'
 import {
@@ -10,6 +11,8 @@ import {
   type ParamOptions,
   type ParamValues,
 } from '../../config/conversionParams'
+import type { ToolFormState } from '../../utils/toolStateStore'
+import { t } from '../../i18n/langStore'
 
 export interface FileUploaderProps {
   acceptedTypes?: string
@@ -25,6 +28,10 @@ export interface FileUploaderProps {
   /** Extra options the backend honors for the current source + target. Empty list hides the panel. */
   resolveFields?: (sourceFormat: string | null, targetFormat: string) => ParamField[]
   initialParams?: ParamValues
+  /** Form đã chọn của lần ghé trước — trang bị unmount khi đổi route nên phải đưa vào lại. */
+  initialForm?: ToolFormState | null
+  /** Báo lên cha mỗi khi file/định dạng/tùy chọn đổi để nó lưu lại khi người dùng rời trang. */
+  onFormChange?: (form: ToolFormState | null) => void
   onSubmit: (file: File, format: string, options: ParamOptions) => void
   isLoading?: boolean
   disabled?: boolean
@@ -34,19 +41,28 @@ export function FileUploader({
   acceptedTypes = '*/*',
   outputFormats,
   defaultFormat,
-  actionLabel = 'Bắt đầu xử lý',
+  actionLabel,
   filterTargetsBySource = false,
   resolveFields,
   initialParams,
+  initialForm,
+  onFormChange,
   onSubmit,
   isLoading = false,
   disabled = false,
 }: FileUploaderProps) {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null)
-  const [pickedFormat, setPickedFormat] = useState<string | null>(null)
-  const [paramValues, setParamValues] = useState<ParamValues>(initialParams ?? {})
+  const [selectedFile, setSelectedFile] = useState<File | null>(initialForm?.file ?? null)
+  const [pickedFormat, setPickedFormat] = useState<string | null>(initialForm?.format ?? null)
+  const submitLabel = actionLabel ?? t('uploader.startProcessing')
+  const [paramValues, setParamValues] = useState<ParamValues>(
+    initialForm?.params ?? initialParams ?? {},
+  )
   const [isDragging, setIsDragging] = useState(false)
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+  const [previewUrl, setPreviewUrl] = useState<string | null>(() =>
+    // shortcut: tạo blob URL cho ảnh khôi phục ngay trong useState init — StrictMode dev
+    // double-render sẽ rò một URL nhẹ; bản build không có vấn đề này.
+    initialForm?.file?.type.startsWith('image/') ? URL.createObjectURL(initialForm.file) : null,
+  )
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const sourceFormat = selectedFile ? detectFileFormat(selectedFile) : null
@@ -74,6 +90,12 @@ export function FileUploader({
   // Options are built from the visible fields only, so a value left behind when the user
   // switches target can never reach the wire.
   const invalidParam = findInvalidParam(paramFields, paramValues)
+
+  useEffect(() => {
+    onFormChange?.(
+      selectedFile ? { file: selectedFile, format: activeFormat, params: paramValues } : null,
+    )
+  }, [selectedFile, activeFormat, paramValues, onFormChange])
 
   const handleParamChange = (key: string, value: string | boolean) => {
     setParamValues((previous) => ({ ...previous, [key]: value }))
@@ -152,8 +174,8 @@ export function FileUploader({
           isDragging
             ? 'border-[#ff3b30]/60 bg-[#ff3b30]/10'
             : selectedFile
-            ? 'border-[#2a2a35] bg-[#14141b] cursor-default'
-            : 'border-[rgba(255,59,48,0.30)] hover:border-[rgba(255,59,48,0.60)] bg-[#14141b] hover:bg-[#ff3b30]/5'
+            ? 'border-edge bg-surface cursor-default'
+            : 'border-[rgba(255,59,48,0.30)] hover:border-[rgba(255,59,48,0.60)] bg-surface hover:bg-[#ff3b30]/5'
         }`}
       >
         <input
@@ -172,8 +194,8 @@ export function FileUploader({
               {previewUrl ? (
                 <img
                   src={previewUrl}
-                  alt="Xem trước ảnh"
-                  className="w-16 h-16 object-cover border border-[#2a2a35] shrink-0 clip-corner-btn"
+                  alt={t('uploader.previewAlt')}
+                  className="w-16 h-16 object-cover border border-edge shrink-0 clip-corner-btn"
                 />
               ) : (
                 <div className="w-14 h-14 bg-[#ff3b30]/10 border border-[#ff3b30]/30 flex items-center justify-center text-[#FF3B30] shrink-0">
@@ -185,7 +207,7 @@ export function FileUploader({
                   {selectedFile.name}
                 </p>
                 <p className="text-xs text-slate-400 font-mono">
-                  Dung lượng: {formatFileSize(selectedFile.size)}
+                  {t('uploader.fileSize')}: {formatFileSize(selectedFile.size)}
                 </p>
               </div>
             </div>
@@ -198,7 +220,7 @@ export function FileUploader({
               }}
               disabled={isLoading}
               className="p-1.5 text-slate-400 hover:text-[#FF3B30] hover:bg-[#ff3b30]/10 transition-colors cursor-pointer clip-corner-btn"
-              title="Gỡ bỏ tệp"
+              title={t('uploader.removeFile')}
             >
               <X className="w-5 h-5" />
             </button>
@@ -210,11 +232,11 @@ export function FileUploader({
             </div>
             <div className="space-y-1">
               <p className="text-base font-semibold text-slate-100">
-                Kéo thả tệp tin vào đây, hoặc{' '}
-                <span className="text-[#FF3B30] underline underline-offset-2">duyệt từ thiết bị</span>
+                {t('uploader.dropzonePre')}{' '}
+                <span className="text-[#FF3B30] underline underline-offset-2">{t('uploader.dropzoneBrowse')}</span>
               </p>
               <p className="text-xs text-slate-400">
-                Hỗ trợ tải lên tối đa 50MB (Miễn phí) • Bảo mật và xóa tự động sau 24 giờ
+                {t('uploader.dropzoneHint')}
               </p>
             </div>
           </div>
@@ -223,27 +245,17 @@ export function FileUploader({
 
       {/* Format Selection, Advanced Options & Submit Action */}
       {selectedFile && (
-        <div className="p-4 bg-[#14141b] border border-[rgba(255,59,48,0.25)] space-y-4 animate-fade-in clip-corner-lg">
+        <div className="p-4 bg-surface border border-[rgba(255,59,48,0.25)] space-y-4 animate-fade-in clip-corner-lg">
           {availableFormats.length > 0 ? (
             <>
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-xs font-semibold text-slate-300">Định dạng đích:</span>
-                <div className="flex items-center gap-1.5 flex-wrap">
-                  {availableFormats.map((fmt) => (
-                    <button
-                      key={fmt}
-                      type="button"
-                      onClick={() => setPickedFormat(fmt)}
-                      className={`px-3 py-1 font-mono text-xs font-semibold uppercase transition-all cursor-pointer clip-corner-btn ${
-                        activeFormat === fmt
-                          ? 'bg-brand-gradient text-white'
-                          : 'bg-[#1a1a24] text-slate-200 hover:bg-[#ff3b30]/15 border border-[#2a2a35] hover:border-[rgba(255,59,48,0.40)]'
-                      }`}
-                    >
-                      .{fmt}
-                    </button>
-                  ))}
-                </div>
+              <div className="flex items-center gap-4 flex-wrap">
+                <span className="text-xs font-semibold text-slate-300">{t('uploader.targetFormat')}</span>
+                <SegmentedControl
+                  options={availableFormats}
+                  value={activeFormat}
+                  onChange={setPickedFormat}
+                  ariaLabel={t('uploader.targetFormat')}
+                />
               </div>
 
               <AdvancedParamsPanel
@@ -257,14 +269,14 @@ export function FileUploader({
           ) : (
             <p className="text-xs text-slate-400 leading-relaxed">
               {sourceFormat
-                ? `Chưa hỗ trợ chuyển đổi tệp .${sourceFormat} tại công cụ này.`
-                : 'Không nhận diện được định dạng của tệp này.'}
+                ? t('uploader.unsupportedFile', { format: sourceFormat })
+                : t('uploader.unknownFormat')}
             </p>
           )}
 
           {invalidParam && (
             <p role="alert" className="text-xs text-[#FF3B30]">
-              Kiểm lại mục "{invalidParam.label}" trong Tùy chọn nâng cao trước khi chuyển đổi.
+              {t('uploader.invalidParam', { label: invalidParam.label })}
             </p>
           )}
 
@@ -280,7 +292,7 @@ export function FileUploader({
               rightIcon={<ArrowRight className="w-4 h-4" />}
               className="w-full sm:w-auto px-6 py-2.5"
             >
-              {actionLabel}
+              {submitLabel}
             </Button>
           </div>
         </div>

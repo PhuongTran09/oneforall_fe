@@ -3,6 +3,9 @@ import { UploadCloud, Video as VideoIcon, CheckCircle2, ArrowRight } from 'lucid
 import { Button } from '../../../components/common/Button'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../../components/common/Card'
 import { videoApi } from '../services/videoApi'
+import { describeError } from '../../../utils/apiError'
+import { showToast } from '../../../components/feedback/toastStore'
+import { t } from '../../../i18n/langStore'
 import type { VideoTask } from '../types/video.types'
 
 export function VideoWorkspace() {
@@ -25,10 +28,11 @@ export function VideoWorkspace() {
     try {
       const res = await videoApi.transcodeVideo(selectedFile, { resolution: '1080p', codec: 'h264' })
       setTask(res)
-      setMessage({ text: 'Tác vụ transcode video đã được tạo thành công!', isError: false })
+      setMessage({ text: t('ws.videoSuccess'), isError: false })
     } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : 'Xử lý video thất bại'
-      setMessage({ text: `Lỗi: ${errorMsg}`, isError: true })
+      const { type, message } = describeError(err, t('ws.videoFailed'))
+      setMessage({ text: message, isError: true })
+      showToast({ type, message })
     } finally {
       setIsLoading(false)
     }
@@ -36,26 +40,26 @@ export function VideoWorkspace() {
 
   return (
     <div className="page-container">
-      <Card className="bg-[#14141b] border border-[rgba(255,59,48,0.25)] p-6 sm:p-8">
-        <CardHeader className="p-0 pb-6 border-b border-[#2a2a35]">
+      <Card className="p-6 sm:p-8">
+        <CardHeader className="p-0 pb-6 border-b border-edge">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 bg-[#ff3b30]/10 border border-[rgba(255,59,48,0.30)] flex items-center justify-center text-[#FF6B4A] clip-corner-btn">
               <VideoIcon className="w-5 h-5" />
             </div>
             <div>
-              <CardTitle className="text-2xl">Xử lý video</CardTitle>
+              <CardTitle className="text-2xl">{t('ws.videoTitle')}</CardTitle>
               <span className="text-xs font-mono text-[#FF6B4A]">Video Transcoding Engine</span>
             </div>
           </div>
           <CardDescription>
-            Transcode độ phân giải cao 1080p/720p, nén kích thước tệp và tối ưu codec H.264 qua FastAPI backend.
+            {t('ws.videoDesc')}
           </CardDescription>
         </CardHeader>
 
         <CardContent className="p-0 pt-6 space-y-6">
           <label
             htmlFor="video-file-input"
-            className="flex flex-col items-center justify-center border-2 border-dashed border-[rgba(255,59,48,0.30)] hover:border-[rgba(255,59,48,0.60)] p-8 sm:p-12 text-center cursor-pointer bg-[#0a0a0f] hover:bg-[#ff3b30]/5 transition-all group clip-corner-lg input-3d"
+            className="flex flex-col items-center justify-center border-2 border-dashed border-[rgba(255,59,48,0.30)] hover:border-[rgba(255,59,48,0.60)] p-8 sm:p-12 text-center cursor-pointer bg-page hover:bg-[#ff3b30]/5 transition-all group clip-corner-lg input-3d"
           >
             <input
               id="video-file-input"
@@ -69,17 +73,17 @@ export function VideoWorkspace() {
             </div>
             {selectedFile ? (
               <div className="space-y-1">
-                <p className="text-sm font-semibold text-white">{selectedFile.name}</p>
+                <p className="text-sm font-semibold text-ink">{selectedFile.name}</p>
                 <p className="text-xs text-slate-400">
-                  Dung lượng: {(selectedFile.size / (1024 * 1024)).toFixed(1)} MB
+                  {t('uploader.fileSize')}: {(selectedFile.size / (1024 * 1024)).toFixed(1)} MB
                 </p>
               </div>
             ) : (
               <div className="space-y-1">
                 <p className="text-sm font-medium text-slate-100">
-                  Kéo thả hoặc nhấp để chọn tệp video
+                  {t('ws.videoDropzoneTitle')}
                 </p>
-                <p className="text-xs text-slate-400">Hỗ trợ MP4, MOV, MKV, AVI, WEBM</p>
+                <p className="text-xs text-slate-400">{t('ws.videoDropzoneHint')}</p>
               </div>
             )}
           </label>
@@ -93,7 +97,7 @@ export function VideoWorkspace() {
               onClick={handleProcess}
               rightIcon={<ArrowRight className="w-4 h-4" />}
             >
-              Bắt đầu xử lý video
+              {t('ws.videoStart')}
             </Button>
           </div>
 
@@ -111,10 +115,10 @@ export function VideoWorkspace() {
           )}
 
           {task && (
-            <div className="p-4 bg-[#0a0a0f] border border-[#2a2a35] space-y-2 clip-corner-card">
-              <h4 className="text-sm font-semibold text-slate-100">Thông tin tác vụ:</h4>
+            <div className="p-4 bg-page border border-edge space-y-2 clip-corner-card">
+              <h4 className="text-sm font-semibold text-slate-100">{t('ws.videoTaskInfo')}:</h4>
               <p className="text-xs text-slate-400">
-                Trạng thái: <strong className="text-emerald-400">{task.status}</strong>
+                {t('ws.status')}: <strong className="text-emerald-400">{task.status}</strong>
               </p>
             </div>
           )}

@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react'
 import type { AsyncState } from '../types'
+import { t } from '../i18n/langStore'
 
 export function useAsync<T>() {
   const [state, setState] = useState<AsyncState<T>>({
@@ -15,7 +16,7 @@ export function useAsync<T>() {
       setState({ data, isLoading: false, error: null })
       return data
     } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : 'Đã có lỗi xảy ra'
+      const errorMsg = err instanceof Error ? err.message : t('errors.generic')
       setState({ data: null, isLoading: false, error: errorMsg })
       return null
     }

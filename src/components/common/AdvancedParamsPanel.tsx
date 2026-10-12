@@ -3,6 +3,7 @@ import { ChevronDown, Settings2 } from 'lucide-react'
 import { Button } from './Button'
 import { ParamFieldControl } from './ParamFieldControl'
 import type { ParamField, ParamValues } from '../../config/conversionParams'
+import { t } from '../../i18n/langStore'
 
 export interface AdvancedParamsPanelProps {
   fields: ParamField[]
@@ -36,7 +37,7 @@ export function AdvancedParamsPanel({
   const hasFilledValue = fields.some((field) => isFilled(field, values[field.key]))
 
   return (
-    <div className="border border-[#2a2a35] bg-[#14141b] overflow-hidden transition-colors clip-corner-card">
+    <div className="border border-edge bg-surface overflow-hidden transition-colors clip-corner-card">
       <button
         type="button"
         onClick={() => setIsOpen((open) => !open)}
@@ -45,11 +46,11 @@ export function AdvancedParamsPanel({
         className="w-full flex items-center gap-2.5 px-4 py-3 text-left cursor-pointer hover:bg-[#ff3b30]/5 transition-colors"
       >
         <Settings2 className="w-4 h-4 text-[#FF3B30] shrink-0" />
-        <span className="text-sm font-semibold text-slate-200">Tùy chọn nâng cao</span>
+        <span className="text-sm font-semibold text-slate-200">{t('params.advancedTitle')}</span>
         {hasFilledValue && (
           <span
             className="w-1.5 h-1.5 bg-[#ff3b30] shrink-0 clip-corner-btn"
-            title="Đã có tùy chọn được đặt"
+            title={t('params.hasCustom')}
           />
         )}
         <ChevronDown
@@ -62,7 +63,7 @@ export function AdvancedParamsPanel({
       {isOpen && (
         <div
           id={bodyId}
-          className="px-4 pb-4 pt-3 border-t border-[#2a2a35] bg-[#0a0a0f] space-y-3 animate-fade-in"
+          className="px-4 pb-4 pt-3 border-t border-edge bg-page space-y-3 animate-fade-in"
         >
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {fields.map((field) => (
@@ -79,7 +80,7 @@ export function AdvancedParamsPanel({
 
           <div className="flex justify-end">
             <Button variant="ghost" size="sm" onClick={onReset} disabled={disabled}>
-              Đặt lại
+              {t('params.reset')}
             </Button>
           </div>
         </div>

@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { t } from '../../i18n/langStore'
 
 export interface SEOHeadProps {
   title: string
@@ -8,6 +9,8 @@ export interface SEOHeadProps {
   faqList?: { q: string; a: string }[]
   breadcrumbs?: { name: string; url: string }[]
   noindex?: boolean
+  /** URL tương đối của 2 bản dịch (vd. { vi: '/youtube-to-mp4', en: '/en/youtube-to-mp4' }) → emit hreflang. */
+  alternates?: { vi: string; en: string }
 }
 
 export function SEOHead({
@@ -18,6 +21,7 @@ export function SEOHead({
   faqList,
   breadcrumbs,
   noindex = false,
+  alternates,
 }: SEOHeadProps) {
   useEffect(() => {
     // 1. Cập nhật Title
@@ -40,6 +44,24 @@ export function SEOHead({
       document.head.appendChild(canonical)
     }
     canonical.setAttribute('href', canonicalUrl)
+
+    // 3b. Hreflang alternates (VI = default, không prefix)
+    document.querySelectorAll('link[data-hreflang]').forEach((el) => el.remove())
+    if (alternates) {
+      const entries: { hreflang: string; href: string }[] = [
+        { hreflang: 'vi', href: `https://oneforall.app${alternates.vi}` },
+        { hreflang: 'en', href: `https://oneforall.app${alternates.en}` },
+        { hreflang: 'x-default', href: `https://oneforall.app${alternates.vi}` },
+      ]
+      for (const entry of entries) {
+        const link = document.createElement('link')
+        link.setAttribute('rel', 'alternate')
+        link.setAttribute('hreflang', entry.hreflang)
+        link.setAttribute('href', entry.href)
+        link.setAttribute('data-hreflang', entry.hreflang)
+        document.head.appendChild(link)
+      }
+    }
 
     // 4. Cập nhật Robots
     let metaRobots = document.querySelector('meta[name="robots"]')
@@ -112,7 +134,7 @@ export function SEOHead({
 
     if (breadcrumbs && breadcrumbs.length > 0) {
       const fullBreadcrumbs = [
-        { name: 'Trang chủ', url: 'https://oneforall.app/' },
+        { name: t('common.home'), url: 'https://oneforall.app/' },
         ...breadcrumbs.map((b) => ({
           name: b.name,
           url: b.url.startsWith('http')
@@ -144,7 +166,7 @@ export function SEOHead({
       // Dọn dẹp script JSON-LD khi unmount
       jsonLdElements.forEach((el) => el.remove())
     }
-  }, [title, description, canonicalUrl, ogType, faqList, breadcrumbs, noindex])
+  }, [title, description, canonicalUrl, ogType, faqList, breadcrumbs, noindex, alternates])
 
   return null
 }

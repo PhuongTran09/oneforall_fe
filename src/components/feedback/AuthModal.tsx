@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
-import { X, Lock, Mail, ArrowRight, Sparkles, CheckCircle2 } from 'lucide-react'
+import { X, Lock, Mail, ArrowRight, CheckCircle2 } from 'lucide-react'
 import { Button } from '../common/Button'
+import { t } from '../../i18n/langStore'
 
 export interface AuthModalProps {
   isOpen: boolean
@@ -22,11 +23,7 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
     setIsSubmitting(true)
     setTimeout(() => {
       setIsSubmitting(false)
-      setSuccessMessage(
-        mode === 'login'
-          ? 'Đăng nhập thành công! Chào mừng bạn quay trở lại OneForAll.'
-          : 'Đăng ký tài khoản thành công! Bạn có thể bắt đầu sử dụng đầy đủ công cụ.',
-      )
+      setSuccessMessage(mode === 'login' ? t('auth.loginSuccess') : t('auth.registerSuccess'))
       setTimeout(() => {
         setSuccessMessage(null)
         onClose()
@@ -37,30 +34,30 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
       <div
-        className="relative w-full max-w-md p-6 sm:p-8 bg-[#14141b] border border-[rgba(255,59,48,0.35)] clip-corner-lg card-3d"
+        className="relative w-full max-w-md p-6 sm:p-8 bg-surface border border-[rgba(255,59,48,0.35)] clip-corner-lg card-3d"
         role="dialog"
         aria-modal="true"
       >
         <button
           type="button"
           onClick={onClose}
-          className="absolute top-4 right-4 p-1.5 text-slate-400 hover:text-white hover:bg-[#1a1a24] transition-colors clip-corner-btn"
-          aria-label="Đóng"
+          className="absolute top-4 right-4 p-1.5 text-slate-400 hover:text-ink hover:bg-elev transition-colors clip-corner-btn"
+          aria-label={t('common.close')}
         >
           <X className="w-5 h-5" />
         </button>
 
         <div className="text-center mb-6">
-          <div className="inline-flex items-center justify-center w-12 h-12 mb-3 bg-[#ff3b30]/10 border border-[#ff3b30]/30 text-[#FF3B30] clip-corner-btn">
-            <Sparkles className="w-6 h-6" />
+          <div className="inline-flex items-center justify-center">
+           <div className="w-10 h-10">
+                <img src="/oneforall.svg" alt="OneForAll Logo" className="w-full h-full object-contain" />
+              </div>
           </div>
-          <h3 className="text-2xl font-bold text-white tracking-tight">
-            {mode === 'login' ? 'Đăng nhập OneForAll' : 'Tạo tài khoản mới'}
+          <h3 className="text-2xl font-bold text-ink tracking-tight">
+            {mode === 'login' ? t('auth.loginTitle') : t('auth.registerTitle')}
           </h3>
           <p className="mt-1 text-sm text-slate-400">
-            {mode === 'login'
-              ? 'Truy cập thư viện công cụ xử lý tệp tốc độ cao'
-              : 'Trải nghiệm toàn bộ tính năng xử lý tệp miễn phí'}
+            {mode === 'login' ? t('auth.loginSubtitle') : t('auth.registerSubtitle')}
           </p>
         </div>
 
@@ -76,7 +73,7 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
                 Email
               </label>
               <div className="relative">
-                <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none z-10" />
                 <input
                   id="auth-email"
                   type="email"
@@ -84,17 +81,17 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@example.com"
-                  className="w-full pl-10 pr-4 py-2.5 bg-[#0a0a0f] border border-[#ff3b30]/30 focus:border-[#ff3b30] focus:ring-1 focus:ring-[#ff3b30] text-sm text-slate-100 placeholder-slate-500 outline-none transition-all clip-corner-btn"
+                  className="w-full pl-10 pr-4 py-2.5 bg-page border border-[#ff3b30]/30 focus:border-[#ff3b30] focus:ring-1 focus:ring-[#ff3b30] text-sm text-slate-100 placeholder-slate-500 outline-none transition-all clip-corner-btn"
                 />
               </div>
             </div>
 
             <div>
               <label className="block text-xs font-medium text-slate-300 mb-1.5" htmlFor="auth-password">
-                Mật khẩu
+                {t('auth.password')}
               </label>
               <div className="relative">
-                <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none z-10" />
                 <input
                   id="auth-password"
                   type="password"
@@ -102,7 +99,7 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-10 pr-4 py-2.5 bg-[#0a0a0f] border border-[#ff3b30]/30 focus:border-[#ff3b30] focus:ring-1 focus:ring-[#ff3b30] text-sm text-slate-100 placeholder-slate-500 outline-none transition-all clip-corner-btn"
+                  className="w-full pl-10 pr-4 py-2.5 bg-page border border-[#ff3b30]/30 focus:border-[#ff3b30] focus:ring-1 focus:ring-[#ff3b30] text-sm text-slate-100 placeholder-slate-500 outline-none transition-all clip-corner-btn"
                 />
               </div>
             </div>
@@ -115,30 +112,30 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
               isLoading={isSubmitting}
               rightIcon={<ArrowRight className="w-4 h-4" />}
             >
-              {mode === 'login' ? 'Đăng nhập ngay' : 'Hoàn tất đăng ký'}
+              {mode === 'login' ? t('auth.loginNow') : t('auth.finishRegister')}
             </Button>
 
             <div className="pt-2 text-center text-xs text-slate-400">
               {mode === 'login' ? (
                 <>
-                  Chưa có tài khoản?{' '}
+                  {t('auth.noAccount')}{' '}
                   <button
                     type="button"
                     onClick={() => setMode('register')}
                     className="text-[#FF6B4A] hover:text-[#FF3B30] font-medium hover:underline"
                   >
-                    Đăng ký ngay
+                    {t('auth.registerNow')}
                   </button>
                 </>
               ) : (
                 <>
-                  Đã có tài khoản?{' '}
+                  {t('auth.hasAccount')}{' '}
                   <button
                     type="button"
                     onClick={() => setMode('login')}
                     className="text-[#FF6B4A] hover:text-[#FF3B30] font-medium hover:underline"
                   >
-                    Đăng nhập
+                    {t('auth.login')}
                   </button>
                 </>
               )}

@@ -1,5 +1,6 @@
 import type { ParamField } from '../../config/conversionParams'
 import { isParamValid } from '../../config/conversionParams'
+import { t } from '../../i18n/langStore'
 
 export interface ParamFieldControlProps {
   field: ParamField
@@ -14,20 +15,20 @@ const chipClass = (active: boolean): string =>
   `px-2.5 py-1 font-mono text-xs font-semibold transition-all cursor-pointer clip-corner-btn disabled:cursor-not-allowed ${
     active
       ? 'bg-brand-gradient text-white'
-      : 'bg-[#1a1a24] text-slate-200 border border-[#2a2a35] hover:bg-[#ff3b30]/15 hover:border-[rgba(255,59,48,0.40)]'
+      : 'bg-elev text-slate-200 border border-edge hover:bg-[#ff3b30]/15 hover:border-[rgba(255,59,48,0.40)]'
   }`
 
 function invalidMessage(field: ParamField): string {
   if (field.kind === 'int') {
-    return `Nhập số nguyên từ ${field.min} đến ${field.max}.`
+    return t('params.invalidInt', { min: field.min ?? 0, max: field.max ?? 0 })
   }
   if (field.key === 'time') {
-    return 'Dùng định dạng HH:MM:SS (00:00:12) hoặc số giây (12).'
+    return t('params.invalidTime')
   }
   if (field.kind === 'select') {
-    return 'Giá trị không nằm trong danh sách cho phép.'
+    return t('params.invalidSelect')
   }
-  return `Tối đa ${field.max ?? 120} ký tự.`
+  return t('params.invalidText', { max: field.max ?? 120 })
 }
 
 export function ParamFieldControl({
@@ -70,7 +71,7 @@ export function ParamFieldControl({
           disabled={disabled}
           onChange={(event) => onChange(field.key, event.target.value)}
           aria-describedby={field.hint ? hintId : undefined}
-          className="w-full px-3 py-2 bg-[#14141b] border border-[#2a2a35] text-xs font-mono text-white focus:outline-none focus:border-[#ff3b30] clip-corner-btn cursor-pointer disabled:cursor-not-allowed"
+          className="w-full px-3 py-2 bg-surface border border-edge text-xs font-mono text-ink focus:outline-none focus:border-[#ff3b30] clip-corner-btn cursor-pointer disabled:cursor-not-allowed"
         >
           {field.choices?.map((choice) => (
             <option key={choice.value || 'auto'} value={choice.value}>
@@ -80,10 +81,10 @@ export function ParamFieldControl({
         </select>
       ) : (
         <div
-          className={`flex items-center gap-2 px-3 py-2 bg-[#14141b] border transition-colors clip-corner-btn ${
+          className={`flex items-center gap-2 px-3 py-2 bg-surface border transition-colors clip-corner-btn ${
             invalid
               ? 'border-[#ff3b30]'
-              : 'border-[#2a2a35] hover:border-[rgba(255,59,48,0.40)] focus-within:border-[rgba(255,59,48,0.55)]'
+              : 'border-edge hover:border-[rgba(255,59,48,0.40)] focus-within:border-[rgba(255,59,48,0.55)]'
           }`}
         >
           <input
@@ -110,7 +111,7 @@ export function ParamFieldControl({
             onClick={() => onChange(field.key, '')}
             className={chipClass(text === '')}
           >
-            Mặc định
+            {t('params.default')}
           </button>
           {field.presets.map((preset) => (
             <button
