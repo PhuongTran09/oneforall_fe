@@ -3,6 +3,9 @@ import { UploadCloud, Image as ImageIcon, CheckCircle2, ArrowRight } from 'lucid
 import { Button } from '../../../components/common/Button'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../../components/common/Card'
 import { imageApi } from '../services/imageApi'
+import { describeError } from '../../../utils/apiError'
+import { showToast } from '../../../components/feedback/toastStore'
+import { t } from '../../../i18n/langStore'
 import type { ImageProcessTask } from '../types/image.types'
 
 export function ImageWorkspace() {
@@ -25,10 +28,11 @@ export function ImageWorkspace() {
     try {
       const res = await imageApi.optimizeImage(selectedFile, { quality: 80, format: 'webp' })
       setTask(res)
-      setMessage({ text: 'Tối ưu hóa ảnh thành công qua FastAPI backend!', isError: false })
+      setMessage({ text: t('ws.imageSuccess'), isError: false })
     } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : 'Xử lý hình ảnh thất bại'
-      setMessage({ text: `Lỗi: ${errorMsg}`, isError: true })
+      const { type, message } = describeError(err, t('ws.imageFailed'))
+      setMessage({ text: message, isError: true })
+      showToast({ type, message })
     } finally {
       setIsLoading(false)
     }
@@ -36,26 +40,26 @@ export function ImageWorkspace() {
 
   return (
     <div className="page-container">
-      <Card className="bg-[#14141b] border border-[rgba(255,59,48,0.25)] p-6 sm:p-8">
-        <CardHeader className="p-0 pb-6 border-b border-[#2a2a35]">
+      <Card className="p-6 sm:p-8">
+        <CardHeader className="p-0 pb-6 border-b border-edge">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 bg-[#ff3b30]/10 border border-[rgba(255,59,48,0.30)] flex items-center justify-center text-[#FF3B30] clip-corner-btn">
               <ImageIcon className="w-5 h-5" />
             </div>
             <div>
-              <CardTitle className="text-2xl">Xử lý hình ảnh</CardTitle>
+              <CardTitle className="text-2xl">{t('ws.imageTitle')}</CardTitle>
               <span className="text-xs font-mono text-[#FF3B30]">Image Processing Engine</span>
             </div>
           </div>
           <CardDescription>
-            Nén thông minh, chuyển định dạng WebP/AVIF và tối ưu dung lượng tệp cho web với backend FastAPI.
+            {t('ws.imageDesc')}
           </CardDescription>
         </CardHeader>
 
         <CardContent className="p-0 pt-6 space-y-6">
           <label
             htmlFor="image-file-input"
-            className="flex flex-col items-center justify-center border-2 border-dashed border-[rgba(255,59,48,0.30)] hover:border-[rgba(255,59,48,0.60)] p-8 sm:p-12 text-center cursor-pointer bg-[#0a0a0f] hover:bg-[#ff3b30]/5 transition-all group clip-corner-lg input-3d"
+            className="flex flex-col items-center justify-center border-2 border-dashed border-[rgba(255,59,48,0.30)] hover:border-[rgba(255,59,48,0.60)] p-8 sm:p-12 text-center cursor-pointer bg-page hover:bg-[#ff3b30]/5 transition-all group clip-corner-lg input-3d"
           >
             <input
               id="image-file-input"
@@ -69,17 +73,17 @@ export function ImageWorkspace() {
             </div>
             {selectedFile ? (
               <div className="space-y-1">
-                <p className="text-sm font-semibold text-white">{selectedFile.name}</p>
+                <p className="text-sm font-semibold text-ink">{selectedFile.name}</p>
                 <p className="text-xs text-slate-400">
-                  Dung lượng: {(selectedFile.size / 1024).toFixed(1)} KB
+                  {t('uploader.fileSize')}: {(selectedFile.size / 1024).toFixed(1)} KB
                 </p>
               </div>
             ) : (
               <div className="space-y-1">
                 <p className="text-sm font-medium text-slate-100">
-                  Kéo thả hoặc nhấp để chọn tệp hình ảnh
+                  {t('ws.imageDropzoneTitle')}
                 </p>
-                <p className="text-xs text-slate-400">Hỗ trợ PNG, JPG, WEBP, AVIF, SVG (tối đa 50MB)</p>
+                <p className="text-xs text-slate-400">{t('ws.imageDropzoneHint')}</p>
               </div>
             )}
           </label>
@@ -93,7 +97,7 @@ export function ImageWorkspace() {
               onClick={handleProcess}
               rightIcon={<ArrowRight className="w-4 h-4" />}
             >
-              Bắt đầu tối ưu ảnh
+              {t('ws.imageStart')}
             </Button>
           </div>
 
@@ -111,10 +115,10 @@ export function ImageWorkspace() {
           )}
 
           {task && (
-            <div className="p-4 bg-[#0a0a0f] border border-[#2a2a35] space-y-2 clip-corner-card">
-              <h4 className="text-sm font-semibold text-slate-100">Kết quả xử lý:</h4>
+            <div className="p-4 bg-page border border-edge space-y-2 clip-corner-card">
+              <h4 className="text-sm font-semibold text-slate-100">{t('ws.imageResult')}:</h4>
               <p className="text-xs text-slate-400">
-                Trạng thái: <strong className="text-emerald-400">{task.status}</strong>
+                {t('ws.status')}: <strong className="text-emerald-400">{task.status}</strong>
               </p>
               {task.outputUrl && (
                 <a
@@ -123,7 +127,7 @@ export function ImageWorkspace() {
                   rel="noreferrer"
                   className="text-xs font-semibold text-[#FF3B30] hover:text-[#FF6B4A] underline"
                 >
-                  Tải ảnh kết quả
+                  {t('ws.imageDownload')}
                 </a>
               )}
             </div>

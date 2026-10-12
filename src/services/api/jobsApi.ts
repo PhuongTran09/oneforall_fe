@@ -1,5 +1,6 @@
 import { apiClient, resolveUrl } from './client'
 import { ApiClientError, type JobPublicResponse, type JobStatus } from './types'
+import { t } from '../../i18n/langStore'
 
 // Trạng thái mà backend thực sự trả về (JobStatus trong oneforall_be/app/models/job.py):
 // queued | processing | completed | failed | cancelled | expired.
@@ -11,7 +12,8 @@ const MAX_WAIT_MS = 180_000 // khớp thời hạn 3 phút của kết quả job
 const MAX_CONSECUTIVE_ERRORS = 3
 const RETRY_BACKOFF_MS = 1000
 const RETRY_BACKOFF_CAP_MS = 5000
-const TIMEOUT_MESSAGE = 'Hết thời gian chờ xử lý tác vụ (Timeout). Vui lòng thử lại sau.'
+// Dịch tại throw-site để ăn theo ngôn ngữ hiện tại (const module-level sẽ bị "đóng băng")
+const timeoutMessage = () => t('errors.jobTimeout')
 
 // Backend gửi `event: ping` mỗi JOB_EVENT_HEARTBEAT_S (15s). Im lặng gấp ba nhịp nghĩa là
 // không còn ai viết vào stream nữa — cắt và quay về polling, còn hơn treo tới hết 180s.
@@ -234,7 +236,7 @@ export const jobsApi = {
           }
           consecutiveErrors += 1
           if (Date.now() >= deadline) {
-            settle(() => reject(new Error(TIMEOUT_MESSAGE)))
+            settle(() => reject(new Error(timeoutMessage())))
             return
           }
           timer = setTimeout(() => void tick(), retryDelayFor(consecutiveErrors))
@@ -254,7 +256,7 @@ export const jobsApi = {
         }
 
         if (Date.now() >= deadline) {
-          settle(() => reject(new Error(TIMEOUT_MESSAGE)))
+          settle(() => reject(new Error(timeoutMessage())))
           return
         }
         timer = setTimeout(() => void tick(), pollDelayFor(job))
@@ -360,7 +362,7 @@ export const jobsApi = {
           return
         }
         if (timedOut) {
-          settle(() => reject(new Error(TIMEOUT_MESSAGE)))
+          settle(() => reject(new Error(timeoutMessage())))
           return
         }
         if (controller.signal.aborted) {

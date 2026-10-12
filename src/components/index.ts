@@ -37,6 +37,8 @@ export { ToolGrid } from './common/ToolGrid'
 export type { ToolGridProps } from './common/ToolGrid'
 export { RelatedTools } from './common/RelatedTools'
 export type { RelatedToolsProps } from './common/RelatedTools'
+export { AdSenseUnit } from './common/AdSenseUnit'
+export type { AdSenseUnitProps } from './common/AdSenseUnit'
 
 // Feedback components
 export { AuthModal } from './feedback/AuthModal'

@@ -13,14 +13,15 @@ export function Card({
   children,
   ...props
 }: CardProps) {
-  const baseStyles = 'relative bg-[#14141b] transition-all duration-300 card-3d clip-corner-card'
+  // lift/hover effects come from .card-3d in index.css — no Tailwind transform here
+  const baseStyles = 'relative bg-surface card-3d'
   const borderStyles = bordered ? 'border border-[rgba(255,59,48,0.25)]' : ''
-  const hoverStyles = hoverEffect
-    ? 'hover:border-[rgba(255,59,48,0.55)] hover:-translate-y-0.5'
-    : ''
+  // caller may override the clip size (clip-corner-card and clip-corner-lg both set clip-path)
+  const clipStyles = className.includes('clip-corner') ? '' : 'clip-corner-card'
+  const hoverStyles = hoverEffect ? 'hover:border-[rgba(255,59,48,0.55)]' : ''
 
   return (
-    <div className={`${baseStyles} ${borderStyles} ${hoverStyles} ${className}`} {...props}>
+    <div className={`${baseStyles} ${borderStyles} ${clipStyles} ${hoverStyles} ${className}`} {...props}>
       {children}
     </div>
   )
@@ -44,7 +45,7 @@ export function CardTitle({
   ...props
 }: HTMLAttributes<HTMLHeadingElement>) {
   return (
-    <h3 className={`text-lg font-bold text-white tracking-tight ${className}`} {...props}>
+    <h3 className={`text-lg font-bold text-ink tracking-tight ${className}`} {...props}>
       {children}
     </h3>
   )

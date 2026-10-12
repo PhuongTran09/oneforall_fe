@@ -1,63 +1,60 @@
 import { Cpu, Layers, MousePointerClick, ListChecks } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription } from '../common/Card'
+import { t } from '../../i18n/langStore'
 
 export function FeaturesSection() {
   const features = [
     {
       icon: <Cpu className="w-6 h-6 text-[#FF3B30]" />,
-      title: 'Tốc độ xử lý vượt trội',
-      description:
-        'Sức mạnh xử lý bất đồng bộ từ FastAPI giúp nhận, phân giải và stream tệp tin với độ trễ tối thiểu, không gây tắc nghẽn hàng đợi.',
+      title: t('features.f1Title'),
+      description: t('features.f1Desc'),
       badge: 'FastAPI Async Engine',
     },
     {
       icon: <Layers className="w-6 h-6 text-[#FF6B4A]" />,
-      title: 'Hỗ trợ đa dạng định dạng',
-      description:
-        'Bao phủ hầu hết các chuẩn tệp hình ảnh, video độ nét cao, âm thanh và tài liệu văn phòng phổ biến nhất hiện nay.',
-      badge: '50+ Định dạng',
+      title: t('features.f2Title'),
+      description: t('features.f2Desc'),
+      badge: t('features.f2Badge'),
     },
     {
       icon: <MousePointerClick className="w-6 h-6 text-emerald-600" />,
-      title: 'Giao diện trực quan, tinh gọn',
-      description:
-        'Thao tác kéo thả mượt mà, cấu hình thông số rõ ràng, trải nghiệm không gian làm việc sạch sẽ, không quảng cáo gây xao nhãng.',
+      title: t('features.f3Title'),
+      description: t('features.f3Desc'),
       badge: 'Modern SaaS UX',
     },
     {
       icon: <ListChecks className="w-6 h-6 text-indigo-600" />,
-      title: 'Bảo mật quyền riêng tư',
-      description:
-        'Tệp tải lên và tệp kết quả được tự động dọn dẹp khỏi Cloudflare R2 sau khi hoàn thành. Không lưu trữ lịch sử cá nhân.',
+      title: t('features.f4Title'),
+      description: t('features.f4Desc'),
       badge: 'Privacy First',
     },
   ]
 
   return (
-    <section id="features" className="py-16 sm:py-24 bg-[#0a0a0f]/80">
+    <section id="features" className="py-16 sm:py-24 bg-page/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold bg-[#14141b] border border-[rgba(255,59,48,0.35)] text-[#FF3B30] badge-angular">
-            ƯU ĐIỂM CỐT LÕI
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold bg-surface border border-[rgba(255,59,48,0.35)] text-[#FF3B30] badge-angular">
+            {t('features.badge')}
           </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-            Thiết kế tối ưu cho hiệu suất và độ tin cậy
+          <h2 className="text-2xl sm:text-4xl font-extrabold text-ink tracking-tight">
+            {t('features.title')}
           </h2>
-          <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
-            OneForAll kết hợp giao diện React hiện đại cùng sức mạnh backend FastAPI để mang đến nền tảng xử lý file tin cậy và linh hoạt.
+          <p className="text-slate-300 text-xs sm:text-base leading-relaxed">
+            {t('features.desc')}
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
           {features.map((feat) => (
-            <Card key={feat.title} className="p-2 sm:p-4 bg-[#14141b] border border-[rgba(255,59,48,0.22)] card-3d clip-corner-card">
+            <Card key={feat.title} className="p-2 sm:p-4 card-tilt">
               <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                <div className="w-12 h-12 flex items-center justify-center shrink-0 bg-[#0a0a0f] border border-[#2a2a35] clip-corner-btn">
+                <div className="w-12 h-12 flex items-center justify-center shrink-0 bg-page border border-edge clip-corner-btn">
                   {feat.icon}
                 </div>
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
-                    <CardTitle className="text-lg text-white">{feat.title}</CardTitle>
+                    <CardTitle className="text-base sm:text-lg text-ink">{feat.title}</CardTitle>
                   </div>
                   <span className="inline-block text-[11px] font-mono font-medium text-slate-400">
                     {feat.badge}
@@ -65,7 +62,7 @@ export function FeaturesSection() {
                 </div>
               </CardHeader>
               <div className="px-6 pb-6 pt-1">
-                <CardDescription className="text-sm text-slate-300 leading-relaxed">
+                <CardDescription className="text-xs sm:text-sm text-slate-300 leading-relaxed">
                   {feat.description}
                 </CardDescription>
               </div>

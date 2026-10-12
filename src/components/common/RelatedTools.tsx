@@ -1,5 +1,6 @@
 import { SEO_TOOLS, type ToolConfig } from '../../config/seoTools'
 import { ToolCard } from './ToolCard'
+import { t } from '../../i18n/langStore'
 
 export interface RelatedToolsProps {
   slugs: string[]
@@ -9,9 +10,11 @@ export interface RelatedToolsProps {
 
 export function RelatedTools({
   slugs,
-  title = 'Công cụ liên quan có thể bạn cần',
-  description = 'Khám phá thêm các tiện ích chuyển đổi và xử lý đa phương tiện tốc độ cao khác trên OneForAll.',
+  title,
+  description,
 }: RelatedToolsProps) {
+  const heading = title ?? t('related.title')
+  const sub = description ?? t('related.desc')
   const tools: ToolConfig[] = slugs
     .map((slug) => SEO_TOOLS[slug])
     .filter((tool): tool is ToolConfig => Boolean(tool))
@@ -19,14 +22,14 @@ export function RelatedTools({
   if (tools.length === 0) return null
 
   return (
-    <section className="py-12 sm:py-16 border-t border-[#2a2a35]">
+    <section className="py-12 sm:py-16 border-t border-edge">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-12 space-y-2">
-          <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
-            {title}
+          <h2 className="text-2xl sm:text-3xl font-bold text-ink tracking-tight">
+            {heading}
           </h2>
           <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
-            {description}
+            {sub}
           </p>
         </div>
 
