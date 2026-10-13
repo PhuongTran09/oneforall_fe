@@ -1,4 +1,5 @@
 import { env } from '../../utils/env'
+import { getAccessToken } from '../authStore'
 import {
   ApiClientError,
   type FastApiErrorResponse,
@@ -88,6 +89,10 @@ export class ApiClient {
     const headers = new Headers(init.headers)
     if (!headers.has('Accept')) {
       headers.set('Accept', 'application/json')
+    }
+    const token = getAccessToken()
+    if (token && !headers.has('Authorization')) {
+      headers.set('Authorization', `Bearer ${token}`)
     }
 
     try {

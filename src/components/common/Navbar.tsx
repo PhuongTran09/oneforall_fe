@@ -6,13 +6,16 @@ import {
   Files,
   Image as ImageIcon,
   LogIn,
+  LogOut,
   ArrowRight,
+  User as UserIcon,
 } from 'lucide-react'
 import { Button } from './Button'
 import { ThemeToggle } from './ThemeToggle'
 import { AuthModal } from '../feedback/AuthModal'
 import { LocaleLink } from '../../i18n/LocaleLink'
 import { t, withLocale } from '../../i18n/langStore'
+import { useAuth, signOut } from '../../services/authStore'
 
 // Lucide v1 đã bỏ brand icon (Youtube/TikTok) → giữ SVG chính hãng inline,
 // fill currentColor để ăn theo màu của tab (active/hover/inactive).
@@ -40,6 +43,8 @@ export function Navbar({ onOpenAuth }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [authModalMode, setAuthModalMode] = useState<'login' | 'register' | null>(null)
   const location = useLocation()
+  const { session } = useAuth()
+  const user = session?.user ?? null
 
   const handleAuthClick = (mode: 'login' | 'register') => {
     setMobileMenuOpen(false)
@@ -103,22 +108,44 @@ export function Navbar({ onOpenAuth }: NavbarProps) {
           {/* Right Action Buttons */}
           <div className="hidden min-[768px]:flex items-center gap-3">
             <ThemeToggle />
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => handleAuthClick('login')}
-              leftIcon={<LogIn className="w-4 h-4" />}
-            >
-              {t('auth.login')}
-            </Button>
-            <Button
-              variant="primary"
-              size="sm"
-              onClick={() => handleAuthClick('register')}
-              rightIcon={<ArrowRight className="w-4 h-4" />}
-            >
-              {t('auth.startFree')}
-            </Button>
+            {user ? (
+              <div className="flex items-center gap-2">
+                <span
+                  className="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-slate-200 bg-surface border border-[rgba(255,59,48,0.35)] clip-corner-btn max-w-[180px]"
+                  title={user.email ?? undefined}
+                >
+                  <UserIcon className="w-4 h-4 shrink-0 text-[#FF6B4A]" />
+                  <span className="truncate">{user.email}</span>
+                </span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => signOut()}
+                  leftIcon={<LogOut className="w-4 h-4" />}
+                >
+                  {t('auth.signOut')}
+                </Button>
+              </div>
+            ) : (
+              <>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleAuthClick('login')}
+                  leftIcon={<LogIn className="w-4 h-4" />}
+                >
+                  {t('auth.login')}
+                </Button>
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={() => handleAuthClick('register')}
+                  rightIcon={<ArrowRight className="w-4 h-4" />}
+                >
+                  {t('auth.startFree')}
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Toggle Button */}
@@ -160,24 +187,50 @@ export function Navbar({ onOpenAuth }: NavbarProps) {
               })}
             </nav>
             <div className="flex flex-col gap-2 pt-2 border-t border-edge/60">
-              <Button
-                variant="secondary"
-                fullWidth
-                size="md"
-                onClick={() => handleAuthClick('login')}
-                leftIcon={<LogIn className="w-4 h-4" />}
-              >
-                {t('auth.login')}
-              </Button>
-              <Button
-                variant="primary"
-                fullWidth
-                size="md"
-                onClick={() => handleAuthClick('register')}
-                rightIcon={<ArrowRight className="w-4 h-4" />}
-              >
-                {t('auth.startNow')}
-              </Button>
+              {user ? (
+                <>
+                  <span
+                    className="inline-flex items-center gap-2 px-3 py-2.5 text-sm text-slate-200 bg-surface border border-[rgba(255,59,48,0.35)] clip-corner-btn"
+                    title={user.email ?? undefined}
+                  >
+                    <UserIcon className="w-4 h-4 shrink-0 text-[#FF6B4A]" />
+                    <span className="truncate">{user.email}</span>
+                  </span>
+                  <Button
+                    variant="secondary"
+                    fullWidth
+                    size="md"
+                    onClick={() => {
+                      setMobileMenuOpen(false)
+                      signOut()
+                    }}
+                    leftIcon={<LogOut className="w-4 h-4" />}
+                  >
+                    {t('auth.signOut')}
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button
+                    variant="secondary"
+                    fullWidth
+                    size="md"
+                    onClick={() => handleAuthClick('login')}
+                    leftIcon={<LogIn className="w-4 h-4" />}
+                  >
+                    {t('auth.login')}
+                  </Button>
+                  <Button
+                    variant="primary"
+                    fullWidth
+                    size="md"
+                    onClick={() => handleAuthClick('register')}
+                    rightIcon={<ArrowRight className="w-4 h-4" />}
+                  >
+                    {t('auth.startNow')}
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         )}

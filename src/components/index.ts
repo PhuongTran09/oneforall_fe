@@ -39,6 +39,7 @@ export { RelatedTools } from './common/RelatedTools'
 export type { RelatedToolsProps } from './common/RelatedTools'
 export { AdSenseUnit } from './common/AdSenseUnit'
 export type { AdSenseUnitProps } from './common/AdSenseUnit'
+export { ToolFooterActions } from './common/ToolFooterActions'
 
 // Feedback components
 export { AuthModal } from './feedback/AuthModal'

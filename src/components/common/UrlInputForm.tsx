@@ -1,16 +1,48 @@
-import { useState, type FormEvent } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
 import { Link2, Clipboard, X, ArrowRight, AlertCircle } from 'lucide-react'
 import { Button } from './Button'
 import { SegmentedControl } from './SegmentedControl'
 import { t } from '../../i18n/langStore'
+import { mediaApi, type UrlInfo } from '../../services/api/mediaApi'
 
 export interface UrlInputFormProps {
   platform?: 'youtube' | 'tiktok'
   formats: string[]
   defaultFormat: string
-  onSubmit: (url: string, format: string) => void
+  onSubmit: (url: string, format: string, quality: string) => void
   isLoading?: boolean
   disabled?: boolean
+}
+
+const AUDIO_FORMATS = new Set(['mp3', 'wav', 'm4a', 'aac'])
+const VIDEO_QUALITIES = ['best', '1080p', '720p', '480p']
+const AUDIO_QUALITIES = ['128', '192', '320']
+
+const qualityOptionsFor = (format: string) =>
+  AUDIO_FORMATS.has(format.toLowerCase()) ? AUDIO_QUALITIES : VIDEO_QUALITIES
+const defaultQualityFor = (format: string) =>
+  AUDIO_FORMATS.has(format.toLowerCase()) ? '192' : 'best'
+
+// Bản pure của validateUrl bên dưới (không set error) — dùng cho effect preview.
+const isValidForPlatform = (value: string, platform?: 'youtube' | 'tiktok'): boolean => {
+  const trimmed = value.trim()
+  if (!trimmed) return false
+  try {
+    new URL(trimmed)
+  } catch {
+    return false
+  }
+  if (platform === 'youtube') return trimmed.includes('youtube.com') || trimmed.includes('youtu.be')
+  if (platform === 'tiktok') return trimmed.includes('tiktok.com')
+  return true
+}
+
+const formatDuration = (seconds: number): string => {
+  const h = Math.floor(seconds / 3600)
+  const m = Math.floor((seconds % 3600) / 60)
+  const s = seconds % 60
+  const mmss = h > 0 ? `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}` : `${m}:${String(s).padStart(2, '0')}`
+  return mmss
 }
 
 export function UrlInputForm({
@@ -23,14 +55,53 @@ export function UrlInputForm({
 }: UrlInputFormProps) {
   const [url, setUrl] = useState('')
   const [selectedFormat, setSelectedFormat] = useState(defaultFormat)
+  const [selectedQuality, setSelectedQuality] = useState(() => defaultQualityFor(defaultFormat))
   const [validationError, setValidationError] = useState<string | null>(null)
+  const [preview, setPreview] = useState<{ status: 'idle' | 'loading' | 'ready' | 'error'; data: UrlInfo | null }>({
+    status: 'idle',
+    data: null,
+  })
+
+  const urlValid = isValidForPlatform(url, platform)
+
+  // Dán link xong debounce 700ms rồi mới fetch preview — tránh gọi oEmbed mỗi lần gõ.
+  useEffect(() => {
+    if (!isValidForPlatform(url, platform)) {
+      setPreview({ status: 'idle', data: null })
+      return
+    }
+    let cancelled = false
+    setPreview({ status: 'loading', data: null })
+    const timer = setTimeout(async () => {
+      try {
+        const data = await mediaApi.getUrlInfo(url.trim())
+        if (!cancelled) setPreview({ status: 'ready', data })
+      } catch {
+        if (!cancelled) setPreview({ status: 'error', data: null })
+      }
+    }, 700)
+    return () => {
+      cancelled = true
+      clearTimeout(timer)
+    }
+  }, [url, platform])
+
+  const qualityOptions = qualityOptionsFor(selectedFormat)
+
+  const handleFormatChange = (format: string) => {
+    setSelectedFormat(format)
+    setSelectedQuality(defaultQualityFor(format))
+  }
+
+  const qualityLabel = (option: string) =>
+    option === 'best' ? t('urlInput.qualityBest') : AUDIO_QUALITIES.includes(option) ? `${option} kbps` : option
 
   const handlePaste = async () => {
     try {
       const text = await navigator.clipboard.readText()
       if (text) {
         setUrl(text)
-        setValidationError(null)
+        validateUrl(text)
       }
     } catch {
       // Clipboard access might not be allowed in all browser contexts
@@ -70,7 +141,7 @@ export function UrlInputForm({
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
     if (validateUrl(url)) {
-      onSubmit(url.trim(), selectedFormat)
+      onSubmit(url.trim(), selectedFormat, selectedQuality)
     }
   }
 
@@ -90,8 +161,14 @@ export function UrlInputForm({
             type="url"
             value={url}
             onChange={(e) => {
-              setUrl(e.target.value)
-              if (validationError) setValidationError(null)
+              const value = e.target.value
+              setUrl(value)
+              // Dán link (nhảy >=4 ký tự cùng lúc) -> báo lỗi sai platform ngay, không đợi bấm nút.
+              if (value.length - url.length >= 4) {
+                validateUrl(value)
+              } else if (validationError) {
+                setValidationError(null)
+              }
             }}
             placeholder={placeholderText}
             disabled={disabled || isLoading}
@@ -138,15 +215,76 @@ export function UrlInputForm({
         </div>
       </div>
 
-      {/* Format Segmented Control */}
-      {formats.length > 1 && (
+      {/* Link preview (review) */}
+      {preview.status === 'loading' && (
+        <div className="flex items-center gap-3 p-2 bg-surface border border-edge clip-corner-card animate-pulse" aria-hidden="true">
+          <div className="w-16 h-16 bg-elev border border-edge shrink-0 clip-corner-btn" />
+          <div className="flex-1 space-y-2">
+            <div className="h-3 w-2/3 bg-elev rounded" />
+            <div className="h-2.5 w-1/3 bg-elev rounded" />
+          </div>
+        </div>
+      )}
+      {preview.status === 'ready' && preview.data && (
+        <div className="flex items-center gap-3 p-2 bg-surface border border-[rgba(255,59,48,0.30)] clip-corner-card">
+          {preview.data.thumbnail ? (
+            <img
+              src={preview.data.thumbnail}
+              alt=""
+              referrerPolicy="no-referrer"
+              className="w-16 h-16 object-cover border border-edge shrink-0 clip-corner-btn"
+            />
+          ) : (
+            <div className="w-16 h-16 bg-[#ff3b30]/10 border border-[#ff3b30]/30 flex items-center justify-center shrink-0 clip-corner-btn">
+              <Link2 className="w-5 h-5 text-[#FF3B30]" />
+            </div>
+          )}
+          <div className="flex-1 min-w-0">
+            <p className="font-semibold text-slate-100 text-sm truncate">{preview.data.title || url}</p>
+            <p className="text-xs text-slate-400 font-mono truncate">
+              {[
+                preview.data.duration ? formatDuration(preview.data.duration) : null,
+                preview.data.uploader,
+              ]
+                .filter(Boolean)
+                .join(' · ')}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setPreview({ status: 'idle', data: null })}
+            className="p-1.5 text-slate-400 hover:text-slate-200 clip-corner-btn"
+            title={t('common.clear')}
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+      {preview.status === 'error' && (
+        <p className="text-xs text-slate-400">{t('urlInput.previewFailed')}</p>
+      )}
+
+      {/* Format + Quality Segmented Controls — hiện sau khi link hợp lệ */}
+      {urlValid && formats.length > 0 && qualityOptions.length > 1 && (
         <div className="flex items-center justify-center sm:justify-start gap-4 flex-wrap text-xs">
-          <span className="text-slate-400 font-medium whitespace-nowrap">{t('urlInput.outputFormat')}</span>
+          {formats.length > 1 && (
+            <>
+              <span className="text-slate-400 font-medium whitespace-nowrap">{t('urlInput.outputFormat')}</span>
+              <SegmentedControl
+                options={formats}
+                value={selectedFormat}
+                onChange={handleFormatChange}
+                ariaLabel={t('urlInput.outputFormat')}
+              />
+            </>
+          )}
+          <span className="text-slate-400 font-medium whitespace-nowrap">{t('urlInput.quality')}</span>
           <SegmentedControl
-            options={formats}
-            value={selectedFormat}
-            onChange={setSelectedFormat}
-            ariaLabel={t('urlInput.outputFormat')}
+            options={qualityOptions}
+            value={selectedQuality}
+            onChange={setSelectedQuality}
+            ariaLabel={t('urlInput.quality')}
+            labelFor={qualityLabel}
           />
         </div>
       )}

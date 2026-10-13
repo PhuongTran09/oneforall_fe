@@ -1,5 +1,6 @@
 import { apiClient, resolveUrl } from './client'
 import { ApiClientError, type JobPublicResponse, type JobStatus } from './types'
+import { getAccessToken } from '../authStore'
 import { t } from '../../i18n/langStore'
 
 // Trạng thái mà backend thực sự trả về (JobStatus trong oneforall_be/app/models/job.py):
@@ -131,9 +132,13 @@ async function openJobEventStream(
   }
 
   try {
+    const accessToken = getAccessToken()
     const response = await fetch(url, {
       method: 'GET',
-      headers: { Accept: 'text/event-stream' },
+      headers: {
+        Accept: 'text/event-stream',
+        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+      },
       credentials: 'omit',
       cache: 'no-store',
       signal: fetchController.signal,

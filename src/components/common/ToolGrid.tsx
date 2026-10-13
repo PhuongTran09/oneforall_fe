@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ComponentType } from 'react'
-import { ArrowLeftRight, Image as ImageIcon, LayoutGrid, Video } from 'lucide-react'
+import { Archive, ArrowLeftRight, Database, Image as ImageIcon, LayoutGrid, Video } from 'lucide-react'
 import { ToolCard, YoutubeIcon } from './ToolCard'
 import type { ToolConfig } from '../../config/seoTools'
 import { t } from '../../i18n/langStore'
@@ -15,6 +15,8 @@ const categories: { id: string; icon: ComponentType<{ className?: string }> }[] 
   { id: 'tiktok', icon: Video },
   { id: 'convert', icon: ArrowLeftRight },
   { id: 'image', icon: ImageIcon },
+  { id: 'data', icon: Database },
+  { id: 'archive', icon: Archive },
 ]
 
 function categoryLabel(id: string): string {
@@ -22,13 +24,17 @@ function categoryLabel(id: string): string {
     case 'all':
       return t('toolsGrid.all')
     case 'youtube':
-      return 'YouTube Downloader'
+      return t('toolsGrid.ytDownloader')
     case 'tiktok':
-      return 'TikTok Downloader'
+      return t('toolsGrid.ttDownloader')
     case 'convert':
       return t('toolsGrid.convert')
     case 'image':
       return t('toolsGrid.image')
+    case 'data':
+      return t('toolsGrid.data')
+    case 'archive':
+      return t('toolsGrid.archive')
     default:
       return id
   }
@@ -96,7 +102,7 @@ export function ToolGrid({ tools, showCategoryFilter = true }: ToolGridProps) {
           </div>
           <div
             aria-hidden="true"
-            className={`pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-page to-transparent transition-opacity duration-200 md:hidden ${
+            className={`pointer-events-none absolute inset-y-0 right-0 w-10 bg-linear-to-l from-page to-transparent transition-opacity duration-200 md:hidden ${
               railHasMore ? 'opacity-100' : 'opacity-0'
             }`}
           />

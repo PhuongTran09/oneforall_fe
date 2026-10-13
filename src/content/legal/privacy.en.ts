@@ -136,7 +136,7 @@ export const privacyEn: LegalDoc = {
           parts: [
             'Please send privacy requests to ',
             // TODO (project owner to verify): use the email already present in the Footer; confirm this is the official contact email.
-            { a: 'support@oneforall.app', href: 'mailto:support@oneforall.app' },
+            { a: 'support@oneforall.io.vn', href: 'mailto:support@oneforall.io.vn' },
             '.',
           ],
         },

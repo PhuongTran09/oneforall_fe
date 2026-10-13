@@ -12,6 +12,13 @@ export const env = {
   apiBaseUrl: import.meta.env.VITE_API_BASE_URL || '/api',
 
   /**
+   * Supabase Auth (client-side): URL project + anon key public (an toàn khi expose,
+   * RLS là lớp bảo vệ thật). Thiếu 2 giá trị này thì UI đăng nhập tự ẩn.
+   */
+  supabaseUrl: import.meta.env.VITE_SUPABASE_URL || '',
+  supabaseAnonKey: import.meta.env.VITE_SUPABASE_ANON_KEY || '',
+
+  /**
    * Kiểm tra môi trường hiện tại
    */
   isDev: import.meta.env.DEV,
