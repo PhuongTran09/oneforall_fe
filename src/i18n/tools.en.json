@@ -329,7 +329,7 @@
   },
   "/convert": {
     "title": "Online File Converter | OneForAll",
-    "metaDescription": "Convert documents, images, video and audio online. Available output formats depend on the uploaded file and your plan.",
+    "metaDescription": "Convert supported documents, images, video, and audio files online. Upload a file, choose an available output format, and download the result.",
     "h1": "Convert Files Online",
     "subtitle": "Convert supported image, video, audio, and document formats in a few simple steps.",
     "badge": "Universal Converter",
@@ -385,43 +385,43 @@
     "title": "Online Image Converter: PNG, JPG, WebP and More | OneForAll",
     "metaDescription": "Convert supported images between formats such as PNG, JPG, and WebP. Check the available source and output formats in the tool.",
     "h1": "Convert Image Formats Online",
-    "subtitle": "Convert images to WebP, PNG, JPG or ICO, rasterize SVG, or turn HEIC photos from iPhone into JPG for any device.",
+    "subtitle": "Choose a supported output format for your image to help match your website, design, or sharing needs.",
     "badge": "Image Format Converter",
     "supportedFormatsDesc": "PNG, JPG, WEBP, GIF, BMP, TIFF, ICO, HEIC → PNG, JPG, WEBP, ICO, PDF. PNG also exports SVG, and SVG can be rasterized to PNG.",
     "howItWorksSteps": [
       {
         "step": "01",
-        "title": "Upload an image",
-        "desc": "Choose a PNG, JPG, WebP, GIF, BMP, TIFF, ICO, HEIC or SVG file to convert."
+        "title": "Upload your image",
+        "desc": "Choose an image file supported by the tool."
       },
       {
         "step": "02",
-        "title": "Pick the target format",
-        "desc": "Select the output format you need, such as WebP, PNG, JPG, ICO, PDF or SVG."
+        "title": "Choose an output format",
+        "desc": "Select one of the available image formats."
       },
       {
         "step": "03",
         "title": "Convert the image",
-        "desc": "The tool converts the image to the format you chose."
+        "desc": "OneForAll processes the image using your selected format."
       },
       {
         "step": "04",
-        "title": "Download the new image",
-        "desc": "Save the converted image to your computer."
+        "title": "Download the image",
+        "desc": "Save the converted image to your device."
       }
     ],
     "features": [
       {
-        "title": "Optimized for web SEO",
-        "desc": "Converting to WebP significantly reduces image size for faster pages."
+        "title": "Common image formats",
+        "desc": "Convert between the formats supported by the tool."
       },
       {
-        "title": "Reads legacy and HEIC images",
-        "desc": "GIF, BMP, TIFF, ICO and HEIC files convert to PNG, JPG or WebP."
+        "title": "Useful for websites and design",
+        "desc": "Choose a format that fits your intended use and compatibility needs."
       },
       {
-        "title": "Transparency and SVG support",
-        "desc": "Alpha channels are kept in PNG and WebP, and vector SVG rasterizes to PNG."
+        "title": "Transparency may vary",
+        "desc": "Transparent areas are preserved only when the chosen output format supports transparency."
       }
     ],
     "faqList": [
@@ -570,30 +570,26 @@
     ],
     "features": [
       {
-        "title": "Readable after conversion",
-        "desc": "Paragraphs, headings and lists are converted as far as the target format supports."
+        "title": "Common document formats",
+        "desc": "Convert between the formats supported by the tool."
       },
       {
-        "title": "PDF to Word and back",
-        "desc": "Turn a PDF into an editable DOCX, or export documents to PDF for sharing."
+        "title": "Data export options",
+        "desc": "Some spreadsheet files can be exported to formats such as CSV or JSON when available."
       },
       {
-        "title": "Spreadsheet data conversion",
-        "desc": "XLSX or CSV data can become JSON, CSV or PDF depending on the file structure."
+        "title": "Temporary file handling",
+        "desc": "Files are handled according to the service's storage and deletion policy."
       }
     ],
     "faqList": [
       {
-        "q": "Does Word-to-PDF conversion break Vietnamese fonts?",
-        "a": "Results depend on the fonts and layout of the source document. Open and check the file after conversion."
-      },
-      {
-        "q": "Can I convert a PDF back to Word?",
-        "a": "Yes, this tool supports PDF to DOCX. Layout fidelity depends on how the original PDF was produced."
+        "q": "Will Vietnamese characters display correctly in a PDF?",
+        "a": "Results depend on the source document, fonts, and conversion settings. Review the generated PDF to confirm the layout and characters."
       },
       {
         "q": "Can I convert Excel to JSON?",
-        "a": "Yes, when the file and target format are supported. You can also choose CSV for spreadsheet apps."
+        "a": "If the tool lists JSON as an available output for your spreadsheet, you can select it during conversion."
       }
     ]
   },
@@ -628,26 +624,26 @@
     ],
     "features": [
       {
-        "title": "Keeps a readable layout",
-        "desc": "Paragraphs, headings and lists are carried into the PDF as far as the source allows."
+        "title": "Document content conversion",
+        "desc": "Text and layout are converted as supported by the source file and conversion settings."
       },
       {
-        "title": "PDF to Word, the other direction too",
-        "desc": "Upload a PDF to get an editable DOCX, or extract plain text from it."
+        "title": "Spreadsheet options",
+        "desc": "If available, choose which sheet to export from a spreadsheet."
       },
       {
-        "title": "Images into a PDF",
-        "desc": "Combine PNG, JPG or WEBP images into a single PDF document."
+        "title": "Temporary file handling",
+        "desc": "Source and result files are handled according to the service's storage policy."
       }
     ],
     "faqList": [
       {
-        "q": "Can I convert PDF to Word?",
-        "a": "Yes, but use /document-converter for that direction; this page focuses on producing PDFs."
+        "q": "Can I convert PDF to Word with this tool?",
+        "a": "This page is for converting supported source documents to PDF. Check the available tools for other conversion directions."
       },
       {
-        "q": "Are my files kept on the server?",
-        "a": "Files are processed to fulfill your request and cleaned up under the storage policy. Avoid uploading sensitive data before reading the privacy policy."
+        "q": "How long are my files stored?",
+        "a": "File retention depends on OneForAll's current storage policy. Review the Privacy Policy for details."
       }
     ]
   },
@@ -802,114 +798,6 @@
       {
         "q": "How can I avoid distorting an image?",
         "a": "Keep the original aspect ratio when the tool offers that option, and avoid stretching width and height independently."
-      }
-    ]
-  },
-  "/data-converter": {
-    "title": "Convert JSON, YAML, XML, CSV, Markdown & HTML Online | OneForAll",
-    "metaDescription": "Convert data and markup files between JSON, YAML, XML, CSV, Markdown, HTML and TXT online. No installation needed.",
-    "h1": "Online Data & Markup Format Converter",
-    "subtitle": "Turn JSON into YAML or XML, CSV into JSON or XLSX, Markdown into HTML — a few clicks, right in your browser.",
-    "badge": "Data conversion",
-    "supportedFormatsDesc": "JSON, YAML, XML, CSV, TXT, MD, HTML → JSON, YAML, XML, CSV, XLSX, MD, HTML, PDF.",
-    "howItWorksSteps": [
-      {
-        "step": "01",
-        "title": "Upload your file",
-        "desc": "Choose a JSON, YAML, XML, CSV, TXT, Markdown or HTML file."
-      },
-      {
-        "step": "02",
-        "title": "Pick the output format",
-        "desc": "Select the target format, e.g. JSON, YAML, XML, CSV or HTML."
-      },
-      {
-        "step": "03",
-        "title": "Convert",
-        "desc": "OneForAll rewrites the file into the format you chose."
-      },
-      {
-        "step": "04",
-        "title": "Download the result",
-        "desc": "Save the converted file to your device."
-      }
-    ],
-    "features": [
-      {
-        "title": "Structured data round-trips",
-        "desc": "Convert between JSON, YAML and XML while keeping nested objects and arrays."
-      },
-      {
-        "title": "Tabular data made portable",
-        "desc": "CSV can become JSON records, XLSX, or back again."
-      },
-      {
-        "title": "Markup conversion",
-        "desc": "Markdown to HTML and HTML to Markdown for docs and web content."
-      }
-    ],
-    "faqList": [
-      {
-        "q": "Does XML-to-JSON keep attributes?",
-        "a": "Not yet — element attributes are currently dropped during conversion. Only text content and nesting are preserved."
-      },
-      {
-        "q": "Is there a size limit?",
-        "a": "File size limits follow your current plan. Large files may take longer to process."
-      }
-    ]
-  },
-  "/archive-converter": {
-    "title": "Convert ZIP, TAR, TAR.GZ and 7Z Archives Online | OneForAll",
-    "metaDescription": "Convert archive files between ZIP, TAR, TAR.GZ and 7Z online. Files are processed and cleaned up under the storage policy.",
-    "h1": "Archive Format Converter",
-    "subtitle": "Repack your archives between ZIP, TAR, GZIP and 7Z without installing any desktop tool.",
-    "badge": "Archive tools",
-    "supportedFormatsDesc": "ZIP, TAR, TAR.GZ (TGZ), GZIP → ZIP, TAR, 7Z.",
-    "howItWorksSteps": [
-      {
-        "step": "01",
-        "title": "Upload the archive",
-        "desc": "Select a ZIP, TAR, TGZ or GZIP file to convert."
-      },
-      {
-        "step": "02",
-        "title": "Choose the output format",
-        "desc": "Pick ZIP, TAR or 7Z as the target format."
-      },
-      {
-        "step": "03",
-        "title": "Convert the archive",
-        "desc": "OneForAll safely unpacks and repacks the archive."
-      },
-      {
-        "step": "04",
-        "title": "Download the new archive",
-        "desc": "Save the converted archive to your computer."
-      }
-    ],
-    "features": [
-      {
-        "title": "Safe extraction",
-        "desc": "Archive entries are checked for path traversal and entry-count/size limits before anything is unpacked."
-      },
-      {
-        "title": "Common formats covered",
-        "desc": "Convert between ZIP, TAR, TAR.GZ and 7Z for everyday archiving needs."
-      },
-      {
-        "title": "Temporary file handling",
-        "desc": "Source and result archives are cleaned up under the platform storage policy."
-      }
-    ],
-    "faqList": [
-      {
-        "q": "Can I convert RAR to ZIP?",
-        "a": "Not yet. RAR requires WinRAR’s proprietary extraction library, so the platform does not support it automatically."
-      },
-      {
-        "q": "Are very large archives supported?",
-        "a": "Archives are subject to a maximum uncompressed size and entry count to protect the service; oversized archives are rejected."
       }
     ]
   }

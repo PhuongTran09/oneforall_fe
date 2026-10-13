@@ -254,7 +254,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     badge: 'Chuyển đổi tệp',
     title: 'Công Cụ Chuyển Đổi Định Dạng File Đa Năng Trực Tuyến | OneForAll',
     metaDescription:
-      'Chuyển đổi tài liệu, hình ảnh, video, âm thanh, dữ liệu và tệp nén trực tuyến. Định dạng đích khả dụng tùy thuộc vào tệp tải lên và gói sử dụng.',
+      'Chuyển đổi tài liệu, hình ảnh, video và âm thanh trực tuyến. Định dạng đích khả dụng tùy thuộc vào tệp tải lên và gói sử dụng.',
     h1: 'Chuyển Đổi Định Dạng Tệp Đa Năng Trực Tuyến',
     subtitle:
       'Chuyển đổi hình ảnh, video, âm thanh và tài liệu văn phòng qua vài bước đơn giản. Định dạng đầu ra tùy thuộc vào loại tệp và các tùy chọn được hỗ trợ.',
@@ -309,7 +309,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
       { title: 'Dọn dẹp tệp tự động', desc: 'Tệp được dọn dẹp theo chính sách lưu trữ của nền tảng.' },
     ],
     supportedFormatsDesc:
-      'Định dạng đầu ra khả dụng gồm PDF, DOCX, DOC, TXT, CSV, JSON, XLSX, YAML, XML, MD, HTML, PNG, JPG, WEBP, SVG, ICO, MP4, MOV, MKV, WEBM, AVI, GIF, MP3, WAV, AAC, M4A, FLAC, OGG, ZIP, TAR và 7Z. Các lựa chọn phụ thuộc vào tệp nguồn.',
+      'Định dạng đầu ra khả dụng gồm PDF, DOCX, DOC, CSV, JSON, PNG, JPG, WEBP, SVG, MP4, MOV, MKV, WEBM, AVI, MP3, WAV, AAC, M4A, FLAC và OGG. Các lựa chọn phụ thuộc vào tệp nguồn.',
     faqList: [
       { q: 'Dung lượng tệp tối đa được phép chuyển đổi là bao nhiêu?', a: 'Gói Free hỗ trợ tệp tối đa 50 MB, gói Professional lên đến 2 GB.' },
       { q: 'Tệp của tôi có bị xem trộm không?', a: 'OneForAll ưu tiên quyền riêng tư của người dùng. Tệp được xử lý để thực hiện yêu cầu bạn gửi và không được công khai trên nền tảng. Tệp được dọn dẹp theo chính sách lưu trữ hiện hành. Vui lòng không tải lên thông tin nhạy cảm nếu chưa xem chính sách quyền riêng tư.' },
@@ -334,8 +334,8 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     backendType: 'convert_file',
     backendOperation: 'convert',
     howItWorksSteps: [
-      { step: '01', title: 'Tải ảnh lên', desc: 'Chọn tệp PNG, JPG, WebP, GIF, BMP, TIFF, ICO, HEIC hoặc SVG cần đổi định dạng.' },
-      { step: '02', title: 'Chọn định dạng đích', desc: 'Lựa chọn định dạng đầu ra mong muốn như WebP, PNG, JPG, ICO hoặc PDF.' },
+      { step: '01', title: 'Tải ảnh lên', desc: 'Chọn tệp PNG, JPG, WebP, GIF, BMP, TIFF hoặc ICO cần đổi định dạng.' },
+      { step: '02', title: 'Chọn định dạng đích', desc: 'Lựa chọn định dạng đầu ra mong muốn như WebP, PNG, JPG hoặc SVG.' },
       { step: '03', title: 'Chuyển đổi hình ảnh', desc: 'Công cụ chuyển hình ảnh sang định dạng đích bạn đã chọn.' },
       { step: '04', title: 'Tải ảnh mới', desc: 'Lưu ảnh thành phẩm đã tối ưu về máy tính.' },
     ],
@@ -438,22 +438,20 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     backendType: 'convert_file',
     backendOperation: 'convert',
     howItWorksSteps: [
-      { step: '01', title: 'Tải tài liệu lên', desc: 'Chọn tệp Word (DOCX), Excel (XLSX), PDF, văn bản TXT, Markdown hoặc HTML cần chuyển đổi.' },
-      { step: '02', title: 'Chọn định dạng đích', desc: 'Chọn PDF để in ấn, DOCX để chỉnh sửa tiếp, TXT/CSV/JSON để xử lý nội dung.' },
+      { step: '01', title: 'Tải tài liệu lên', desc: 'Chọn tệp Word (DOCX, DOC), Excel (XLSX) hoặc văn bản TXT cần chuyển đổi.' },
+      { step: '02', title: 'Chọn định dạng đích', desc: 'Chọn PDF để in ấn, DOCX để chỉnh sửa tiếp, hoặc CSV/JSON để xử lý dữ liệu.' },
       { step: '03', title: 'Chuyển đổi tài liệu', desc: 'OneForAll chuyển nội dung sang định dạng mới theo khả năng hỗ trợ của tệp nguồn.' },
       { step: '04', title: 'Tải tài liệu hoàn chỉnh', desc: 'Nhận tệp văn bản mới sẵn sàng cho công việc và học tập.' },
     ],
     features: [
       { title: 'Dễ đọc sau chuyển đổi', desc: 'Đoạn văn, tiêu đề và danh sách được chuyển đổi theo khả năng hỗ trợ của định dạng đích.' },
       { title: 'Chuyển đổi dữ liệu bảng tính', desc: 'Dữ liệu trong tệp XLSX có thể được chuyển sang CSV, JSON hoặc PDF tùy cấu trúc tệp.' },
-      { title: 'Hai chiều PDF ↔ Word', desc: 'Chuyển DOCX sang PDF và ngược lại; PDF nhiều trang có thể xuất thành bộ ảnh hoặc văn bản.' },
       { title: 'Bảo mật tài liệu doanh nghiệp', desc: 'Tệp được dọn dẹp theo chính sách lưu trữ của nền tảng.' },
     ],
     supportedFormatsDesc: 'DOCX, XLSX, TXT, PDF, CSV, MD, HTML → PDF, DOCX, TXT, CSV, JSON, MD, HTML. Định dạng .doc cũ chưa hỗ trợ chiều sang PDF.',
     faqList: [
       { q: 'Chuyển Word sang PDF có bị lỗi font tiếng Việt không?', a: 'Kết quả phụ thuộc vào phông chữ và cách bố trí của tài liệu nguồn. Bạn nên mở và kiểm tra tài liệu sau khi chuyển đổi.' },
       { q: 'Có chuyển file Excel sang JSON được không?', a: 'Có, nếu tệp và định dạng đầu ra được công cụ hỗ trợ. Bạn cũng có thể chọn CSV để sử dụng với các ứng dụng bảng tính.' },
-      { q: 'Có chuyển PDF sang Word được không?', a: 'Có. Công cụ hỗ trợ PDF sang DOCX, TXT và ảnh (JPG/PNG). Kết quả phụ thuộc bố cục tài liệu nguồn — PDF scan (ảnh) sẽ không trích được chữ.' },
     ],
     relatedSlugs: ['/pdf-converter', '/convert', '/image-converter'],
   },
@@ -477,18 +475,17 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     howItWorksSteps: [
       { step: '01', title: 'Tải tệp lên', desc: 'Chọn file Word, Excel, văn bản TXT, ảnh (JPG/PNG/WebP...) hoặc HTML cần xuất ra PDF.' },
       { step: '02', title: 'Định dạng đích là PDF', desc: 'Mọi định dạng nguồn được hỗ trợ ở trên đều xuất ra PDF.' },
-      { step: '03', title: 'Kết xuất PDF', desc: 'OneForAll tạo tệp PDF từ tài liệu hoặc ảnh bạn tải lên.' },
+      { step: '03', title: 'Kết xuất PDF', desc: 'OneForAll tạo tệp PDF từ tài liệu bạn tải lên.' },
       { step: '04', title: 'Tải PDF về', desc: 'Mở file PDF bằng bất kỳ trình đọc nào hoặc đính kèm vào email.' },
     ],
     features: [
       { title: 'Giữ bố cục dễ đọc', desc: 'Đoạn văn, tiêu đề và danh sách được chuyển sang PDF theo khả năng hỗ trợ của tài liệu nguồn.' },
       { title: 'Xuất bảng tính có chọn sheet', desc: 'Chỉ định sheet cần kết xuất khi chuyển file Excel sang PDF.' },
-      { title: 'Ảnh thành PDF', desc: 'Chuyển JPG, PNG, WebP, GIF, BMP hoặc TIFF sang trang PDF gọn gàng.' },
       { title: 'Tự dọn sau khi tải', desc: 'Tệp nguồn và tệp kết quả được dọn dẹp theo chính sách lưu trữ của nền tảng.' },
     ],
     supportedFormatsDesc: 'DOCX, XLSX, TXT, HTML, PNG, JPG, WEBP, GIF, BMP, TIFF → PDF.',
     faqList: [
-      { q: 'Có chuyển được PDF sang Word không?', a: 'Có, nhưng ở chiều ngược lại: dùng trang Chuyển đổi tài liệu (/document-converter). Trang này chỉ nhận tệp và xuất ra PDF.' },
+      { q: 'Có chuyển được PDF sang Word không?', a: 'Chưa. Công cụ này chỉ nhận tài liệu và xuất ra PDF; chiều ngược lại cần phân tích bố cục trang nên chưa được triển khai.' },
       { q: 'File của tôi có bị lưu lại không?', a: 'Tệp được xử lý để thực hiện yêu cầu của bạn và được dọn dẹp theo chính sách lưu trữ của nền tảng. Không nên tải lên dữ liệu nhạy cảm nếu bạn chưa xem chính sách quyền riêng tư.' },
     ],
     relatedSlugs: ['/document-converter', '/convert', '/image-converter'],
