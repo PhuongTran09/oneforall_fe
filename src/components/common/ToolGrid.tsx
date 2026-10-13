@@ -22,9 +22,9 @@ function categoryLabel(id: string): string {
     case 'all':
       return t('toolsGrid.all')
     case 'youtube':
-      return 'YouTube Downloader'
+      return t('toolsGrid.ytDownloader')
     case 'tiktok':
-      return 'TikTok Downloader'
+      return t('toolsGrid.ttDownloader')
     case 'convert':
       return t('toolsGrid.convert')
     case 'image':
