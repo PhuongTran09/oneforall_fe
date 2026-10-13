@@ -13,7 +13,22 @@ export interface MediaProcessParams {
   [key: string]: string | number | boolean | undefined
 }
 
+export interface UrlInfo {
+  title?: string | null
+  thumbnail?: string | null
+  duration?: number | null
+  uploader?: string | null
+  url?: string | null
+}
+
 export const mediaApi = {
+  /**
+   * Xem trước thông tin link YouTube/TikTok (title/thumbnail/kênh) qua proxy oEmbed của BE.
+   */
+  async getUrlInfo(url: string): Promise<UrlInfo> {
+    return apiClient.get<UrlInfo>('/v1/media/url-info', { params: { url } })
+  },
+
   /**
    * Tạo job xử lý tải video/audio từ URL (YouTube, TikTok...) qua FastAPI backend /api/v1/media/process
    */

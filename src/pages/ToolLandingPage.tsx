@@ -18,6 +18,7 @@ import {
   BeforeAfterPreview,
   RelatedTools,
   AdSenseUnit,
+  ToolFooterActions,
 } from '../components'
 import { openAffiliateTab } from '../utils/affiliate'
 import { describeError, sanitizeUserMessage } from '../utils/apiError'
@@ -230,7 +231,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
     setIsLoading(false)
   }
 
-  const handleUrlSubmit = async (url: string, format: string) => {
+  const handleUrlSubmit = async (url: string, format: string, quality: string) => {
     // Chức năng xử lý (không phải trang công khai) chỉ chạy sau khi người dùng đồng ý điều khoản.
     if (!hasAcceptedTerms()) {
       openConsentModal('main')
@@ -248,7 +249,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
     try {
       // Xác định operation dựa trên tool config
       const operation = tool.backendOperation === 'extract-audio' ? 'extract-audio' : 'url_download'
-      const accepted = await mediaApi.processUrl(url, operation, { format })
+      const accepted = await mediaApi.processUrl(url, operation, { format, quality })
       updateToolSnapshot(tool.slug, {
         pending: { jobId: accepted.job_id, token: accepted.download_token ?? null },
       })
@@ -472,6 +473,9 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
                   previewUrl={tool.category === 'image' ? downloadUrl : null}
                   onReset={handleReset}
                 />
+
+                {/* Khu vực tiện ích: nâng cấp / ủng hộ / chia sẻ / bookmark / copy / liên hệ */}
+                <ToolFooterActions />
               </div>
             )}
           </div>

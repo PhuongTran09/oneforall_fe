@@ -25,8 +25,9 @@ export interface JobPublicResponse {
 }
 
 export interface PresignedUrlResponse {
-  download_url?: string
   key?: string
+  url?: string
+  method?: 'GET' | 'PUT'
   expires_in?: number
 }
 

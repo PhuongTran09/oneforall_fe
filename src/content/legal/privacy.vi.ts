@@ -136,7 +136,7 @@ export const privacyVi: LegalDoc = {
           parts: [
             'Yêu cầu về quyền riêng tư vui lòng gửi tới ',
             // TODO(chủ dự án kiểm tra): dùng email đã có trong Footer; xác nhận đây là email liên hệ chính thức.
-            { a: 'support@oneforall.app', href: 'mailto:support@oneforall.app' },
+            { a: 'support@oneforall.io.vn', href: 'https://mail.google.com/mail/?view=cm&fs=1&to=support@oneforall.io.vn&su=Ho%20tro%20OneForAll' },
             '.',
           ],
         },

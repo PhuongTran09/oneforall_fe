@@ -22,9 +22,12 @@ const FORMAT_ALIASES: Record<string, string> = {
   jfif: 'jpg',
   tif: 'tiff',
   svgz: 'svg',
+  heif: 'heic',
   htm: 'html',
   text: 'txt',
   plain: 'txt',
+  yml: 'yaml',
+  tgz: 'gz',
   wave: 'wav',
   oga: 'ogg',
   ogv: 'ogg',
@@ -35,32 +38,46 @@ const FORMAT_ALIASES: Record<string, string> = {
 
 const KNOWN_EXTENSIONS: ReadonlySet<string> = new Set([
   'pdf', 'docx', 'doc', 'xlsx', 'xls', 'pptx', 'ppt', 'txt', 'csv', 'json',
-  'xml', 'html', 'rtf', 'odt', 'ods', 'png', 'jpg', 'webp', 'svg',
+  'xml', 'yaml', 'md', 'html', 'rtf', 'odt', 'ods', 'png', 'jpg', 'webp', 'svg',
   'gif', 'bmp', 'tiff', 'ico', 'heic', 'heif', 'mp4', 'webm', 'mkv',
   'avi', 'mov', 'flv', 'wmv', 'mp3', 'wav', 'ogg', 'flac', 'aac', 'm4a',
+  'zip', 'tar', 'gz', 'tgz', '7z', 'rar',
 ])
 
 const KIND_BY_FORMAT: Record<string, FileKind> = {
   pdf: 'document', docx: 'document', doc: 'document', xlsx: 'document', xls: 'document',
   pptx: 'document', ppt: 'document', txt: 'document', csv: 'document', json: 'document',
-  xml: 'document', html: 'document', rtf: 'document', odt: 'document', ods: 'document',
+  xml: 'document', yaml: 'document', md: 'document', html: 'document',
+  rtf: 'document', odt: 'document', ods: 'document',
   png: 'image', jpg: 'image', webp: 'image', svg: 'image', gif: 'image', bmp: 'image',
   tiff: 'image', ico: 'image', heic: 'image', heif: 'image',
   mp4: 'video', webm: 'video', mkv: 'video', avi: 'video', mov: 'video', flv: 'video', wmv: 'video',
   mp3: 'audio', wav: 'audio', ogg: 'audio', flac: 'audio', aac: 'audio', m4a: 'audio',
+  zip: 'other', tar: 'other', gz: 'other', tgz: 'other', '7z': 'other', rar: 'other',
 }
 
 /** `from>to` pairs accepted by POST /api/v1/convert-file (after format normalization). */
 const CONVERT_PAIRS: ReadonlySet<string> = new Set([
-  'txt>pdf', 'txt>docx', 'txt>doc',
-  'docx>pdf', 'doc>pdf',
+  'txt>pdf', 'txt>docx', 'txt>doc', 'txt>md',
+  'docx>pdf', 'doc>pdf', 'docx>txt',
+  'pdf>txt', 'pdf>docx', 'pdf>jpg', 'pdf>png',
   'xlsx>csv', 'xlsx>json', 'xlsx>pdf',
-  'png>svg', 'png>jpg', 'png>webp',
-  'jpg>png', 'jpg>webp',
+  'csv>json', 'csv>xlsx', 'json>csv',
+  'json>yaml', 'yaml>json', 'json>xml', 'xml>json',
+  'md>html', 'html>md', 'html>pdf',
+  'png>svg', 'png>jpg', 'png>webp', 'png>ico', 'png>pdf',
+  'jpg>png', 'jpg>webp', 'jpg>pdf',
+  'webp>jpg', 'webp>png', 'webp>pdf',
+  'heic>jpg', 'heic>png',
+  'bmp>jpg', 'bmp>png', 'bmp>pdf',
+  'tiff>jpg', 'tiff>png', 'tiff>pdf',
+  'gif>jpg', 'gif>png', 'gif>webp', 'gif>pdf',
+  'svg>png',
+  'zip>tar', 'tar>zip', 'gz>zip', 'zip>7z',
 ])
 
 /** Containers ffmpeg reaches through transcode with a codec that the container accepts. */
-export const VIDEO_TARGETS: readonly string[] = ['mp4', 'mov', 'mkv', 'webm', 'avi']
+export const VIDEO_TARGETS: readonly string[] = ['mp4', 'mov', 'mkv', 'webm', 'avi', 'gif']
 
 /** Audio targets served by media-process/extract-audio. */
 export const AUDIO_TARGETS: readonly string[] = ['mp3', 'wav', 'aac', 'm4a', 'flac', 'ogg']
@@ -72,8 +89,8 @@ export const AUDIO_TARGETS: readonly string[] = ['mp3', 'wav', 'aac', 'm4a', 'fl
 const RASTER_IMAGE_TARGETS: readonly string[] = ['png', 'jpg', 'webp']
 
 /**
- * Raster sources Pillow opens on the worker. HEIC/HEIF need pillow-heif (not installed) and
- * SVG needs a rasterizer, so those stay out.
+ * Raster sources Pillow opens on the worker. HEIC and SVG now convert through
+ * convert-file (pillow-heif / svglib), so they stay out of this fallback list.
  */
 const RASTER_IMAGE_SOURCES: ReadonlySet<string> = new Set([
   'png', 'jpg', 'webp', 'gif', 'bmp', 'tiff', 'ico',
@@ -130,6 +147,13 @@ export function getSupportedTargets(sourceFormat: string | null): string[] {
     }
   }
 
+  // GIF is an image but ffmpeg animates it into video containers through transcode.
+  if (from === 'gif') {
+    for (const target of VIDEO_TARGETS) {
+      if (target !== 'gif' && !targets.includes(target)) targets.push(target)
+    }
+  }
+
   return targets
 }
 
@@ -156,7 +180,9 @@ export function resolveRoute(
   }
 
   if (VIDEO_TARGETS.includes(to)) {
-    return kind === 'video' ? { endpoint: 'media-process', operation: 'transcode' } : null
+    return kind === 'video' || (from === 'gif' && to !== 'gif')
+      ? { endpoint: 'media-process', operation: 'transcode' }
+      : null
   }
 
   if (to === VIDEO_STILL_TARGET && kind === 'video') {
