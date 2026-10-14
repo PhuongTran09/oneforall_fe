@@ -1,5 +1,5 @@
 import { apiClient, resolveUrl } from './client'
-import { ApiClientError, type JobPublicResponse, type JobStatus } from './types'
+import { ApiClientError, type JobHistoryPage, type JobPublicResponse, type JobStats, type JobStatus } from './types'
 import { getAccessToken } from '../authStore'
 import { t } from '../../i18n/langStore'
 
@@ -177,6 +177,36 @@ async function openJobEventStream(
 }
 
 export const jobsApi = {
+  /**
+   * Trang lịch sử job của user đang đăng nhập (Bearer tự gắn qua apiClient).
+   * Lọc theo token ở backend — frontend không gửi user_id (§7).
+   */
+  async listJobs(
+    params: { status?: string; type?: string; q?: string; page?: number; page_size?: number } = {},
+    signal?: AbortSignal,
+  ): Promise<JobHistoryPage> {
+    return apiClient.get<JobHistoryPage>('/v1/jobs', { params, signal })
+  },
+
+  async getStats(signal?: AbortSignal): Promise<JobStats> {
+    return apiClient.get<JobStats>('/v1/jobs/stats', { signal })
+  },
+
+  async deleteJob(jobId: string): Promise<void> {
+    await apiClient.delete<void>(`/v1/jobs/${jobId}`)
+  },
+
+  /**
+   * Hủy job queued/processing. BE CAS theo trạng thái và chấp nhận HOẶC Bearer của chủ
+   * job HOẶC download token của chính job (job ẩn danh trên trang tool không có Bearer).
+   * 409 khi job vừa hoàn tất/thất bại — coi như không hủy được, UI refresh lại.
+   */
+  async cancelJob(jobId: string, token?: string | null): Promise<void> {
+    await apiClient.post(`/v1/jobs/${jobId}/cancel`, undefined, {
+      params: token ? { token } : undefined,
+    })
+  },
+
   /**
    * Lấy trạng thái Job hiện tại từ FastAPI backend
    */

@@ -57,27 +57,36 @@ export function UrlInputForm({
   const [selectedFormat, setSelectedFormat] = useState(defaultFormat)
   const [selectedQuality, setSelectedQuality] = useState(() => defaultQualityFor(defaultFormat))
   const [validationError, setValidationError] = useState<string | null>(null)
-  const [preview, setPreview] = useState<{ status: 'idle' | 'loading' | 'ready' | 'error'; data: UrlInfo | null }>({
-    status: 'idle',
-    data: null,
-  })
+  // Chỉ KẾT QUẢ fetch (bất đồng bộ) mới là state; idle/loading/error của URL hiện tại
+  // được derive bên dưới — effect không setState đồng bộ (rule react-hooks/set-state-in-effect).
+  const [previewFetched, setPreviewFetched] = useState<{
+    key: string
+    status: 'ready' | 'error'
+    data: UrlInfo | null
+  } | null>(null)
+  const [dismissedPreviewKey, setDismissedPreviewKey] = useState<string | null>(null)
 
   const urlValid = isValidForPlatform(url, platform)
+  const trimmedUrl = url.trim()
+  const fetched = previewFetched && previewFetched.key === trimmedUrl ? previewFetched : null
+  const preview: { status: 'idle' | 'loading' | 'ready' | 'error'; data: UrlInfo | null } =
+    !urlValid || dismissedPreviewKey === trimmedUrl
+      ? { status: 'idle', data: null }
+      : fetched
+        ? { status: fetched.status, data: fetched.data }
+        : { status: 'loading', data: null }
 
   // Dán link xong debounce 700ms rồi mới fetch preview — tránh gọi oEmbed mỗi lần gõ.
   useEffect(() => {
-    if (!isValidForPlatform(url, platform)) {
-      setPreview({ status: 'idle', data: null })
-      return
-    }
+    if (!isValidForPlatform(url, platform)) return
     let cancelled = false
-    setPreview({ status: 'loading', data: null })
+    const key = url.trim()
     const timer = setTimeout(async () => {
       try {
-        const data = await mediaApi.getUrlInfo(url.trim())
-        if (!cancelled) setPreview({ status: 'ready', data })
+        const data = await mediaApi.getUrlInfo(key)
+        if (!cancelled) setPreviewFetched({ key, status: 'ready', data })
       } catch {
-        if (!cancelled) setPreview({ status: 'error', data: null })
+        if (!cancelled) setPreviewFetched({ key, status: 'error', data: null })
       }
     }, 700)
     return () => {
@@ -163,6 +172,7 @@ export function UrlInputForm({
             onChange={(e) => {
               const value = e.target.value
               setUrl(value)
+              setDismissedPreviewKey(null)
               // Dán link (nhảy >=4 ký tự cùng lúc) -> báo lỗi sai platform ngay, không đợi bấm nút.
               if (value.length - url.length >= 4) {
                 validateUrl(value)
@@ -191,7 +201,7 @@ export function UrlInputForm({
             <button
               type="button"
               onClick={handlePaste}
-              className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-slate-300 hover:text-[#FF3B30] bg-elev hover:bg-[#ff3b30]/10 border border-edge transition-colors cursor-pointer clip-corner-btn"
+              className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-slate-300 hover:text-brand bg-elev hover:bg-brand/10 border border-edge transition-colors cursor-pointer clip-corner-btn"
               title={t('urlInput.pasteFromClipboard')}
             >
               <Clipboard className="w-3.5 h-3.5" />
@@ -235,8 +245,8 @@ export function UrlInputForm({
               className="w-16 h-16 object-cover border border-edge shrink-0 clip-corner-btn"
             />
           ) : (
-            <div className="w-16 h-16 bg-[#ff3b30]/10 border border-[#ff3b30]/30 flex items-center justify-center shrink-0 clip-corner-btn">
-              <Link2 className="w-5 h-5 text-[#FF3B30]" />
+            <div className="w-16 h-16 bg-brand/10 border border-brand/30 flex items-center justify-center shrink-0 clip-corner-btn">
+              <Link2 className="w-5 h-5 text-brand" />
             </div>
           )}
           <div className="flex-1 min-w-0">
@@ -252,7 +262,9 @@ export function UrlInputForm({
           </div>
           <button
             type="button"
-            onClick={() => setPreview({ status: 'idle', data: null })}
+            onClick={() => {
+              setDismissedPreviewKey(trimmedUrl)
+            }}
             className="p-1.5 text-slate-400 hover:text-slate-200 clip-corner-btn"
             title={t('common.clear')}
           >
@@ -291,7 +303,7 @@ export function UrlInputForm({
 
       {/* Validation Error Message */}
       {validationError && (
-        <div className="flex items-center gap-2 p-3 bg-[#ff3b30]/10 border border-[#ff3b30]/30 text-red-400 text-xs sm:text-sm clip-corner-btn">
+        <div className="flex items-center gap-2 p-3 bg-brand/10 border border-brand/30 text-red-400 text-xs sm:text-sm clip-corner-btn">
           <AlertCircle className="w-4 h-4 shrink-0" />
           <span>{validationError}</span>
         </div>

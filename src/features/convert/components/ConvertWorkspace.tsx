@@ -5,7 +5,7 @@ import { SegmentedControl } from '../../../components/common/SegmentedControl'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../../components/common/Card'
 import { convertApi } from '../services/convertApi'
 import { describeError } from '../../../utils/apiError'
-import { showToast } from '../../../components/feedback/toastStore'
+import { showErrorPopup } from '../../../components/feedback/errorPopupStore'
 import { t } from '../../../i18n/langStore'
 import type { ConvertTask, SupportedFormat } from '../types/convert.types'
 
@@ -46,9 +46,9 @@ export function ConvertWorkspace() {
         isError: false,
       })
     } catch (err) {
-      const { type, message } = describeError(err, t('toolsPage.convertFailed'))
+      const { message } = describeError(err, t('toolsPage.convertFailed'))
       setMessage({ text: message, isError: true })
-      showToast({ type, message })
+      showErrorPopup({ message })
     } finally {
       setIsLoading(false)
     }
@@ -59,12 +59,12 @@ export function ConvertWorkspace() {
       <Card className="p-6 sm:p-8">
         <CardHeader className="p-0 pb-6 border-b border-edge">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-[#ff3b30]/10 border border-[rgba(255,59,48,0.30)] flex items-center justify-center text-[#FF6B4A] clip-corner-btn">
+            <div className="w-10 h-10 bg-brand/10 border border-[rgba(255,59,48,0.30)] flex items-center justify-center text-brand-2 clip-corner-btn">
               <FileType className="w-5 h-5" />
             </div>
             <div>
               <CardTitle className="text-2xl">{t('ws.convertTitle')}</CardTitle>
-              <span className="text-xs font-mono text-[#FF6B4A]">Universal File Converter</span>
+              <span className="text-xs font-mono text-brand-2">Universal File Converter</span>
             </div>
           </div>
           <CardDescription>
@@ -75,7 +75,7 @@ export function ConvertWorkspace() {
         <CardContent className="p-0 pt-6 space-y-6">
           <label
             htmlFor="convert-file-input"
-            className="flex flex-col items-center justify-center border-2 border-dashed border-[rgba(255,59,48,0.30)] hover:border-[rgba(255,59,48,0.60)] p-8 sm:p-12 text-center cursor-pointer bg-page hover:bg-[#ff3b30]/5 transition-all group clip-corner-lg input-3d"
+            className="flex flex-col items-center justify-center border-2 border-dashed border-[rgba(255,59,48,0.30)] hover:border-[rgba(255,59,48,0.60)] p-8 sm:p-12 text-center cursor-pointer bg-page hover:bg-brand/5 transition-all group clip-corner-lg input-3d"
           >
             <input
               id="convert-file-input"
@@ -83,7 +83,7 @@ export function ConvertWorkspace() {
               className="hidden"
               onChange={handleFileChange}
             />
-            <div className="w-14 h-14 bg-[#ff3b30]/10 border border-[rgba(255,59,48,0.25)] flex items-center justify-center text-[#FF6B4A] group-hover:scale-110 transition-transform mb-3 clip-corner-card">
+            <div className="w-14 h-14 bg-brand/10 border border-[rgba(255,59,48,0.25)] flex items-center justify-center text-brand-2 group-hover:scale-110 transition-transform mb-3 clip-corner-card">
               <UploadCloud className="w-7 h-7" />
             </div>
             {selectedFile ? (
@@ -131,7 +131,7 @@ export function ConvertWorkspace() {
             <div
               className={`p-4 text-sm border flex items-center gap-3 clip-corner-card ${
                 message.isError
-                  ? 'bg-[#ff3b30]/10 border-[#ff3b30]/30 text-rose-300'
+                  ? 'bg-brand/10 border-brand/30 text-rose-300'
                   : 'bg-emerald-500/10 border-emerald-600/30 text-emerald-300'
               }`}
             >
@@ -151,7 +151,7 @@ export function ConvertWorkspace() {
                   href={task.resultUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="text-xs font-semibold text-[#FF6B4A] hover:text-[#FF3B30] underline"
+                  className="text-xs font-semibold text-brand-2 hover:text-brand underline"
                 >
                   {t('ws.downloadResult', { format: task.targetFormat.toUpperCase() })}
                 </a>

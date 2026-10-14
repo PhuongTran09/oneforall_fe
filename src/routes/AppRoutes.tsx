@@ -4,6 +4,9 @@ import {
   HomePage,
   ToolLandingPage,
   NotFoundPage,
+  ProfilePage,
+  HistoryPage,
+  ResetPasswordPage,
   TermsPage,
   PrivacyPage,
 } from '../pages'
@@ -41,6 +44,13 @@ function LocaleRoutes() {
         path="video"
         element={<ToolLandingPage configOverride={SEO_TOOLS['/video-converter']} />}
       />
+
+      {/* Trang tài khoản: Profile + Lịch sử xử lý (cần đăng nhập — page tự gate) */}
+      <Route path="profile" element={<ProfilePage />} />
+      <Route path="history" element={<HistoryPage />} />
+
+      {/* Đích redirect của Supabase "Reset password" (route thực, không phải callback OAuth) */}
+      <Route path="auth/reset-password" element={<ResetPasswordPage />} />
 
       {/* Trang pháp lý */}
       <Route path="terms" element={<TermsPage />} />

@@ -22,8 +22,8 @@ export function HeroSection({ onTryFree }: HeroSectionProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center max-w-3xl mx-auto space-y-6">
           {/* Release Badge */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-surface border border-[rgba(255,59,48,0.35)] text-[#FF3B30] text-xs font-bold badge-angular">
-            <Sparkles className="w-3.5 h-3.5 text-[#FF3B30]" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-surface border border-[rgba(255,59,48,0.35)] text-brand text-xs font-bold badge-angular">
+            <Sparkles className="w-3.5 h-3.5 text-brand" />
             <span>{t('hero.badge')}</span>
           </div>
 
@@ -48,10 +48,10 @@ export function HeroSection({ onTryFree }: HeroSectionProps) {
               <LocaleLink
                 key={tool.to}
                 to={tool.to}
-                className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold bg-surface text-slate-200 hover:text-[#FF3B30]"
+                className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold bg-surface text-slate-200 hover:text-brand"
               >
                 <span>{tool.label}</span>
-                <span className="text-[10px] px-1.5 py-0.5 bg-[#ff3b30]/10 text-[#FF3B30] font-bold">
+                <span className="text-[10px] px-1.5 py-0.5 bg-brand/10 text-brand font-bold">
                   {tool.badge}
                 </span>
               </LocaleLink>
@@ -94,7 +94,7 @@ export function HeroSection({ onTryFree }: HeroSectionProps) {
               <span>{t('hero.pillSecurity')}</span>
             </div>
             <div className="flex items-center gap-2">
-              <FileCheck className="w-4 h-4 text-[#FF3B30]" />
+              <FileCheck className="w-4 h-4 text-brand" />
               <span>{t('hero.pillFormats')}</span>
             </div>
           </div>

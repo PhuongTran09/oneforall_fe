@@ -10,13 +10,16 @@ import {
   AdSenseUnit,
 } from '../components'
 import { t } from '../i18n/langStore'
+import { useAuth } from '../services/authStore'
 
 interface LayoutContext {
   openAuth: (mode: 'login' | 'register') => void
+  openPro: () => void
 }
 
 export function HomePage() {
   const context = useOutletContext<LayoutContext | null>()
+  const { session } = useAuth()
 
   const handleOpenAuth = (mode: 'login' | 'register') => {
     if (context?.openAuth) {
@@ -28,6 +31,23 @@ export function HomePage() {
     const toolsElement = document.getElementById('tools')
     if (toolsElement) {
       toolsElement.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+
+  // CTA "Tài khoản Pro" ở hero: chưa đăng nhập thì chưa có gì để mua → mở modal auth;
+  // đã đăng nhập thì cuộn xuống bảng gói Free/Pro trên chính trang này.
+  const handleProAccount = () => {
+    if (!session) {
+      handleOpenAuth('register')
+      return
+    }
+    handleSelectPremium()
+  }
+
+  const handleSelectPremium = () => {
+    const pricingElement = document.getElementById('pricing')
+    if (pricingElement) {
+      pricingElement.scrollIntoView({ behavior: 'smooth' })
     }
   }
 
@@ -45,7 +65,7 @@ export function HomePage() {
         canonicalUrl="https://oneforall.app/"
         faqList={homeFaqs}
       />
-      <HeroSection onTryFree={() => handleOpenAuth('register')} />
+      <HeroSection onTryFree={handleProAccount} />
       <ToolsSection />
       <FeaturesSection />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -54,7 +74,7 @@ export function HomePage() {
       <HowItWorksSection />
       <PricingSection
         onSelectFree={handleSelectFree}
-        onSelectPremium={() => handleOpenAuth('register')}
+        onSelectPremium={() => context?.openPro()}
       />
       <FaqSection />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

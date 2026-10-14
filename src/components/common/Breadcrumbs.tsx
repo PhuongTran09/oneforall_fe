@@ -18,7 +18,7 @@ export function Breadcrumbs({ items }: BreadcrumbsProps) {
         <li className="inline-flex items-center">
           <LocaleLink
             to="/"
-            className="inline-flex items-center gap-1 text-slate-400 hover:text-[#FF3B30] transition-colors"
+            className="inline-flex items-center gap-1 text-slate-400 hover:text-brand transition-colors"
           >
             <Home className="w-3.5 h-3.5" />
             <span>{t('common.home')}</span>
@@ -37,7 +37,7 @@ export function Breadcrumbs({ items }: BreadcrumbsProps) {
               ) : (
                 <LocaleLink
                   to={item.url}
-                  className="text-slate-400 hover:text-[#FF3B30] transition-colors"
+                  className="text-slate-400 hover:text-brand transition-colors"
                 >
                   {item.name}
                 </LocaleLink>

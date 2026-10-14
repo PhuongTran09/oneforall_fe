@@ -29,7 +29,7 @@ function CategoryRow({ title, description, checked, disabled = false, onChange }
         disabled={disabled}
         onClick={() => onChange?.(!checked)}
         className={`relative shrink-0 w-11 h-6 mt-0.5 clip-corner-btn border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#FF3B30] ${
-          checked ? 'bg-[#FF3B30] border-[#FF3B30]' : 'bg-elev border-edge'
+          checked ? 'bg-brand border-brand' : 'bg-elev border-edge'
         } ${disabled ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'}`}
       >
         <span

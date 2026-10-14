@@ -24,12 +24,12 @@ export function NotFoundPage() {
       />
 
       <Card bordered={false} className="max-w-lg w-full p-8 text-center border border-edge space-y-6">
-        <div className="w-16 h-16 bg-[#ff3b30]/10 border border-[#ff3b30]/30 text-[#FF3B30] flex items-center justify-center mx-auto clip-corner-card">
+        <div className="w-16 h-16 bg-brand/10 border border-brand/30 text-brand flex items-center justify-center mx-auto clip-corner-card">
           <AlertCircle className="w-8 h-8" />
         </div>
 
         <div className="space-y-2">
-          <span className="text-xs font-mono font-semibold px-2.5 py-0.5 bg-[#ff3b30]/10 text-[#FF3B30] border border-[#ff3b30]/30 clip-corner-btn">
+          <span className="text-xs font-mono font-semibold px-2.5 py-0.5 bg-brand/10 text-brand border border-brand/30 clip-corner-btn">
             {t('notFound.errorCode')}
           </span>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-ink tracking-tight">
@@ -50,7 +50,7 @@ export function NotFoundPage() {
               <LocaleLink
                 key={tool.to}
                 to={tool.to}
-                className="flex items-center justify-between p-2.5 bg-elev hover:bg-[#ff3b30]/10 border border-edge hover:border-[rgba(255,59,48,0.40)] text-xs font-medium text-slate-200 hover:text-[#FF3B30] transition-colors clip-corner-btn"
+                className="flex items-center justify-between p-2.5 bg-elev hover:bg-brand/10 border border-edge hover:border-[rgba(255,59,48,0.40)] text-xs font-medium text-slate-200 hover:text-brand transition-colors clip-corner-btn"
               >
                 <span>{tool.label}</span>
                 <ArrowRight className="w-3.5 h-3.5 text-slate-400" />

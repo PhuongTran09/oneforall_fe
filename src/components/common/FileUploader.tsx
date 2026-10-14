@@ -172,10 +172,10 @@ export function FileUploader({
         onClick={() => !selectedFile && fileInputRef.current?.click()}
         className={`relative border-2 border-dashed p-6 sm:p-10 text-center transition-all cursor-pointer input-3d clip-corner-lg ${
           isDragging
-            ? 'border-[#ff3b30]/60 bg-[#ff3b30]/10'
+            ? 'border-brand/60 bg-brand/10'
             : selectedFile
             ? 'border-edge bg-surface cursor-default'
-            : 'border-[rgba(255,59,48,0.30)] hover:border-[rgba(255,59,48,0.60)] bg-surface hover:bg-[#ff3b30]/5'
+            : 'border-[rgba(255,59,48,0.30)] hover:border-[rgba(255,59,48,0.60)] bg-surface hover:bg-brand/5'
         }`}
       >
         <input
@@ -189,8 +189,8 @@ export function FileUploader({
         />
 
         {selectedFile ? (
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-2 text-left">
-            <div className="flex items-center gap-4">
+          <div className="flex flex-col sm:flex-row items-center sm:items-center justify-between gap-4 p-2 text-left">
+            <div className="flex w-full min-w-0 items-center gap-3 sm:gap-4">
               {previewUrl ? (
                 <img
                   src={previewUrl}
@@ -198,12 +198,15 @@ export function FileUploader({
                   className="w-16 h-16 object-cover border border-edge shrink-0 clip-corner-btn"
                 />
               ) : (
-                <div className="w-14 h-14 bg-[#ff3b30]/10 border border-[#ff3b30]/30 flex items-center justify-center text-[#FF3B30] shrink-0">
+                <div className="w-14 h-14 bg-brand/10 border border-brand/30 flex items-center justify-center text-brand shrink-0">
                   <FileIcon className="w-7 h-7" />
                 </div>
               )}
-              <div className="space-y-0.5 max-w-sm sm:max-w-md">
-                <p className="font-semibold text-slate-100 text-sm sm:text-base truncate">
+              <div className="min-w-0 flex-1 space-y-0.5">
+                <p
+                  title={selectedFile.name}
+                  className="font-semibold text-slate-100 text-sm sm:text-base break-words [overflow-wrap:anywhere] line-clamp-2"
+                >
                   {selectedFile.name}
                 </p>
                 <p className="text-xs text-slate-400 font-mono">
@@ -219,7 +222,7 @@ export function FileUploader({
                 handleClear()
               }}
               disabled={isLoading}
-              className="p-1.5 text-slate-400 hover:text-[#FF3B30] hover:bg-[#ff3b30]/10 transition-colors cursor-pointer clip-corner-btn"
+              className="shrink-0 p-1.5 text-slate-400 hover:text-brand hover:bg-brand/10 transition-colors cursor-pointer clip-corner-btn"
               title={t('uploader.removeFile')}
             >
               <X className="w-5 h-5" />
@@ -227,13 +230,13 @@ export function FileUploader({
           </div>
         ) : (
           <div className="space-y-3">
-            <div className="w-16 h-16 mx-auto bg-[#ff3b30]/10 border border-[#ff3b30]/30 flex items-center justify-center text-[#FF3B30] group-hover:scale-105 transition-transform">
+            <div className="w-16 h-16 mx-auto bg-brand/10 border border-brand/30 flex items-center justify-center text-brand group-hover:scale-105 transition-transform">
               <UploadCloud className="w-8 h-8" />
             </div>
             <div className="space-y-1">
               <p className="text-base font-semibold text-slate-100">
                 {t('uploader.dropzonePre')}{' '}
-                <span className="text-[#FF3B30] underline underline-offset-2">{t('uploader.dropzoneBrowse')}</span>
+                <span className="text-brand underline underline-offset-2">{t('uploader.dropzoneBrowse')}</span>
               </p>
               <p className="text-xs text-slate-400">
                 {t('uploader.dropzoneHint')}
@@ -275,7 +278,7 @@ export function FileUploader({
           )}
 
           {invalidParam && (
-            <p role="alert" className="text-xs text-[#FF3B30]">
+            <p role="alert" className="text-xs text-brand">
               {t('uploader.invalidParam', { label: invalidParam.label })}
             </p>
           )}

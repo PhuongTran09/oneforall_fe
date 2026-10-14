@@ -44,6 +44,13 @@ export { ToolFooterActions } from './common/ToolFooterActions'
 // Feedback components
 export { AuthModal } from './feedback/AuthModal'
 export type { AuthModalProps } from './feedback/AuthModal'
+export { ProPlanModal } from './feedback/ProPlanModal'
+export type { ProPlanModalProps } from './feedback/ProPlanModal'
+export { ConfirmModal } from './feedback/ConfirmModal'
+export type { ConfirmModalProps } from './feedback/ConfirmModal'
+export { ErrorPopupViewport } from './feedback/ErrorPopupViewport'
+export { showErrorPopup } from './feedback/errorPopupStore'
+export { ErrorBoundary } from './feedback/ErrorBoundary'
 
 // Landing page sections
 export { HeroSection } from './landing/HeroSection'

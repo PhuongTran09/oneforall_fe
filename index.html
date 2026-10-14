@@ -1,8 +1,25 @@
 <!doctype html>
 <html lang="vi">
   <head>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8618568683865621"
-     crossorigin="anonymous"></script>
+    <script>
+      // AdSense Auto ads (page-level, do tài khoản AdSense điều khiển — không qua slot của app).
+      // Nạp có điều kiện: chỉ khi user ĐÃ đồng ý cookie quảng cáo và không phải gói Pro
+      // (ofa-plan do entitlementsStore cache từ /users/me; chưa biết = mặc định Free).
+      try {
+        var c = JSON.parse(localStorage.getItem('ofa-consent') || 'null')
+        var adConsent = !!(c && c.cookies && c.cookies.decidedAt && c.cookies.advertising)
+        var adFree = localStorage.getItem('ofa-plan') === 'premium'
+        if (adConsent && !adFree) {
+          var s = document.createElement('script')
+          s.async = true
+          s.crossOrigin = 'anonymous'
+          s.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8618568683865621'
+          document.head.appendChild(s)
+        }
+      } catch (e) {
+        // localStorage blocked → coi như chưa đồng ý, không nạp ads.
+      }
+    </script>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/oneforall.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />

@@ -31,6 +31,58 @@ export interface PresignedUrlResponse {
   expires_in?: number
 }
 
+// Lịch sử xử lý — khớp schemas/job.py::JobHistoryItem (KHÔNG có output_key/input_key).
+export interface JobHistoryItem {
+  id: string
+  type: string
+  status: JobStatus
+  progress: number
+  filename: string | null
+  file_size: number | null
+  error: string | null
+  created_at: string
+  started_at: string | null
+  completed_at: string | null
+  expires_at: string | null
+  downloadable: boolean
+}
+
+export interface JobHistoryPage {
+  items: JobHistoryItem[]
+  total: number
+  page: number
+  page_size: number
+  total_pages: number
+}
+
+export interface JobStats {
+  total_completed: number
+  files_available: number
+}
+
+export interface PlanPolicy {
+  max_active_jobs: number
+  max_upload_bytes: Record<string, number>
+  result_ttl_minutes: number
+  ads: boolean
+  priority: boolean
+}
+
+export interface UserMe {
+  id: string
+  email: string | null
+  username: string
+  full_name: string | null
+  is_active: boolean
+  is_superuser: boolean
+  /** Gói dịch vụ — backend chưa trả thì FE fallback user_metadata rồi 'free'. */
+  plan?: string | null
+  /** Giới hạn gói do BE (PLAN_POLICIES) sinh ra — nguồn duy nhất, không hardcode. */
+  plan_policy?: PlanPolicy | null
+  created_at: string
+  updated_at: string
+}
+
 export interface RequestOptions extends Omit<RequestInit, 'body'> {
   params?: Record<string, string | number | boolean | undefined | null>
 }

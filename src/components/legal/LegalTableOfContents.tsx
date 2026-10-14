@@ -16,7 +16,7 @@ export function LegalTableOfContents({ sections }: LegalTableOfContentsProps) {
           <li key={s.id}>
             <a
               href={`#${s.id}`}
-              className="text-xs sm:text-sm text-slate-400 hover:text-[#FF3B30] transition-colors"
+              className="text-xs sm:text-sm text-slate-400 hover:text-brand transition-colors"
             >
               {i + 1}. {s.title}
             </a>

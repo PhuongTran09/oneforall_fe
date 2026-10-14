@@ -39,11 +39,23 @@ export function resolveUrl(endpoint: string, params?: RequestOptions['params']):
 }
 
 async function parseResponseData<T>(response: Response): Promise<T> {
+  // 204/205/304 không có body, nhưng FastAPI vẫn gắn `content-type: application/json`
+  // (đã reproduce với uvicorn + DELETE status_code=204): gọi response.json() ở đó ném
+  // SyntaxError "Unexpected end of JSON input" — requester THÀNH CÔNG (204) lại hiện ra
+  // như lỗi. Vì vậy: không body thì trả null, và parse từ text thay vì json().
+  if (response.status === 204 || response.status === 205 || response.status === 304) {
+    return null as unknown as T
+  }
+
+  const text = await response.text()
+  if (!text) {
+    return null as unknown as T
+  }
+
   const contentType = response.headers.get('content-type') || ''
   if (contentType.includes('application/json')) {
-    return (await response.json()) as T
+    return JSON.parse(text) as T
   }
-  const text = await response.text()
   return text as unknown as T
 }
 

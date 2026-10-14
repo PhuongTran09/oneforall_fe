@@ -4,7 +4,7 @@ import { Button } from '../../../components/common/Button'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../../components/common/Card'
 import { videoApi } from '../services/videoApi'
 import { describeError } from '../../../utils/apiError'
-import { showToast } from '../../../components/feedback/toastStore'
+import { showErrorPopup } from '../../../components/feedback/errorPopupStore'
 import { t } from '../../../i18n/langStore'
 import type { VideoTask } from '../types/video.types'
 
@@ -30,9 +30,9 @@ export function VideoWorkspace() {
       setTask(res)
       setMessage({ text: t('ws.videoSuccess'), isError: false })
     } catch (err) {
-      const { type, message } = describeError(err, t('ws.videoFailed'))
+      const { message } = describeError(err, t('ws.videoFailed'))
       setMessage({ text: message, isError: true })
-      showToast({ type, message })
+      showErrorPopup({ message })
     } finally {
       setIsLoading(false)
     }
@@ -43,12 +43,12 @@ export function VideoWorkspace() {
       <Card className="p-6 sm:p-8">
         <CardHeader className="p-0 pb-6 border-b border-edge">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-[#ff3b30]/10 border border-[rgba(255,59,48,0.30)] flex items-center justify-center text-[#FF6B4A] clip-corner-btn">
+            <div className="w-10 h-10 bg-brand/10 border border-[rgba(255,59,48,0.30)] flex items-center justify-center text-brand-2 clip-corner-btn">
               <VideoIcon className="w-5 h-5" />
             </div>
             <div>
               <CardTitle className="text-2xl">{t('ws.videoTitle')}</CardTitle>
-              <span className="text-xs font-mono text-[#FF6B4A]">Video Transcoding Engine</span>
+              <span className="text-xs font-mono text-brand-2">Video Transcoding Engine</span>
             </div>
           </div>
           <CardDescription>
@@ -59,7 +59,7 @@ export function VideoWorkspace() {
         <CardContent className="p-0 pt-6 space-y-6">
           <label
             htmlFor="video-file-input"
-            className="flex flex-col items-center justify-center border-2 border-dashed border-[rgba(255,59,48,0.30)] hover:border-[rgba(255,59,48,0.60)] p-8 sm:p-12 text-center cursor-pointer bg-page hover:bg-[#ff3b30]/5 transition-all group clip-corner-lg input-3d"
+            className="flex flex-col items-center justify-center border-2 border-dashed border-[rgba(255,59,48,0.30)] hover:border-[rgba(255,59,48,0.60)] p-8 sm:p-12 text-center cursor-pointer bg-page hover:bg-brand/5 transition-all group clip-corner-lg input-3d"
           >
             <input
               id="video-file-input"
@@ -68,7 +68,7 @@ export function VideoWorkspace() {
               className="hidden"
               onChange={handleFileChange}
             />
-            <div className="w-14 h-14 bg-[#ff3b30]/10 border border-[rgba(255,59,48,0.25)] flex items-center justify-center text-[#FF6B4A] group-hover:scale-110 transition-transform mb-3 clip-corner-card">
+            <div className="w-14 h-14 bg-brand/10 border border-[rgba(255,59,48,0.25)] flex items-center justify-center text-brand-2 group-hover:scale-110 transition-transform mb-3 clip-corner-card">
               <UploadCloud className="w-7 h-7" />
             </div>
             {selectedFile ? (
@@ -105,7 +105,7 @@ export function VideoWorkspace() {
             <div
               className={`p-4 text-sm border flex items-center gap-3 clip-corner-card ${
                 message.isError
-                  ? 'bg-[#ff3b30]/10 border-[#ff3b30]/30 text-rose-300'
+                  ? 'bg-brand/10 border-brand/30 text-rose-300'
                   : 'bg-emerald-500/10 border-emerald-600/30 text-emerald-300'
               }`}
             >

@@ -9,7 +9,7 @@ export function ToolsSection() {
     <section id="tools" className="py-16 sm:py-24 bg-page border-y border-edge">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16 space-y-3">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold bg-surface border border-[rgba(255,59,48,0.35)] text-[#FF3B30] badge-angular">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold bg-surface border border-[rgba(255,59,48,0.35)] text-brand badge-angular">
             {t('toolsSection.badge')}
           </div>
           <h2 className="text-2xl sm:text-4xl font-extrabold text-ink tracking-tight">

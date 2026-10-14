@@ -59,11 +59,11 @@ export function BeforeAfterPreview({
       {/* Tab toggle */}
       <div className="flex items-center justify-between px-1">
         <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-200">
-          <Sparkles className="w-4 h-4 text-[#FF3B30]" />
+          <Sparkles className="w-4 h-4 text-brand" />
           <span>{t('compare.title')}</span>
         </div>
         {/* Tab switcher — keep compact rounded inner buttons, outer is clipped */}
-        <div className="flex items-center gap-1 bg-[#ff3b30]/10 p-0.5 border border-edge clip-corner-btn text-xs font-medium text-slate-200">
+        <div className="flex items-center gap-1 bg-brand/10 p-0.5 border border-edge clip-corner-btn text-xs font-medium text-slate-200">
           <button
             type="button"
             onClick={() => setActiveTab('slider')}
@@ -131,7 +131,7 @@ export function BeforeAfterPreview({
 
           {/* Vertical divider line */}
           <div
-            className="absolute top-0 bottom-0 w-1 bg-[#FF3B30] pointer-events-none z-10"
+            className="absolute top-0 bottom-0 w-1 bg-brand pointer-events-none z-10"
             style={{ left: `${sliderPosition}%` }}
           >
             {/* Drag handle — square with clip */}
@@ -148,7 +148,7 @@ export function BeforeAfterPreview({
           <span className="absolute top-3 left-3 z-20 px-2.5 py-1 text-[11px] font-semibold bg-surface text-ink border border-edge clip-corner-btn">
             {originalText}
           </span>
-          <span className="absolute top-3 right-3 z-20 px-2.5 py-1 text-[11px] font-semibold bg-[#FF3B30] text-white clip-corner-btn">
+          <span className="absolute top-3 right-3 z-20 px-2.5 py-1 text-[11px] font-semibold bg-brand text-white clip-corner-btn">
             {processedText}
           </span>
         </div>
@@ -170,7 +170,7 @@ export function BeforeAfterPreview({
           </div>
 
           <div className="border border-[rgba(255,59,48,0.35)] bg-surface p-3 space-y-2 clip-corner-card">
-            <span className="text-xs font-semibold text-[#FF3B30] flex items-center gap-1">
+            <span className="text-xs font-semibold text-brand flex items-center gap-1">
               <Sparkles className="w-3.5 h-3.5" />
               {processedText}
             </span>
