@@ -42,7 +42,7 @@ export function Footer() {
           <div className="col-span-2 space-y-4">
             <LocaleLink to="/" className="flex items-center gap-2.5">
               <div className="w-10 h-10   flex items-center justify-center">
-                <img src="/oneforall.svg" alt="OneForAll Logo" className="w-full h-full object-contain" />
+                <img src="/oneforall.svg" alt="One ForAll Logo" className="w-full h-full object-contain" />
               </div>
               <span className="font-bold text-xl tracking-tight text-ink">
                 One<span className="text-brand-gradient"> ForAll</span>
@@ -53,7 +53,7 @@ export function Footer() {
             </p>
             <div className="flex items-center gap-3 pt-2">
               <a
-                href="https://mail.google.com/mail/?view=cm&fs=1&to=support@oneforall.io.vn&su=Ho%20tro%20OneForAll"
+                href="https://mail.google.com/mail/?view=cm&fs=1&to=support@oneforall.io.vn&su=Ho%20tro%20One ForAll"
                 className="w-9 h-9 bg-elev hover:bg-brand/15 text-slate-400 flex items-center justify-center transition-colors clip-corner-btn"
                 aria-label="Email Support"
               >

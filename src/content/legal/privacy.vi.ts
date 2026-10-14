@@ -6,11 +6,11 @@ export const privacyVi: LegalDoc = {
   title: 'Chính sách bảo mật',
   route: '/privacy',
   description:
-    'Chính sách bảo mật của OneForAll: dữ liệu thu thập, cơ chế lưu trữ và tự động xóa tệp, cookie và dịch vụ bên thứ ba.',
+    'Chính sách bảo mật của One ForAll: dữ liệu thu thập, cơ chế lưu trữ và tự động xóa tệp, cookie và dịch vụ bên thứ ba.',
   // TODO(chủ dự án kiểm tra): ngày cập nhật là ngày viết lần đầu, sửa khi ban hành chính thức.
   lastUpdated: '12/10/2026',
   intro:
-    'Chính sách này mô tả những dữ liệu OneForAll xử lý, cách tệp được lưu tạm và tự động xóa theo đúng cơ chế vận hành thực tế của hệ thống.',
+    'Chính sách này mô tả những dữ liệu One ForAll xử lý, cách tệp được lưu tạm và tự động xóa theo đúng cơ chế vận hành thực tế của hệ thống.',
   sections: [
     {
       id: 'du-lieu-thu-thap',
@@ -136,7 +136,7 @@ export const privacyVi: LegalDoc = {
           parts: [
             'Yêu cầu về quyền riêng tư vui lòng gửi tới ',
             // TODO(chủ dự án kiểm tra): dùng email đã có trong Footer; xác nhận đây là email liên hệ chính thức.
-            { a: 'support@oneforall.io.vn', href: 'https://mail.google.com/mail/?view=cm&fs=1&to=support@oneforall.io.vn&su=Ho%20tro%20OneForAll' },
+            { a: 'support@oneforall.io.vn', href: 'https://mail.google.com/mail/?view=cm&fs=1&to=support@oneforall.io.vn&su=Ho%20tro%20One ForAll' },
             '.',
           ],
         },

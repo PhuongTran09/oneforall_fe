@@ -104,3 +104,17 @@ export function getPlanPolicy(me: UserMe | null): PlanPolicy | null {
 export function isAdFree(me: UserMe | null): boolean {
   return me?.plan === 'premium' || me?.plan_policy?.ads === false
 }
+
+/**
+ * Pro theo cả bản cache của plan. /users/me về muộn hơn HTML, nên nếu chỉ nhìn `me`
+ * thì trang đầu tiên của user Pro vẫn render ad unit (và auto-ads trong index.html
+ * đã chặn bằng cache này — hai nguồn phải đồng ý với nhau).
+ */
+export function isAdFreeNow(me: UserMe | null): boolean {
+  if (isAdFree(me)) return true
+  try {
+    return localStorage.getItem('ofa-plan') === 'premium'
+  } catch {
+    return false
+  }
+}

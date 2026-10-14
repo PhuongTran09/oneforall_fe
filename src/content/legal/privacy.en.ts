@@ -6,11 +6,11 @@ export const privacyEn: LegalDoc = {
   title: 'Privacy Policy',
   route: '/en/privacy',
   description:
-    'The OneForAll privacy policy: data collected, the file storage and automatic deletion mechanism, cookies, and third-party services.',
+    'The One ForAll privacy policy: data collected, the file storage and automatic deletion mechanism, cookies, and third-party services.',
   // TODO (project owner to verify): lastUpdated is the first-draft date; update it upon official publication.
   lastUpdated: '12/10/2026',
   intro:
-    'This policy describes the data OneForAll processes and how files are temporarily stored and automatically deleted, exactly matching the system\'s actual operating mechanism.',
+    'This policy describes the data One ForAll processes and how files are temporarily stored and automatically deleted, exactly matching the system\'s actual operating mechanism.',
   sections: [
     {
       id: 'du-lieu-thu-thap',
