@@ -221,7 +221,7 @@ export const vi = {
     "quickCompress": "Nén ảnh",
     "quickPdf": "Chuyển đổi PDF",
     "quickRemoveBg": "Xóa nền ảnh",
-    "titleHighlight": "tất-cả-trong-một",
+    "titleHighlight": "tất cả trong một",
     "titlePost": "cho mọi nhu cầu",
     "titlePre": "Nền tảng công cụ trực tuyến"
   },

@@ -5,5 +5,5 @@ import { useI18n } from '../../i18n/langStore'
 
 export function TermsPage() {
   const { lang } = useI18n()
-  return <LegalLayout doc={lang === 'en' ? termsEn : termsVi} siteUrl="https://oneforall.app" />
+  return <LegalLayout doc={lang === 'en' ? termsEn : termsVi} siteUrl="https://oneforall.io.vn" />
 }

@@ -92,7 +92,7 @@ export function runPrerender() {
 
   for (const slug of slugs) {
     const tool = tools[slug]
-    const canonicalUrl = `https://oneforall.app${tool.slug}`
+    const canonicalUrl = `https://oneforall.io.vn${tool.slug}`
 
     // 1. Tạo JSON-LD Schema
     const schemaData = []
@@ -116,7 +116,7 @@ export function runPrerender() {
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
       itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Trang chủ', item: 'https://oneforall.app/' },
+        { '@type': 'ListItem', position: 1, name: 'Trang chủ', item: 'https://oneforall.io.vn/' },
         { '@type': 'ListItem', position: 2, name: tool.badge || 'Công cụ', item: canonicalUrl },
       ],
     })

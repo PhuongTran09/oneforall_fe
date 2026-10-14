@@ -106,7 +106,7 @@ export const termsVi: LegalDoc = {
           parts: [
             'Mọi thắc mắc về điều khoản sử dụng, vui lòng gửi email tới ',
             // TODO(chủ dự án kiểm tra): dùng email đã có trong Footer; xác nhận đây là email liên hệ chính thức.
-            { a: 'support@oneforall.app', href: 'mailto:support@oneforall.app' },
+            { a: 'support@oneforall.io.vn', href: 'mailto:support@oneforall.io.vn' },
             '.',
           ],
         },

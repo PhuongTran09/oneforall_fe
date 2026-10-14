@@ -5,5 +5,5 @@ import { useI18n } from '../../i18n/langStore'
 
 export function PrivacyPage() {
   const { lang } = useI18n()
-  return <LegalLayout doc={lang === 'en' ? privacyEn : privacyVi} siteUrl="https://oneforall.app" />
+  return <LegalLayout doc={lang === 'en' ? privacyEn : privacyVi} siteUrl="https://oneforall.io.vn" />
 }
