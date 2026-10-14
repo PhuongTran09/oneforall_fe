@@ -385,43 +385,43 @@
     "title": "Online Image Converter: PNG, JPG, WebP and More | One ForAll",
     "metaDescription": "Convert supported images between formats such as PNG, JPG, and WebP. Check the available source and output formats in the tool.",
     "h1": "Convert Image Formats Online",
-    "subtitle": "Convert images to WebP, PNG, JPG or ICO, rasterize SVG, or turn HEIC photos from iPhone into JPG for any device.",
+    "subtitle": "Choose a supported output format for your image to help match your website, design, or sharing needs.",
     "badge": "Image Format Converter",
     "supportedFormatsDesc": "PNG, JPG, WEBP, GIF, BMP, TIFF, ICO, HEIC → PNG, JPG, WEBP, ICO, PDF. PNG also exports SVG, and SVG can be rasterized to PNG.",
     "howItWorksSteps": [
       {
         "step": "01",
-        "title": "Upload an image",
-        "desc": "Choose a PNG, JPG, WebP, GIF, BMP, TIFF, ICO, HEIC or SVG file to convert."
+        "title": "Upload your image",
+        "desc": "Choose an image file supported by the tool."
       },
       {
         "step": "02",
-        "title": "Pick the target format",
-        "desc": "Select the output format you need, such as WebP, PNG, JPG, ICO, PDF or SVG."
+        "title": "Choose an output format",
+        "desc": "Select one of the available image formats."
       },
       {
         "step": "03",
         "title": "Convert the image",
-        "desc": "The tool converts the image to the format you chose."
+        "desc": "OneForAll processes the image using your selected format."
       },
       {
         "step": "04",
-        "title": "Download the new image",
-        "desc": "Save the converted image to your computer."
+        "title": "Download the image",
+        "desc": "Save the converted image to your device."
       }
     ],
     "features": [
       {
-        "title": "Optimized for web SEO",
-        "desc": "Converting to WebP significantly reduces image size for faster pages."
+        "title": "Common image formats",
+        "desc": "Convert between the formats supported by the tool."
       },
       {
-        "title": "Reads legacy and HEIC images",
-        "desc": "GIF, BMP, TIFF, ICO and HEIC files convert to PNG, JPG or WebP."
+        "title": "Useful for websites and design",
+        "desc": "Choose a format that fits your intended use and compatibility needs."
       },
       {
-        "title": "Transparency and SVG support",
-        "desc": "Alpha channels are kept in PNG and WebP, and vector SVG rasterizes to PNG."
+        "title": "Transparency may vary",
+        "desc": "Transparent areas are preserved only when the chosen output format supports transparency."
       }
     ],
     "faqList": [
@@ -570,30 +570,26 @@
     ],
     "features": [
       {
-        "title": "Readable after conversion",
-        "desc": "Paragraphs, headings and lists are converted as far as the target format supports."
+        "title": "Common document formats",
+        "desc": "Convert between the formats supported by the tool."
       },
       {
-        "title": "PDF to Word and back",
-        "desc": "Turn a PDF into an editable DOCX, or export documents to PDF for sharing."
+        "title": "Data export options",
+        "desc": "Some spreadsheet files can be exported to formats such as CSV or JSON when available."
       },
       {
-        "title": "Spreadsheet data conversion",
-        "desc": "XLSX or CSV data can become JSON, CSV or PDF depending on the file structure."
+        "title": "Temporary file handling",
+        "desc": "Files are handled according to the service's storage and deletion policy."
       }
     ],
     "faqList": [
       {
-        "q": "Does Word-to-PDF conversion break Vietnamese fonts?",
-        "a": "Results depend on the fonts and layout of the source document. Open and check the file after conversion."
-      },
-      {
-        "q": "Can I convert a PDF back to Word?",
-        "a": "Yes, this tool supports PDF to DOCX. Layout fidelity depends on how the original PDF was produced."
+        "q": "Will Vietnamese characters display correctly in a PDF?",
+        "a": "Results depend on the source document, fonts, and conversion settings. Review the generated PDF to confirm the layout and characters."
       },
       {
         "q": "Can I convert Excel to JSON?",
-        "a": "Yes, when the file and target format are supported. You can also choose CSV for spreadsheet apps."
+        "a": "If the tool lists JSON as an available output for your spreadsheet, you can select it during conversion."
       }
     ]
   },
@@ -628,26 +624,26 @@
     ],
     "features": [
       {
-        "title": "Keeps a readable layout",
-        "desc": "Paragraphs, headings and lists are carried into the PDF as far as the source allows."
+        "title": "Document content conversion",
+        "desc": "Text and layout are converted as supported by the source file and conversion settings."
       },
       {
-        "title": "PDF to Word, the other direction too",
-        "desc": "Upload a PDF to get an editable DOCX, or extract plain text from it."
+        "title": "Spreadsheet options",
+        "desc": "If available, choose which sheet to export from a spreadsheet."
       },
       {
-        "title": "Images into a PDF",
-        "desc": "Combine PNG, JPG or WEBP images into a single PDF document."
+        "title": "Temporary file handling",
+        "desc": "Source and result files are handled according to the service's storage policy."
       }
     ],
     "faqList": [
       {
-        "q": "Can I convert PDF to Word?",
-        "a": "Yes, but use /document-converter for that direction; this page focuses on producing PDFs."
+        "q": "Can I convert PDF to Word with this tool?",
+        "a": "This page is for converting supported source documents to PDF. Check the available tools for other conversion directions."
       },
       {
-        "q": "Are my files kept on the server?",
-        "a": "Files are processed to fulfill your request and cleaned up under the storage policy. Avoid uploading sensitive data before reading the privacy policy."
+        "q": "How long are my files stored?",
+        "a": "File retention depends on OneForAll's current storage policy. Review the Privacy Policy for details."
       }
     ]
   },
