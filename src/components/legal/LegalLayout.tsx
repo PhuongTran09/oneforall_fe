@@ -13,7 +13,7 @@ export function LegalLayout({ doc, siteUrl }: LegalLayoutProps) {
   return (
     <>
       <SEOHead
-        title={`${doc.title} | OneForAll`}
+        title={`${doc.title} | One ForAll`}
         description={doc.description}
         canonicalUrl={`${siteUrl}${doc.route}`}
       />

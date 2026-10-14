@@ -7,13 +7,13 @@ export const en: Dict = {
     "login": "Log in",
     "loginNow": "Log in now",
     "loginSubtitle": "Access your online tools for converting and editing files",
-    "loginSuccess": "Logged in successfully! Welcome back to OneForAll.",
-    "loginTitle": "Log in to OneForAll",
+    "loginSuccess": "Logged in successfully! Welcome back to One ForAll.",
+    "loginTitle": "Log in to One ForAll",
     "noAccount": "Don't have an account?",
     "password": "Password",
     "registerNow": "Sign up now",
     "registerSubtitle": "Create an account to get started with online file tools",
-    "registerSuccess": "Your account has been created. You can start using OneForAll now.",
+    "registerSuccess": "Your account has been created. You can start using One ForAll now.",
     "registerTitle": "Create a new account",
     "startFree": "Start free",
     "startNow": "Get started",
@@ -105,7 +105,7 @@ export const en: Dict = {
     "necessaryOnly": "Necessary cookies only",
     "saveChoice": "Save choices",
     "termsPre": "I agree to the",
-    "welcome": "Welcome to OneForAll"
+    "welcome": "Welcome to One ForAll"
   },
   "download": {
     "convertAnother": "Convert another file",
@@ -177,7 +177,7 @@ export const en: Dict = {
   },
   "features": {
     "badge": "CORE ADVANTAGES",
-    "desc": "OneForAll brings useful online tools together in one place, so you can convert, download and edit files without installing extra software.",
+    "desc": "One ForAll brings useful online tools together in one place, so you can convert, download and edit files without installing extra software.",
     "f1Desc": "Use straightforward online tools to process files and follow the progress until your result is ready.",
     "f1Title": "Simple, convenient processing",
     "f2Badge": "50+ formats",
@@ -196,7 +196,7 @@ export const en: Dict = {
     "compressImg": "Compress images",
     "convertAll": "Versatile file converter",
     "convertImg": "Image format converter",
-    "copyright": "© {year} OneForAll. All rights reserved. The OneForAll online tools platform.",
+    "copyright": "© {year} One ForAll. All rights reserved. The One ForAll online tools platform.",
     "desc": "All-in-one online tools platform: download YouTube and TikTok videos, convert document formats, process and compress images.",
     "docConverter": "Document converter",
     "pdfConverter": "PDF converter",
@@ -212,7 +212,7 @@ export const en: Dict = {
     "ytToMp4": "YouTube to MP4"
   },
   "hero": {
-    "badge": "OneForAll • Multimedia Processing",
+    "badge": "One ForAll • Multimedia Processing",
     "description": "Download supported YouTube and TikTok videos, remove image backgrounds with AI, compress images and convert files online. Choose a tool and follow the steps to get started.",
     "exploreCta": "Explore all tools",
     "pillFormats": "50+ formats supported",
@@ -228,23 +228,23 @@ export const en: Dict = {
     "titlePre": "The online tools platform"
   },
   "home": {
-    "seoDesc": "Use OneForAll online to download supported YouTube and TikTok videos, remove image backgrounds, compress images and convert PDF, Word, Excel and other file formats. Available features and limits depend on the tool.",
-    "seoTitle": "OneForAll - The Versatile Online Tools Platform for Every Need"
+    "seoDesc": "Use One ForAll online to download supported YouTube and TikTok videos, remove image backgrounds, compress images and convert PDF, Word, Excel and other file formats. Available features and limits depend on the tool.",
+    "seoTitle": "One ForAll - The Versatile Online Tools Platform for Every Need"
   },
   "homeFaq": {
-    "a0": "OneForAll brings together online tools for supported YouTube and TikTok links, file conversion, AI image background removal, image compression and resizing. Available formats and options vary by tool.",
+    "a0": "One ForAll brings together online tools for supported YouTube and TikTok links, file conversion, AI image background removal, image compression and resizing. Available formats and options vary by tool.",
     "a1": "We take privacy seriously and handle files according to the service’s retention policy. Do not upload sensitive or confidential information unless you are comfortable processing it through an online service. See the Privacy Policy for details.",
-    "a2": "No installation is needed for supported tools. Open OneForAll in your browser, choose a tool, then upload a file or paste a supported link.",
+    "a2": "No installation is needed for supported tools. Open One ForAll in your browser, choose a tool, then upload a file or paste a supported link.",
     "a3": "Some tools may be available for free with usage limits. Paid plans may offer higher limits or additional benefits. Check the pricing page for the current plan details.",
     "a4": "Processing time depends on the tool, file size, content and current service load. You can follow the task status on the page while it is being processed.",
     "badge": "FREQUENTLY ASKED QUESTIONS",
-    "desc": "Find answers about OneForAll’s tools, file handling and how to use the service.",
-    "q0": "What types of tools does OneForAll support?",
+    "desc": "Find answers about One ForAll’s tools, file handling and how to use the service.",
+    "q0": "What types of tools does One ForAll support?",
     "q1": "Are my data and files kept secure?",
     "q2": "Do I need to install any software?",
-    "q3": "Are the tools on OneForAll free?",
+    "q3": "Are the tools on One ForAll free?",
     "q4": "How fast is the platform?",
-    "title": "FAQs about OneForAll"
+    "title": "FAQs about One ForAll"
   },
   "howItWorks": {
     "badge": "A STREAMLINED PROCESS",
@@ -253,11 +253,11 @@ export const en: Dict = {
     "s1Title": "Upload or paste URL",
     "s2Desc": "Pick the target format (MP4, MP3, PDF, PNG...), set resolution or quality.",
     "s2Title": "Choose tool & options",
-    "s3Desc": "OneForAll processes your request. You can follow its progress on the page.",
+    "s3Desc": "One ForAll processes your request. You can follow its progress on the page.",
     "s3Title": "Automatic processing",
     "s4Desc": "When processing finishes, download the result while it is available.",
     "s4Title": "Download the result",
-    "title": "How OneForAll works"
+    "title": "How One ForAll works"
   },
   "job": {
     "cancel": "Cancel task",
@@ -354,8 +354,8 @@ export const en: Dict = {
     "desc": "The path you requested was not found or has moved. Return home or pick one of the popular tools below.",
     "errorCode": "ERROR 404",
     "popularTitle": "Suggested popular tools:",
-    "seoDesc": "The page you looked for doesn't exist or has changed. Explore OneForAll's free online tools.",
-    "seoTitle": "404 - Page not found | OneForAll",
+    "seoDesc": "The page you looked for doesn't exist or has changed. Explore One ForAll's free online tools.",
+    "seoTitle": "404 - Page not found | One ForAll",
     "title": "Page not found",
     "tool1": "YouTube to MP4",
     "tool2": "TikTok to MP4",
@@ -456,6 +456,31 @@ export const en: Dict = {
     "ytDownloader": "YouTube Downloader",
     "ttDownloader": "TikTok Downloader"
   },
+  "toolFooter": {
+    "upgradeTitle": "Want more features?",
+    "upgradeDesc": "The Pro plan expands upload size and processing benefits under the current policy.",
+    "upgradeCta": "Upgrade to Pro",
+    "donateTitle": "Support us",
+    "donateDesc": "If One ForAll saves your time, consider supporting the team.",
+    "donateCta": "Donate",
+    "shareTitle": "Sharing spreads",
+    "shareDesc": "Introduce this tool to your friends and community.",
+    "shareFacebook": "Share on Facebook",
+    "shareX": "Share on X",
+    "shareReddit": "Share on Reddit",
+    "shareLinkedIn": "Share on LinkedIn",
+    "bookmarkTitle": "Come back easily",
+    "bookmarkDesc": "Save this page with your browser's bookmark feature.",
+    "bookmarkCta": "Bookmark",
+    "bookmarkHint": "Press {shortcut} to bookmark this page in your browser.",
+    "copyTitle": "This tool's link",
+    "copyCta": "Copy",
+    "copySuccess": "Link copied!",
+    "copyError": "Could not copy the link.",
+    "contactTitle": "Send feedback",
+    "contactDesc": "Report an issue or share feedback with the One ForAll team.",
+    "contactCta": "Contact us",
+  },
   "toolsPage": {
     "convertFailed": "File conversion failed. Please try again.",
     "errorFallback": "Something went wrong while processing the task",
@@ -477,7 +502,7 @@ export const en: Dict = {
     "trackFailed": "Failed to track the task. Please try again.",
     "unsupportedConversion": "Conversion from {source} to .{target} is not supported yet.",
     "videoFailed": "Video processing failed. Please check the link again.",
-    "whyChoose": "Why choose OneForAll?",
+    "whyChoose": "Why choose One ForAll?",
     "whyChooseDesc": "Optimized for both casual users and professional content creators."
   },
   "toolsSection": {

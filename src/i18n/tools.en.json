@@ -1,6 +1,6 @@
 {
   "/youtube-to-mp4": {
-    "title": "Free YouTube to MP4 Converter Online | OneForAll",
+    "title": "Free YouTube to MP4 Converter Online | One ForAll",
     "metaDescription": "Convert supported YouTube video links to MP4 online. Choose an available video quality and download the result to your device without installing software.",
     "h1": "Convert YouTube Videos to MP4",
     "subtitle": "Paste a supported YouTube link, choose an available quality, and download the MP4 file to your device.",
@@ -20,7 +20,7 @@
       {
         "step": "03",
         "title": "Process your video",
-        "desc": "OneForAll prepares the video for download. Processing time depends on the source and selected quality."
+        "desc": "One ForAll prepares the video for download. Processing time depends on the source and selected quality."
       },
       {
         "step": "04",
@@ -39,7 +39,7 @@
       },
       {
         "title": "Temporary file handling",
-        "desc": "Files are handled according to OneForAll's storage and cleanup policy."
+        "desc": "Files are handled according to One ForAll's storage and cleanup policy."
       }
     ],
     "faqList": [
@@ -58,7 +58,7 @@
     ]
   },
   "/youtube-to-mp3": {
-    "title": "YouTube to MP3 Converter Online | OneForAll",
+    "title": "YouTube to MP3 Converter Online | One ForAll",
     "metaDescription": "Convert supported YouTube video links to audio formats such as MP3. Paste a link, choose an available output option, and download the audio file.",
     "h1": "Convert YouTube Videos to MP3",
     "subtitle": "Extract audio from supported videos for listening offline, where you have permission to do so.",
@@ -73,7 +73,7 @@
       {
         "step": "02",
         "title": "Paste the link",
-        "desc": "Paste the URL into OneForAll and choose an available audio output format."
+        "desc": "Paste the URL into One ForAll and choose an available audio output format."
       },
       {
         "step": "03",
@@ -112,8 +112,8 @@
     ]
   },
   "/youtube-downloader": {
-    "title": "YouTube Video and Audio Downloader | OneForAll",
-    "metaDescription": "Use OneForAll to process supported YouTube links into available video or audio formats online, without installing extra software.",
+    "title": "YouTube Video and Audio Downloader | One ForAll",
+    "metaDescription": "Use One ForAll to process supported YouTube links into available video or audio formats online, without installing extra software.",
     "h1": "YouTube Video and Audio Downloader",
     "subtitle": "Choose a supported video or audio output for a YouTube link and download the result to your device.",
     "badge": "Universal YouTube Downloader",
@@ -132,7 +132,7 @@
       {
         "step": "03",
         "title": "Prepare your file",
-        "desc": "OneForAll processes the request and prepares the output file."
+        "desc": "One ForAll processes the request and prepares the output file."
       },
       {
         "step": "04",
@@ -166,7 +166,7 @@
     ]
   },
   "/tiktok-to-mp4": {
-    "title": "TikTok to MP4 Downloader | OneForAll",
+    "title": "TikTok to MP4 Downloader | One ForAll",
     "metaDescription": "Process supported TikTok video links and download an MP4 when available. Use the tool in your browser without installing extra software.",
     "h1": "Download TikTok Videos as MP4",
     "subtitle": "Paste a supported TikTok video link and save the available MP4 result to your device.",
@@ -181,7 +181,7 @@
       {
         "step": "02",
         "title": "Paste the link",
-        "desc": "Paste the copied URL into the OneForAll input box."
+        "desc": "Paste the copied URL into the One ForAll input box."
       },
       {
         "step": "03",
@@ -211,16 +211,16 @@
     "faqList": [
       {
         "q": "How do I download a TikTok video on iPhone?",
-        "a": "Open OneForAll in Safari, paste a supported link, and start processing. After downloading, open the file and use the available share or save options."
+        "a": "Open One ForAll in Safari, paste a supported link, and start processing. After downloading, open the file and use the available share or save options."
       },
       {
         "q": "Is this tool free?",
-        "a": "Check the current plan and usage information shown on OneForAll before processing."
+        "a": "Check the current plan and usage information shown on One ForAll before processing."
       }
     ]
   },
   "/tiktok-to-mp3": {
-    "title": "TikTok to MP3 Audio Converter | OneForAll",
+    "title": "TikTok to MP3 Audio Converter | One ForAll",
     "metaDescription": "Convert audio from supported TikTok video links into an available audio format. Paste a link and download the resulting file.",
     "h1": "Extract Audio from TikTok Videos",
     "subtitle": "Save audio from a supported TikTok video as an audio file, where you have permission to use it.",
@@ -235,7 +235,7 @@
       {
         "step": "02",
         "title": "Paste the link",
-        "desc": "Paste the URL into OneForAll and select an available audio format."
+        "desc": "Paste the URL into One ForAll and select an available audio format."
       },
       {
         "step": "03",
@@ -274,7 +274,7 @@
     ]
   },
   "/tiktok-downloader": {
-    "title": "TikTok Video and Audio Downloader | OneForAll",
+    "title": "TikTok Video and Audio Downloader | One ForAll",
     "metaDescription": "Process supported TikTok links to download available video or audio output online, using a straightforward browser-based workflow.",
     "h1": "TikTok Video and Audio Downloader",
     "subtitle": "Paste a supported TikTok link and choose an available video or audio output.",
@@ -289,7 +289,7 @@
       {
         "step": "02",
         "title": "Paste the link",
-        "desc": "Add the URL to OneForAll and choose the output you need."
+        "desc": "Add the URL to One ForAll and choose the output you need."
       },
       {
         "step": "03",
@@ -328,8 +328,8 @@
     ]
   },
   "/convert": {
-    "title": "Online File Converter | OneForAll",
-    "metaDescription": "Convert supported documents, images, video, and audio files online. Upload a file, choose an available output format, and download the result.",
+    "title": "Online File Converter | One ForAll",
+    "metaDescription": "Convert documents, images, video and audio online. Available output formats depend on the uploaded file and your plan.",
     "h1": "Convert Files Online",
     "subtitle": "Convert supported image, video, audio, and document formats in a few simple steps.",
     "badge": "Universal Converter",
@@ -348,7 +348,7 @@
       {
         "step": "03",
         "title": "Convert your file",
-        "desc": "OneForAll processes the file using the selected options."
+        "desc": "One ForAll processes the file using the selected options."
       },
       {
         "step": "04",
@@ -377,12 +377,12 @@
       },
       {
         "q": "Who can access my files?",
-        "a": "Files are processed by the service to complete your request. Review OneForAll's Privacy Policy for details about access, storage, and deletion."
+        "a": "Files are processed by the service to complete your request. Review One ForAll's Privacy Policy for details about access, storage, and deletion."
       }
     ]
   },
   "/image-converter": {
-    "title": "Online Image Converter: PNG, JPG, WebP and More | OneForAll",
+    "title": "Online Image Converter: PNG, JPG, WebP and More | One ForAll",
     "metaDescription": "Convert supported images between formats such as PNG, JPG, and WebP. Check the available source and output formats in the tool.",
     "h1": "Convert Image Formats Online",
     "subtitle": "Choose a supported output format for your image to help match your website, design, or sharing needs.",
@@ -436,7 +436,7 @@
     ]
   },
   "/video-converter": {
-    "title": "Online Video Converter: MP4, MOV, MKV and WebM | OneForAll",
+    "title": "Online Video Converter: MP4, MOV, MKV and WebM | One ForAll",
     "metaDescription": "Convert supported video files to available formats online. Choose an output option suited to your device or workflow.",
     "h1": "Convert Video Formats Online",
     "subtitle": "Convert a supported video into a format that better suits your device, sharing, or editing workflow.",
@@ -456,7 +456,7 @@
       {
         "step": "03",
         "title": "Convert the video",
-        "desc": "OneForAll processes the video; time depends on file length, resolution, and settings."
+        "desc": "One ForAll processes the video; time depends on file length, resolution, and settings."
       },
       {
         "step": "04",
@@ -490,7 +490,7 @@
     ]
   },
   "/audio-converter": {
-    "title": "Online Audio Converter: MP3, WAV, AAC and More | OneForAll",
+    "title": "Online Audio Converter: MP3, WAV, AAC and More | One ForAll",
     "metaDescription": "Convert supported audio files between available formats such as MP3, WAV, AAC, M4A, OGG, and FLAC.",
     "h1": "Convert Audio Formats Online",
     "subtitle": "Convert audio files into a format suited to your listening, sharing, or editing needs.",
@@ -510,7 +510,7 @@
       {
         "step": "03",
         "title": "Convert the audio",
-        "desc": "OneForAll processes the audio using the available settings."
+        "desc": "One ForAll processes the audio using the available settings."
       },
       {
         "step": "04",
@@ -540,7 +540,7 @@
     ]
   },
   "/document-converter": {
-    "title": "Online Document Converter: Word, Excel, TXT, CSV and PDF | OneForAll",
+    "title": "Online Document Converter: Word, Excel, TXT, CSV and PDF | One ForAll",
     "metaDescription": "Convert supported office documents and data files to available formats online. Check the tool for compatible input and output types.",
     "h1": "Convert Documents Online",
     "subtitle": "Convert supported document and spreadsheet formats for work, study, or sharing.",
@@ -560,7 +560,7 @@
       {
         "step": "03",
         "title": "Convert the document",
-        "desc": "OneForAll processes the content and creates the output file."
+        "desc": "One ForAll processes the content and creates the output file."
       },
       {
         "step": "04",
@@ -594,7 +594,7 @@
     ]
   },
   "/pdf-converter": {
-    "title": "Convert Word, Excel and Text Files to PDF | OneForAll",
+    "title": "Convert Word, Excel and Text Files to PDF | One ForAll",
     "metaDescription": "Convert supported Word, spreadsheet, and text documents to PDF online. Check the available file types and options before processing.",
     "h1": "Convert Documents to PDF",
     "subtitle": "Create a PDF from a supported document or spreadsheet for sharing, printing, or archiving.",
@@ -614,7 +614,7 @@
       {
         "step": "03",
         "title": "Create the PDF",
-        "desc": "OneForAll processes the source document and creates a PDF file."
+        "desc": "One ForAll processes the source document and creates a PDF file."
       },
       {
         "step": "04",
@@ -648,7 +648,7 @@
     ]
   },
   "/remove-background": {
-    "title": "AI Background Remover Online | OneForAll",
+    "title": "AI Background Remover Online | One ForAll",
     "metaDescription": "Remove the background from a supported image and export the result as a transparent PNG when processing is successful.",
     "h1": "Remove Image Background with AI",
     "subtitle": "Create a cutout of a person, product, or object to use in designs, presentations, and listings.",
@@ -702,7 +702,7 @@
     ]
   },
   "/image-compressor": {
-    "title": "Online Image Compressor | OneForAll",
+    "title": "Online Image Compressor | One ForAll",
     "metaDescription": "Compress supported JPG, PNG, WebP, and other image files online. Results depend on the image, format, and selected quality settings.",
     "h1": "Compress Images Online",
     "subtitle": "Reduce image file sizes to make them easier to store, share, or use on a website.",
@@ -752,7 +752,7 @@
     ]
   },
   "/image-resizer": {
-    "title": "Online Image Resizer | Resize by Width and Height | OneForAll",
+    "title": "Online Image Resizer | Resize by Width and Height | One ForAll",
     "metaDescription": "Resize supported images by dimensions to fit profile pictures, social media posts, thumbnails, and other uses.",
     "h1": "Resize Images Online",
     "subtitle": "Change image dimensions for profile pictures, banners, thumbnails, and other common uses.",
@@ -798,6 +798,114 @@
       {
         "q": "How can I avoid distorting an image?",
         "a": "Keep the original aspect ratio when the tool offers that option, and avoid stretching width and height independently."
+      }
+    ]
+  },
+  "/data-converter": {
+    "title": "Convert JSON, YAML, XML, CSV, Markdown & HTML Online | One ForAll",
+    "metaDescription": "Convert data and markup files between JSON, YAML, XML, CSV, Markdown, HTML and TXT online. No installation needed.",
+    "h1": "Online Data & Markup Format Converter",
+    "subtitle": "Turn JSON into YAML or XML, CSV into JSON or XLSX, Markdown into HTML — a few clicks, right in your browser.",
+    "badge": "Data conversion",
+    "supportedFormatsDesc": "JSON, YAML, XML, CSV, TXT, MD, HTML → JSON, YAML, XML, CSV, XLSX, MD, HTML, PDF.",
+    "howItWorksSteps": [
+      {
+        "step": "01",
+        "title": "Upload your file",
+        "desc": "Choose a JSON, YAML, XML, CSV, TXT, Markdown or HTML file."
+      },
+      {
+        "step": "02",
+        "title": "Pick the output format",
+        "desc": "Select the target format, e.g. JSON, YAML, XML, CSV or HTML."
+      },
+      {
+        "step": "03",
+        "title": "Convert",
+        "desc": "One ForAll rewrites the file into the format you chose."
+      },
+      {
+        "step": "04",
+        "title": "Download the result",
+        "desc": "Save the converted file to your device."
+      }
+    ],
+    "features": [
+      {
+        "title": "Structured data round-trips",
+        "desc": "Convert between JSON, YAML and XML while keeping nested objects and arrays."
+      },
+      {
+        "title": "Tabular data made portable",
+        "desc": "CSV can become JSON records, XLSX, or back again."
+      },
+      {
+        "title": "Markup conversion",
+        "desc": "Markdown to HTML and HTML to Markdown for docs and web content."
+      }
+    ],
+    "faqList": [
+      {
+        "q": "Does XML-to-JSON keep attributes?",
+        "a": "Not yet — element attributes are currently dropped during conversion. Only text content and nesting are preserved."
+      },
+      {
+        "q": "Is there a size limit?",
+        "a": "File size limits follow your current plan. Large files may take longer to process."
+      }
+    ]
+  },
+  "/archive-converter": {
+    "title": "Convert ZIP, TAR, TAR.GZ and 7Z Archives Online | One ForAll",
+    "metaDescription": "Convert archive files between ZIP, TAR, TAR.GZ and 7Z online. Files are processed and cleaned up under the storage policy.",
+    "h1": "Archive Format Converter",
+    "subtitle": "Repack your archives between ZIP, TAR, GZIP and 7Z without installing any desktop tool.",
+    "badge": "Archive tools",
+    "supportedFormatsDesc": "ZIP, TAR, TAR.GZ (TGZ), GZIP → ZIP, TAR, 7Z.",
+    "howItWorksSteps": [
+      {
+        "step": "01",
+        "title": "Upload the archive",
+        "desc": "Select a ZIP, TAR, TGZ or GZIP file to convert."
+      },
+      {
+        "step": "02",
+        "title": "Choose the output format",
+        "desc": "Pick ZIP, TAR or 7Z as the target format."
+      },
+      {
+        "step": "03",
+        "title": "Convert the archive",
+        "desc": "One ForAll safely unpacks and repacks the archive."
+      },
+      {
+        "step": "04",
+        "title": "Download the new archive",
+        "desc": "Save the converted archive to your computer."
+      }
+    ],
+    "features": [
+      {
+        "title": "Safe extraction",
+        "desc": "Archive entries are checked for path traversal and entry-count/size limits before anything is unpacked."
+      },
+      {
+        "title": "Common formats covered",
+        "desc": "Convert between ZIP, TAR, TAR.GZ and 7Z for everyday archiving needs."
+      },
+      {
+        "title": "Temporary file handling",
+        "desc": "Source and result archives are cleaned up under the platform storage policy."
+      }
+    ],
+    "faqList": [
+      {
+        "q": "Can I convert RAR to ZIP?",
+        "a": "Not yet. RAR requires WinRAR’s proprietary extraction library, so the platform does not support it automatically."
+      },
+      {
+        "q": "Are very large archives supported?",
+        "a": "Archives are subject to a maximum uncompressed size and entry count to protect the service; oversized archives are rejected."
       }
     ]
   }

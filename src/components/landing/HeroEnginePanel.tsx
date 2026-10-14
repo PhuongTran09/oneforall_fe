@@ -4,7 +4,7 @@ import { t } from '../../i18n/langStore'
 
 /*
   Crimson Workflow Monitor — landing-page demo (clearly labelled) of the real
-  OneForAll pipeline: HTTP request → validation → Celery queue → worker
+  One ForAll pipeline: HTTP request → validation → Celery queue → worker
   processing → R2 upload → job status → download. Steps mirror app/worker/tasks/*
   but the backend emits no per-step events, so this is a visual loop, not live data.
   prefers-reduced-motion: frozen in the completed state.
