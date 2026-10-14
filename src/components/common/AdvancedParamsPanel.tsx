@@ -43,19 +43,19 @@ export function AdvancedParamsPanel({
         onClick={() => setIsOpen((open) => !open)}
         aria-expanded={isOpen}
         aria-controls={bodyId}
-        className="w-full flex items-center gap-2.5 px-4 py-3 text-left cursor-pointer hover:bg-[#ff3b30]/5 transition-colors"
+        className="w-full flex items-center gap-2.5 px-4 py-3 text-left cursor-pointer hover:bg-brand/5 transition-colors"
       >
-        <Settings2 className="w-4 h-4 text-[#FF3B30] shrink-0" />
+        <Settings2 className="w-4 h-4 text-brand shrink-0" />
         <span className="text-sm font-semibold text-slate-200">{t('params.advancedTitle')}</span>
         {hasFilledValue && (
           <span
-            className="w-1.5 h-1.5 bg-[#ff3b30] shrink-0 clip-corner-btn"
+            className="w-1.5 h-1.5 bg-brand shrink-0 clip-corner-btn"
             title={t('params.hasCustom')}
           />
         )}
         <ChevronDown
           className={`w-4 h-4 text-slate-400 ml-auto shrink-0 transition-transform duration-200 ${
-            isOpen ? 'rotate-180 text-[#FF3B30]' : ''
+            isOpen ? 'rotate-180 text-brand' : ''
           }`}
         />
       </button>

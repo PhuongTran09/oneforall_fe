@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react'
-import { AlertCircle, Clock, Loader2, Upload } from 'lucide-react'
+import { AlertCircle, Ban, Clock, Loader2, Upload } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import type { JobPublicResponse } from '../../services'
 import { Button } from './Button'
+import { ConfirmModal } from '../feedback/ConfirmModal'
 import { t } from '../../i18n/langStore'
 
 export interface JobProgressProps {
   job: JobPublicResponse | null
   onRetry?: () => void
+  onCancel?: () => void
+  isCancelling?: boolean
 }
 
 type Stage = 'sending' | 'queued' | 'processing' | 'finalizing'
@@ -15,7 +18,7 @@ type Stage = 'sending' | 'queued' | 'processing' | 'finalizing'
 const STAGE_ICON_TONE: Record<Stage, { icon: LucideIcon; tone: string }> = {
   sending: {
     icon: Upload,
-    tone: 'bg-[#ff3b30]/10 border-[#ff3b30]/30 text-[#FF3B30]',
+    tone: 'bg-brand/10 border-brand/30 text-brand',
   },
   queued: {
     icon: Clock,
@@ -23,11 +26,11 @@ const STAGE_ICON_TONE: Record<Stage, { icon: LucideIcon; tone: string }> = {
   },
   processing: {
     icon: Loader2,
-    tone: 'bg-[#ff3b30]/10 border-[#ff3b30]/30 text-[#FF3B30]',
+    tone: 'bg-brand/10 border-brand/30 text-brand',
   },
   finalizing: {
     icon: Loader2,
-    tone: 'bg-[#ff3b30]/10 border-[#ff3b30]/30 text-[#FF3B30]',
+    tone: 'bg-brand/10 border-brand/30 text-brand',
   },
 }
 
@@ -43,9 +46,10 @@ function formatElapsed(seconds: number): string {
   return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`
 }
 
-export function JobProgress({ job, onRetry }: JobProgressProps) {
+export function JobProgress({ job, onRetry, onCancel, isCancelling }: JobProgressProps) {
   const [submittedAt] = useState(() => Date.now())
   const [now, setNow] = useState(() => Date.now())
+  const [confirmCancelOpen, setConfirmCancelOpen] = useState(false)
 
   const isFailed = job?.status === 'failed'
   const stage: Stage = !job
@@ -55,6 +59,11 @@ export function JobProgress({ job, onRetry }: JobProgressProps) {
       : job.progress >= 99
         ? 'finalizing'
         : 'processing'
+
+  // Chỉ hủy được job đã có id và chưa rơi vào trạng thái cuối: ở stage 'sending'
+  // (job === null) backend chưa có job nào để hủy.
+  const canCancel =
+    !!onCancel && !!job && (job.status === 'queued' || job.status === 'processing')
 
   // Worker chỉ ghi progress 1 lúc nhận job (mark_processing); mọi giá trị lớn hơn 1 là
   // % thật do ffmpeg/yt-dlp báo. Nên 1 vẫn nghĩa là "chưa rõ tiến độ".
@@ -79,7 +88,7 @@ export function JobProgress({ job, onRetry }: JobProgressProps) {
         <div className="flex items-center gap-3">
           <div
             className={`w-10 h-10 border flex items-center justify-center shrink-0 clip-corner-btn ${
-              isFailed ? 'bg-[#ff3b30]/10 border-[#ff3b30]/30 text-[#FF3B30]' : tone
+              isFailed ? 'bg-brand/10 border-brand/30 text-brand' : tone
             }`}
           >
             {isFailed ? (
@@ -121,9 +130,24 @@ export function JobProgress({ job, onRetry }: JobProgressProps) {
         </div>
       )}
 
+      {/* Hủy tác vụ: backend CAS sang cancelled và worker đang chạy sẽ dừng subprocess */}
+      {canCancel && (
+        <div className="flex justify-end">
+          <Button
+            variant="ghost"
+            size="sm"
+            isLoading={isCancelling}
+            leftIcon={<Ban className="w-4 h-4" />}
+            onClick={() => setConfirmCancelOpen(true)}
+          >
+            {t('job.cancel')}
+          </Button>
+        </div>
+      )}
+
       {/* Error message */}
       {isFailed && (
-        <div className="p-3.5 bg-[#ff3b30]/10 border border-[#ff3b30]/30 text-red-400 text-xs sm:text-sm space-y-2 clip-corner-btn">
+        <div className="p-3.5 bg-brand/10 border border-brand/30 text-red-400 text-xs sm:text-sm space-y-2 clip-corner-btn">
           <p>{job?.error || t('job.errorFallback')}</p>
           {onRetry && (
             <Button variant="secondary" size="sm" onClick={onRetry}>
@@ -132,6 +156,17 @@ export function JobProgress({ job, onRetry }: JobProgressProps) {
           )}
         </div>
       )}
+
+      <ConfirmModal
+        isOpen={confirmCancelOpen}
+        title={t('history.cancelConfirmTitle')}
+        message={t('history.cancelConfirm')}
+        onConfirm={() => {
+          setConfirmCancelOpen(false)
+          onCancel?.()
+        }}
+        onClose={() => setConfirmCancelOpen(false)}
+      />
     </div>
   )
 }

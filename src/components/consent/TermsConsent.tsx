@@ -17,7 +17,7 @@ export function TermsConsent() {
       />
       <span className="text-xs leading-relaxed text-slate-300">
         {t('consent.termsPre')}{' '}
-        <LocaleLink to="/terms" className="text-[#FF3B30] hover:underline font-medium">
+        <LocaleLink to="/terms" className="text-brand hover:underline font-medium">
           {t('common.terms')}
         </LocaleLink>
         .

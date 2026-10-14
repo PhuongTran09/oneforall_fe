@@ -34,6 +34,19 @@ export function clearToolSnapshot(slug: string): void {
   snapshots.delete(slug)
 }
 
+/**
+ * Job bị xóa ở nơi khác (trang Lịch sử) → gỡ nó khỏi snapshot của mọi tool đang giữ,
+ * nếu không quay lại trang tool vẫn hiện "Xử lý thành công" + nút tải của tệp không còn
+ * trên server nữa. Chỉ bỏ phần kết quả, giữ form và FAQ đang mở để làm tiếp.
+ */
+export function forgetJobInToolSnapshots(jobId: string): void {
+  for (const [slug, snap] of snapshots) {
+    if (snap.job?.id !== jobId && snap.pending?.jobId !== jobId) continue
+    if (snap.previewUrl?.startsWith('blob:')) URL.revokeObjectURL(snap.previewUrl)
+    snapshots.set(slug, { form: snap.form, faqIndex: snap.faqIndex })
+  }
+}
+
 export function isJobExpired(job: JobPublicResponse | null | undefined): boolean {
   return !!job?.expires_at && Date.parse(job.expires_at) <= Date.now()
 }

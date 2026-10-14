@@ -19,7 +19,7 @@ export function FaqSection() {
     <section id="faq" className="py-16 sm:py-24 bg-page border-t border-edge">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold bg-surface border border-[rgba(255,59,48,0.35)] text-[#FF3B30] badge-angular">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold bg-surface border border-[rgba(255,59,48,0.35)] text-brand badge-angular">
             {t('homeFaq.badge')}
           </div>
           <h2 className="text-2xl sm:text-4xl font-extrabold text-ink tracking-tight">
@@ -38,7 +38,7 @@ export function FaqSection() {
                 key={faq.q}
                 hoverEffect={false}
                 className={`transition-colors clip-corner-card ${
-                  isOpen ? 'bg-[#ff3b30]/10 border-[rgba(255,59,48,0.45)]' : 'bg-surface border-[rgba(255,59,48,0.18)]'
+                  isOpen ? 'bg-brand/10 border-[rgba(255,59,48,0.45)]' : 'bg-surface border-[rgba(255,59,48,0.18)]'
                 }`}
               >
                 <button
@@ -48,14 +48,14 @@ export function FaqSection() {
                   aria-expanded={isOpen}
                 >
                   <div className="flex items-center gap-3">
-                    <HelpCircle className="w-5 h-5 text-[#FF3B30] shrink-0" />
+                    <HelpCircle className="w-5 h-5 text-brand shrink-0" />
                     <span className="font-bold text-ink text-sm sm:text-lg">
                       {faq.q}
                     </span>
                   </div>
                   <ChevronDown
                     className={`w-5 h-5 text-slate-400 shrink-0 transition-transform duration-200 ${
-                      isOpen ? 'rotate-180 text-[#FF3B30]' : ''
+                      isOpen ? 'rotate-180 text-brand' : ''
                     }`}
                   />
                 </button>

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
 import {
   Menu,
@@ -9,10 +9,13 @@ import {
   LogOut,
   ArrowRight,
   User as UserIcon,
+  History as HistoryIcon,
+  ChevronDown,
 } from 'lucide-react'
 import { Button } from './Button'
 import { ThemeToggle } from './ThemeToggle'
 import { AuthModal } from '../feedback/AuthModal'
+import { ConfirmModal } from '../feedback/ConfirmModal'
 import { LocaleLink } from '../../i18n/LocaleLink'
 import { t, withLocale } from '../../i18n/langStore'
 import { useAuth, signOut } from '../../services/authStore'
@@ -39,12 +42,47 @@ export interface NavbarProps {
   onOpenAuth?: (mode: 'login' | 'register') => void
 }
 
+// Ưu tiên avatar/name từ Supabase Auth user_metadata (§1); fallback email.
+function accountLabel(user: NonNullable<ReturnType<typeof useAuth>['session']>['user']): string {
+  const meta = (user.user_metadata ?? {}) as Record<string, unknown>
+  return (
+    (typeof meta.full_name === 'string' && meta.full_name) ||
+    (typeof meta.name === 'string' && meta.name) ||
+    user.email ||
+    'Tài khoản'
+  )
+}
+
+function accountAvatar(user: NonNullable<ReturnType<typeof useAuth>['session']>['user']): string | null {
+  const meta = (user.user_metadata ?? {}) as Record<string, unknown>
+  return typeof meta.avatar_url === 'string' ? meta.avatar_url : null
+}
+
 export function Navbar({ onOpenAuth }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [authModalMode, setAuthModalMode] = useState<'login' | 'register' | null>(null)
+  const [accountOpen, setAccountOpen] = useState(false)
+  const [confirmSignOutOpen, setConfirmSignOutOpen] = useState(false)
+  const accountRef = useRef<HTMLDivElement>(null)
   const location = useLocation()
-  const { session } = useAuth()
+  const { session, ready } = useAuth()
   const user = session?.user ?? null
+
+  // Đóng dropdown khi click ra ngoài / Esc. Navigation đóng qua onClick của từng item
+  // (không dùng effect setState-sync — tránh cascading render).
+  useEffect(() => {
+    if (!accountOpen) return
+    const onDocClick = (e: MouseEvent) => {
+      if (accountRef.current && !accountRef.current.contains(e.target as Node)) setAccountOpen(false)
+    }
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setAccountOpen(false)
+    document.addEventListener('mousedown', onDocClick)
+    document.addEventListener('keydown', onKey)
+    return () => {
+      document.removeEventListener('mousedown', onDocClick)
+      document.removeEventListener('keydown', onKey)
+    }
+  }, [accountOpen])
 
   const handleAuthClick = (mode: 'login' | 'register') => {
     setMobileMenuOpen(false)
@@ -74,7 +112,7 @@ export function Navbar({ onOpenAuth }: NavbarProps) {
             <div className="flex flex-col">
               <span className="font-bold text-xl tracking-tight text-ink flex items-center gap-1.5">
                 One<span className="text-brand-gradient">ForAll</span>
-                <span className="text-[10px] font-mono px-1.5 py-0.5 bg-[#ff3b30]/10 text-[#FF3B30] border border-[#ff3b30]/30 font-semibold clip-corner-btn">
+                <span className="text-[10px] font-mono px-1.5 py-0.5 bg-brand/10 text-brand border border-brand/30 font-semibold clip-corner-btn">
                   Tools
                 </span>
               </span>
@@ -94,8 +132,8 @@ export function Navbar({ onOpenAuth }: NavbarProps) {
                   aria-current={isActive ? 'page' : undefined}
                   className={`inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium transition-colors duration-[180ms] clip-corner-btn focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4545]/60 ${
                     isActive
-                      ? 'bg-[#2A1115] text-[#FF4545] font-semibold'
-                      : 'text-[#A1A1AA] hover:text-white'
+                      ? 'bg-tint text-brand-active font-semibold'
+                      : 'text-soft hover:text-ink'
                   }`}
                 >
                   {item.icon}
@@ -108,23 +146,71 @@ export function Navbar({ onOpenAuth }: NavbarProps) {
           {/* Right Action Buttons */}
           <div className="hidden min-[768px]:flex items-center gap-3">
             <ThemeToggle />
-            {user ? (
-              <div className="flex items-center gap-2">
-                <span
-                  className="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-slate-200 bg-surface border border-[rgba(255,59,48,0.35)] clip-corner-btn max-w-[180px]"
+            {!ready ? (
+              // Loading state trong khi bootstrap phiên (§1): khung tĩnh, không nhấp nháy "đăng nhập".
+              <div className="h-9 w-24 rounded-md bg-surface/60 animate-pulse" aria-hidden="true" />
+            ) : user ? (
+              <div className="relative" ref={accountRef}>
+                <button
+                  type="button"
+                  onClick={() => setAccountOpen((o) => !o)}
+                  aria-haspopup="menu"
+                  aria-expanded={accountOpen}
+                  aria-label={t('nav.accountMenu')}
+                  className="inline-flex items-center gap-2 px-2 py-1.5 text-sm font-medium text-slate-200 bg-surface border border-[rgba(255,59,48,0.35)] clip-corner-btn max-w-[220px] hover:bg-brand/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4545]/60"
                   title={user.email ?? undefined}
                 >
-                  <UserIcon className="w-4 h-4 shrink-0 text-[#FF6B4A]" />
-                  <span className="truncate">{user.email}</span>
-                </span>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => signOut()}
-                  leftIcon={<LogOut className="w-4 h-4" />}
-                >
-                  {t('auth.signOut')}
-                </Button>
+                  {accountAvatar(user) ? (
+                    <img
+                      src={accountAvatar(user) as string}
+                      alt=""
+                      className="w-6 h-6 rounded-full object-cover shrink-0"
+                      referrerPolicy="no-referrer"
+                    />
+                  ) : (
+                    <UserIcon className="w-5 h-5 shrink-0 text-brand-2" />
+                  )}
+                  <span className="truncate">{accountLabel(user)}</span>
+                  <ChevronDown className="w-4 h-4 shrink-0 text-soft" />
+                </button>
+                {accountOpen && (
+                  <div
+                    role="menu"
+                    className="absolute right-0 mt-2 w-56 bg-surface border border-[rgba(255,59,48,0.35)] clip-corner-card shadow-xl py-1 z-50 animate-fade-in"
+                  >
+                    <LocaleLink
+                      to="/profile"
+                      role="menuitem"
+                      onClick={() => setAccountOpen(false)}
+                      className="flex items-center gap-2 px-3 py-2 text-sm text-soft hover:text-ink hover:bg-brand/10"
+                    >
+                      <UserIcon className="w-4 h-4 text-brand-2" />
+                      {t('nav.myProfile')}
+                    </LocaleLink>
+                    <LocaleLink
+                      to="/history"
+                      role="menuitem"
+                      onClick={() => setAccountOpen(false)}
+                      className="flex items-center gap-2 px-3 py-2 text-sm text-soft hover:text-ink hover:bg-brand/10"
+                    >
+                      <HistoryIcon className="w-4 h-4 text-brand-2" />
+                      {t('nav.history')}
+                    </LocaleLink>
+                    <div className="my-1 border-t border-edge/60" />
+                    <button
+                      type="button"
+                      role="menuitem"
+                      onClick={() => {
+                        setAccountOpen(false)
+                        setConfirmSignOutOpen(true)
+                      }}
+                      className="flex w-full items-center gap-2 px-3 py-2 text-sm text-soft hover:text-ink hover:bg-brand/10"
+                    >
+                      <LogOut className="w-4 h-4 text-brand-2" />
+                      {t('auth.signOut')}
+                    </button>
+                  </div>
+                )}
               </div>
             ) : (
               <>
@@ -154,7 +240,7 @@ export function Navbar({ onOpenAuth }: NavbarProps) {
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 text-slate-300 hover:text-ink hover:bg-[#ff3b30]/10 focus:outline-none clip-corner-btn"
+              className="p-2 text-slate-300 hover:text-ink hover:bg-brand/10 focus:outline-none clip-corner-btn"
               aria-label={mobileMenuOpen ? t('common.closeMenu') : t('common.openMenu')}
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -176,8 +262,8 @@ export function Navbar({ onOpenAuth }: NavbarProps) {
                     aria-current={isActive ? 'page' : undefined}
                     className={`flex items-center gap-2 px-3 py-2.5 text-sm font-medium transition-colors duration-[180ms] clip-corner-btn focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4545]/60 ${
                       isActive
-                        ? 'bg-[#2A1115] text-[#FF4545] font-semibold'
-                        : 'text-[#A1A1AA] hover:text-white'
+                        ? 'bg-tint text-brand-active font-semibold'
+                        : 'text-soft hover:text-ink'
                     }`}
                   >
                     {item.icon}
@@ -193,16 +279,41 @@ export function Navbar({ onOpenAuth }: NavbarProps) {
                     className="inline-flex items-center gap-2 px-3 py-2.5 text-sm text-slate-200 bg-surface border border-[rgba(255,59,48,0.35)] clip-corner-btn"
                     title={user.email ?? undefined}
                   >
-                    <UserIcon className="w-4 h-4 shrink-0 text-[#FF6B4A]" />
-                    <span className="truncate">{user.email}</span>
+                    {accountAvatar(user) ? (
+                      <img
+                        src={accountAvatar(user) as string}
+                        alt=""
+                        className="w-6 h-6 rounded-full object-cover shrink-0"
+                        referrerPolicy="no-referrer"
+                      />
+                    ) : (
+                      <UserIcon className="w-4 h-4 shrink-0 text-brand-2" />
+                    )}
+                    <span className="truncate">{accountLabel(user)}</span>
                   </span>
+                  <LocaleLink
+                    to="/profile"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-2 px-3 py-2.5 text-sm font-medium text-soft hover:text-ink clip-corner-btn"
+                  >
+                    <UserIcon className="w-4 h-4 text-brand-2" />
+                    {t('nav.myProfile')}
+                  </LocaleLink>
+                  <LocaleLink
+                    to="/history"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-2 px-3 py-2.5 text-sm font-medium text-soft hover:text-ink clip-corner-btn"
+                  >
+                    <HistoryIcon className="w-4 h-4 text-brand-2" />
+                    {t('nav.history')}
+                  </LocaleLink>
                   <Button
                     variant="secondary"
                     fullWidth
                     size="md"
                     onClick={() => {
                       setMobileMenuOpen(false)
-                      signOut()
+                      setConfirmSignOutOpen(true)
                     }}
                     leftIcon={<LogOut className="w-4 h-4" />}
                   >
@@ -238,11 +349,23 @@ export function Navbar({ onOpenAuth }: NavbarProps) {
 
       {!onOpenAuth && (
         <AuthModal
+          key={authModalMode ?? 'closed'}
           isOpen={authModalMode !== null}
           initialMode={authModalMode ?? 'login'}
           onClose={() => setAuthModalMode(null)}
         />
       )}
+
+      <ConfirmModal
+        isOpen={confirmSignOutOpen}
+        title={t('auth.signOut')}
+        message={t('auth.signOutConfirm')}
+        onConfirm={() => {
+          setConfirmSignOutOpen(false)
+          void signOut()
+        }}
+        onClose={() => setConfirmSignOutOpen(false)}
+      />
     </>
   )
 }

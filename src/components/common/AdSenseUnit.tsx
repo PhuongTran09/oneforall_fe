@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { hasConsented, useConsent } from '../consent/consentStorage'
 import { t } from '../../i18n/langStore'
+import { isAdFree, useEntitlements } from '../../services/entitlementsStore'
 
 const enabled = import.meta.env.VITE_ADSENSE_ENABLED === 'true'
 const client = import.meta.env.VITE_ADSENSE_CLIENT
@@ -29,8 +30,10 @@ export interface AdSenseUnitProps {
 export function AdSenseUnit({ slot, className = '' }: AdSenseUnitProps) {
   // Subscribe để đơn vị quảng cáo bật lên ngay khi người dùng chấp thuận cookie quảng cáo.
   useConsent()
+  // Gói Pro không quảng cáo — BE (/users/me plan_policy.ads=false) là nguồn xác nhận.
+  const { me } = useEntitlements()
   // Script AdSense (cookie quảng cáo) chỉ được nạp sau khi có đồng ý — spec consent.
-  const active = enabled && !!client && !!slot && hasConsented('advertising')
+  const active = enabled && !!client && !!slot && hasConsented('advertising') && !isAdFree(me)
   const pushed = useRef(false)
 
   useEffect(() => {

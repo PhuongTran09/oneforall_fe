@@ -4,7 +4,7 @@ import { Button } from '../../../components/common/Button'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../../components/common/Card'
 import { imageApi } from '../services/imageApi'
 import { describeError } from '../../../utils/apiError'
-import { showToast } from '../../../components/feedback/toastStore'
+import { showErrorPopup } from '../../../components/feedback/errorPopupStore'
 import { t } from '../../../i18n/langStore'
 import type { ImageProcessTask } from '../types/image.types'
 
@@ -30,9 +30,9 @@ export function ImageWorkspace() {
       setTask(res)
       setMessage({ text: t('ws.imageSuccess'), isError: false })
     } catch (err) {
-      const { type, message } = describeError(err, t('ws.imageFailed'))
+      const { message } = describeError(err, t('ws.imageFailed'))
       setMessage({ text: message, isError: true })
-      showToast({ type, message })
+      showErrorPopup({ message })
     } finally {
       setIsLoading(false)
     }
@@ -43,12 +43,12 @@ export function ImageWorkspace() {
       <Card className="p-6 sm:p-8">
         <CardHeader className="p-0 pb-6 border-b border-edge">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-[#ff3b30]/10 border border-[rgba(255,59,48,0.30)] flex items-center justify-center text-[#FF3B30] clip-corner-btn">
+            <div className="w-10 h-10 bg-brand/10 border border-[rgba(255,59,48,0.30)] flex items-center justify-center text-brand clip-corner-btn">
               <ImageIcon className="w-5 h-5" />
             </div>
             <div>
               <CardTitle className="text-2xl">{t('ws.imageTitle')}</CardTitle>
-              <span className="text-xs font-mono text-[#FF3B30]">Image Processing Engine</span>
+              <span className="text-xs font-mono text-brand">Image Processing Engine</span>
             </div>
           </div>
           <CardDescription>
@@ -59,7 +59,7 @@ export function ImageWorkspace() {
         <CardContent className="p-0 pt-6 space-y-6">
           <label
             htmlFor="image-file-input"
-            className="flex flex-col items-center justify-center border-2 border-dashed border-[rgba(255,59,48,0.30)] hover:border-[rgba(255,59,48,0.60)] p-8 sm:p-12 text-center cursor-pointer bg-page hover:bg-[#ff3b30]/5 transition-all group clip-corner-lg input-3d"
+            className="flex flex-col items-center justify-center border-2 border-dashed border-[rgba(255,59,48,0.30)] hover:border-[rgba(255,59,48,0.60)] p-8 sm:p-12 text-center cursor-pointer bg-page hover:bg-brand/5 transition-all group clip-corner-lg input-3d"
           >
             <input
               id="image-file-input"
@@ -68,7 +68,7 @@ export function ImageWorkspace() {
               className="hidden"
               onChange={handleFileChange}
             />
-            <div className="w-14 h-14 bg-[#ff3b30]/10 border border-[rgba(255,59,48,0.25)] flex items-center justify-center text-[#FF3B30] group-hover:scale-110 transition-transform mb-3 clip-corner-card">
+            <div className="w-14 h-14 bg-brand/10 border border-[rgba(255,59,48,0.25)] flex items-center justify-center text-brand group-hover:scale-110 transition-transform mb-3 clip-corner-card">
               <UploadCloud className="w-7 h-7" />
             </div>
             {selectedFile ? (
@@ -105,7 +105,7 @@ export function ImageWorkspace() {
             <div
               className={`p-4 text-sm border flex items-center gap-3 clip-corner-card ${
                 message.isError
-                  ? 'bg-[#ff3b30]/10 border-[#ff3b30]/30 text-rose-300'
+                  ? 'bg-brand/10 border-brand/30 text-rose-300'
                   : 'bg-emerald-500/10 border-emerald-600/30 text-emerald-300'
               }`}
             >
@@ -125,7 +125,7 @@ export function ImageWorkspace() {
                   href={task.outputUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="text-xs font-semibold text-[#FF3B30] hover:text-[#FF6B4A] underline"
+                  className="text-xs font-semibold text-brand hover:text-brand-2 underline"
                 >
                   {t('ws.imageDownload')}
                 </a>

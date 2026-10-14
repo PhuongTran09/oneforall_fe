@@ -22,16 +22,16 @@ export function YoutubeIcon({ className = 'w-5 h-5' }: { className?: string }) {
 
 function getToolIcon(category: string, slug?: string) {
   if (slug?.includes('remove-background')) {
-    return <Scissors className="w-5 h-5 text-[#FF3B30]" />
+    return <Scissors className="w-5 h-5 text-brand" />
   }
   if (slug?.includes('mp3') || category === 'media') {
     return <Music className="w-5 h-5 text-purple-600" />
   }
   if (category === 'youtube') {
-    return <YoutubeIcon className="w-5 h-5 text-[#FF3B30]" />
+    return <YoutubeIcon className="w-5 h-5 text-brand" />
   }
   if (category === 'tiktok') {
-    return <Video className="w-5 h-5 text-[#FF6B4A]" />
+    return <Video className="w-5 h-5 text-brand-2" />
   }
   if (category === 'image') {
     return <ImageIcon className="w-5 h-5 text-indigo-500" />
@@ -56,16 +56,16 @@ export function ToolCard({ tool }: ToolCardProps) {
       <div>
         {/* Top Header */}
         <div className="flex items-center justify-between gap-2 mb-3.5">
-          <div className="w-10 h-10 bg-page border border-edge flex items-center justify-center group-hover:scale-105 group-hover:bg-[#ff3b30]/10 transition-all">
+          <div className="w-10 h-10 bg-page border border-edge flex items-center justify-center group-hover:scale-105 group-hover:bg-brand/10 transition-all">
             {getToolIcon(tool.category, tool.slug)}
           </div>
-          <span className="text-[11px] font-medium font-mono px-2 py-0.5 bg-elev text-slate-300 group-hover:bg-[#ff3b30]/10 group-hover:text-[#FF3B30] transition-colors">
+          <span className="text-[11px] font-medium font-mono px-2 py-0.5 bg-elev text-slate-300 group-hover:bg-brand/10 group-hover:text-brand transition-colors">
             {localized.badge}
           </span>
         </div>
 
         {/* Title */}
-        <h3 className="font-bold text-ink text-base group-hover:text-[#FF3B30] transition-colors leading-snug mb-1.5">
+        <h3 className="font-bold text-ink text-base group-hover:text-brand transition-colors leading-snug mb-1.5">
           {localized.h1}
         </h3>
 
@@ -91,7 +91,7 @@ export function ToolCard({ tool }: ToolCardProps) {
           )}
         </div>
 
-        <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#FF3B30] group-hover:translate-x-1 transition-transform">
+        <span className="inline-flex items-center gap-1 text-xs font-semibold text-brand group-hover:translate-x-1 transition-transform">
           <span>{t('common.useNow')}</span>
           <ArrowRight className="w-3.5 h-3.5" />
         </span>

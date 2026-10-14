@@ -23,6 +23,7 @@ import {
 import { openAffiliateTab } from '../utils/affiliate'
 import { describeError, sanitizeUserMessage } from '../utils/apiError'
 import { showToast } from '../components/feedback/toastStore'
+import { showErrorPopup } from '../components/feedback/errorPopupStore'
 import { hasAcceptedTerms, openConsentModal } from '../components/consent/consentStorage'
 import { stripLocale, t, useI18n, withLocale } from '../i18n/langStore'
 import { useToolConfig } from '../i18n/toolConfig'
@@ -59,6 +60,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
   const hasPendingJob = !!snapshot?.pending && !snapshotExpired
 
   const [isLoading, setIsLoading] = useState(hasPendingJob)
+  const [isCancelling, setIsCancelling] = useState(false)
   const [job, setJob] = useState<JobPublicResponse | null>(
     snapshotExpired ? null : (snapshot?.job ?? null),
   )
@@ -131,10 +133,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
           : t('toolsPage.jobCancelled')
       const safeError = sanitizeUserMessage(finishedJob.error, fallbackMessage)
       setErrorMessage(safeError)
-      showToast({
-        type: finishedJob.status === 'failed' ? 'error' : 'warning',
-        message: safeError,
-      })
+      showErrorPopup({ message: safeError })
     },
     [tool],
   )
@@ -160,9 +159,9 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
     })
   }, [tool, job, downloadUrl, resultFileName, resultFormat, originalImagePreview, errorMessage, openFaqIndex])
 
-  // Lỗi từ snapshot cũ (quay lại trang) popup lại một lần; lỗi live do nơi bắt gọi showToast.
+  // Lỗi từ snapshot cũ (quay lại trang) popup lại một lần; lỗi live do nơi bắt gọi showErrorPopup.
   useEffect(() => {
-    if (errorMessage) showToast({ type: 'error', message: errorMessage })
+    if (errorMessage) showErrorPopup({ message: errorMessage })
     // eslint-disable-next-line react-hooks/exhaustive-deps -- chỉ chạy trên mount, đọc giá trị khởi tạo
   }, [])
 
@@ -191,7 +190,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
         if (!isCurrentTracking(controller) || err instanceof JobPollCancelled) return
         const message = t('toolsPage.trackFailed')
         setErrorMessage(message)
-        showToast({ type: 'error', message })
+        showErrorPopup({ message })
       })
       .finally(() => {
         if (isCurrentTracking(controller)) {
@@ -229,6 +228,24 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
     setOriginalImagePreview(null)
     setErrorMessage(null)
     setIsLoading(false)
+  }
+
+  // Hủy job đang chạy ngay trên trang: BE CAS status -> cancelled và worker polling
+  // should_abort sẽ dừng ffmpeg/yt-dlp. Kèm download token của job (snapshot pending) để
+  // hủy được cả khi người dùng là khách ẩn danh, không có Bearer. Luồng theo dõi
+  // SSE/poll vẫn còn chạy nên nó nhận trạng thái cuối và đóng qua applyFinishedJob.
+  const handleCancelCurrent = async () => {
+    const jobId = job?.id
+    if (!jobId || isCancelling) return
+    const pending = tool ? getToolSnapshot(tool.slug)?.pending : null
+    setIsCancelling(true)
+    try {
+      await jobsApi.cancelJob(jobId, pending?.token ?? null)
+    } catch (err) {
+      showErrorPopup({ message: describeError(err, t('job.cancelError')).message })
+    } finally {
+      setIsCancelling(false)
+    }
   }
 
   const handleUrlSubmit = async (url: string, format: string, quality: string) => {
@@ -270,9 +287,9 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
       applyFinishedJob(finishedJob, accepted.download_token, t('toolsPage.videoFailed'))
     } catch (err) {
       if (!isCurrentTracking(controller) || err instanceof JobPollCancelled) return
-      const { type, message } = describeError(err, t('toolsPage.errorFallback'))
+      const { message } = describeError(err, t('toolsPage.errorFallback'))
       setErrorMessage(message)
-      showToast({ type, message })
+      showErrorPopup({ message })
     } finally {
       if (isCurrentTracking(controller)) {
         trackControllerRef.current = null
@@ -367,9 +384,9 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
       applyFinishedJob(finishedJob, accepted.download_token, t('toolsPage.convertFailed'))
     } catch (err) {
       if (!isCurrentTracking(controller) || err instanceof JobPollCancelled) return
-      const { type, message } = describeError(err, t('toolsPage.errorFileFallback'))
+      const { message } = describeError(err, t('toolsPage.errorFileFallback'))
       setErrorMessage(message)
-      showToast({ type, message })
+      showErrorPopup({ message })
     } finally {
       if (isCurrentTracking(controller)) {
         trackControllerRef.current = null
@@ -403,7 +420,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center max-w-3xl mx-auto space-y-4 mb-8 sm:mb-10">
             {/* Badge */}
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold bg-surface border border-[rgba(255,59,48,0.35)] text-[#FF3B30] badge-angular">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold bg-surface border border-[rgba(255,59,48,0.35)] text-brand badge-angular">
               <Zap className="w-3.5 h-3.5" />
               <span>{tool.badge}</span>
             </div>
@@ -451,7 +468,14 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
                 )}
 
                 {/* Processing Progress Bar */}
-                {isLoading && <JobProgress job={job} onRetry={handleReset} />}
+                {isLoading && (
+                  <JobProgress
+                    job={job}
+                    onRetry={handleReset}
+                    onCancel={handleCancelCurrent}
+                    isCancelling={isCancelling}
+                  />
+                )}
               </div>
             ) : (
               /* Khi đã xử lý xong: hiển thị kết quả và download */
@@ -500,7 +524,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
                 key={step.step}
                 className="relative p-6 bg-surface border border-[rgba(255,59,48,0.22)] transition-all space-y-3 card-3d clip-corner-card"
               >
-                <div className="w-10 h-10 flex items-center justify-center font-mono font-bold text-sm text-[#FF3B30]">
+                <div className="w-10 h-10 flex items-center justify-center font-mono font-bold text-sm text-brand">
                   {step.step}
                 </div>
                 <h3 className="font-bold text-ink text-sm">
@@ -533,7 +557,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
                 key={feat.title}
                 className="p-6 bg-surface border border-[rgba(255,59,48,0.22)] space-y-3 card-3d clip-corner-card"
               >
-                <div className="w-10 h-10 bg-[#ff3b30]/10 border border-[#ff3b30]/30 flex items-center justify-center text-[#FF3B30] clip-corner-btn">
+                <div className="w-10 h-10 bg-brand/10 border border-brand/30 flex items-center justify-center text-brand clip-corner-btn">
                   <Check className="w-5 h-5" />
                 </div>
                 <h3 className="font-bold text-ink text-lg">
@@ -594,12 +618,12 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
                     <button
                       type="button"
                       onClick={() => setOpenFaqIndex(isOpen ? null : index)}
-                      className="w-full p-5 text-left font-semibold text-ink text-xs sm:text-base flex items-center justify-between gap-4 cursor-pointer hover:bg-[#ff3b30]/5"
+                      className="w-full p-5 text-left font-semibold text-ink text-xs sm:text-base flex items-center justify-between gap-4 cursor-pointer hover:bg-brand/5"
                     >
                       <span>{faq.q}</span>
                       <ChevronDown
                         className={`w-5 h-5 text-slate-400 shrink-0 transition-transform duration-200 ${
-                          isOpen ? 'rotate-180 text-[#FF3B30]' : ''
+                          isOpen ? 'rotate-180 text-brand' : ''
                         }`}
                       />
                     </button>

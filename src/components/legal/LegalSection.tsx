@@ -11,7 +11,7 @@ function renderInline(part: LegalInline, i: number): ReactNode {
     )
   }
   return (
-    <a key={i} href={part.href} className="text-[#FF3B30] hover:underline break-all">
+    <a key={i} href={part.href} className="text-brand hover:underline break-all">
       {part.a}
     </a>
   )

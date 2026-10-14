@@ -9,13 +9,13 @@ export function HowItWorksSection() {
       step: '01',
       title: t('howItWorks.s1Title'),
       description: t('howItWorks.s1Desc'),
-      icon: <UploadCloud className="w-6 h-6 text-[#FF3B30]" />,
+      icon: <UploadCloud className="w-6 h-6 text-brand" />,
     },
     {
       step: '02',
       title: t('howItWorks.s2Title'),
       description: t('howItWorks.s2Desc'),
-      icon: <SlidersHorizontal className="w-6 h-6 text-[#FF6B4A]" />,
+      icon: <SlidersHorizontal className="w-6 h-6 text-brand-2" />,
     },
     {
       step: '03',
@@ -35,7 +35,7 @@ export function HowItWorksSection() {
     <section id="how-it-works" className="py-16 sm:py-24 bg-page border-y border-edge">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold bg-surface border border-[rgba(255,59,48,0.35)] text-[#FF3B30] badge-angular">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold bg-surface border border-[rgba(255,59,48,0.35)] text-brand badge-angular">
             {t('howItWorks.badge')}
           </div>
           <h2 className="text-2xl sm:text-4xl font-extrabold text-ink tracking-tight">
@@ -60,7 +60,7 @@ export function HowItWorksSection() {
                 />
                 <div>
                   <div className="flex items-center justify-between mb-5">
-                    <span className="step-num text-xl sm:text-2xl font-black font-mono text-slate-400 group-hover:text-[#FF3B30] transition-colors">
+                    <span className="step-num text-xl sm:text-2xl font-black font-mono text-slate-400 group-hover:text-brand transition-colors">
                       {item.step}
                     </span>
                     <div className="step-icon w-11 h-11 flex items-center justify-center border border-edge bg-page clip-corner-btn">

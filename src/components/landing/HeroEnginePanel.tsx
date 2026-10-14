@@ -44,9 +44,9 @@ const s = (nameKey: string, stage: number): Step => ({ nameKey, stage })
 const jobs: DemoJob[] = [
   {
     labelKey: 'engine.removeBgLabel',
-    labelClass: 'text-[#FF3B30]',
+    labelClass: 'text-brand',
     badge: 'AI',
-    badgeClass: 'bg-[#ff3b30]/15 text-[#FF3B30] border border-[rgba(255,59,48,0.35)]',
+    badgeClass: 'bg-brand/15 text-brand border border-[rgba(255,59,48,0.35)]',
     file: 'portrait_sample.png',
     footKey: 'engine.removeBgFoot',
     start: 0,
@@ -63,7 +63,7 @@ const jobs: DemoJob[] = [
   },
   {
     labelKey: 'engine.youtubeLabel',
-    labelClass: 'text-[#FF6B4A]',
+    labelClass: 'text-brand-2',
     badge: 'Full HD MP4',
     badgeClass: 'bg-amber-900/20 text-amber-400 border border-amber-500',
     file: 'music_video_hd.mp4',
@@ -111,7 +111,7 @@ function jobState(job: DemoJob, cycle: number): JobState {
 
 const LEGEND_KEYS = [
   { labelKey: 'engine.legendDone', dot: 'bg-emerald-400' },
-  { labelKey: 'engine.legendActive', dot: 'bg-[#FF3B30]' },
+  { labelKey: 'engine.legendActive', dot: 'bg-brand' },
   { labelKey: 'engine.legendQueued', dot: 'bg-amber-400' },
   { labelKey: 'engine.legendPending', dot: 'bg-slate-600' },
   { labelKey: 'engine.legendError', dot: 'bg-rose-500' },
@@ -145,7 +145,7 @@ export function HeroEnginePanel() {
       {/* Monitor header + legend */}
       <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 pb-4 border-b border-edge/60 mb-4">
         <div className="flex items-center gap-2.5">
-          <span className="w-2 h-2 bg-[#FF3B30] clip-corner-btn" />
+          <span className="w-2 h-2 bg-brand clip-corner-btn" />
           <span className="text-xs font-mono font-bold text-slate-200 tracking-wider uppercase">
             Crimson Workflow Monitor
           </span>
@@ -175,7 +175,7 @@ export function HeroEnginePanel() {
                     state === 'complete'
                       ? 'bg-emerald-900/30 text-emerald-400 border border-emerald-600/40'
                       : state === 'active'
-                        ? 'bg-[#ff3b30]/15 text-[#FF3B30] border border-[rgba(255,59,48,0.5)] animate-pulse'
+                        ? 'bg-brand/15 text-brand border border-[rgba(255,59,48,0.5)] animate-pulse'
                         : 'bg-page text-slate-600 border border-edge'
                   }`}
                 >
@@ -183,7 +183,7 @@ export function HeroEnginePanel() {
                 </span>
                 <span
                   className={`text-[10px] sm:text-xs font-mono uppercase tracking-wide ${
-                    state === 'active' ? 'text-[#FF3B30] font-bold' : state === 'complete' ? 'text-emerald-400' : 'text-slate-500'
+                    state === 'active' ? 'text-brand font-bold' : state === 'complete' ? 'text-emerald-400' : 'text-slate-500'
                   }`}
                 >
                   {t(stageKey)}
@@ -217,7 +217,7 @@ export function HeroEnginePanel() {
                   )}
                   {st.status === 'active' && (
                     <>
-                      <Loader2 className="w-3.5 h-3.5 text-[#FF3B30] animate-spin" />
+                      <Loader2 className="w-3.5 h-3.5 text-brand animate-spin" />
                       <span className="text-amber-400">{t(job.steps[st.step].nameKey)}</span>
                     </>
                   )}

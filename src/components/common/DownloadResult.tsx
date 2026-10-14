@@ -75,7 +75,7 @@ export function DownloadResult({
               />
             </div>
           ) : (
-            <div className="w-14 h-14 bg-[#FF3B30] text-white flex items-center justify-center font-mono font-bold text-xs uppercase shrink-0 clip-corner-btn">
+            <div className="w-14 h-14 bg-brand text-white flex items-center justify-center font-mono font-bold text-xs uppercase shrink-0 clip-corner-btn">
               .{format || 'FILE'}
             </div>
           )}

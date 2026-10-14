@@ -54,11 +54,11 @@ export function ConsentModal() {
             </h2>
             <p className="mb-4 text-sm leading-relaxed text-slate-300">
               {t('consent.introPre')}{' '}
-              <LocaleLink to="/terms" className="text-[#FF3B30] hover:underline font-medium">
+              <LocaleLink to="/terms" className="text-brand hover:underline font-medium">
                 {t('common.terms')}
               </LocaleLink>{' '}
               {t('consent.introMid')}{' '}
-              <LocaleLink to="/privacy" className="text-[#FF3B30] hover:underline font-medium">
+              <LocaleLink to="/privacy" className="text-brand hover:underline font-medium">
                 {t('common.privacy')}
               </LocaleLink>
               .

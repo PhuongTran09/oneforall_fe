@@ -45,7 +45,7 @@ export function Footer() {
                 <img src="/oneforall.svg" alt="OneForAll Logo" className="w-full h-full object-contain" />
               </div>
               <span className="font-bold text-xl tracking-tight text-ink">
-                One<span className="text-brand-gradient">ForAll</span>
+                One<span className="text-brand-gradient"> ForAll</span>
               </span>
             </LocaleLink>
             <p className="text-sm text-slate-400 leading-relaxed max-w-sm">
@@ -54,7 +54,7 @@ export function Footer() {
             <div className="flex items-center gap-3 pt-2">
               <a
                 href="https://mail.google.com/mail/?view=cm&fs=1&to=support@oneforall.io.vn&su=Ho%20tro%20OneForAll"
-                className="w-9 h-9 bg-elev hover:bg-[#ff3b30]/15 text-slate-400 flex items-center justify-center transition-colors clip-corner-btn"
+                className="w-9 h-9 bg-elev hover:bg-brand/15 text-slate-400 flex items-center justify-center transition-colors clip-corner-btn"
                 aria-label="Email Support"
               >
                 <Mail className="w-4 h-4" />
@@ -72,7 +72,7 @@ export function Footer() {
                 <li key={item.to}>
                   <LocaleLink
                     to={item.to}
-                    className="text-xs sm:text-sm text-slate-400 hover:text-[#FF3B30] transition-colors"
+                    className="text-xs sm:text-sm text-slate-400 hover:text-brand transition-colors"
                   >
                     {item.label}
                   </LocaleLink>
@@ -91,7 +91,7 @@ export function Footer() {
                 <li key={item.to}>
                   <LocaleLink
                     to={item.to}
-                    className="text-xs sm:text-sm text-slate-400 hover:text-[#FF3B30] transition-colors"
+                    className="text-xs sm:text-sm text-slate-400 hover:text-brand transition-colors"
                   >
                     {item.label}
                   </LocaleLink>
@@ -110,7 +110,7 @@ export function Footer() {
                 <li key={item.to}>
                   <LocaleLink
                     to={item.to}
-                    className="text-xs sm:text-sm text-slate-400 hover:text-[#FF3B30] transition-colors"
+                    className="text-xs sm:text-sm text-slate-400 hover:text-brand transition-colors"
                   >
                     {item.label}
                   </LocaleLink>
@@ -129,7 +129,7 @@ export function Footer() {
                 <li key={item.to}>
                   <LocaleLink
                     to={item.to}
-                    className="text-xs sm:text-sm text-slate-400 hover:text-[#FF3B30] transition-colors"
+                    className="text-xs sm:text-sm text-slate-400 hover:text-brand transition-colors"
                   >
                     {item.label}
                   </LocaleLink>
@@ -147,18 +147,18 @@ export function Footer() {
           </div>
           <div className="flex flex-col items-center gap-2">
             <div className="flex items-center gap-3">
-              <LocaleLink to="/terms" className="text-slate-400 hover:text-[#FF3B30] transition-colors">
+              <LocaleLink to="/terms" className="text-slate-400 hover:text-brand transition-colors">
                 {t('common.terms')}
               </LocaleLink>
               <span aria-hidden="true">•</span>
-              <LocaleLink to="/privacy" className="text-slate-400 hover:text-[#FF3B30] transition-colors">
+              <LocaleLink to="/privacy" className="text-slate-400 hover:text-brand transition-colors">
                 {t('common.privacy')}
               </LocaleLink>
               <span aria-hidden="true">•</span>
               <button
                 type="button"
                 onClick={() => openConsentModal('custom')}
-                className="text-slate-400 hover:text-[#FF3B30] transition-colors cursor-pointer"
+                className="text-slate-400 hover:text-brand transition-colors cursor-pointer"
               >
                 {t('consent.cookieSettings')}
               </button>

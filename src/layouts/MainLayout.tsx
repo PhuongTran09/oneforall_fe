@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
-import { Outlet, useLocation } from 'react-router-dom'
-import { Navbar, Footer, AuthModal } from '../components'
+import { Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { Navbar, Footer, AuthModal, ProPlanModal } from '../components'
 import { ConsentModal } from '../components/consent/ConsentModal'
 import { LangRouteSync } from '../i18n/LangRouteSync'
-import { useI18n } from '../i18n/langStore'
+import { useI18n, withLocale } from '../i18n/langStore'
+import { subscribeAuthEvent, useAuth } from '../services/authStore'
 
 // Vị trí cuộn theo pathname. React Router v7 ở chế độ khai báo (BrowserRouter + <Routes>)
 // không có <ScrollRestoration> (chỉ dùng được với data router), nên app tự quản lý:
@@ -16,8 +17,33 @@ export function MainLayout() {
   // Navbar/Footer/page con gọi t() trực tiếp (không hook) → layout phải subscribe
   // để cả subtree render lại khi lang đổi.
   useI18n()
-  const [authMode, setAuthMode] = useState<'login' | 'register' | null>(null)
+  const [authMode, setAuthMode] = useState<'login' | 'register' | 'forgot' | null>(null)
+  const [proOpen, setProOpen] = useState(false)
+  const { session } = useAuth()
   const { pathname } = useLocation()
+  const navigate = useNavigate()
+
+  // CTA gói Pro: chưa đăng nhập → bắt đăng ký/đăng nhập; đã đăng nhập → hiện bảng gói Pro.
+  const openPro = () => {
+    if (session) setProOpen(true)
+    else setAuthMode('register')
+  }
+
+  // Supabase gửi PASSWORD_RECOVERY khi link đặt lại mật khẩu được open
+  // (detectSessionInUrl đổi hash → session recovery) → đưa user về route reset.
+  useEffect(
+    () =>
+      subscribeAuthEvent((event) => {
+        if (event !== 'PASSWORD_RECOVERY') return
+        setAuthMode(null)
+        const target = withLocale('/auth/reset-password')
+        // Đang ở chính trang reset (hash được tiêu thụ tại chỗ) → không navigate,
+        // tránh history replace xóa hash/token trước khi supabase-js xử lý xong.
+        if (window.location.pathname === target) return
+        navigate(target, { replace: true })
+      }),
+    [navigate],
+  )
 
   useEffect(() => {
     const saved = scrollByPath.get(pathname)
@@ -43,21 +69,25 @@ export function MainLayout() {
   }, [pathname])
 
   return (
-    <div className="min-h-screen flex flex-col bg-page text-ink selection:bg-[#FF3B30] selection:text-white antialiased">
+    <div className="min-h-screen flex flex-col bg-page text-ink selection:bg-brand selection:text-white antialiased">
       <LangRouteSync />
       <Navbar onOpenAuth={(mode) => setAuthMode(mode)} />
       <main className="flex-1 w-full">
         <div key={pathname} className="animate-page-enter">
-          <Outlet context={{ openAuth: setAuthMode }} />
+          <Outlet context={{ openAuth: setAuthMode, openPro }} />
         </div>
       </main>
       <Footer />
 
+      {/* key theo mode: mỗi lần mở là instance mới → state form/OTP không dư leftover */}
       <AuthModal
+        key={authMode ?? 'closed'}
         isOpen={authMode !== null}
         initialMode={authMode ?? 'login'}
         onClose={() => setAuthMode(null)}
       />
+
+      <ProPlanModal isOpen={proOpen} onClose={() => setProOpen(false)} />
 
       {/* Một instance duy nhất ở layout → không mở lại khi chuyển route */}
       <ConsentModal />

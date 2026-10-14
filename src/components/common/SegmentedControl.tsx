@@ -44,7 +44,7 @@ export function SegmentedControl({ options, value, onChange, ariaLabel, labelFor
           className={`h-full flex-1 min-w-0 basis-auto cursor-pointer overflow-hidden whitespace-nowrap px-3 font-mono text-xs font-semibold uppercase clip-corner-btn transition-all duration-[180ms] focus-visible:outline-none focus-visible:shadow-[inset_0_0_0_2px_#ff3b30] ${
             value === option
               ? 'bg-brand-gradient text-white'
-              : 'text-slate-300 hover:bg-[#ff3b30]/10 hover:text-white'
+              : 'text-slate-300 hover:bg-brand/10 hover:text-ink'
           }`}
         >
           {labelFor ? labelFor(option) : option}
