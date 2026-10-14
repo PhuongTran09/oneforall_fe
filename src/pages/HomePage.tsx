@@ -62,7 +62,7 @@ export function HomePage() {
       <SEOHead
         title={t('home.seoTitle')}
         description={t('home.seoDesc')}
-        canonicalUrl="https://oneforall.app/"
+        canonicalUrl="https://oneforall.io.vn/"
         faqList={homeFaqs}
       />
       <HeroSection onTryFree={handleProAccount} />

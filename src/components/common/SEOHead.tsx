@@ -49,9 +49,9 @@ export function SEOHead({
     document.querySelectorAll('link[data-hreflang]').forEach((el) => el.remove())
     if (alternates) {
       const entries: { hreflang: string; href: string }[] = [
-        { hreflang: 'vi', href: `https://oneforall.app${alternates.vi}` },
-        { hreflang: 'en', href: `https://oneforall.app${alternates.en}` },
-        { hreflang: 'x-default', href: `https://oneforall.app${alternates.vi}` },
+        { hreflang: 'vi', href: `https://oneforall.io.vn${alternates.vi}` },
+        { hreflang: 'en', href: `https://oneforall.io.vn${alternates.en}` },
+        { hreflang: 'x-default', href: `https://oneforall.io.vn${alternates.vi}` },
       ]
       for (const entry of entries) {
         const link = document.createElement('link')
@@ -134,12 +134,12 @@ export function SEOHead({
 
     if (breadcrumbs && breadcrumbs.length > 0) {
       const fullBreadcrumbs = [
-        { name: t('common.home'), url: 'https://oneforall.app/' },
+        { name: t('common.home'), url: 'https://oneforall.io.vn/' },
         ...breadcrumbs.map((b) => ({
           name: b.name,
           url: b.url.startsWith('http')
             ? b.url
-            : `https://oneforall.app${b.url.startsWith('/') ? '' : '/'}${b.url}`,
+            : `https://oneforall.io.vn${b.url.startsWith('/') ? '' : '/'}${b.url}`,
         })),
       ]
 

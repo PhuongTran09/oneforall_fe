@@ -19,7 +19,7 @@ export function NotFoundPage() {
       <SEOHead
         title={t('notFound.seoTitle')}
         description={t('notFound.seoDesc')}
-        canonicalUrl="https://oneforall.app/404"
+        canonicalUrl="https://oneforall.io.vn/404"
         noindex={true}
       />
 

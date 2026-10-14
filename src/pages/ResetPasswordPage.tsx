@@ -134,7 +134,7 @@ export function ResetPasswordPage() {
       <SEOHead
         title={t('auth.resetPassword')}
         description={t('auth.forgotDesc')}
-        canonicalUrl="https://oneforall.app/auth/reset-password"
+        canonicalUrl="https://oneforall.io.vn/auth/reset-password"
         noindex
       />
       <div className="bg-surface border border-[rgba(255,59,48,0.35)] clip-corner-lg p-6 sm:p-8 space-y-5">

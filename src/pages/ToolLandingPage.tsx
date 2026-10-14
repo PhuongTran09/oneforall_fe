@@ -396,7 +396,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
   }
 
   // Breadcrumb hiển thị tên công cụ hiện tại; canonical theo locale đang xem
-  const canonicalUrl = `https://oneforall.app${withLocale(tool.slug, lang)}`
+  const canonicalUrl = `https://oneforall.io.vn${withLocale(tool.slug, lang)}`
 
   return (
     <div className="w-full min-h-screen bg-page">
