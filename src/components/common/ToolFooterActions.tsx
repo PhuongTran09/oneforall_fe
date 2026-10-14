@@ -11,7 +11,7 @@ const DONATE_URL = 'https://me.momo.vn/MRI4ubs7CgtBuQfEi6T8'
 
 // Dùng lại đúng địa chỉ support mà Footer và trang Privacy đang trỏ tới.
 const CONTACT_URL =
-  'https://mail.google.com/mail/?view=cm&fs=1&to=support@oneforall.io.vn&su=Ho%20tro%20OneForAll'
+  'https://mail.google.com/mail/?view=cm&fs=1&to=support@oneforall.io.vn&su=Ho%20tro%20One ForAll'
 
 const linkBtnStyles =
   'inline-flex items-center justify-center gap-1.5 text-xs px-3 py-1.5 font-medium transition-all duration-200 cursor-pointer select-none whitespace-nowrap bg-surface text-slate-200 border border-[rgba(255,59,48,0.35)] hover:bg-brand/5 hover:border-[rgba(255,59,48,0.6)] clip-corner-btn focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF3B30]'
@@ -76,7 +76,7 @@ export function ToolFooterActions() {
   // đã đăng nhập → modal gói Pro). href /#pricing vẫn là fallback khi thiếu context.
   const layout = useOutletContext<{ openPro?: () => void } | null>()
   const pageUrl = typeof window !== 'undefined' ? window.location.href : ''
-  const shareText = typeof document !== 'undefined' ? document.title : 'OneForAll'
+  const shareText = typeof document !== 'undefined' ? document.title : 'One ForAll'
   const encodedUrl = encodeURIComponent(pageUrl)
   const encodedText = encodeURIComponent(shareText)
 

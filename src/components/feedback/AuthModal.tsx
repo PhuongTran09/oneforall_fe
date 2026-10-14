@@ -286,7 +286,7 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
         <div className="text-center mb-6">
           <div className="inline-flex items-center justify-center">
             <div className="w-10 h-10">
-              <img src="/oneforall.svg" alt="OneForAll Logo" className="w-full h-full object-contain" />
+              <img src="/oneforall.svg" alt="One ForAll Logo" className="w-full h-full object-contain" />
             </div>
           </div>
           <h3 className="text-2xl font-bold text-ink tracking-tight">{title}</h3>

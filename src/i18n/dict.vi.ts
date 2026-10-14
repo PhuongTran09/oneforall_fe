@@ -5,12 +5,12 @@ export const vi = {
     "login": "Đăng nhập",
     "loginNow": "Đăng nhập ngay",
     "loginSubtitle": "Đăng nhập để quản lý tài khoản và sử dụng các công cụ xử lý tệp của bạn",
-    "loginSuccess": "Đăng nhập thành công! Chào mừng bạn quay trở lại OneForAll.",
-    "loginTitle": "Đăng nhập OneForAll",
+    "loginSuccess": "Đăng nhập thành công! Chào mừng bạn quay trở lại One ForAll.",
+    "loginTitle": "Đăng nhập One ForAll",
     "noAccount": "Chưa có tài khoản?",
     "password": "Mật khẩu",
     "registerNow": "Đăng ký ngay",
-    "registerSubtitle": "Tạo tài khoản để bắt đầu sử dụng các công cụ xử lý tệp của OneForAll",
+    "registerSubtitle": "Tạo tài khoản để bắt đầu sử dụng các công cụ xử lý tệp của One ForAll",
     "registerSuccess": "Đăng ký tài khoản thành công! Bạn có thể bắt đầu sử dụng đầy đủ công cụ.",
     "registerTitle": "Tạo tài khoản mới",
     "startFree": "Bắt đầu miễn phí",
@@ -103,7 +103,7 @@ export const vi = {
     "necessaryOnly": "Chỉ cookie cần thiết",
     "saveChoice": "Lưu lựa chọn",
     "termsPre": "Tôi đồng ý với",
-    "welcome": "Chào mừng bạn đến với OneForAll"
+    "welcome": "Chào mừng bạn đến với One ForAll"
   },
   "download": {
     "convertAnother": "Chuyển đổi tệp khác",
@@ -175,7 +175,7 @@ export const vi = {
   },
   "features": {
     "badge": "ƯU ĐIỂM CỐT LÕI",
-    "desc": "OneForAll tập hợp các công cụ trực tuyến giúp bạn tải video, chuyển đổi định dạng tệp và tối ưu hình ảnh trong một nơi thuận tiện, dễ sử dụng.",
+    "desc": "One ForAll tập hợp các công cụ trực tuyến giúp bạn tải video, chuyển đổi định dạng tệp và tối ưu hình ảnh trong một nơi thuận tiện, dễ sử dụng.",
     "f1Desc": "Thực hiện các tác vụ chuyển đổi và tối ưu tệp trực tiếp trên website với quy trình rõ ràng, dễ theo dõi.",
     "f1Title": "Quy trình xử lý thuận tiện",
     "f2Badge": "Nhiều định dạng phổ biến",
@@ -194,7 +194,7 @@ export const vi = {
     "compressImg": "Nén dung lượng ảnh",
     "convertAll": "Chuyển đổi File đa năng",
     "convertImg": "Chuyển đổi định dạng ảnh",
-    "copyright": "© {year} OneForAll. Bản quyền thuộc về OneForAll.",
+    "copyright": "© {year} One ForAll. Bản quyền thuộc về One ForAll.",
     "desc": "Bộ công cụ trực tuyến giúp tải video từ liên kết được hỗ trợ, chuyển đổi tài liệu và đa phương tiện, nén ảnh và xóa nền ảnh.",
     "docConverter": "Chuyển đổi Tài liệu",
     "pdfConverter": "Chuyển đổi PDF",
@@ -210,7 +210,7 @@ export const vi = {
     "ytToMp4": "YouTube sang MP4"
   },
   "hero": {
-    "badge": "OneForAll • Xử lý đa phương tiện",
+    "badge": "One ForAll • Xử lý đa phương tiện",
     "description": "Tải video từ YouTube và TikTok bằng liên kết được hỗ trợ, xóa nền ảnh, nén hình ảnh và chuyển đổi định dạng tài liệu, âm thanh, video ngay trên website.",
     "exploreCta": "Khám phá toàn bộ công cụ",
     "pillFormats": "Hỗ trợ đa định dạng",
@@ -226,23 +226,23 @@ export const vi = {
     "titlePre": "Nền tảng công cụ trực tuyến"
   },
   "home": {
-    "seoDesc": "Tải video từ YouTube và TikTok bằng liên kết được hỗ trợ, xóa nền ảnh, nén ảnh WebP và chuyển đổi PDF, Word, Excel cùng nhiều định dạng tệp trực tuyến với OneForAll.",
-    "seoTitle": "OneForAll - Nền Tảng Công Cụ Trực Tuyến Đa Năng Cho Mọi Nhu Cầu"
+    "seoDesc": "Tải video từ YouTube và TikTok bằng liên kết được hỗ trợ, xóa nền ảnh, nén ảnh WebP và chuyển đổi PDF, Word, Excel cùng nhiều định dạng tệp trực tuyến với One ForAll.",
+    "seoTitle": "One ForAll - Nền Tảng Công Cụ Trực Tuyến Đa Năng Cho Mọi Nhu Cầu"
   },
   "homeFaq": {
-    "a0": "OneForAll cung cấp 4 nhóm công cụ tiện ích trực tuyến: tải video YouTube và TikTok, chuyển đổi định dạng tài liệu và đa phương tiện, xóa nền ảnh bằng AI, cùng các công cụ tối ưu hình ảnh như nén dung lượng và thay đổi kích thước. Tất cả được tích hợp trên một nền tảng duy nhất, giúp bạn xử lý tệp tin thuận tiện mà không cần cài đặt phần mềm.",
-    "a1": "OneForAll xử lý tệp theo chính sách lưu trữ của hệ thống. Thời gian lưu giữ có thể khác nhau tùy từng loại tác vụ. Bạn nên tải kết quả về thiết bị khi hoàn tất và tránh tải lên tệp chứa thông tin nhạy cảm hoặc dữ liệu cá nhân quan trọng.",
-    "a2": "Không. OneForAll hoạt động trực tiếp trên trình duyệt web, cho phép bạn sử dụng các công cụ trực tuyến mà không cần cài đặt phần mềm. Chỉ cần truy cập website, chọn công cụ mong muốn và tải tệp lên để bắt đầu xử lý nhanh chóng, thuận tiện trên máy tính hoặc điện thoại.",
-    "a3": "OneForAll có các gói sử dụng với hạn mức và quyền lợi khác nhau. Hãy xem bảng giá trên website để kiểm tra dung lượng tệp, hạn mức sử dụng và các tính năng được áp dụng cho từng gói trước khi nâng cấp.",
-    "a4": "OneForAll được tối ưu để mang đến trải nghiệm xử lý tệp tin nhanh chóng và mượt mà. Thời gian hoàn tất tùy thuộc vào loại tác vụ, dung lượng tệp và mức độ phức tạp của nội dung. Hệ thống tự động điều phối quá trình xử lý, giúp bạn theo dõi tiến trình và nhận kết quả thuận tiện ngay trên nền tảng.",
+    "a0": "One ForAll cung cấp 4 nhóm công cụ tiện ích trực tuyến: tải video YouTube và TikTok, chuyển đổi định dạng tài liệu và đa phương tiện, xóa nền ảnh bằng AI, cùng các công cụ tối ưu hình ảnh như nén dung lượng và thay đổi kích thước. Tất cả được tích hợp trên một nền tảng duy nhất, giúp bạn xử lý tệp tin thuận tiện mà không cần cài đặt phần mềm.",
+    "a1": "One ForAll xử lý tệp theo chính sách lưu trữ của hệ thống. Thời gian lưu giữ có thể khác nhau tùy từng loại tác vụ. Bạn nên tải kết quả về thiết bị khi hoàn tất và tránh tải lên tệp chứa thông tin nhạy cảm hoặc dữ liệu cá nhân quan trọng.",
+    "a2": "Không. One ForAll hoạt động trực tiếp trên trình duyệt web, cho phép bạn sử dụng các công cụ trực tuyến mà không cần cài đặt phần mềm. Chỉ cần truy cập website, chọn công cụ mong muốn và tải tệp lên để bắt đầu xử lý nhanh chóng, thuận tiện trên máy tính hoặc điện thoại.",
+    "a3": "One ForAll có các gói sử dụng với hạn mức và quyền lợi khác nhau. Hãy xem bảng giá trên website để kiểm tra dung lượng tệp, hạn mức sử dụng và các tính năng được áp dụng cho từng gói trước khi nâng cấp.",
+    "a4": "One ForAll được tối ưu để mang đến trải nghiệm xử lý tệp tin nhanh chóng và mượt mà. Thời gian hoàn tất tùy thuộc vào loại tác vụ, dung lượng tệp và mức độ phức tạp của nội dung. Hệ thống tự động điều phối quá trình xử lý, giúp bạn theo dõi tiến trình và nhận kết quả thuận tiện ngay trên nền tảng.",
     "badge": "HỎI ĐÁP THƯỜNG GẶP",
-    "desc": "Thông tin về các công cụ, cách sử dụng và những điều cần lưu ý khi xử lý tệp trên OneForAll.",
-    "q0": "OneForAll hỗ trợ những loại công cụ nào?",
+    "desc": "Thông tin về các công cụ, cách sử dụng và những điều cần lưu ý khi xử lý tệp trên One ForAll.",
+    "q0": "One ForAll hỗ trợ những loại công cụ nào?",
     "q1": "Dữ liệu và tệp tin của tôi có được bảo mật không?",
     "q2": "Tôi có cần cài đặt phần mềm nào về máy không?",
-    "q3": "Các công cụ trên OneForAll có miễn phí không?",
+    "q3": "Các công cụ trên One ForAll có miễn phí không?",
     "q4": "Tốc độ xử lý của nền tảng như thế nào?",
-    "title": "Giải đáp thắc mắc về OneForAll"
+    "title": "Giải đáp thắc mắc về One ForAll"
   },
   "howItWorks": {
     "badge": "QUY TRÌNH TINH GỌN",
@@ -255,7 +255,7 @@ export const vi = {
     "s3Title": "Xử lý tự động",
     "s4Desc": "Khi xử lý hoàn tất, tải tệp kết quả về thiết bị của bạn.",
     "s4Title": "Tải về kết quả",
-    "title": "Cách thức hoạt động của OneForAll"
+    "title": "Cách thức hoạt động của One ForAll"
   },
   "job": {
     "cancel": "Hủy tác vụ",
@@ -352,8 +352,8 @@ export const vi = {
     "desc": "Đường dẫn bạn yêu cầu không tìm thấy hoặc đã được chuyển đi. Bạn có thể quay về trang chủ hoặc chọn nhanh các công cụ phổ biến bên dưới.",
     "errorCode": "LỖI 404",
     "popularTitle": "Công cụ phổ biến gợi ý:",
-    "seoDesc": "Trang bạn tìm kiếm không tồn tại hoặc đã được thay đổi. Khám phá các công cụ trực tuyến miễn phí của OneForAll.",
-    "seoTitle": "404 - Trang không tồn tại | OneForAll",
+    "seoDesc": "Trang bạn tìm kiếm không tồn tại hoặc đã được thay đổi. Khám phá các công cụ trực tuyến miễn phí của One ForAll.",
+    "seoTitle": "404 - Trang không tồn tại | One ForAll",
     "title": "Trang không tồn tại",
     "tool1": "YouTube sang MP4",
     "tool2": "TikTok sang MP4",
@@ -422,7 +422,7 @@ export const vi = {
     "proF2": "Tối đa 3 job song song, ưu tiên xử lý khi hàng đợi bận",
     "proF3": "Toàn bộ công cụ, chất lượng đầy đủ, không quảng cáo",
     "proF4": "Tệp kết quả được lưu trữ lâu hơn trước khi tự xóa",
-    "proF5": "Hỗ trợ theo chính sách dịch vụ của OneForAll",
+    "proF5": "Hỗ trợ theo chính sách dịch vụ của One ForAll",
     "proF6": "Kích hoạt sau thanh toán xác thực, tự động hạ về Free khi hết hạn",
     "proPrice": "49.000 đ",
     "title": "Gói dịch vụ phù hợp với mọi nhu cầu"
@@ -432,7 +432,7 @@ export const vi = {
     "note": "Thanh toán trực tuyến sẽ sớm được kích hoạt. Hiện bạn có thể liên hệ hỗ trợ để được hướng dẫn nâng cấp gói Pro."
   },
   "related": {
-    "desc": "Khám phá thêm các tiện ích chuyển đổi và xử lý đa phương tiện tốc độ cao khác trên OneForAll.",
+    "desc": "Khám phá thêm các tiện ích chuyển đổi và xử lý đa phương tiện tốc độ cao khác trên One ForAll.",
     "title": "Công cụ liên quan có thể bạn cần"
   },
   "theme": {
@@ -461,7 +461,7 @@ export const vi = {
     "upgradeDesc": "Gói Pro mở rộng dung lượng tải lên và các quyền lợi xử lý theo chính sách hiện hành.",
     "upgradeCta": "Nâng cấp Pro",
     "donateTitle": "Ủng hộ chúng tôi",
-    "donateDesc": "Nếu OneForAll giúp bạn tiết kiệm thời gian, hãy ủng hộ đội phát triển.",
+    "donateDesc": "Nếu One ForAll giúp bạn tiết kiệm thời gian, hãy ủng hộ đội phát triển.",
     "donateCta": "Ủng hộ",
     "shareTitle": "Chia sẻ là lan tỏa",
     "shareDesc": "Giới thiệu công cụ này tới bạn bè và cộng đồng của bạn.",
@@ -478,7 +478,7 @@ export const vi = {
     "copySuccess": "Đã sao chép liên kết!",
     "copyError": "Không sao chép được liên kết.",
     "contactTitle": "Gửi phản hồi",
-    "contactDesc": "Báo lỗi hoặc góp ý cho đội ngũ OneForAll.",
+    "contactDesc": "Báo lỗi hoặc góp ý cho đội ngũ One ForAll.",
     "contactCta": "Liên hệ với chúng tôi",
   },
   "toolsPage": {
@@ -502,7 +502,7 @@ export const vi = {
     "trackFailed": "Không theo dõi được tác vụ. Vui lòng thử lại.",
     "unsupportedConversion": "Chưa hỗ trợ chuyển đổi từ {source} sang .{target}.",
     "videoFailed": "Xử lý video thất bại. Vui lòng kiểm tra lại đường dẫn.",
-    "whyChoose": "Tại sao nên chọn OneForAll?",
+    "whyChoose": "Tại sao nên chọn One ForAll?",
     "whyChooseDesc": "Tối ưu cho cả người dùng phổ thông lẫn các nhà sáng tạo nội dung chuyên nghiệp."
   },
   "toolsSection": {

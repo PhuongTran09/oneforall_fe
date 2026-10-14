@@ -3,13 +3,11 @@
   <head>
     <script>
       // AdSense Auto ads (page-level, do tài khoản AdSense điều khiển — không qua slot của app).
-      // Nạp có điều kiện: chỉ khi user ĐÃ đồng ý cookie quảng cáo và không phải gói Pro
-      // (ofa-plan do entitlementsStore cache từ /users/me; chưa biết = mặc định Free).
+      // Nạp cho mọi visitor (free + ẩn danh); chỉ chặn gói Pro — ofa-plan do
+      // entitlementsStore cache từ /users/me, chưa biết = mặc định Free.
       try {
-        var c = JSON.parse(localStorage.getItem('ofa-consent') || 'null')
-        var adConsent = !!(c && c.cookies && c.cookies.decidedAt && c.cookies.advertising)
         var adFree = localStorage.getItem('ofa-plan') === 'premium'
-        if (adConsent && !adFree) {
+        if (!adFree) {
           var s = document.createElement('script')
           s.async = true
           s.crossOrigin = 'anonymous'
@@ -17,13 +15,26 @@
           document.head.appendChild(s)
         }
       } catch (e) {
-        // localStorage blocked → coi như chưa đồng ý, không nạp ads.
+        // localStorage blocked → mặc định Free, ads vẫn nạp.
       }
     </script>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/oneforall.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>oneforall</title>
+    <!--
+      Title + mô tả tĩnh: SEOHead chỉ ghi sau khi JS boot, nên trang chủ cần bản có sẵn —
+      đây là nhãn Chrome/crawler đọc được cho "/" (prerender.js không sinh home).
+      Nội dung khớp home.seoTitle/seoDesc trong i18n/dict.vi.ts (vi là ngôn ngữ mặc định).
+    -->
+    <title>One ForAll - Nền Tảng Công Cụ Trực Tuyến Đa Năng Cho Mọi Nhu Cầu</title>
+    <meta
+      name="description"
+      content="Tải video từ YouTube và TikTok bằng liên kết được hỗ trợ, xóa nền ảnh, nén ảnh WebP và chuyển đổi PDF, Word, Excel cùng nhiều định dạng tệp trực tuyến với One ForAll."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One ForAll" />
+    <meta property="og:title" content="One ForAll - Nền Tảng Công Cụ Trực Tuyến Đa Năng Cho Mọi Nhu Cầu" />
+    <meta name="twitter:card" content="summary_large_image" />
   </head>
   <body>
     <div id="root"></div>

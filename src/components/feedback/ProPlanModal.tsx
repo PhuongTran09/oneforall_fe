@@ -5,7 +5,7 @@ import { t } from '../../i18n/langStore'
 
 // Cùng địa chỉ support mà Footer/ToolFooterActions dùng.
 const CONTACT_URL =
-  'https://mail.google.com/mail/?view=cm&fs=1&to=support@oneforall.io.vn&su=Nang%20cap%20goi%20Pro%20OneForAll'
+  'https://mail.google.com/mail/?view=cm&fs=1&to=support@oneforall.io.vn&su=Nang%20cap%20goi%20Pro%20One ForAll'
 
 const FEATURE_KEYS = [
   'pricing.proF1',

@@ -6,11 +6,11 @@ export const termsVi: LegalDoc = {
   title: 'Điều khoản sử dụng',
   route: '/terms',
   description:
-    'Điều khoản sử dụng nền tảng công cụ trực tuyến OneForAll: phạm vi áp dụng, trách nhiệm người dùng, giới hạn trách nhiệm.',
+    'Điều khoản sử dụng nền tảng công cụ trực tuyến One ForAll: phạm vi áp dụng, trách nhiệm người dùng, giới hạn trách nhiệm.',
   // TODO(chủ dự án kiểm tra): ngày cập nhật là ngày viết lần đầu, sửa khi ban hành chính thức.
   lastUpdated: '12/10/2026',
   intro:
-    'Văn bản này quy định quyền và nghĩa vụ khi bạn sử dụng các công cụ xử lý tệp và tải phương tiện trên OneForAll. Toàn bộ nội dung trình bày bằng tiếng Việt.',
+    'Văn bản này quy định quyền và nghĩa vụ khi bạn sử dụng các công cụ xử lý tệp và tải phương tiện trên One ForAll. Toàn bộ nội dung trình bày bằng tiếng Việt.',
   sections: [
     {
       id: 'pham-vi',
@@ -19,7 +19,7 @@ export const termsVi: LegalDoc = {
         {
           type: 'p',
           parts: [
-            'Điều khoản này áp dụng cho mọi lượt truy cập và sử dụng website OneForAll (các công cụ tải và xử lý phương tiện, chuyển đổi tệp trực tuyến). Khi bạn sử dụng dịch vụ, nghĩa là bạn đã đọc và đồng ý với các điều khoản dưới đây.',
+            'Điều khoản này áp dụng cho mọi lượt truy cập và sử dụng website One ForAll (các công cụ tải và xử lý phương tiện, chuyển đổi tệp trực tuyến). Khi bạn sử dụng dịch vụ, nghĩa là bạn đã đọc và đồng ý với các điều khoản dưới đây.',
           ],
         },
       ],
@@ -31,7 +31,7 @@ export const termsVi: LegalDoc = {
         {
           type: 'p',
           parts: [
-            'OneForAll cung cấp các công cụ xử lý tệp phía máy chủ: tải phương tiện từ liên kết công khai, chuyển đổi định dạng, nén, đổi kích thước và xử lý ảnh. Một số tính năng có thể yêu cầu đăng ký tài khoản hoặc thuộc gói trả phí theo bảng giá hiển thị trên website.',
+            'One ForAll cung cấp các công cụ xử lý tệp phía máy chủ: tải phương tiện từ liên kết công khai, chuyển đổi định dạng, nén, đổi kích thước và xử lý ảnh. Một số tính năng có thể yêu cầu đăng ký tài khoản hoặc thuộc gói trả phí theo bảng giá hiển thị trên website.',
           ],
         },
         {
@@ -68,7 +68,7 @@ export const termsVi: LegalDoc = {
         {
           type: 'p',
           parts: [
-            'Website có thể hiển thị quảng cáo (Google AdSense) khi được bật và có thể mở liên kết của đối tác tiếp thị (affiliate) trong tab mới khi bạn bắt đầu xử lý một tác vụ hợp lệ. Việc bạn truy cập trang của bên thứ đó chịu sự điều chỉnh của chính sách riêng của họ; OneForAll không chịu trách nhiệm về nội dung, giao dịch trên các website bên thứ ba.',
+            'Website có thể hiển thị quảng cáo (Google AdSense) khi được bật và có thể mở liên kết của đối tác tiếp thị (affiliate) trong tab mới khi bạn bắt đầu xử lý một tác vụ hợp lệ. Việc bạn truy cập trang của bên thứ đó chịu sự điều chỉnh của chính sách riêng của họ; One ForAll không chịu trách nhiệm về nội dung, giao dịch trên các website bên thứ ba.',
           ],
         },
       ],
@@ -80,7 +80,7 @@ export const termsVi: LegalDoc = {
         {
           type: 'p',
           parts: [
-            'Trong phạm vi pháp luật cho phép, OneForAll không chịu trách nhiệm cho thiệt hại gián tiếp phát sinh từ việc sử dụng hoặc không thể sử dụng dịch vụ (mất tiện ích do quá tải, thay đổi API nền tảng nguồn...). Chúng tôi cố gắng giữ dịch vụ ổn định nhưng không cam kết thời gian hoạt động liên tục tuyệt đối.',
+            'Trong phạm vi pháp luật cho phép, One ForAll không chịu trách nhiệm cho thiệt hại gián tiếp phát sinh từ việc sử dụng hoặc không thể sử dụng dịch vụ (mất tiện ích do quá tải, thay đổi API nền tảng nguồn...). Chúng tôi cố gắng giữ dịch vụ ổn định nhưng không cam kết thời gian hoạt động liên tục tuyệt đối.',
           ],
         },
       ],

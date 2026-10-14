@@ -78,7 +78,7 @@ export function SEOHead({
       'og:description': description,
       'og:url': canonicalUrl,
       'og:type': ogType,
-      'og:site_name': 'OneForAll',
+      'og:site_name': 'One ForAll',
       'twitter:card': 'summary_large_image',
       'twitter:title': title,
       'twitter:description': description,

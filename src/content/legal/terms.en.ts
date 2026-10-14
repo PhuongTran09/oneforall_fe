@@ -6,11 +6,11 @@ export const termsEn: LegalDoc = {
   title: 'Terms of Use',
   route: '/en/terms',
   description:
-    'Terms of use for the OneForAll online tools platform: scope of application, user responsibilities, limitation of liability.',
+    'Terms of use for the One ForAll online tools platform: scope of application, user responsibilities, limitation of liability.',
   // TODO (project owner to verify): lastUpdated is the first-draft date; update it upon official publication.
   lastUpdated: '12/10/2026',
   intro:
-    'This document sets out your rights and obligations when you use the file processing and media download tools on OneForAll. The entire content is presented in English.',
+    'This document sets out your rights and obligations when you use the file processing and media download tools on One ForAll. The entire content is presented in English.',
   sections: [
     {
       id: 'pham-vi',
@@ -19,7 +19,7 @@ export const termsEn: LegalDoc = {
         {
           type: 'p',
           parts: [
-            'These Terms apply to all access to and use of the OneForAll website (media download and processing tools, online file conversion). By using the service, you are deemed to have read and agreed to the terms below.',
+            'These Terms apply to all access to and use of the One ForAll website (media download and processing tools, online file conversion). By using the service, you are deemed to have read and agreed to the terms below.',
           ],
         },
       ],
@@ -31,7 +31,7 @@ export const termsEn: LegalDoc = {
         {
           type: 'p',
           parts: [
-            'OneForAll provides server-side file processing tools: downloading media from public links, converting file formats, compressing, resizing, and processing images. Some features may require account registration or belong to a paid plan according to the pricing shown on the website.',
+            'One ForAll provides server-side file processing tools: downloading media from public links, converting file formats, compressing, resizing, and processing images. Some features may require account registration or belong to a paid plan according to the pricing shown on the website.',
           ],
         },
         {
@@ -68,7 +68,7 @@ export const termsEn: LegalDoc = {
         {
           type: 'p',
           parts: [
-            'The website may display advertisements (Google AdSense) when enabled and may open an affiliate partner link in a new tab when you begin processing a valid task. Your access to that third party\'s page is governed by their own policies; OneForAll is not responsible for the content or transactions on third-party websites.',
+            'The website may display advertisements (Google AdSense) when enabled and may open an affiliate partner link in a new tab when you begin processing a valid task. Your access to that third party\'s page is governed by their own policies; One ForAll is not responsible for the content or transactions on third-party websites.',
           ],
         },
       ],
@@ -80,7 +80,7 @@ export const termsEn: LegalDoc = {
         {
           type: 'p',
           parts: [
-            'To the extent permitted by law, OneForAll is not liable for indirect damages arising from the use of, or inability to use, the service (loss of utility due to overload, changes to source platform APIs, etc.). We strive to keep the service stable but do not guarantee absolutely uninterrupted uptime.',
+            'To the extent permitted by law, One ForAll is not liable for indirect damages arising from the use of, or inability to use, the service (loss of utility due to overload, changes to source platform APIs, etc.). We strive to keep the service stable but do not guarantee absolutely uninterrupted uptime.',
           ],
         },
       ],

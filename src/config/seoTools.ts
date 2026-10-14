@@ -41,7 +41,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     slug: '/youtube-to-mp4',
     category: 'youtube',
     badge: 'YouTube sang MP4',
-    title: 'Tải Video YouTube sang MP4 Trực Tuyến | OneForAll',
+    title: 'Tải Video YouTube sang MP4 Trực Tuyến | One ForAll',
     metaDescription:
       'Tải video YouTube sang MP4 trực tuyến trên trình duyệt. Không cần cài đặt phần mềm; chất lượng khả dụng tùy thuộc vào video nguồn và gói sử dụng.',
     h1: 'Tải Video YouTube sang MP4 Nhanh Chóng',
@@ -56,7 +56,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     howItWorksSteps: [
       { step: '01', title: 'Dán liên kết YouTube', desc: 'Sao chép đường dẫn video YouTube bạn muốn lưu và dán vào ô nhập liệu bên dưới.' },
       { step: '02', title: 'Chọn chất lượng MP4', desc: 'Hệ thống tự động phân tích và cho phép bạn lựa chọn định dạng MP4 độ nét cao.' },
-      { step: '03', title: 'Chuẩn bị video', desc: 'OneForAll xử lý liên kết và chuẩn bị tệp theo định dạng bạn đã chọn.' },
+      { step: '03', title: 'Chuẩn bị video', desc: 'One ForAll xử lý liên kết và chuẩn bị tệp theo định dạng bạn đã chọn.' },
       { step: '04', title: 'Tải về thiết bị', desc: 'Tải tệp MP4 về thiết bị để xem ngoại tuyến khi cần.' },
     ],
     features: [
@@ -77,7 +77,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     slug: '/youtube-to-mp3',
     category: 'youtube',
     badge: 'YouTube sang MP3',
-    title: 'Chuyển YouTube Sang MP3 Trực Tuyến | OneForAll',
+    title: 'Chuyển YouTube Sang MP3 Trực Tuyến | One ForAll',
     metaDescription:
       'Chuyển âm thanh từ video YouTube sang MP3 trực tuyến. Chất lượng đầu ra phụ thuộc vào âm thanh nguồn và định dạng bạn chọn.',
     h1: 'Tách Nhạc YouTube sang MP3 Chất Lượng Cao',
@@ -91,8 +91,8 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     backendOperation: 'extract-audio',
     howItWorksSteps: [
       { step: '01', title: 'Sao chép link YouTube', desc: 'Sao chép liên kết video có âm thanh bạn muốn chuyển đổi.' },
-      { step: '02', title: 'Dán vào OneForAll', desc: 'Dán link vào ô tìm kiếm và bấm nút Tách nhạc MP3.' },
-      { step: '03', title: 'Trích xuất âm thanh', desc: 'OneForAll chuẩn bị âm thanh theo định dạng đầu ra bạn đã chọn.' },
+      { step: '02', title: 'Dán vào One ForAll', desc: 'Dán link vào ô tìm kiếm và bấm nút Tách nhạc MP3.' },
+      { step: '03', title: 'Trích xuất âm thanh', desc: 'One ForAll chuẩn bị âm thanh theo định dạng đầu ra bạn đã chọn.' },
       { step: '04', title: 'Tải tệp âm thanh', desc: 'Lưu tệp MP3 về điện thoại hoặc máy tính để thưởng thức ngay.' },
     ],
     features: [
@@ -112,7 +112,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     slug: '/youtube-downloader',
     category: 'youtube',
     badge: 'Công cụ tải YouTube',
-    title: 'Trình Tải Video & Âm Thanh YouTube Toàn Diện | OneForAll',
+    title: 'Trình Tải Video & Âm Thanh YouTube Toàn Diện | One ForAll',
     metaDescription:
       'Tải video YouTube ở định dạng video hoặc chuyển âm thanh sang định dạng phổ biến. Không cần cài đặt phần mềm.',
     h1: 'Trình Tải YouTube Đa Năng Trực Tuyến',
@@ -127,7 +127,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     howItWorksSteps: [
       { step: '01', title: 'Nhập link video', desc: 'Dán liên kết YouTube bạn muốn xử lý vào ô nhập.' },
       { step: '02', title: 'Chọn định dạng', desc: 'Chọn MP4 nếu muốn xem video, hoặc MP3 nếu chỉ cần nghe nhạc.' },
-      { step: '03', title: 'Chuẩn bị tệp', desc: 'OneForAll xử lý liên kết và chuẩn bị tệp theo lựa chọn của bạn.' },
+      { step: '03', title: 'Chuẩn bị tệp', desc: 'One ForAll xử lý liên kết và chuẩn bị tệp theo lựa chọn của bạn.' },
       { step: '04', title: 'Tải về an toàn', desc: 'Nhấn Tải xuống để lưu tệp kết quả về thiết bị.' },
     ],
     features: [
@@ -147,7 +147,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     slug: '/tiktok-to-mp4',
     category: 'tiktok',
     badge: 'TikTok sang MP4',
-    title: 'Tải Video TikTok MP4 | OneForAll',
+    title: 'Tải Video TikTok MP4 | One ForAll',
     metaDescription:
       'Tải video TikTok dưới dạng MP4 để lưu về điện thoại hoặc máy tính. Tùy chọn và chất lượng khả dụng phụ thuộc vào video nguồn.',
     h1: 'Tải Video TikTok Không Dính Logo (No Watermark)',
@@ -161,8 +161,8 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     backendOperation: 'url_download',
     howItWorksSteps: [
       { step: '01', title: 'Sao chép link TikTok', desc: 'Mở ứng dụng hoặc web TikTok, bấm nút Chia sẻ và chọn Sao chép liên kết.' },
-      { step: '02', title: 'Dán vào OneForAll', desc: 'Dán URL TikTok vào ô bên dưới và bấm nút Tải video.' },
-      { step: '03', title: 'Chuẩn bị video', desc: 'OneForAll xử lý liên kết và chuẩn bị tệp video để tải xuống.' },
+      { step: '02', title: 'Dán vào One ForAll', desc: 'Dán URL TikTok vào ô bên dưới và bấm nút Tải video.' },
+      { step: '03', title: 'Chuẩn bị video', desc: 'One ForAll xử lý liên kết và chuẩn bị tệp video để tải xuống.' },
       { step: '04', title: 'Lưu về máy', desc: 'Tải video độ nét cao về thư viện ảnh hoặc máy tính của bạn.' },
     ],
     features: [
@@ -172,7 +172,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     ],
     supportedFormatsDesc: 'Hỗ trợ link TikTok dạng vm.tiktok.com, vt.tiktok.com và tiktok.com/@user/video/...',
     faqList: [
-      { q: 'Làm thế nào để tải video TikTok trên iPhone?', a: 'Bạn dán link vào OneForAll trên Safari, bấm Tải về, sau đó mở tệp trong phần Tải về và chọn Lưu video vào thư viện Ảnh.' },
+      { q: 'Làm thế nào để tải video TikTok trên iPhone?', a: 'Bạn dán link vào One ForAll trên Safari, bấm Tải về, sau đó mở tệp trong phần Tải về và chọn Lưu video vào thư viện Ảnh.' },
       { q: 'Tải video TikTok không logo có bị thu phí không?', a: 'Việc sử dụng và số lượt tải phụ thuộc vào hạn mức của gói dịch vụ hiện tại.' },
     ],
     relatedSlugs: ['/tiktok-to-mp3', '/tiktok-downloader', '/youtube-to-mp4', '/video-converter'],
@@ -182,7 +182,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     slug: '/tiktok-to-mp3',
     category: 'tiktok',
     badge: 'TikTok sang MP3',
-    title: 'Chuyển Âm Thanh TikTok sang MP3 | OneForAll',
+    title: 'Chuyển Âm Thanh TikTok sang MP3 | One ForAll',
     metaDescription:
       'Chuyển âm thanh từ video TikTok sang MP3 trực tuyến. Chất lượng đầu ra phụ thuộc vào video nguồn và các tùy chọn được hỗ trợ.',
     h1: 'Tách Nhạc Nền TikTok sang MP3 Chất Lượng Cao',
@@ -217,7 +217,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     slug: '/tiktok-downloader',
     category: 'tiktok',
     badge: 'Công cụ TikTok đa năng',
-    title: 'Trình Tải TikTok Toàn Diện: Video MP4 & Âm Thanh MP3 | OneForAll',
+    title: 'Trình Tải TikTok Toàn Diện: Video MP4 & Âm Thanh MP3 | One ForAll',
     metaDescription:
       'Tải video TikTok hoặc chuyển âm thanh sang MP3 với giao diện đơn giản, dễ sử dụng.',
     h1: 'Trình Tải Video & Âm Thanh TikTok Trực Tuyến',
@@ -231,8 +231,8 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     backendOperation: 'url_download',
     howItWorksSteps: [
       { step: '01', title: 'Sao chép URL', desc: 'Lấy link video từ ứng dụng TikTok hoặc trình duyệt web.' },
-      { step: '02', title: 'Dán link', desc: 'Dán vào OneForAll và chọn tải video hoặc tải MP3.' },
-      { step: '03', title: 'Chuẩn bị tệp', desc: 'OneForAll kiểm tra liên kết và chuẩn bị tệp để tải xuống.' },
+      { step: '02', title: 'Dán link', desc: 'Dán vào One ForAll và chọn tải video hoặc tải MP3.' },
+      { step: '03', title: 'Chuẩn bị tệp', desc: 'One ForAll kiểm tra liên kết và chuẩn bị tệp để tải xuống.' },
       { step: '04', title: 'Nhận tệp', desc: 'Bấm nút Tải xuống để lưu tệp về máy tính hoặc điện thoại.' },
     ],
     features: [
@@ -252,7 +252,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     slug: '/convert',
     category: 'convert',
     badge: 'Chuyển đổi tệp',
-    title: 'Công Cụ Chuyển Đổi Định Dạng File Đa Năng Trực Tuyến | OneForAll',
+    title: 'Công Cụ Chuyển Đổi Định Dạng File Đa Năng Trực Tuyến | One ForAll',
     metaDescription:
       'Chuyển đổi tài liệu, hình ảnh, video, âm thanh, dữ liệu và tệp nén trực tuyến. Định dạng đích khả dụng tùy thuộc vào tệp tải lên và gói sử dụng.',
     h1: 'Chuyển Đổi Định Dạng Tệp Đa Năng Trực Tuyến',
@@ -300,7 +300,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     howItWorksSteps: [
       { step: '01', title: 'Tải tệp lên', desc: 'Kéo thả hoặc chọn tệp tin bất kỳ từ máy tính hoặc điện thoại của bạn.' },
       { step: '02', title: 'Chọn định dạng đích', desc: 'Chọn định dạng bạn muốn chuyển đổi sang (ví dụ: PDF, DOCX, WEBP...).' },
-      { step: '03', title: 'Bắt đầu chuyển đổi', desc: 'OneForAll chuyển đổi tệp sang định dạng bạn đã chọn. Kết quả có thể khác nhau tùy loại tệp và định dạng đích.' },
+      { step: '03', title: 'Bắt đầu chuyển đổi', desc: 'One ForAll chuyển đổi tệp sang định dạng bạn đã chọn. Kết quả có thể khác nhau tùy loại tệp và định dạng đích.' },
       { step: '04', title: 'Tải tệp kết quả', desc: 'Nhận tệp đã chuyển đổi và lưu về máy ngay lập tức.' },
     ],
     features: [
@@ -312,7 +312,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
       'Định dạng đầu ra khả dụng gồm PDF, DOCX, DOC, TXT, CSV, JSON, XLSX, YAML, XML, MD, HTML, PNG, JPG, WEBP, SVG, ICO, MP4, MOV, MKV, WEBM, AVI, GIF, MP3, WAV, AAC, M4A, FLAC, OGG, ZIP, TAR và 7Z. Các lựa chọn phụ thuộc vào tệp nguồn.',
     faqList: [
       { q: 'Dung lượng tệp tối đa được phép chuyển đổi là bao nhiêu?', a: 'Gói Free hỗ trợ tệp tối đa 50 MB, gói Professional lên đến 2 GB.' },
-      { q: 'Tệp của tôi có bị xem trộm không?', a: 'OneForAll ưu tiên quyền riêng tư của người dùng. Tệp được xử lý để thực hiện yêu cầu bạn gửi và không được công khai trên nền tảng. Tệp được dọn dẹp theo chính sách lưu trữ hiện hành. Vui lòng không tải lên thông tin nhạy cảm nếu chưa xem chính sách quyền riêng tư.' },
+      { q: 'Tệp của tôi có bị xem trộm không?', a: 'One ForAll ưu tiên quyền riêng tư của người dùng. Tệp được xử lý để thực hiện yêu cầu bạn gửi và không được công khai trên nền tảng. Tệp được dọn dẹp theo chính sách lưu trữ hiện hành. Vui lòng không tải lên thông tin nhạy cảm nếu chưa xem chính sách quyền riêng tư.' },
     ],
     relatedSlugs: ['/pdf-converter', '/document-converter', '/image-converter', '/video-converter'],
   },
@@ -321,7 +321,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     slug: '/image-converter',
     category: 'convert',
     badge: 'Chuyển đổi ảnh',
-    title: 'Chuyển Đổi Định Dạng Ảnh: PNG, JPG, WebP, GIF, BMP, SVG | OneForAll',
+    title: 'Chuyển Đổi Định Dạng Ảnh: PNG, JPG, WebP, GIF, BMP, SVG | One ForAll',
     metaDescription:
       'Chuyển đổi hình ảnh giữa PNG, JPG, WebP và các định dạng được hỗ trợ. Kết quả về kích thước và độ trong suốt tùy thuộc vào định dạng đầu ra.',
     h1: 'Chuyển Đổi Định Dạng Hình Ảnh Trực Tuyến',
@@ -356,7 +356,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     slug: '/video-converter',
     category: 'convert',
     badge: 'Video Converter',
-    title: 'Chuyển Đổi Định Dạng Video MP4, MOV, MKV, WebM, AVI | OneForAll',
+    title: 'Chuyển Đổi Định Dạng Video MP4, MOV, MKV, WebM, AVI | One ForAll',
     metaDescription:
       'Chuyển đổi video trực tuyến sang MP4, WebM, MKV hoặc AVI. Tùy chọn định dạng giúp video phù hợp hơn với thiết bị và nhu cầu sử dụng.',
     h1: 'Chuyển Đổi Định Dạng Video Trực Tuyến',
@@ -371,7 +371,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     howItWorksSteps: [
       { step: '01', title: 'Tải video lên', desc: 'Chọn tệp video từ máy tính (MP4, MOV, AVI, MKV, WMV...).' },
       { step: '02', title: 'Chọn định dạng', desc: 'Chọn MP4 chuẩn H.264 hoặc WebM tối ưu cho trình duyệt.' },
-      { step: '03', title: 'Chuyển đổi video', desc: 'OneForAll chuyển video sang định dạng bạn đã chọn.' },
+      { step: '03', title: 'Chuyển đổi video', desc: 'One ForAll chuyển video sang định dạng bạn đã chọn.' },
       { step: '04', title: 'Tải video kết quả', desc: 'Nhận video thành phẩm tương thích mọi trình phát đa phương tiện.' },
     ],
     features: [
@@ -391,7 +391,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     slug: '/audio-converter',
     category: 'convert',
     badge: 'Audio Format Converter',
-    title: 'Chuyển Đổi Âm Thanh: MP3, WAV, AAC, FLAC, M4A | OneForAll',
+    title: 'Chuyển Đổi Âm Thanh: MP3, WAV, AAC, FLAC, M4A | One ForAll',
     metaDescription:
       'Chuyển đổi âm thanh giữa MP3, WAV, AAC, M4A, OGG và FLAC trực tuyến. Chất lượng đầu ra phụ thuộc vào tệp nguồn và định dạng được chọn.',
     h1: 'Chuyển Đổi Định Dạng Âm Thanh Trực Tuyến',
@@ -406,7 +406,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     howItWorksSteps: [
       { step: '01', title: 'Chọn tệp âm thanh', desc: 'Tải lên bài hát, tệp ghi âm hoặc file âm thanh cần chuyển.' },
       { step: '02', title: 'Chọn định dạng', desc: 'Chọn MP3 phổ thông, WAV lossless hoặc AAC cho hệ sinh thái Apple.' },
-      { step: '03', title: 'Xử lý audio', desc: 'OneForAll chuyển đổi âm thanh theo định dạng và tùy chọn đầu ra bạn đã chọn.' },
+      { step: '03', title: 'Xử lý audio', desc: 'One ForAll chuyển đổi âm thanh theo định dạng và tùy chọn đầu ra bạn đã chọn.' },
       { step: '04', title: 'Tải về tệp mới', desc: 'Lưu tệp âm thanh đã tối ưu về máy tính.' },
     ],
     features: [
@@ -425,7 +425,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     slug: '/document-converter',
     category: 'document',
     badge: 'Chuyển đổi tài liệu',
-    title: 'Chuyển Đổi Tài Liệu: Word, Excel, TXT, CSV, PDF | OneForAll',
+    title: 'Chuyển Đổi Tài Liệu: Word, Excel, TXT, CSV, PDF | One ForAll',
     metaDescription:
       'Chuyển đổi tài liệu Word, Excel, TXT, CSV, JSON và PDF trực tuyến. Định dạng được hỗ trợ tùy thuộc vào loại tệp nguồn và định dạng đích.',
     h1: 'Chuyển Đổi Tài Liệu Văn Phòng Trực Tuyến',
@@ -440,7 +440,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     howItWorksSteps: [
       { step: '01', title: 'Tải tài liệu lên', desc: 'Chọn tệp Word (DOCX), Excel (XLSX), PDF, văn bản TXT, Markdown hoặc HTML cần chuyển đổi.' },
       { step: '02', title: 'Chọn định dạng đích', desc: 'Chọn PDF để in ấn, DOCX để chỉnh sửa tiếp, TXT/CSV/JSON để xử lý nội dung.' },
-      { step: '03', title: 'Chuyển đổi tài liệu', desc: 'OneForAll chuyển nội dung sang định dạng mới theo khả năng hỗ trợ của tệp nguồn.' },
+      { step: '03', title: 'Chuyển đổi tài liệu', desc: 'One ForAll chuyển nội dung sang định dạng mới theo khả năng hỗ trợ của tệp nguồn.' },
       { step: '04', title: 'Tải tài liệu hoàn chỉnh', desc: 'Nhận tệp văn bản mới sẵn sàng cho công việc và học tập.' },
     ],
     features: [
@@ -462,7 +462,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     slug: '/pdf-converter',
     category: 'document',
     badge: 'Tài liệu sang PDF',
-    title: 'Chuyển Word, Excel, TXT sang PDF Trực Tuyến | OneForAll',
+    title: 'Chuyển Word, Excel, TXT sang PDF Trực Tuyến | One ForAll',
     metaDescription:
       'Chuyển DOCX, DOC, XLSX và TXT sang PDF trực tuyến. Không cần cài đặt phần mềm; kết quả có thể thay đổi tùy cấu trúc tài liệu nguồn.',
     h1: 'Chuyển Đổi Tài Liệu Sang PDF',
@@ -477,7 +477,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     howItWorksSteps: [
       { step: '01', title: 'Tải tệp lên', desc: 'Chọn file Word, Excel, văn bản TXT, ảnh (JPG/PNG/WebP...) hoặc HTML cần xuất ra PDF.' },
       { step: '02', title: 'Định dạng đích là PDF', desc: 'Mọi định dạng nguồn được hỗ trợ ở trên đều xuất ra PDF.' },
-      { step: '03', title: 'Kết xuất PDF', desc: 'OneForAll tạo tệp PDF từ tài liệu hoặc ảnh bạn tải lên.' },
+      { step: '03', title: 'Kết xuất PDF', desc: 'One ForAll tạo tệp PDF từ tài liệu hoặc ảnh bạn tải lên.' },
       { step: '04', title: 'Tải PDF về', desc: 'Mở file PDF bằng bất kỳ trình đọc nào hoặc đính kèm vào email.' },
     ],
     features: [
@@ -498,7 +498,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     slug: '/remove-background',
     category: 'image',
     badge: 'Xóa nền bằng AI',
-    title: 'Xóa Nền Ảnh Bằng AI | OneForAll',
+    title: 'Xóa Nền Ảnh Bằng AI | One ForAll',
     metaDescription:
       'Xóa nền ảnh trực tuyến bằng AI và xuất ảnh PNG có nền trong suốt. Kết quả phụ thuộc vào chất lượng ảnh và độ phức tạp của chủ thể.',
     h1: 'Xóa Nền Ảnh Tự Động Trong Suốt Bằng AI',
@@ -533,7 +533,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     slug: '/image-compressor',
     category: 'image',
     badge: 'Nén ảnh',
-    title: 'Nén Dung Lượng Ảnh Online | OneForAll',
+    title: 'Nén Dung Lượng Ảnh Online | One ForAll',
     metaDescription:
       'Nén ảnh JPG, PNG và WebP trực tuyến để giảm dung lượng tệp. Mức giảm và chất lượng đầu ra phụ thuộc vào ảnh gốc và thiết lập nén.',
     h1: 'Nén Dung Lượng Hình Ảnh Thông Minh Trực Tuyến',
@@ -567,7 +567,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     slug: '/image-resizer',
     category: 'image',
     badge: 'Đổi kích thước ảnh',
-    title: 'Thay Đổi Kích Thước Ảnh (Resize) Chuẩn Pixel & Tỷ Lệ | OneForAll',
+    title: 'Thay Đổi Kích Thước Ảnh (Resize) Chuẩn Pixel & Tỷ Lệ | One ForAll',
     metaDescription:
       'Thay đổi chiều rộng, chiều cao hoặc tỷ lệ ảnh theo nhu cầu. Giữ tỷ lệ khung hình để hạn chế méo ảnh.',
     h1: 'Thay Đổi Kích Thước Hình Ảnh Chuẩn Xác',
@@ -601,7 +601,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     slug: '/data-converter',
     category: 'data',
     badge: 'Chuyển đổi dữ liệu',
-    title: 'Chuyển Đổi Định Dạng Dữ Liệu: JSON, YAML, XML, CSV | OneForAll',
+    title: 'Chuyển Đổi Định Dạng Dữ Liệu: JSON, YAML, XML, CSV | One ForAll',
     metaDescription:
       'Chuyển đổi dữ liệu giữa JSON, YAML, XML, CSV, Markdown và HTML trực tuyến. Không cần cài đặt; kết quả phụ thuộc cấu trúc tệp nguồn.',
     h1: 'Chuyển Đổi Định Dạng Dữ Liệu Trực Tuyến',
@@ -616,7 +616,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     howItWorksSteps: [
       { step: '01', title: 'Tải tệp dữ liệu lên', desc: 'Chọn tệp JSON, YAML, XML, CSV, TXT, Markdown hoặc HTML.' },
       { step: '02', title: 'Chọn định dạng đích', desc: 'Các định dạng khả dụng hiển thị theo loại tệp bạn tải lên.' },
-      { step: '03', title: 'Chuyển đổi', desc: 'OneForAll đọc và viết lại dữ liệu sang định dạng bạn chọn.' },
+      { step: '03', title: 'Chuyển đổi', desc: 'One ForAll đọc và viết lại dữ liệu sang định dạng bạn chọn.' },
       { step: '04', title: 'Tải kết quả', desc: 'Nhận tệp dữ liệu mới và dùng ngay cho code, bảng tính hoặc tài liệu.' },
     ],
     features: [
@@ -636,7 +636,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     slug: '/archive-converter',
     category: 'archive',
     badge: 'Chuyển đổi tệp nén',
-    title: 'Chuyển Đổi ZIP, TAR, TAR.GZ, 7Z Trực Tuyến | OneForAll',
+    title: 'Chuyển Đổi ZIP, TAR, TAR.GZ, 7Z Trực Tuyến | One ForAll',
     metaDescription:
       'Chuyển đổi tệp nén giữa ZIP, TAR và 7Z trực tuyến. TAR.GZ sang ZIP chỉ trong vài bước; không cần cài WinRAR hay 7-Zip.',
     h1: 'Chuyển Đổi Định Dạng Tệp Nén Trực Tuyến',
@@ -651,7 +651,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     howItWorksSteps: [
       { step: '01', title: 'Tải tệp nén lên', desc: 'Chọn tệp ZIP, TAR, TAR.GZ hoặc TGZ cần đổi định dạng.' },
       { step: '02', title: 'Chọn định dạng đích', desc: 'Các lựa chọn khả dụng hiển thị theo loại tệp nguồn.' },
-      { step: '03', title: 'Chuyển đổi an toàn', desc: 'OneForAll đọc và repack từng file bên trong, chặn đường dẫn độc hại và archive quá lớn.' },
+      { step: '03', title: 'Chuyển đổi an toàn', desc: 'One ForAll đọc và repack từng file bên trong, chặn đường dẫn độc hại và archive quá lớn.' },
       { step: '04', title: 'Tải tệp mới', desc: 'Nhận tệp nén ở định dạng mong muốn về máy.' },
     ],
     features: [
