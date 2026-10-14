@@ -451,8 +451,6 @@ export const vi = {
     "all": "Tất cả công cụ",
     "convert": "Chuyển đổi File",
     "image": "Xử lý Ảnh",
-    "data": "Chuyển đổi Dữ liệu",
-    "archive": "Tệp nén",
     "ytDownloader": "Tải video YouTube",
     "ttDownloader": "Tải video TikTok"
   },

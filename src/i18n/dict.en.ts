@@ -453,8 +453,6 @@ export const en: Dict = {
     "all": "All tools",
     "convert": "File conversion",
     "image": "Image processing",
-    "data": "Data conversion",
-    "archive": "Archives",
     "ytDownloader": "YouTube Downloader",
     "ttDownloader": "TikTok Downloader"
   },
