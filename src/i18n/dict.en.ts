@@ -415,6 +415,10 @@ export const en: Dict = {
     "desc": "Explore other tools for converting and working with files and media.",
     "title": "Related tools you might need"
   },
+  "sponsored": {
+    "cta": "Explore the offer",
+    "disclosure": "Sponsored link — opens in a new tab."
+  },
   "theme": {
     "toDark": "Switch to dark mode",
     "toLight": "Switch to light mode"

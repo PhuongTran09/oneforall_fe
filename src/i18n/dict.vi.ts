@@ -413,6 +413,10 @@ export const vi = {
     "desc": "Khám phá thêm các tiện ích chuyển đổi và xử lý đa phương tiện tốc độ cao khác trên One ForAll.",
     "title": "Công cụ liên quan có thể bạn cần"
   },
+  "sponsored": {
+    "cta": "Khám phá ưu đãi",
+    "disclosure": "Liên kết tài trợ — mở trong tab mới."
+  },
   "theme": {
     "toDark": "Chuyển sang giao diện tối",
     "toLight": "Chuyển sang giao diện sáng"

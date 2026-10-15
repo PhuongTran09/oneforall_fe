@@ -106,12 +106,14 @@ export function isAdFree(me: UserMe | null): boolean {
 }
 
 /**
- * Pro theo cả bản cache của plan. /users/me về muộn hơn HTML, nên nếu chỉ nhìn `me`
- * thì trang đầu tiên của user Pro vẫn render ad unit (và auto-ads trong index.html
- * đã chặn bằng cache này — hai nguồn phải đồng ý với nhau).
+ * Pro theo cả bản cache của plan. /users/me về muộn hơn HTML, nên lúc chưa có `me`
+ * phải nhìn cache ofa-plan — nếu không, trang đầu của user Pro vẫn render ad unit
+ * (và auto-ads trong index.html cũng đã chặn bằng cache này). Nhưng khi BE đã trả
+ * `me` thì `me` là nguồn duy nhất: bản cache có thể stale (user xuống gói Free) mà
+ * chặn tiếp bằng cache là mất quyền lợi của họ cả phiên.
  */
 export function isAdFreeNow(me: UserMe | null): boolean {
-  if (isAdFree(me)) return true
+  if (me) return isAdFree(me)
   try {
     return localStorage.getItem('ofa-plan') === 'premium'
   } catch {

@@ -18,6 +18,7 @@ import {
   BeforeAfterPreview,
   RelatedTools,
   AdSenseUnit,
+  SponsoredCta,
   ToolFooterActions,
 } from '../components'
 import { openAffiliateTab } from '../utils/affiliate'
@@ -481,6 +482,10 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
                   />
                 )}
 
+                {/* CTA tài trợ, sibling riêng trong space-y-4: cách nút chức năng
+                    16px, không nằm trong khối input nên không gây nhấn nhầm. */}
+                <SponsoredCta />
+
                 {/* Processing Progress Bar */}
                 {isLoading && (
                   <JobProgress
@@ -511,6 +516,8 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
                   previewUrl={tool.category === 'image' ? downloadUrl : null}
                   onReset={handleReset}
                 />
+
+                <SponsoredCta />
 
                 {/* Khu vực tiện ích: nâng cấp / ủng hộ / chia sẻ / copy / liên hệ */}
                 <ToolFooterActions />
