@@ -11,6 +11,18 @@ const distDir = path.resolve(rootDir, 'dist')
 const seoToolsPath = path.resolve(rootDir, 'src/config/seoTools.ts')
 const seoToolsSource = fs.readFileSync(seoToolsPath, 'utf8')
 
+// index.html mang head của trang chủ (home không được prerender). Trang con tự sinh đủ bộ
+// canonical/description/og/twitter, nên phải bỏ bản kế thừa — nếu không một URL sẽ có hai
+// canonical trỏ hai nơi khác nhau và Google có thể gộp hết landing page về "/".
+// og:image giữ lại: landing page dùng chung ảnh này, metaTags không tự sinh.
+const INHERITED_SEO = /rel=["']canonical["']|name=["']description["']|name=["']twitter:[^"']+["']|property=["']og:(?!image)[^"']*["']/
+
+function stripInheritedSeo(html) {
+  return html.replace(/<head>[\s\S]*?<\/head>/i, (head) =>
+    head.replace(/<(?:link|meta)\b[\s\S]*?>/gi, (tag) => (INHERITED_SEO.test(tag.replace(/\s+/g, ' ')) ? '' : tag)),
+  )
+}
+
 // Helper parse đơn giản các công cụ từ config seoTools.ts
 function extractToolsFromSource(source) {
   const tools = {}
@@ -84,7 +96,7 @@ export function runPrerender() {
     return
   }
 
-  const baseHtml = fs.readFileSync(baseTemplatePath, 'utf8')
+  const baseHtml = stripInheritedSeo(fs.readFileSync(baseTemplatePath, 'utf8'))
   const tools = extractToolsFromSource(seoToolsSource)
   const slugs = Object.keys(tools)
 

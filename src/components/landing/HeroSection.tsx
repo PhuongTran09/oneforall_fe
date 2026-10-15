@@ -1,6 +1,6 @@
 import { ArrowRight, Sparkles, Zap, Shield, FileCheck, Layers } from 'lucide-react'
 import { Button } from '../common/Button'
-import { HeroEnginePanel } from './HeroEnginePanel'
+import { PublicLiveStats } from './PublicLiveStats'
 import { LocaleLink } from '../../i18n/LocaleLink'
 import { t } from '../../i18n/langStore'
 
@@ -58,6 +58,22 @@ export function HeroSection({ onTryFree }: HeroSectionProps) {
             ))}
           </div>
 
+          {/* Feature Highlights Pills */}
+          <div className="pt-6 flex flex-wrap items-center justify-center gap-6 text-xs sm:text-sm text-slate-400">
+            <div className="flex items-center gap-2">
+              <Zap className="w-4 h-4 text-amber-500" />
+              <span>{t('hero.pillInstant')}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Shield className="w-4 h-4 text-emerald-500" />
+              <span>{t('hero.pillSecurity')}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <FileCheck className="w-4 h-4 text-brand" />
+              <span>{t('hero.pillFormats')}</span>
+            </div>
+          </div>
+
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 pt-3">
             <a href="#tools" className="w-full sm:w-auto">
@@ -82,27 +98,11 @@ export function HeroSection({ onTryFree }: HeroSectionProps) {
               </Button>
             )}
           </div>
-
-          {/* Feature Highlights Pills */}
-          <div className="pt-6 flex flex-wrap items-center justify-center gap-6 text-xs sm:text-sm text-slate-400">
-            <div className="flex items-center gap-2">
-              <Zap className="w-4 h-4 text-amber-500" />
-              <span>{t('hero.pillInstant')}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Shield className="w-4 h-4 text-emerald-500" />
-              <span>{t('hero.pillSecurity')}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <FileCheck className="w-4 h-4 text-brand" />
-              <span>{t('hero.pillFormats')}</span>
-            </div>
-          </div>
         </div>
 
-        {/* Hero Interactive Preview Mockup */}
+        {/* Public live stats — số thật từ GET /api/v1/public/stats */}
         <div className="mt-12 sm:mt-16 max-w-4xl mx-auto">
-          <HeroEnginePanel />
+          <PublicLiveStats />
         </div>
       </div>
     </section>
