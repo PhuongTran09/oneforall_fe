@@ -197,7 +197,7 @@ export const en: Dict = {
     "convertAll": "Versatile file converter",
     "convertImg": "Image format converter",
     "copyright": "© {year} One ForAll. All rights reserved. The One ForAll online tools platform.",
-    "desc": "All-in-one online tools platform: download YouTube and TikTok videos, convert document formats, process and compress images.",
+    "desc": "All in one online tools platform: download YouTube and TikTok videos, convert document formats, process and compress images.",
     "docConverter": "Document converter",
     "pdfConverter": "PDF converter",
     "removeBg": "Remove image background",
@@ -223,7 +223,7 @@ export const en: Dict = {
     "quickCompress": "Compress image",
     "quickPdf": "Convert PDF",
     "quickRemoveBg": "Remove image background",
-    "titleHighlight": "all-in-one",
+    "titleHighlight": "all in one",
     "titlePost": "for every need",
     "titlePre": "The online tools platform"
   },
