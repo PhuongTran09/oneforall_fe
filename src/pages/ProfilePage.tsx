@@ -190,13 +190,19 @@ export function ProfilePage() {
       {/* Thống kê — số lớn brand gradient như KPI dashboard */}
       <div className="grid grid-cols-2 gap-4 mt-4">
         <div className="bg-surface border border-edge clip-corner-card p-5 sm:p-6 text-center">
-          <div className="text-3xl sm:text-4xl font-bold text-brand-gradient tabular-nums">
+          <div
+            key={`s-${stats?.total_completed ?? 'load'}`}
+            className="text-3xl sm:text-4xl font-bold text-brand-gradient tabular-nums live-value"
+          >
             {stats ? stats.total_completed : '—'}
           </div>
           <div className="text-sm text-soft mt-1">{t('profile.totalCompleted')}</div>
         </div>
         <div className="bg-surface border border-edge clip-corner-card p-5 sm:p-6 text-center">
-          <div className="text-3xl sm:text-4xl font-bold text-brand-gradient tabular-nums">
+          <div
+            key={`f-${stats?.files_available ?? 'load'}`}
+            className="text-3xl sm:text-4xl font-bold text-brand-gradient tabular-nums live-value"
+          >
             {stats ? stats.files_available : '—'}
           </div>
           <div className="text-sm text-soft mt-1">{t('profile.filesAvailable')}</div>

@@ -402,7 +402,7 @@
       {
         "step": "03",
         "title": "Convert the image",
-        "desc": "OneForAll processes the image using your selected format."
+        "desc": "One ForAll processes the image using your selected format."
       },
       {
         "step": "04",
@@ -643,7 +643,7 @@
       },
       {
         "q": "How long are my files stored?",
-        "a": "File retention depends on OneForAll's current storage policy. Review the Privacy Policy for details."
+        "a": "File retention depends on One ForAll's current storage policy. Review the Privacy Policy for details."
       }
     ]
   },

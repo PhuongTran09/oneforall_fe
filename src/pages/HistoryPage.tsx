@@ -145,7 +145,7 @@ function FilterSelect({
         <div
           role="listbox"
           aria-label={ariaLabel}
-          className="absolute left-0 mt-2 min-w-full bg-surface border border-[rgba(255,59,48,0.35)] clip-corner-card shadow-xl py-1 z-50"
+          className="in-fade absolute left-0 mt-2 min-w-full bg-surface border border-[rgba(255,59,48,0.35)] clip-corner-card shadow-xl py-1 z-50"
         >
           {options.map((o) => (
             <button
@@ -390,7 +390,7 @@ export function HistoryPage() {
       </div>
 
       {loading ? (
-        <div className="bg-surface border border-edge clip-corner-lg divide-y divide-edge overflow-hidden">
+        <div className="in-fade bg-surface border border-edge clip-corner-lg divide-y divide-edge overflow-hidden">
           {Array.from({ length: 4 }).map((_, i) => (
             <div key={i} className="p-4 flex items-center gap-4 animate-pulse" aria-hidden="true">
               <div className="w-10 h-10 bg-elev clip-corner-btn shrink-0" />
@@ -411,7 +411,7 @@ export function HistoryPage() {
           <p className="text-soft">{t('history.empty')}</p>
         </div>
       ) : (
-        <div className="bg-surface border border-[rgba(255,59,48,0.35)] clip-corner-lg overflow-hidden divide-y divide-edge">
+        <div className="stagger in-fade bg-surface border border-[rgba(255,59,48,0.35)] clip-corner-lg overflow-hidden divide-y divide-edge">
           {items.map((item) => (
             <div
               key={item.id}

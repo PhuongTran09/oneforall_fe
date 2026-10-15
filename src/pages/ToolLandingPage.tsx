@@ -521,7 +521,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
       </section>
 
       {/* 3. How It Works Section */}
-      <section className="py-14 sm:py-20 bg-page border-y border-edge">
+      <section data-reveal className="py-14 sm:py-20 bg-page border-y border-edge">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16 space-y-3">
             <h2 className="text-xl sm:text-3xl font-bold text-ink tracking-tight">
@@ -554,7 +554,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
       </section>
 
       {/* 4. Features Section */}
-      <section className="py-14 sm:py-20">
+      <section data-reveal className="py-14 sm:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-12 space-y-3">
             <h2 className="text-xl sm:text-3xl font-bold text-ink tracking-tight">
@@ -587,7 +587,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
       </section>
 
       {/* 5. Supported Formats & Security Notice */}
-      <section className="py-12 bg-page border-y border-edge">
+      <section data-reveal className="py-12 bg-page border-y border-edge">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="p-6 sm:p-8 bg-surface border border-[rgba(255,59,48,0.25)] space-y-4 clip-corner-lg card-3d card-3d-dim">
             <div className="flex items-center gap-3">
@@ -610,7 +610,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
 
       {/* 6. FAQ Accordion Section */}
       {tool.faqList.length > 0 && (
-        <section className="py-14 sm:py-20">
+        <section data-reveal className="py-14 sm:py-20">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-10 space-y-2">
               <h2 className="text-xl sm:text-3xl font-bold text-ink tracking-tight">
@@ -641,11 +641,13 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
                         }`}
                       />
                     </button>
-                    {isOpen && (
-                      <div className="px-5 pb-5 pt-1 text-xs sm:text-sm text-slate-300 leading-relaxed border-t border-edge bg-page">
-                        {faq.a}
+                    <div className="acc" data-open={isOpen}>
+                      <div>
+                        <div className="px-5 pb-5 pt-1 text-xs sm:text-sm text-slate-300 leading-relaxed border-t border-edge bg-page">
+                          {faq.a}
+                        </div>
                       </div>
-                    )}
+                    </div>
                   </div>
                 )
               })}

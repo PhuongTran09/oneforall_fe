@@ -68,7 +68,7 @@ export function PublicLiveStats() {
       aria-label={t('liveStats.title')}
       className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6"
     >
-      <div className="p-5 sm:p-8 bg-surface border border-edge clip-corner-card transition-colors hover:border-brand/40">
+      <div className="p-5 sm:p-8 bg-surface border border-edge clip-corner-card card-3d card-3d-dim transition-colors hover:border-brand/40">
         <div className="flex items-center gap-2">
           <span className="relative flex h-2.5 w-2.5 shrink-0" aria-hidden="true">
             {phase === 'ready' && (
@@ -93,7 +93,7 @@ export function PublicLiveStats() {
         <p className="mt-3 text-xs text-slate-500">{t('liveStats.activeVisitorsHint')}</p>
       </div>
 
-      <div className="p-5 sm:p-8 bg-surface border border-edge clip-corner-card transition-colors hover:border-brand/40">
+      <div className="p-5 sm:p-8 bg-surface border border-edge clip-corner-card card-3d card-3d-dim transition-colors hover:border-brand/40">
         <div className="flex items-center gap-2">
           <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" aria-hidden="true" />
           <h3 className="text-[11px] sm:text-xs font-mono font-bold uppercase text-slate-400">

@@ -5,6 +5,7 @@ import { ConsentModal } from '../components/consent/ConsentModal'
 import { LangRouteSync } from '../i18n/LangRouteSync'
 import { useI18n, withLocale } from '../i18n/langStore'
 import { subscribeAuthEvent, useAuth } from '../services/authStore'
+import { initReveal } from '../utils/revealMotion'
 
 // Vị trí cuộn theo pathname. React Router v7 ở chế độ khai báo (BrowserRouter + <Routes>)
 // không có <ScrollRestoration> (chỉ dùng được với data router), nên app tự quản lý:
@@ -65,6 +66,21 @@ export function MainLayout() {
     return () => {
       if (raf) cancelAnimationFrame(raf)
       window.removeEventListener('scroll', onScroll)
+    }
+  }, [pathname])
+
+  // Scroll reveal chạy sau hiệu ứng page-enter của route mới. rAF thứ hai là để
+  // đo getBoundingClientRect() SAU khi restore() ở effect trên đã định vị cuộn
+  // (nó cũng queue một rAF), nếu không Back/Forward sẽ tính nhầm section nào
+  // "đã trong khung hình".
+  useEffect(() => {
+    let dispose = () => {}
+    const raf = requestAnimationFrame(() => {
+      dispose = initReveal()
+    })
+    return () => {
+      cancelAnimationFrame(raf)
+      dispose()
     }
   }, [pathname])
 

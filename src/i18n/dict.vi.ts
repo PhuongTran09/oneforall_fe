@@ -126,7 +126,7 @@ export const vi = {
   },
   "liveStats": {
     "activeVisitors": "Khách đang online",
-    "activeVisitorsHint": "Số phiên đang mở trang trong 5 phút gần nhất",
+    "activeVisitorsHint": "Số phiên đang hoạt động",
     "completedJobs": "Công việc hoàn thành",
     "completedJobsHint": "Tổng số file đã xử lý thành công từ trước tới nay",
     "error": "Không đọc được số liệu trực tiếp. Vui lòng thử lại.",

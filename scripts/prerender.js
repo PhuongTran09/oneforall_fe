@@ -142,7 +142,7 @@ export function runPrerender() {
 
     // 2. Head SEO tags
     const metaTags = `
-    <title>${tool.title || 'OneForAll Tools'}</title>
+    <title>${tool.title || 'One ForAll Tools'}</title>
     <meta name="description" content="${tool.metaDescription || ''}" />
     <link rel="canonical" href="${canonicalUrl}" />
     <meta name="robots" content="index, follow" />
@@ -150,7 +150,7 @@ export function runPrerender() {
     <meta property="og:description" content="${tool.metaDescription || ''}" />
     <meta property="og:url" content="${canonicalUrl}" />
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="OneForAll" />
+    <meta property="og:site_name" content="One ForAll" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="${tool.title || ''}" />
     <meta name="twitter:description" content="${tool.metaDescription || ''}" />
@@ -226,7 +226,7 @@ export function runPrerender() {
 
   // 4. Sinh file 404.html cho static hosting
   const notFoundHtml = baseHtml
-    .replace(/<title>[\s\S]*?<\/title>/i, '<title>404 - Trang không tồn tại | OneForAll</title>')
+    .replace(/<title>[\s\S]*?<\/title>/i, '<title>404 - Trang không tồn tại | One ForAll</title>')
     .replace('</head>', '    <meta name="robots" content="noindex, nofollow" />\n  </head>')
   fs.writeFileSync(path.resolve(distDir, '404.html'), notFoundHtml, 'utf8')
 

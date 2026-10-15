@@ -33,7 +33,7 @@ export function DownloadResult({
   }
 
   return (
-    <div className="w-full max-w-3xl mx-auto p-6 sm:p-8 bg-surface border border-[rgba(255,59,48,0.30)] space-y-6 animate-in fade-in zoom-in-95 duration-200 clip-corner-lg card-3d card-3d-dim">
+    <div className="w-full max-w-3xl mx-auto p-6 sm:p-8 bg-surface border border-[rgba(255,59,48,0.30)] space-y-6 in-up clip-corner-lg card-3d card-3d-dim">
       {/* Header status */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-edge/60">
         <div className="flex items-center gap-3.5">
