@@ -39,9 +39,11 @@ export function showErrorPopup(input: ErrorPopupInput): void {
   if (!input.message) return
   // Lỗi trùng đang chờ user xác nhận → không nhảy popup đôi.
   if (queue.some((e) => e.message === input.message)) return
-  // Backend không với tới được thì BackendStatusBanner đã nói đúng message này và còn
-  // hiện suốt: popup thêm một lần nữa là báo hai lần cho một nguyên nhân.
-  if (isBackendDown() && input.message === t('errors.unavailable')) return
+  // Backend không với tới được thì BackendStatusBanner đã nói và còn hiện suốt: popup
+  // thêm một lần nữa là báo hai lần cho một nguyên nhân. Banner dùng errors.unavailable,
+  // còn fetch chết giữa đường thì describeError trả errors.network — phải chặn cả hai.
+  // t() gọi trong hàm chứ không đưa ra module-level để đổi ngôn ngữ vẫn đúng.
+  if (isBackendDown() && [t('errors.unavailable'), t('errors.network')].includes(input.message)) return
   queue = [...queue, { id: nextId++, ...input }]
   emit()
 }

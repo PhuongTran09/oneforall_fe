@@ -51,11 +51,22 @@ export function describeError(
       case err.status === 413:
         return { type: 'warning', message: t('errors.413') }
       case err.status === 422:
-        // Pydantic "field: msg" tiếng Anh — ẩn khỏi UI, giữ hướng dẫn chung.
-        return { type: 'warning', message: t('errors.422') }
+        // BE tự soạn (vd "Liên kết không xem trước được...") thì hiện của nó; Pydantic
+        // "field: msg" tiếng Anh không lọt qua isSafeUserMessage -> về hướng dẫn chung.
+        return {
+          type: 'warning',
+          message: isSafeUserMessage(err.message) ? err.message : t('errors.422'),
+        }
       case err.status === 429:
         return { type: 'warning', message: t('errors.429') }
       case err.status >= 500:
+        // Message tiếng Việt có dấu = BE còn sống và vừa tự báo lỗi của chính nó
+        // (vd "dịch vụ của nền tảng không phản hồi") — phải hiện cái đó, vì "hạ tầng
+        // đang bảo trì" là sai nguyên nhân. Proxy chết thì body là HTML, err.message
+        // rỗng/không dấu nên vẫn rơi xuống branches dưới.
+        if (isSafeUserMessage(err.message)) {
+          return { type: 'error', message: err.message }
+        }
         if (err.status === 502 || err.status === 503 || err.status === 504) {
           return { type: 'error', message: t('errors.unavailable') }
         }

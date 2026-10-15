@@ -14,19 +14,25 @@ export interface MediaProcessParams {
 }
 
 export interface UrlInfo {
+  platform?: string | null
   title?: string | null
   thumbnail?: string | null
   duration?: number | null
   uploader?: string | null
+  author_url?: string | null
   url?: string | null
+  view_count?: number | null
+  like_count?: number | null
+  upload_date?: string | null
 }
 
 export const mediaApi = {
   /**
-   * Xem trước thông tin link YouTube/TikTok (title/thumbnail/kênh) qua proxy oEmbed của BE.
+   * Xem trước thông tin link YouTube/TikTok (title/thumbnail/kênh/số liệu) qua BE.
+   * Endpoint public; `signal` để URL cũ bị hủy khi người dùng dán link khác.
    */
-  async getUrlInfo(url: string): Promise<UrlInfo> {
-    return apiClient.get<UrlInfo>('/v1/media/url-info', { params: { url } })
+  async getUrlInfo(url: string, signal?: AbortSignal): Promise<UrlInfo> {
+    return apiClient.get<UrlInfo>('/v1/media/url-info', { params: { url }, signal })
   },
 
   /**

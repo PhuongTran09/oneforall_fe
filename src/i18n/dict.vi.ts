@@ -147,7 +147,7 @@ export const vi = {
     "cancelled": "Đã hủy theo dõi tác vụ.",
     "generic": "Đã có lỗi xảy ra",
     "jobTimeout": "Hết thời gian chờ xử lý tác vụ (Timeout). Vui lòng thử lại sau.",
-    "network": "Không kết nối được với máy chủ. Hạ tầng đang bảo trì hoặc đang xảy ra sự cố, vui lòng thử lại sau.",
+    "network": "Không gửi được yêu cầu — kiểm tra kết nối mạng của thiết bị.",
     "timeout": "Yêu cầu hết thời gian chờ. Vui lòng thử lại.",
     "unavailable": "Không kết nối được với máy chủ. Hạ tầng đang bảo trì hoặc đang xảy ra sự cố, vui lòng thử lại sau."
   },
@@ -501,6 +501,7 @@ export const vi = {
     "aria": "Ô nhập đường dẫn",
     "empty": "Vui lòng nhập hoặc dán đường dẫn video.",
     "invalid": "Đường dẫn không hợp lệ. Vui lòng nhập URL bắt đầu bằng https://",
+    "likesLabel": "lượt thích",
     "outputFormat": "Định dạng đầu ra:",
     "paste": "Dán",
     "pasteFromClipboard": "Dán từ bộ nhớ tạm",
@@ -510,8 +511,10 @@ export const vi = {
     "previewFailed": "Không xem trước được liên kết này — bạn vẫn có thể bắt đầu tải.",
     "quality": "Chất lượng:",
     "qualityBest": "Tốt nhất",
+    "retry": "Thử lại",
     "startDownload": "Bắt đầu tải",
     "tiktokOnly": "Vui lòng nhập liên kết video hợp lệ từ TikTok (tiktok.com).",
+    "viewsLabel": "lượt xem",
     "youtubeOnly": "Vui lòng nhập liên kết hợp lệ từ YouTube (youtube.com hoặc youtu.be)."
   },
   "ws": {

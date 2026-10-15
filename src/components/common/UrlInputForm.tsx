@@ -1,10 +1,9 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { Link2, Clipboard, X, ArrowRight, AlertCircle } from 'lucide-react'
+import { Link2, Clipboard, X, ArrowRight, AlertCircle, RefreshCw } from 'lucide-react'
 import { Button } from './Button'
 import { SegmentedControl } from './SegmentedControl'
-import { t } from '../../i18n/langStore'
+import { t, getLang } from '../../i18n/langStore'
 import { mediaApi, type UrlInfo } from '../../services/api/mediaApi'
-import { useAuth } from '../../services/authStore'
 
 export interface UrlInputFormProps {
   platform?: 'youtube' | 'tiktok'
@@ -46,6 +45,34 @@ const formatDuration = (seconds: number): string => {
   return mmss
 }
 
+// Số liệu lớn thì card hẹp không chứa nổi "1.826.937.533 lượt xem" — dùng dạng gọn
+// theo locale (vi: 1,8T / en: 1.8B).
+const formatCount = (value: number, locale: string): string =>
+  new Intl.NumberFormat(locale, { notation: 'compact', compactDisplay: 'short' }).format(value)
+
+// Ngày đăng đến từ backend là "YYYY-MM-DD" (không giờ). Parse tay để new Date(iso)
+// không bị coi là UTC rồi lệch sang hôm trước ở múi giờ âm.
+const formatDay = (iso: string, locale: string): string => {
+  const [y, mo, d] = iso.split('-').map(Number)
+  if (!y || !mo || !d) return iso
+  return new Date(y, mo - 1, d).toLocaleDateString(locale)
+}
+
+// Hàng metadata của card preview: chỉ những thứ backend thực sự lấy được. Thiếu thì
+// ẩn hẳn, không hiện 0 hay "không rõ" — số liệu bịa còn hại hơn số liệu thiếu.
+const previewMetaLine = (data: UrlInfo): string => {
+  const locale = getLang() === 'vi' ? 'vi-VN' : 'en-US'
+  return [
+    data.duration ? formatDuration(data.duration) : null,
+    data.uploader,
+    data.view_count ? `${formatCount(data.view_count, locale)} ${t('urlInput.viewsLabel')}` : null,
+    data.like_count ? `${formatCount(data.like_count, locale)} ${t('urlInput.likesLabel')}` : null,
+    data.upload_date ? formatDay(data.upload_date, locale) : null,
+  ]
+    .filter(Boolean)
+    .join(' · ')
+}
+
 export function UrlInputForm({
   platform,
   formats,
@@ -66,38 +93,40 @@ export function UrlInputForm({
     data: UrlInfo | null
   } | null>(null)
   const [dismissedPreviewKey, setDismissedPreviewKey] = useState<string | null>(null)
-  const { session } = useAuth()
+  // Bump khi bấm Thử lại — đưa vào deps để effect preview chạy lại cùng một URL.
+  const [previewAttempt, setPreviewAttempt] = useState(0)
 
   const urlValid = isValidForPlatform(url, platform)
   const trimmedUrl = url.trim()
   const fetched = previewFetched && previewFetched.key === trimmedUrl ? previewFetched : null
   const preview: { status: 'idle' | 'loading' | 'ready' | 'error'; data: UrlInfo | null } =
-    !urlValid || !session || dismissedPreviewKey === trimmedUrl
+    !urlValid || dismissedPreviewKey === trimmedUrl
       ? { status: 'idle', data: null }
       : fetched
         ? { status: fetched.status, data: fetched.data }
         : { status: 'loading', data: null }
 
   // Dán link xong debounce 700ms rồi mới fetch preview — tránh gọi oEmbed mỗi lần gõ.
-  // /media/url-info cần Bearer (AUTH_REQUIRED_MEDIA=true) → khách chưa đăng nhập thì không
-  // gọi, nếu không mỗi link dán vào sẽ trả 401 và báo "không xem trước được" sai nguyên nhân.
+  // /media/url-info là endpoint public nên khách chưa đăng nhập vẫn thấy preview;
+  // BE đã có negative cache, FE vẫn hủy request của URL cũ để không dồn lượt gọi.
   useEffect(() => {
-    if (!session || !isValidForPlatform(url, platform)) return
-    let cancelled = false
+    if (!isValidForPlatform(url, platform)) return
+    const controller = new AbortController()
     const key = url.trim()
     const timer = setTimeout(async () => {
       try {
-        const data = await mediaApi.getUrlInfo(key)
-        if (!cancelled) setPreviewFetched({ key, status: 'ready', data })
+        const data = await mediaApi.getUrlInfo(key, controller.signal)
+        setPreviewFetched({ key, status: 'ready', data })
       } catch {
-        if (!cancelled) setPreviewFetched({ key, status: 'error', data: null })
+        // Chính ta abort vì URL đã đổi: đây không phải lỗi, đừng báo "không xem trước được".
+        if (!controller.signal.aborted) setPreviewFetched({ key, status: 'error', data: null })
       }
     }, 700)
     return () => {
-      cancelled = true
       clearTimeout(timer)
+      controller.abort()
     }
-  }, [url, platform, session])
+  }, [url, platform, previewAttempt])
 
   const qualityOptions = qualityOptionsFor(selectedFormat)
 
@@ -256,12 +285,7 @@ export function UrlInputForm({
           <div className="flex-1 min-w-0">
             <p className="font-semibold text-slate-100 text-sm truncate">{preview.data.title || url}</p>
             <p className="text-xs text-slate-400 font-mono truncate">
-              {[
-                preview.data.duration ? formatDuration(preview.data.duration) : null,
-                preview.data.uploader,
-              ]
-                .filter(Boolean)
-                .join(' · ')}
+              {previewMetaLine(preview.data)}
             </p>
           </div>
           <button
@@ -277,7 +301,22 @@ export function UrlInputForm({
         </div>
       )}
       {preview.status === 'error' && (
-        <p className="text-xs text-slate-400">{t('urlInput.previewFailed')}</p>
+        <div className="in-fade flex items-center gap-3 p-2 bg-surface border border-edge clip-corner-card">
+          <p className="flex-1 min-w-0 text-xs text-slate-400">{t('urlInput.previewFailed')}</p>
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
+            onClick={() => {
+              // Về null để khung skeleton hiện lại thay vì giữ nguyên dòng lỗi.
+              setPreviewFetched(null)
+              setPreviewAttempt((a) => a + 1)
+            }}
+            leftIcon={<RefreshCw className="w-3.5 h-3.5" aria-hidden="true" />}
+          >
+            {t('urlInput.retry')}
+          </Button>
+        </div>
       )}
 
       {/* Format + Quality Segmented Controls — hiện sau khi link hợp lệ */}
