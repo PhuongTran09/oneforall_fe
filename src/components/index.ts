@@ -39,8 +39,6 @@ export { RelatedTools } from './common/RelatedTools'
 export type { RelatedToolsProps } from './common/RelatedTools'
 export { AdSenseUnit } from './common/AdSenseUnit'
 export type { AdSenseUnitProps } from './common/AdSenseUnit'
-export { SponsoredCta } from './common/SponsoredCta'
-export type { SponsoredCtaProps } from './common/SponsoredCta'
 export { SocialBarAds } from './common/SocialBarAds'
 export { ToolFooterActions } from './common/ToolFooterActions'
 
