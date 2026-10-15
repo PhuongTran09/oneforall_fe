@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
-import { Navbar, Footer, AuthModal, ProPlanModal } from '../components'
+import { Navbar, Footer, AuthModal, ProPlanModal, SocialBarAds } from '../components'
 import { ConsentModal } from '../components/consent/ConsentModal'
 import { LangRouteSync } from '../i18n/LangRouteSync'
 import { useI18n, withLocale } from '../i18n/langStore'
@@ -107,6 +107,9 @@ export function MainLayout() {
 
       {/* Một instance duy nhất ở layout → không mở lại khi chuyển route */}
       <ConsentModal />
+
+      {/* Điểm nạp script quảng cáo duy nhất của app (một lần cho cả phiên trang) */}
+      <SocialBarAds />
     </div>
   )
 }

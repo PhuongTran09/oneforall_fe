@@ -149,7 +149,7 @@ export const en: Dict = {
     "cancelled": "Job tracking cancelled.",
     "generic": "Something went wrong",
     "jobTimeout": "Job processing timed out. Please try again later.",
-    "network": "Cannot reach the server. Infrastructure is under maintenance or experiencing an incident. Please try again later.",
+    "network": "Couldn't send the request — check this device's network connection.",
     "timeout": "Request timed out. Please try again.",
     "unavailable": "Cannot reach the server. Infrastructure is under maintenance or experiencing an incident. Please try again later."
   },
@@ -415,6 +415,10 @@ export const en: Dict = {
     "desc": "Explore other tools for converting and working with files and media.",
     "title": "Related tools you might need"
   },
+  "sponsored": {
+    "cta": "Explore the offer",
+    "disclosure": "Sponsored link — opens in a new tab."
+  },
   "theme": {
     "toDark": "Switch to dark mode",
     "toLight": "Switch to light mode"
@@ -503,6 +507,7 @@ export const en: Dict = {
     "aria": "URL input",
     "empty": "Please enter or paste a video link.",
     "invalid": "Invalid link. Please enter a URL starting with https://",
+    "likesLabel": "likes",
     "outputFormat": "Output format:",
     "paste": "Paste",
     "pasteFromClipboard": "Paste from clipboard",
@@ -512,8 +517,10 @@ export const en: Dict = {
     "previewFailed": "This link cannot be previewed — you can still start the download.",
     "quality": "Quality:",
     "qualityBest": "Best",
+    "retry": "Retry",
     "startDownload": "Start download",
     "tiktokOnly": "Please enter a valid TikTok video link (tiktok.com).",
+    "viewsLabel": "views",
     "youtubeOnly": "Please enter a valid YouTube link (youtube.com or youtu.be)."
   },
   "ws": {

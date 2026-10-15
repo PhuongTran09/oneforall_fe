@@ -9,6 +9,9 @@ interface ImportMetaEnv {
   readonly VITE_ADSENSE_CLIENT?: string
   readonly VITE_ADSENSE_SLOT_CONTENT?: string
   readonly VITE_ADSENSE_SLOT_BOTTOM?: string
+  readonly VITE_ADS_SMARTLINK_ENABLED?: string
+  readonly VITE_ADS_SOCIALBAR_ENABLED?: string
+  readonly VITE_ADS_POPUNDER_ENABLED?: string
 }
 
 interface ImportMeta {

@@ -9,7 +9,7 @@ import {
 
 const REQUEST_TIMEOUT_MS = 30000
 
-// Ba status chỉ do lớp proxy đứng trước API sinh ra khi chính API không trả lời.
+// Ba status mà proxy/CDN đứng trước API trả khi chính API không đáp được.
 const GATEWAY_DOWN_STATUSES = new Set([502, 503, 504])
 
 export function resolveUrl(endpoint: string, params?: RequestOptions['params']): string {
@@ -126,9 +126,13 @@ export class ApiClient {
         if ((err as Error)?.name !== 'AbortError') reportBackend('down')
         throw err
       }
-      // Backend đã trả lời HTTP thì còn sống, trừ bộ ba gateway 502/503/504: lớp proxy
-      // dựng lên nhưng upstream không đáp. 500 là bug ứng dụng, không phải sự cố hạ tầng.
-      reportBackend(GATEWAY_DOWN_STATUSES.has(response.status) ? 'down' : 'up')
+      // Backend đã trả lời HTTP thì còn sống — kể cả 5xx. 502/503/504 chỉ là "hạ tầng
+      // sập" khi KẺ TRẢ LỜI không phải app ta: proxy/Cloudflare trả HTML error page,
+      // còn FastAPI luôn trả JSON {"detail": ...}, tức app còn sống và vừa tự báo lỗi
+      // của chính nó (vd /media/url-info khi oEmbed của TikTok drop connection, hoặc
+      // 503 overload-guard từ chối nhận thêm job).
+      const answeredByApp = (response.headers.get('content-type') ?? '').includes('application/json')
+      reportBackend(GATEWAY_DOWN_STATUSES.has(response.status) && !answeredByApp ? 'down' : 'up')
 
       if (!response.ok) {
         let errorData: unknown
