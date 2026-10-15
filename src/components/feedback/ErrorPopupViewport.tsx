@@ -22,15 +22,18 @@ export function ErrorPopupViewport() {
 
   return (
     <div
-      className="fixed inset-0 z-[75] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200"
+      className="fixed inset-0 z-[75] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm in-backdrop"
       onClick={() => dismissErrorPopup(current.id)}
     >
       <div
+        // queue không remount panel → không có key thì popup thứ 2, 3 hiện ra
+        // không hiệu ứng gì
+        key={current.id}
         onClick={(e) => e.stopPropagation()}
         role="alertdialog"
         aria-modal="true"
         aria-label={current.title ?? t('errorPopup.title')}
-        className="relative w-full max-w-sm p-6 bg-surface border border-[rgba(255,59,48,0.35)] clip-corner-lg card-3d"
+        className="relative w-full max-w-sm p-6 bg-surface border border-[rgba(255,59,48,0.35)] clip-corner-lg card-3d in-up"
       >
         <button
           type="button"

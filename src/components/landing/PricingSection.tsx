@@ -52,7 +52,7 @@ export function PricingSection({ onSelectFree, onSelectPremium }: PricingSection
   ]
 
   return (
-    <section id="pricing" className="py-16 sm:py-24 bg-page/80">
+    <section id="pricing" data-reveal className="py-16 sm:py-24 bg-page/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold bg-surface border border-[rgba(255,59,48,0.35)] text-brand badge-angular">

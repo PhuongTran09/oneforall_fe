@@ -1,17 +1,20 @@
 /* Smooth animations and subtle utilities */
+/* `translate` thay `transform`: lớp này có mặt trên phần tử vừa là .card-3d
+   (JobProgress.tsx:86) — transform keyframe sẽ xoá cả chain perspective/rotate
+   của tilt rồi nảy lại khi kết thúc. `backwards` để không giữ transform vĩnh viễn. */
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(6px);
+    translate: 0 6px;
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    translate: 0 0;
   }
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) backwards;
 }
 
 /* Custom dark scrollbar */

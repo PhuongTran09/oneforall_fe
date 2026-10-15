@@ -109,7 +109,10 @@ export function ToolGrid({ tools, showCategoryFilter = true }: ToolGridProps) {
         </div>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+      <div
+        key={selectedCategory}
+        className="stagger grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
+      >
         {filteredTools.map((tool) => (
           <ToolCard key={tool.slug} tool={tool} />
         ))}

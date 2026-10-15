@@ -240,7 +240,7 @@ export function UrlInputForm({
         </div>
       )}
       {preview.status === 'ready' && preview.data && (
-        <div className="flex items-center gap-3 p-2 bg-surface border border-[rgba(255,59,48,0.30)] clip-corner-card">
+        <div className="in-fade flex items-center gap-3 p-2 bg-surface border border-[rgba(255,59,48,0.30)] clip-corner-card">
           {preview.data.thumbnail ? (
             <img
               src={preview.data.thumbnail}
@@ -282,7 +282,7 @@ export function UrlInputForm({
 
       {/* Format + Quality Segmented Controls — hiện sau khi link hợp lệ */}
       {urlValid && formats.length > 0 && qualityOptions.length > 1 && (
-        <div className="flex items-center justify-center sm:justify-start gap-4 flex-wrap text-xs">
+        <div className="in-fade flex items-center justify-center sm:justify-start gap-4 flex-wrap text-xs">
           {formats.length > 1 && (
             <>
               <span className="text-slate-400 font-medium whitespace-nowrap">{t('urlInput.outputFormat')}</span>

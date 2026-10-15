@@ -25,7 +25,7 @@ export function ConfirmModal({ isOpen, title, message, onConfirm, onClose }: Con
 
   return (
     <div
-      className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200"
+      className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm in-backdrop"
       onClick={onClose}
     >
       <div
@@ -33,7 +33,7 @@ export function ConfirmModal({ isOpen, title, message, onConfirm, onClose }: Con
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className="relative w-full max-w-sm p-6 bg-surface border border-[rgba(255,59,48,0.35)] clip-corner-lg card-3d"
+        className="relative w-full max-w-sm p-6 bg-surface border border-[rgba(255,59,48,0.35)] clip-corner-lg card-3d in-up"
       >
         <button
           type="button"

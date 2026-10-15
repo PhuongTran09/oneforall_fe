@@ -22,7 +22,7 @@ export function RelatedTools({
   if (tools.length === 0) return null
 
   return (
-    <section className="py-12 sm:py-16 border-t border-edge">
+    <section data-reveal className="py-12 sm:py-16 border-t border-edge">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-12 space-y-2">
           <h2 className="text-2xl sm:text-3xl font-bold text-ink tracking-tight">

@@ -128,7 +128,7 @@ export const en: Dict = {
   },
   "liveStats": {
     "activeVisitors": "Active visitors",
-    "activeVisitorsHint": "Sessions viewing the site in the last 5 minutes",
+    "activeVisitorsHint": "Sessions active",
     "completedJobs": "Completed jobs",
     "completedJobsHint": "Files processed successfully to date",
     "error": "Live stats are unavailable right now. Please try again.",

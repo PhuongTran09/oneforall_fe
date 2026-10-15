@@ -16,7 +16,7 @@ export function FaqSection() {
   }
 
   return (
-    <section id="faq" className="py-16 sm:py-24 bg-page border-t border-edge">
+    <section id="faq" data-reveal className="py-16 sm:py-24 bg-page border-t border-edge">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold bg-surface border border-[rgba(255,59,48,0.35)] text-brand badge-angular">
@@ -60,13 +60,15 @@ export function FaqSection() {
                   />
                 </button>
 
-                {isOpen && (
-                  <div className="px-5 sm:px-6 pb-6 pt-0 border-t border-edge/60 mt-1">
-                    <p className="text-xs sm:text-sm text-slate-300 leading-relaxed pt-3">
-                      {faq.a}
-                    </p>
+                <div className="acc" data-open={isOpen}>
+                  <div>
+                    <div className="px-5 sm:px-6 pb-6 pt-0 border-t border-edge/60 mt-1">
+                      <p className="text-xs sm:text-sm text-slate-300 leading-relaxed pt-3">
+                        {faq.a}
+                      </p>
+                    </div>
                   </div>
-                )}
+                </div>
               </Card>
             )
           })}

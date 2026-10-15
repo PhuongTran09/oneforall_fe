@@ -250,7 +250,7 @@ export function Navbar({ onOpenAuth }: NavbarProps) {
 
         {/* Mobile Dropdown Menu */}
         {mobileMenuOpen && (
-          <div className="min-[768px]:hidden border-b border-edge bg-page px-4 pt-3 pb-6 animate-in slide-in-from-top-2 duration-200">
+          <div className="min-[768px]:hidden border-b border-edge bg-page px-4 pt-3 pb-6 in-up">
             <nav className="flex flex-col space-y-1 mb-4">
               {navCategories.map((item) => {
                 const isActive = location.pathname.startsWith(withLocale(item.to))

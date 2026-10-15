@@ -49,7 +49,7 @@ export function AdvancedParamsPanel({
         <span className="text-sm font-semibold text-slate-200">{t('params.advancedTitle')}</span>
         {hasFilledValue && (
           <span
-            className="w-1.5 h-1.5 bg-brand shrink-0 clip-corner-btn"
+            className="w-1.5 h-1.5 bg-brand shrink-0"
             title={t('params.hasCustom')}
           />
         )}

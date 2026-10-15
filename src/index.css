@@ -35,6 +35,10 @@ html[data-theme='light'] {
   --bg-surface: #ffffff;
   --bg-elevated: #e9ebf4;
   --border-subtle: #d8dbe8;
+  /* Mặt khối 3D: border phải + dưới của mọi phần tử vát góc. Trên nền trắng
+     dùng xám-tối alpha thấp — đây là bóng mặt bên, không phải viền trang trí. */
+  --extrude-face: rgba(42,47,61,.14);
+  --extrude-face-dim: rgba(42,47,61,.09);
   --text-primary: #2a2f3d;
   --text-muted: #5b6472;
   --text-ink: #171a24;
@@ -114,8 +118,8 @@ html[data-theme='light'] {
     --border-subtle:      #2a2a35;          /* resting card/input border  */
     --border-brand:       rgba(255,59,48,.35); /* default brand border       */
     --border-brand-vivid: #ff3b30;          /* primary button / focus      */
-    --border-edge:        rgba(255,107,74,.55); /* 3-D extrusion edge         */
-    --border-edge-dim:    rgba(255,59,48,.30);  /* dimmer edge for dark cards */
+    --extrude-face:       rgba(0,0,0,.45);      /* 3-D side face (dark)         */
+    --extrude-face-dim:   rgba(0,0,0,.30);      /* softer face on dim cards     */
 
     /* Corner clip sizes */
     --clip-btn:   6px;   /* buttons                    */
@@ -166,9 +170,13 @@ html[data-theme='light'] {
 /* ─── Angular corner helpers ─────────────────────────────────────────────── */
 /*
   clip-corner-*  clips a small diagonal on the top-right + bottom-left.
-  Use sparingly — only on buttons, cards, and large containers.
+  Đây cũng là DẤU HIỆU nhận diện "bề mặt khối" của nhà: mặt bên 3-D được vẽ tự
+  động cho mọi phần tử mang class này (xem section 3-D Extrusion bên dưới), nên
+  JSX không cần thêm class nào khi muốn một surface mới có chiều sâu.
+  --extrude = độ dày mặt bên của riêng nhóm đó.
 */
 .clip-corner-btn {
+  --extrude: var(--extrude-btn);
   clip-path: polygon(
     0 0,
     calc(100% - var(--clip-btn)) 0,
@@ -181,6 +189,7 @@ html[data-theme='light'] {
 }
 
 .clip-corner-card {
+  --extrude: var(--extrude-card);
   clip-path: polygon(
     0 0,
     calc(100% - var(--clip-card)) 0,
@@ -193,6 +202,7 @@ html[data-theme='light'] {
 }
 
 .clip-corner-lg {
+  --extrude: var(--extrude-card);
   clip-path: polygon(
     0 0,
     calc(100% - var(--clip-lg)) 0,
@@ -204,53 +214,71 @@ html[data-theme='light'] {
   border-radius: 0 !important;
 }
 
-/* ─── 3-D Extrusion: primary buttons ────────────────────────────────────── */
+/* ─── 3-D Extrusion: mặt khối cho MỌI surface vát góc ────────────────────── */
 /*
-  Thin coral offset edge rendered behind the element via ::after.
-  Works alongside clip-corner-btn — the pseudo inherits the same clip.
+  Mặt khối = chính border phải + dưới của phần tử, dày --extrude và tô
+  --extrude-face. Nguồn sáng của nhà là trên-trái nên hai cạnh đó là mặt bên;
+  border trên + trái vẫn là viền mỏng của component.
+
+  Vì sao không vẽ bằng ::after (bản trước): pseudo nằm trong padding box nên
+  dải tối chạy SONG SONG với viền 1px -> nhìn thành 3 lớp (viền | dải | nền),
+  và polygon inherit tính trên box nhỏ hơn thì lệch chamfer. Dùng border thì
+  khối chỉ còn 2 lớp, chamfer tự khớp (clip-path tính trên border box), không
+  cần position:relative (không còn rủi ro re-anchor phần tử con absolute),
+  pointer-events/z-index vô sự, và <input>/<select>/<img> cũng có mặt khối.
+
+  Xung đột đã soát: toàn src chỉ 2 chỗ dùng border theo cạnh đơn
+  (Button.tsx:60 spinner rounded-full, UrlInputForm.tsx:217 divider) — không
+  phần tử nào mang clip-corner.
 */
-.btn-3d {
-  position: relative;
-  transition: transform 0.12s ease;
+.clip-corner-btn,
+.clip-corner-card,
+.clip-corner-lg,
+.badge-angular {
+  border-right:  var(--extrude) solid var(--extrude-face);
+  border-bottom: var(--extrude) solid var(--extrude-face);
 }
 
-.btn-3d::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  /* offset the shadow copy behind-and-below */
-  transform: translate(var(--extrude-btn), var(--extrude-btn));
-  background: linear-gradient(135deg, rgba(255,59,48,.45), rgba(255,107,74,.45));
-  clip-path: inherit;          /* inherits clip-corner-btn when both classes are present */
-  border-radius: inherit;
-  z-index: -1;
-  transition: transform 0.12s ease;
+/* Chỉ card-3d cần containing block (cho ::before spotlight). :where() trong
+   @layer utilities giữ specificity 0 để utility absolute/fixed/sticky của
+   Tailwind vẫn thắng — bài học từ lần dropdown profile bị đẩy về dòng tĩnh. */
+@layer utilities {
+  :where(.card-3d) {
+    position: relative;
+  }
+}
+
+/* ─── 3-D Extrusion: primary buttons ────────────────────────────────────── */
+/*
+  Nút brand: mặt khối tối 45% đen đè lên nền đỏ cam cho ra màu nâu bẩn, nên
+  nút chính lấy mặt khối từ chính màu brand (color-mix theo --grad-1, đổi theme
+  tự cập nhật). .btn-3d chỉ còn phản hồi press — không đổi độ dày mặt khi hover
+  nữa vì mặt giờ là border: đổi width là đổi layout.
+*/
+.btn-3d {
+  --extrude-face: color-mix(in srgb, var(--grad-1) 62%, #000);
+  transition: transform 0.12s ease, border-color 0.12s ease;
 }
 
 .btn-3d:hover {
   transform: translate(-1px, -1px);
 }
-.btn-3d:hover::after {
-  transform: translate(calc(var(--extrude-btn) + 1px), calc(var(--extrude-btn) + 1px));
-}
+/* Press: khối hạ xuống sát mặt nền — mặt border mỏng lại bằng cách đổi màu,
+   không đổi width (width là layout). */
 .btn-3d:active {
   transform: translate(1px, 1px);
-}
-.btn-3d:active::after {
-  transform: translate(calc(var(--extrude-btn) - 2px), calc(var(--extrude-btn) - 2px));
+  --extrude-face: color-mix(in srgb, var(--grad-1) 78%, #000);
 }
 
 /* ─── 3-D Extrusion: cards / containers ─────────────────────────────────── */
 /*
-  Two thin offset lines (bottom + right) drawn via ::after.
-  Clipped shapes carry through clip-path: inherit.
+  card-3d thêm chiều SÂU có tương tác (tilt theo con trỏ, lift, spotlight) lên
+  trên mặt khối mà .clip-corner-* đã vẽ sẵn bằng border phải + dưới.
 
-  Hover system (one source of truth): pointer tilt/spotlight are written by
-  cardMotion.ts into --rx/--ry/--gx/--gy; lift & glow are composed here in CSS.
-  Only .card-tilt elements receive rotation from JS.
+  Hover system (one source of truth): pointer tilt/lift được cardMotion.ts ghi
+  vào --rx/--ry/--gx/--gy; lift & glow compose ở đây. Chỉ .card-tilt nhận rotation.
 */
 .card-3d {
-  position: relative;
   transform: perspective(700px)
     rotateX(var(--rx, 0deg))
     rotateY(var(--ry, 0deg))
@@ -273,29 +301,9 @@ html[data-theme='light'] {
   pointer-events: none;
 }
 
-.card-3d::after {
-  content: '';
-  position: absolute;
-  /* position just outside the element's own box */
-  bottom: calc(-1 * var(--extrude-card));
-  right:  calc(-1 * var(--extrude-card));
-  /* size matches parent minus the corners where clip removes material */
-  width:  calc(100% - var(--clip-card) * 0.5);
-  height: calc(100% - var(--clip-card) * 0.5);
-  border-right:  1px solid var(--border-edge);
-  border-bottom: 1px solid var(--border-edge);
-  /* keep the same angular clip so the edge lines follow the clipped shape */
-  clip-path: inherit;
-  border-radius: inherit;
-  pointer-events: none;
-  z-index: 0;
-  transition: border-color 0.25s ease-out;
-}
-
 /* Dimmer variant for secondary / non-interactive cards */
-.card-3d-dim::after {
-  border-right-color:  var(--border-edge-dim);
-  border-bottom-color: var(--border-edge-dim);
+.card-3d-dim {
+  --extrude-face: var(--extrude-face-dim);
 }
 
 @media (hover: hover) {
@@ -306,7 +314,9 @@ html[data-theme='light'] {
   .card-3d:not(.card-3d-dim):not([data-disabled]):not([aria-disabled="true"]):hover::before {
     opacity: 1;
   }
-  .card-3d:not(.card-3d-dim):not([data-disabled]):not([aria-disabled="true"]):hover::after {
+  /* Mặt khối sáng lên theo brand khi card nâng: border-color đã nằm trong
+     transition của .card-3d nên đổi màu là có animation. */
+  .card-3d:not(.card-3d-dim):not([data-disabled]):not([aria-disabled="true"]):hover {
     border-right-color:  rgba(255, 107, 74, 0.8);
     border-bottom-color: rgba(255, 107, 74, 0.8);
   }
@@ -330,28 +340,18 @@ html[data-theme='light'] {
 }
 
 /* ─── 3-D Extrusion: upload zones / large inputs ────────────────────────── */
+/*
+  .clip-corner-lg đã vẽ mặt khối bằng border phải + dưới; input-3d chỉ chọn bản
+  mờ cho vùng upload / URL bar để không nặng bằng card tương tác.
+*/
 .input-3d {
-  position: relative;
-}
-
-.input-3d::after {
-  content: '';
-  position: absolute;
-  bottom: -3px;
-  right:  -3px;
-  width:  calc(100% - 6px);
-  height: calc(100% - 6px);
-  border-right:  1px solid var(--border-edge-dim);
-  border-bottom: 1px solid var(--border-edge-dim);
-  clip-path: inherit;
-  border-radius: inherit;
-  pointer-events: none;
-  z-index: 0;
+  --extrude-face: var(--extrude-face-dim);
 }
 
 /* ─── Section / badge labels ────────────────────────────────────────────── */
 /* Small pill used for section headings — subtle angular clip */
 .badge-angular {
+  --extrude: 2px;
   clip-path: polygon(
     0 0,
     calc(100% - 5px) 0,
@@ -387,22 +387,27 @@ html[data-theme='light'] {
 }
 
 /* ─── Page transition ────────────────────────────────────────────────────── */
-@keyframes page-enter {  0%   { opacity: 0; transform: translateY(6px); }
-  100% { opacity: 1; transform: translateY(0);   }
+/* `translate` (property độc lập) thay `transform`, và `backwards` thay
+   `forwards`: keyframe kết thúc ở trạng thái tự nhiên nên hết animation là
+   property về none. forwards để transform dính vĩnh viễn -> lớp bọc ở
+   MainLayout.tsx:76 thành containing block cho mọi modal position:fixed. */
+@keyframes page-enter {
+  0%   { opacity: 0; translate: 0 6px; }
+  100% { opacity: 1; translate: 0 0;   }
 }
 
 .animate-page-enter {
-  animation: page-enter 220ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: page-enter 220ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
 }
 
 /* ─── Heading reveal + hơi ơ gradient quét nhẹ một lượt khi vào trang ────── */
 @keyframes heading-in {
-  0%   { opacity: 0; transform: translateY(8px); }
-  100% { opacity: 1; transform: translateY(0);   }
+  0%   { opacity: 0; translate: 0 8px; }
+  100% { opacity: 1; translate: 0 0;   }
 }
 
 .heading-in {
-  animation: heading-in 500ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: heading-in 500ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
 }
 
 /* .text-brand-gradient đặt background: một màu gradient cố định, nên lớp này
@@ -410,7 +415,7 @@ html[data-theme='light'] {
 .text-brand-gradient.text-shine {
   background-size: 200% auto;
   animation:
-    heading-in 500ms cubic-bezier(0.16, 1, 0.3, 1) both,
+    heading-in 500ms cubic-bezier(0.16, 1, 0.3, 1) backwards,
     shine 2.4s ease-out 0.35s 1;
 }
 
@@ -684,6 +689,79 @@ html[data-theme='light'] .toast-item {
   }
 }
 
+/* ─── Enter animations (mọi sự kiện đổi state) ─────────────────────────────
+   Animate `translate` — property ĐỘC LẬP, áp trước `transform` — nên entrance
+   chạy song song với tilt/lift của .card-3d (:254) và .btn-3d (:212) thay vì
+   ghi đè chuỗi transform đó. `backwards`: hết animation là về none, không để
+   lại containing block cho modal position:fixed.
+   Không dùng `scale`: nó áp NGOÀI perspective(700px) nên biến dạng sai, mà mọi
+   surface ứng viên (5 modal, DownloadResult, JobProgress, ToolCard, step/feature
+   card) đều đang là .card-3d.
+   Chỉ dịch trục Y: body{overflow-x:hidden} (:142) + translateX = jitter mobile. */
+@keyframes in-up {
+  from { opacity: 0; translate: 0 10px; }
+  to   { opacity: 1; translate: 0 0;    }
+}
+@keyframes in-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.in-up   { animation: in-up   260ms cubic-bezier(0.16, 1, 0.3, 1) backwards; }
+.in-fade { animation: in-fade 200ms ease-out                       backwards; }
+
+/* Backdrop là layer fixed + backdrop-blur: chỉ opacity. Dịch cả layer này bắt
+   GPU vẽ lại lớp blur mỗi frame — tụt fps rõ nhất trên điện thoại. */
+.in-backdrop { animation: in-fade 160ms ease-out backwards; }
+
+/* Stagger: delay tăng dần rồi CHỐT ở phần tử thứ 8 (muộn nhất 170ms) — lưới 17
+   ToolCard không phải chờ 340ms mà thứ tự trong hàng vẫn đơn điệu.
+   shortcut: `.stagger > *` là selector con phổ quát, chỉ gắn lên container mà
+   mọi child đều là item; nếu sau này có child trang trí thì chuyển sang
+   `.stagger > .stagger-item`. */
+.stagger > *               { animation: in-up 260ms cubic-bezier(0.16, 1, 0.3, 1) backwards; }
+.stagger > :nth-child(2)   { animation-delay:  30ms; }
+.stagger > :nth-child(3)   { animation-delay:  60ms; }
+.stagger > :nth-child(4)   { animation-delay:  90ms; }
+.stagger > :nth-child(5)   { animation-delay: 120ms; }
+.stagger > :nth-child(6)   { animation-delay: 140ms; }
+.stagger > :nth-child(7)   { animation-delay: 160ms; }
+.stagger > :nth-child(n+8) { animation-delay: 170ms; }
+
+/* Scroll reveal. MẶC ĐỊNH KHÔNG ẨN NỘI DUNG: `.is-in` do revealMotion.ts gắn,
+   nên JS chết / thiếu IntersectionObserver / HTML tĩnh từ prerender.js thì mọi
+   thứ hiện nguyên. Mobile chỉ fade, không dịch — tránh nội dung nhảy dưới
+   ngón tay khi đang cuộn. */
+[data-reveal].is-in { animation: in-fade 320ms ease-out backwards; }
+@media (min-width: 40rem) {
+  [data-reveal].is-in { animation: in-up 420ms cubic-bezier(0.16, 1, 0.3, 1) backwards; }
+}
+
+/* Accordion mở bằng grid-template-rows 0fr -> 1fr (nội suy được, không đo
+   height bằng JS). Đây là transition chứ không phải keyframe, mà state đóng là
+   state tự nhiên của phần tử, nên trình duyệt không nội suy được cũng chỉ còn
+   mở tức thì — không bao giờ kẹt ở 0fr. visibility:hidden giữ phần đóng ra khỏi
+   a11y tree. Chỉ nội suy chiều MỞ: không hoãn unmount, không exit. */
+.acc {
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  opacity: 0;
+  transition: none;
+}
+.acc > * {
+  overflow: hidden;
+  min-height: 0;
+}
+.acc[data-open='true'] {
+  grid-template-rows: 1fr;
+  visibility: visible;
+  opacity: 1;
+  transition:
+    grid-template-rows 240ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 180ms ease-out;
+}
+
 /* ─── Reduced motion ─────────────────────────────────────────────────────── */
 /* Bản sáng: bóng đen đặc của nền tối sẽ thành vệt xám bẩn trên nền trắng,
    còn spotlight đỏ 9% thì gần như vô hình trên card trắng. */
@@ -699,20 +777,22 @@ html[data-theme='light'] .card-3d:not(.card-3d-dim)::before {
   );
 }
 
-html[data-theme='light'] .btn-3d::after {
-  background: linear-gradient(135deg, rgba(207, 34, 22, .35), rgba(216, 67, 28, .35));
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .animate-page-enter { animation: none; }
+  .animate-page-enter { animation: none; translate: none; }
   .toast-enter, .toast-leave { animation: none; }
   .animate-loading-sweep { animation: none; width: 100%; opacity: 0.35; }
   .heading-in { animation: none; }
+  /* đang thiếu trong guard: .animate-fade-in chạy cả khi reduced-motion */
+  .animate-fade-in { animation: none; }
+  .in-up, .in-fade, .in-backdrop,
+  .stagger > *,
+  [data-reveal].is-in { animation: none; }
+  .acc,
+  .acc[data-open='true'] { transition: none; }
   .text-brand-gradient.text-shine { animation: none; background-size: auto; }
   .theme-toggle,
   .theme-thumb { transition: none; }
-  .btn-3d,
-  .btn-3d::after     { transition: none; }
+  .btn-3d              { transition: none; }
   .card-3d           { transform: none; transition: border-color 0.25s ease-out; }
   .card-3d::before   { display: none; }
   .card-3d:hover     { filter: none; }
