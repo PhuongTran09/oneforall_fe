@@ -60,6 +60,16 @@ export interface JobStats {
   files_available: number
 }
 
+// Khớp oneforall_be/app/schemas/stats.py — khu live stats công khai ở trang chủ.
+// Mỗi số là number | null: null = backend KHÔNG đo được (Redis/DB lỗi), 0 = đo được
+// và đúng bằng 0. UI phải phân biệt hai loại, cấm hiện số mẫu.
+export interface PublicStats {
+  /** Số sid heartbeat còn trong cửa sổ 5 phút gần nhất. */
+  active_visitors: number | null
+  /** Tổng số job đã xử lý thành công từ trước tới nay. */
+  completed_jobs: number | null
+}
+
 export interface PlanPolicy {
   max_active_jobs: number
   max_upload_bytes: Record<string, number>

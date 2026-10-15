@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, type MouseEvent, type TouchEvent } from 'react'
+import { useState, useRef, type PointerEvent } from 'react'
 import { Sparkles, Eye } from 'lucide-react'
 import { t } from '../../i18n/langStore'
 
@@ -20,19 +20,7 @@ export function BeforeAfterPreview({
   const [sliderPosition, setSliderPosition] = useState(50)
   const [isDragging, setIsDragging] = useState(false)
   const [activeTab, setActiveTab] = useState<'slider' | 'side-by-side'>('slider')
-  const [containerWidth, setContainerWidth] = useState<number>(0)
   const containerRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const updateWidth = () => {
-      if (containerRef.current) {
-        setContainerWidth(containerRef.current.clientWidth)
-      }
-    }
-    updateWidth()
-    window.addEventListener('resize', updateWidth)
-    return () => window.removeEventListener('resize', updateWidth)
-  }, [])
 
   const handleMove = (clientX: number) => {
     if (!containerRef.current) return
@@ -42,16 +30,18 @@ export function BeforeAfterPreview({
     setSliderPosition(percentage)
   }
 
-  const handleMouseDown = () => setIsDragging(true)
-  const handleMouseUp = () => setIsDragging(false)
-  const handleMouseMove = (e: MouseEvent) => {
+  // Pointer events + setPointerCapture: kéo tuột ra ngoài khung vẫn tiếp tục,
+  // và không còn phải dừng drag ở onMouseLeave.
+  const handlePointerDown = (e: PointerEvent<HTMLDivElement>) => {
+    e.currentTarget.setPointerCapture(e.pointerId)
+    setIsDragging(true)
+  }
+  const handlePointerMove = (e: PointerEvent<HTMLDivElement>) => {
     if (isDragging) handleMove(e.clientX)
   }
-
-  const handleTouchStart = () => setIsDragging(true)
-  const handleTouchEnd = () => setIsDragging(false)
-  const handleTouchMove = (e: TouchEvent) => {
-    if (isDragging && e.touches[0]) handleMove(e.touches[0].clientX)
+  const handlePointerUp = (e: PointerEvent<HTMLDivElement>) => {
+    e.currentTarget.releasePointerCapture(e.pointerId)
+    setIsDragging(false)
   }
 
   return (
@@ -92,14 +82,11 @@ export function BeforeAfterPreview({
       {activeTab === 'slider' ? (
         <div
           ref={containerRef}
-          onMouseDown={handleMouseDown}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseUp}
-          onMouseMove={handleMouseMove}
-          onTouchStart={handleTouchStart}
-          onTouchEnd={handleTouchEnd}
-          onTouchMove={handleTouchMove}
-          className="relative w-full h-[320px] sm:h-[400px] overflow-hidden select-none cursor-ew-resize border border-edge clip-corner-lg bg-[linear-gradient(45deg,var(--bg-elevated)_25%,transparent_25%),linear-gradient(-45deg,var(--bg-elevated)_25%,transparent_25%),linear-gradient(45deg,transparent_75%,var(--bg-elevated)_75%),linear-gradient(-45deg,transparent_75%,var(--bg-elevated)_75%)] bg-[size:20px_20px] bg-[position:0_0,0_10px,10px_-10px,-10px_0]"
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          onPointerCancel={handlePointerUp}
+          className="relative w-full h-[320px] sm:h-[400px] overflow-hidden select-none touch-none cursor-ew-resize border border-edge clip-corner-lg bg-[linear-gradient(45deg,var(--bg-elevated)_25%,transparent_25%),linear-gradient(-45deg,var(--bg-elevated)_25%,transparent_25%),linear-gradient(45deg,transparent_75%,var(--bg-elevated)_75%),linear-gradient(-45deg,transparent_75%,var(--bg-elevated)_75%)] bg-[size:20px_20px] bg-[position:0_0,0_10px,10px_-10px,-10px_0]"
         >
           {/* Background: Processed Image */}
           <div className="absolute inset-0 flex items-center justify-center p-4">
@@ -111,22 +98,18 @@ export function BeforeAfterPreview({
             />
           </div>
 
-          {/* Foreground: Original Image clipped by slider */}
+          {/* Foreground: Original Image. Cùng box với lớp nền và cắt bằng
+              clip-path — nếu đặt width:p% thì ảnh bên trong bị căn giữa trong
+              box hẹp hơn và lệch khỏi ảnh đã xử lý khi kéo. */}
           <div
-            className="absolute inset-0 overflow-hidden bg-page/40"
-            style={{ width: `${sliderPosition}%` }}
+            className="absolute inset-0 flex items-center justify-center p-4 bg-page/40"
+            style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}
           >
-            <div className="relative w-full h-full flex items-center justify-center p-4">
-              <img
-                src={originalUrl}
-                alt={originalText}
-                className="max-h-full max-w-full object-contain pointer-events-none"
-                style={{
-                  width: containerWidth > 0 ? `${containerWidth}px` : '100%',
-                  maxWidth: 'none',
-                }}
-              />
-            </div>
+            <img
+              src={originalUrl}
+              alt={originalText}
+              className="max-h-full max-w-full object-contain pointer-events-none"
+            />
           </div>
 
           {/* Vertical divider line */}

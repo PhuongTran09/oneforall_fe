@@ -1,4 +1,6 @@
 import { useSyncExternalStore } from 'react'
+import { t } from '../../i18n/langStore'
+import { isBackendDown } from '../../services/backendStatusStore'
 
 export interface ErrorPopupInput {
   message: string
@@ -37,6 +39,9 @@ export function showErrorPopup(input: ErrorPopupInput): void {
   if (!input.message) return
   // Lỗi trùng đang chờ user xác nhận → không nhảy popup đôi.
   if (queue.some((e) => e.message === input.message)) return
+  // Backend không với tới được thì BackendStatusBanner đã nói đúng message này và còn
+  // hiện suốt: popup thêm một lần nữa là báo hai lần cho một nguyên nhân.
+  if (isBackendDown() && input.message === t('errors.unavailable')) return
   queue = [...queue, { id: nextId++, ...input }]
   emit()
 }

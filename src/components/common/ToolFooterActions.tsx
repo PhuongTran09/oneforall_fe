@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react'
 import { useOutletContext } from 'react-router-dom'
-import { ArrowRight, Bookmark, Copy, HeartHandshake, Mail, Sparkles } from 'lucide-react'
+import { ArrowRight, Copy, HeartHandshake, Mail, Sparkles } from 'lucide-react'
 import { LocaleLink } from '../../i18n/LocaleLink'
 import { t } from '../../i18n/langStore'
 import { showToast } from '../feedback/toastStore'
@@ -116,15 +116,6 @@ export function ToolFooterActions() {
     }
   }
 
-  // Trình duyệt không cho web page tự tạo bookmark — chỉ hướng dẫn phím tắt thật.
-  const bookmarkHint = () => {
-    const isMac = /Mac|iPhone|iPad/.test(navigator.userAgent)
-    showToast({
-      type: 'info',
-      message: t('toolFooter.bookmarkHint', { shortcut: isMac ? '⌘D' : 'Ctrl+D' }),
-    })
-  }
-
   return (
     <div className="pt-2">
       <div className="bg-surface border border-[rgba(255,59,48,0.25)] clip-corner-card card-3d card-3d-dim divide-y divide-edge">
@@ -173,13 +164,6 @@ export function ToolFooterActions() {
                 {s.icon}
               </a>
             ))}
-          </ActionRow>
-
-          <ActionRow title={t('toolFooter.bookmarkTitle')} desc={t('toolFooter.bookmarkDesc')}>
-            <button type="button" onClick={bookmarkHint} className={linkBtnStyles}>
-              <Bookmark className="w-3.5 h-3.5" />
-              {t('toolFooter.bookmarkCta')}
-            </button>
           </ActionRow>
 
           <ActionRow title={t('toolFooter.copyTitle')} desc={pageUrl}>

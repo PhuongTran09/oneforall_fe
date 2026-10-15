@@ -1,5 +1,6 @@
 import { env } from '../../utils/env'
 import { getAccessToken } from '../authStore'
+import { reportBackend } from '../backendStatusStore'
 import {
   ApiClientError,
   type FastApiErrorResponse,
@@ -7,6 +8,9 @@ import {
 } from './types'
 
 const REQUEST_TIMEOUT_MS = 30000
+
+// Ba status chỉ do lớp proxy đứng trước API sinh ra khi chính API không trả lời.
+const GATEWAY_DOWN_STATUSES = new Set([502, 503, 504])
 
 export function resolveUrl(endpoint: string, params?: RequestOptions['params']): string {
   const base = env.apiBaseUrl.replace(/\/+$/, '')
@@ -108,11 +112,23 @@ export class ApiClient {
     }
 
     try {
-      const response = await fetch(url, {
-        ...init,
-        headers,
-        signal: controller.signal,
-      })
+      let response: Response
+      try {
+        response = await fetch(url, {
+          ...init,
+          headers,
+          signal: controller.signal,
+        })
+      } catch (err) {
+        // AbortError = timeout 30s nội bộ hoặc caller hủy — một cú upload nặng trên mạng
+        // chậm cũng ra hình này, nên không được tính là hạ tầng chết. Ngoài ra mới là
+        // fetch chết thật (BE sập, proxy chết, laptop offline).
+        if ((err as Error)?.name !== 'AbortError') reportBackend('down')
+        throw err
+      }
+      // Backend đã trả lời HTTP thì còn sống, trừ bộ ba gateway 502/503/504: lớp proxy
+      // dựng lên nhưng upstream không đáp. 500 là bug ứng dụng, không phải sự cố hạ tầng.
+      reportBackend(GATEWAY_DOWN_STATUSES.has(response.status) ? 'down' : 'up')
 
       if (!response.ok) {
         let errorData: unknown

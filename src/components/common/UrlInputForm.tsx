@@ -4,6 +4,7 @@ import { Button } from './Button'
 import { SegmentedControl } from './SegmentedControl'
 import { t } from '../../i18n/langStore'
 import { mediaApi, type UrlInfo } from '../../services/api/mediaApi'
+import { useAuth } from '../../services/authStore'
 
 export interface UrlInputFormProps {
   platform?: 'youtube' | 'tiktok'
@@ -65,20 +66,23 @@ export function UrlInputForm({
     data: UrlInfo | null
   } | null>(null)
   const [dismissedPreviewKey, setDismissedPreviewKey] = useState<string | null>(null)
+  const { session } = useAuth()
 
   const urlValid = isValidForPlatform(url, platform)
   const trimmedUrl = url.trim()
   const fetched = previewFetched && previewFetched.key === trimmedUrl ? previewFetched : null
   const preview: { status: 'idle' | 'loading' | 'ready' | 'error'; data: UrlInfo | null } =
-    !urlValid || dismissedPreviewKey === trimmedUrl
+    !urlValid || !session || dismissedPreviewKey === trimmedUrl
       ? { status: 'idle', data: null }
       : fetched
         ? { status: fetched.status, data: fetched.data }
         : { status: 'loading', data: null }
 
   // Dán link xong debounce 700ms rồi mới fetch preview — tránh gọi oEmbed mỗi lần gõ.
+  // /media/url-info cần Bearer (AUTH_REQUIRED_MEDIA=true) → khách chưa đăng nhập thì không
+  // gọi, nếu không mỗi link dán vào sẽ trả 401 và báo "không xem trước được" sai nguyên nhân.
   useEffect(() => {
-    if (!isValidForPlatform(url, platform)) return
+    if (!session || !isValidForPlatform(url, platform)) return
     let cancelled = false
     const key = url.trim()
     const timer = setTimeout(async () => {
@@ -93,7 +97,7 @@ export function UrlInputForm({
       cancelled = true
       clearTimeout(timer)
     }
-  }, [url, platform])
+  }, [url, platform, session])
 
   const qualityOptions = qualityOptionsFor(selectedFormat)
 

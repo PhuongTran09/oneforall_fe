@@ -419,20 +419,17 @@ html[data-theme='light'] {
   100% { background-position: 100% center; }
 }
 
-/* ─── Theme toggle: rail góc cạnh theo house style (clip + crimson) ─────── */
-/* Trạng thái đọc từ html[data-theme] (theme.ts set) nên màu nền/thumb đổi
-   theo đúng theme thật của site, không cần class on/off từ React. */
+/* ─── Theme toggle: phẳng theo house style (token, không shadow) ────────── */
+/* Trạng thái đọc từ html[data-theme] (theme.ts set) nên nền/thumb đổi theo đúng theme
+   thật của site, không cần class on/off từ React. Toàn bộ màu đi qua token runtime:
+   light theme tự re-map ở khối đầu file, không còn block hex riêng. */
 .theme-toggle {
   position: relative;
-  width: 64px;
-  height: 32px;
+  width: 56px;
+  height: 30px;
   border: 1px solid var(--border-subtle);
-  background: linear-gradient(180deg, #1b1b23 0%, var(--bg-surface) 100%);
-  box-shadow:
-    inset 0 2px 5px rgba(0, 0, 0, 0.55),
-    inset 0 1px 0 rgba(255, 255, 255, 0.12),
-    0 2px 6px rgba(0, 0, 0, 0.35);
-  transition: background 250ms ease, border-color 250ms ease, box-shadow 250ms ease, transform 120ms ease;
+  background: var(--bg-surface);
+  transition: background 250ms ease, border-color 250ms ease, transform 120ms ease;
 }
 
 .theme-toggle:active {
@@ -440,41 +437,29 @@ html[data-theme='light'] {
 }
 
 .theme-thumb {
+  /* rail 56 − 2 border − thumb 24 = hở đều 2px mỗi bên, travel 26px */
   position: absolute;
-  top: 3px;
-  left: 3px;
+  top: 2px;
+  left: 2px;
   width: 24px;
   height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #252530;
-  color: #cbd0da;
+  background: var(--bg-elevated);
+  color: var(--text-soft);
   /* cùng ngôn ngữ vát góc với clip-corner-btn, bo 5px trên thumb 24px */
   clip-path: polygon(0 0, calc(100% - 5px) 0, 100% 5px, 100% 100%, 5px 100%, 0 calc(100% - 5px));
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.14),
-    inset 0 -2px 6px rgba(255, 59, 48, 0.18);
-  transition: transform 250ms cubic-bezier(0.4, 0, 0.2, 1), background 250ms ease, color 250ms ease, box-shadow 250ms ease;
+  transition: transform 250ms cubic-bezier(0.4, 0, 0.2, 1), background 250ms ease, color 250ms ease;
 }
 
-html[data-theme='light'] .theme-toggle {
-  border-color: #d8dbe8;
-  background: linear-gradient(180deg, #eef0f4 0%, #e5e7eb 100%);
-  box-shadow:
-    inset 0 2px 4px rgba(0, 0, 0, 0.14),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9),
-    0 2px 6px rgba(15, 23, 42, 0.12);
-}
-
+/* Chế độ sáng = "bật": dùng crimson chủ đạo làm tín hiệu thay vì đổ bóng.
+   #fff duy nhất ở đây là có chủ đích: glyph phải trắng trên nền đỏ ở CẢ hai theme,
+   còn --text-ink thì light đã đổi thành gần đen. */
 html[data-theme='light'] .theme-thumb {
-  transform: translateX(32px);
-  background: #ffffff;
-  color: #ff6b4a;
-  box-shadow:
-    inset 0 1px 0 #ffffff,
-    inset 0 -2px 0 rgba(255, 107, 74, 0.35),
-    0 2px 4px rgba(15, 23, 42, 0.2);
+  transform: translateX(26px);
+  background: var(--text-brand);
+  color: #fff;
 }
 
 /* ─── Animated workflow pipeline ────────────────────────────────────────── */
@@ -653,6 +638,18 @@ html[data-theme='light'] .theme-thumb {
   animation: loading-sweep 1.4s ease-in-out infinite;
 }
 
+/* ─── Public live stats ─────────────────────────────────────────────────── */
+/* Số liệu đổi theo nhịp poll 30s. Một hiệu ứng nhẹ đủ để thấy giá trị vừa
+   thay đổi — không đếm số bằng JS vì timer sẽ re-render cả trang chủ. */
+@keyframes live-value-in {
+  from { opacity: 0; transform: translateY(3px); }
+  to   { opacity: 1; transform: none; }
+}
+.live-value {
+  display: inline-block;
+  animation: live-value-in 350ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
 /* ─── Toast ──────────────────────────────────────────────────────────────── */
 .toast-item {
   filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.35));
@@ -719,6 +716,7 @@ html[data-theme='light'] .btn-3d::after {
   .card-3d           { transform: none; transition: border-color 0.25s ease-out; }
   .card-3d::before   { display: none; }
   .card-3d:hover     { filter: none; }
+  .live-value { animation: none; }
   /* Pipeline: giữ line tĩnh + thứ tự số rõ, tắt toàn bộ chuyển động */
   .pipeline-step,
   .pipeline-flare,

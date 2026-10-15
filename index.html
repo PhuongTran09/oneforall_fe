@@ -1,53 +1,132 @@
 <!doctype html>
 <html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
 
-<head>
-  <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "name": "One ForAll",
-  "alternateName": "One ForAll",
-  "url": "https://oneforall.io.vn/"
-}
-</script>
-  <script>
-    // AdSense Auto ads (page-level, do tài khoản AdSense điều khiển — không qua slot của app).
-    // Nạp cho mọi visitor (free + ẩn danh); chỉ chặn gói Pro — ofa-plan do
-    // entitlementsStore cache từ /users/me, chưa biết = mặc định Free.
-    try {
-      var adFree = localStorage.getItem('ofa-plan') === 'premium'
-      if (!adFree) {
-        var s = document.createElement('script')
-        s.async = true
-        s.crossOrigin = 'anonymous'
-        s.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8618568683865621'
-        document.head.appendChild(s)
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+
+    <!-- SEO: Website identity -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "One ForAll",
+        "alternateName": "OneForAll",
+        "url": "https://oneforall.io.vn/"
       }
-    } catch (e) {
-      // localStorage blocked → mặc định Free, ads vẫn nạp.
-    }
-  </script>
-  <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="/oneforall.svg" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!--
-      Title + mô tả tĩnh: SEOHead chỉ ghi sau khi JS boot, nên trang chủ cần bản có sẵn —
-      đây là nhãn Chrome/crawler đọc được cho "/" (prerender.js không sinh home).
-      Nội dung khớp home.seoTitle/seoDesc trong i18n/dict.vi.ts (vi là ngôn ngữ mặc định).
-    -->
-  <title>One ForAll - Nền Tảng Công Cụ Trực Tuyến Đa Năng Cho Mọi Nhu Cầu</title>
-  <meta name="description"
-    content="Tải video từ YouTube và TikTok bằng liên kết được hỗ trợ, xóa nền ảnh, nén ảnh WebP và chuyển đổi PDF, Word, Excel cùng nhiều định dạng tệp trực tuyến với One ForAll." />
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="One ForAll" />
-  <meta property="og:title" content="One ForAll - Nền Tảng Công Cụ Trực Tuyến Đa Năng Cho Mọi Nhu Cầu" />
-  <meta name="twitter:card" content="summary_large_image" />
-</head>
+    </script>
 
-<body>
-  <div id="root"></div>
-  <script type="module" src="/src/main.tsx"></script>
-</body>
+    <!-- Favicon -->
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="/oneforall.svg"
+    />
 
+    <!-- Canonical URL -->
+    <link
+      rel="canonical"
+      href="https://oneforall.io.vn/"
+    />
+
+    <!--
+        Title + mô tả tĩnh PHẢI khớp home.seoTitle/seoDesc trong i18n/dict.vi.ts (vi là mặc định):
+        SEOHead chỉ ghi sau khi JS boot, nên đây là nhãn crawler/Chrome đọc được cho "/"
+        (prerender.js không sinh home). Lệch nhau = nhãn đổi ngay sau khi trang chạy.
+      -->
+    <title>One ForAll - Nền Tảng Công Cụ Trực Tuyến Đa Năng Cho Mọi Nhu Cầu</title>
+
+    <meta
+      name="description"
+      content="Tải video từ YouTube và TikTok bằng liên kết được hỗ trợ, xóa nền ảnh, nén ảnh WebP và chuyển đổi PDF, Word, Excel cùng nhiều định dạng tệp trực tuyến với One ForAll."
+    />
+
+    <meta name="application-name" content="One ForAll" />
+
+    <meta name="theme-color" content="#0a0a0f" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+
+    <meta
+      property="og:site_name"
+      content="One ForAll"
+    />
+
+    <meta
+      property="og:url"
+      content="https://oneforall.io.vn/"
+    />
+
+    <meta
+      property="og:title"
+      content="One ForAll - Nền Tảng Công Cụ Trực Tuyến Đa Năng Cho Mọi Nhu Cầu"
+    />
+
+    <meta
+      property="og:description"
+      content="Khám phá các công cụ xử lý ảnh, video và tài liệu trực tuyến với One ForAll."
+    />
+
+
+    <meta
+      property="og:image"
+      content="https://oneforall.io.vn/ogimage.png"
+
+    />
+    <meta
+      name="twitter:card"
+      content="summary_large_image"
+    />
+
+    <meta
+      name="twitter:title"
+      content="One ForAll - Nền Tảng Công Cụ Trực Tuyến Đa Năng Cho Mọi Nhu Cầu"
+    />
+
+    <meta
+      name="twitter:description"
+      content="Các công cụ trực tuyến hỗ trợ xử lý ảnh, video và chuyển đổi tài liệu với One ForAll."
+    />
+
+    <!-- Google AdSense -->
+    <script>
+      try {
+        var adFree = localStorage.getItem("ofa-plan") === "premium";
+
+        if (!adFree) {
+          var adsScript = document.createElement("script");
+
+          adsScript.async = true;
+          adsScript.crossOrigin = "anonymous";
+          adsScript.src =
+            "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8618568683865621";
+
+          document.head.appendChild(adsScript);
+        }
+      } catch (error) {
+        // Nếu localStorage không khả dụng, mặc định tải quảng cáo.
+        var fallbackAdsScript = document.createElement("script");
+
+        fallbackAdsScript.async = true;
+        fallbackAdsScript.crossOrigin = "anonymous";
+        fallbackAdsScript.src =
+          "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8618568683865621";
+
+        document.head.appendChild(fallbackAdsScript);
+      }
+    </script>
+  </head>
+
+  <body>
+    <div id="root"></div>
+
+    <script
+      type="module"
+      src="/src/main.tsx"
+    ></script>
+  </body>
 </html>

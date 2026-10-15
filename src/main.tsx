@@ -5,6 +5,7 @@ import App from './App.tsx'
 import { ToastProvider } from './components/feedback/ToastProvider'
 import { ErrorBoundary } from './components/feedback/ErrorBoundary'
 import { ErrorPopupViewport } from './components/feedback/ErrorPopupViewport'
+import { BackendStatusBanner } from './components/feedback/BackendStatusBanner'
 import { initCardMotion } from './utils/cardMotion'
 import { applyTheme, getTheme } from './utils/theme'
 import { initLang } from './i18n/langStore'
@@ -19,6 +20,7 @@ createRoot(document.getElementById('root')!).render(
       <ToastProvider>
         <App />
         <ErrorPopupViewport />
+        <BackendStatusBanner />
       </ToastProvider>
     </ErrorBoundary>
   </StrictMode>,

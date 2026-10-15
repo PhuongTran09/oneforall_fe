@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useOutletContext } from 'react-router-dom'
 import { Check, ShieldCheck, Zap, ChevronDown } from 'lucide-react'
 import { SEO_TOOLS, type ToolConfig } from '../config/seoTools'
 import { detectFileFormat, resolveRoute } from '../config/conversionMatrix'
@@ -27,6 +27,7 @@ import { showErrorPopup } from '../components/feedback/errorPopupStore'
 import { hasAcceptedTerms, openConsentModal } from '../components/consent/consentStorage'
 import { stripLocale, t, useI18n, withLocale } from '../i18n/langStore'
 import { useToolConfig } from '../i18n/toolConfig'
+import { useAuth } from '../services/authStore'
 import {
   mediaApi,
   convertApi,
@@ -46,6 +47,8 @@ import {
 
 export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfig }) {
   const location = useLocation()
+  const layout = useOutletContext<{ openAuth?: (mode: 'login' | 'register') => void } | null>()
+  const { session } = useAuth()
   const { lang } = useI18n()
   const tool = useToolConfig(
     configOverride || SEO_TOOLS[stripLocale(location.pathname).path],
@@ -248,7 +251,17 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
     }
   }
 
+  // BE từ chối tạo job khi chưa có Bearer (AUTH_REQUIRED_MEDIA/IMAGE/CONVERT = true,
+  // app/api/deps.py) → chặn ở nhịp bấm "Xử lý" và mở modal đăng nhập, thay vì gửi request
+  // ăn 401 rồi bật popup lỗi. Trang tool vẫn mở cho khách đọc (SEO); chỉ hành vi xử lý cần phiên.
+  const ensureLoggedIn = () => {
+    if (session) return true
+    layout?.openAuth?.('login')
+    return false
+  }
+
   const handleUrlSubmit = async (url: string, format: string, quality: string) => {
+    if (!ensureLoggedIn()) return
     // Chức năng xử lý (không phải trang công khai) chỉ chạy sau khi người dùng đồng ý điều khoản.
     if (!hasAcceptedTerms()) {
       openConsentModal('main')
@@ -303,6 +316,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
     format: string,
     options: ParamOptions = {},
   ) => {
+    if (!ensureLoggedIn()) return
     // Ngắt trước khi tạo job: chưa đồng ý điều khoản thì mở modal, không gửi request.
     if (!hasAcceptedTerms()) {
       openConsentModal('main')
@@ -498,7 +512,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
                   onReset={handleReset}
                 />
 
-                {/* Khu vực tiện ích: nâng cấp / ủng hộ / chia sẻ / bookmark / copy / liên hệ */}
+                {/* Khu vực tiện ích: nâng cấp / ủng hộ / chia sẻ / copy / liên hệ */}
                 <ToolFooterActions />
               </div>
             )}
