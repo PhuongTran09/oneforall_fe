@@ -36,7 +36,7 @@ export function adsDecision(me: UserMe | null, planKnown: boolean): AdsDecision 
   return needsCookieDecision() ? 'wait' : 'off'
 }
 
-/** Một định nghĩa duy nhất về quyền hiện quảng cáo, dùng cho cả CTA lẫn điểm nạp script. */
+/** Một định nghĩa duy nhất về quyền hiện quảng cáo, dùng cho mọi điểm mở tab/điểm nạp script. */
 export function useAdsDecision(): AdsDecision {
   const { ready, session } = useAuth()
   const { me } = useEntitlements()
@@ -80,4 +80,23 @@ function loadOnce(src: string): boolean {
 export function loadSocialBar(): boolean {
   if (!ADS.socialBar.enabled) return false
   return loadOnce(ADS.socialBar.src)
+}
+
+// Một tab tài trợ cho mỗi lượt bấm xử lý; chặn nhấn đúp/kích hoạt lặp.
+const SMARTLINK_COOLDOWN_MS = 5000
+let lastSmartlinkAt = 0
+
+/**
+ * Điểm mở tab smartlink DUY NHẤT: theo cú bấm "Bắt đầu xử lý"/"Bắt đầu tải" hợp lệ
+ * (chủ site yêu cầu 10/2026). Gọi ĐỒNG BỘ trong user gesture, trước await đầu tiên
+ * — giống openAffiliateTab; popup bị chặn thì window.open trả null, luồng xử lý vẫn
+ * chạy. `decision` bắt buộc truyền vào để không mở cho user Pro hoặc chưa đồng ý
+ * cookie quảng cáo.
+ */
+export function openSmartlinkTab(decision: AdsDecision): void {
+  if (!ADS.smartlink.enabled || decision !== 'load') return
+  const now = Date.now()
+  if (now - lastSmartlinkAt < SMARTLINK_COOLDOWN_MS) return
+  lastSmartlinkAt = now
+  window.open(ADS.smartlink.url, '_blank', 'noopener,noreferrer')
 }

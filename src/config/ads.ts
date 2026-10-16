@@ -4,7 +4,10 @@
  * publisher, nên không tham số hoá, không suy luận từ env.
  */
 export const ADS = {
-  /** Smartlink: CTA ta tự vẽ, mở tab mới do người dùng chủ động bấm. */
+  /**
+   * Smartlink: không có block quảng cáo nào trên trang; một tab tự mở khi người
+   * dùng bấm "Bắt đầu xử lý"/"Bắt đầu tải" hợp lệ — cùng cách mở với tab affiliate.
+   */
   smartlink: {
     enabled: import.meta.env.VITE_ADS_SMARTLINK_ENABLED === 'true',
     url: 'https://araplhn.org/4/9a9585f576aa6d806985ecb4582b9dac',

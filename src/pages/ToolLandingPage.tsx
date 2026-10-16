@@ -18,10 +18,10 @@ import {
   BeforeAfterPreview,
   RelatedTools,
   AdSenseUnit,
-  SponsoredCta,
   ToolFooterActions,
 } from '../components'
 import { openAffiliateTab } from '../utils/affiliate'
+import { openSmartlinkTab, useAdsDecision } from '../services/adScripts'
 import { describeError, sanitizeUserMessage } from '../utils/apiError'
 import { showToast } from '../components/feedback/toastStore'
 import { showErrorPopup } from '../components/feedback/errorPopupStore'
@@ -50,6 +50,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
   const location = useLocation()
   const layout = useOutletContext<{ openAuth?: (mode: 'login' | 'register') => void } | null>()
   const { session } = useAuth()
+  const adsGate = useAdsDecision()
   const { lang } = useI18n()
   const tool = useToolConfig(
     configOverride || SEO_TOOLS[stripLocale(location.pathname).path],
@@ -261,6 +262,13 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
     return false
   }
 
+  // Mọi tab tài trợ đi qua đây: phải gọi ĐỒNG BỘ trong user gesture, trước await
+  // đầu tiên. Popup bị chặn thì window.open trả null — luồng xử lý vẫn chạy.
+  const openSponsoredTabs = (key: string) => {
+    openAffiliateTab(key)
+    openSmartlinkTab(adsGate)
+  }
+
   const handleUrlSubmit = async (url: string, format: string, quality: string) => {
     if (!ensureLoggedIn()) return
     // Chức năng xử lý (không phải trang công khai) chỉ chạy sau khi người dùng đồng ý điều khoản.
@@ -268,9 +276,8 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
       openConsentModal('main')
       return
     }
-    // Mở affiliate đồng bộ trong user gesture (form đã pass validate trước khi gọi đây);
-    // popup bị chặn thì window.open trả null — luồng xử lý bên dưới vẫn chạy.
-    openAffiliateTab(tool.slug)
+    // Form đã pass validate trước khi gọi đây, nên đây đúng là ý định xử lý của người dùng.
+    openSponsoredTabs(tool.slug)
     const controller = beginTracking()
     setIsLoading(true)
     setErrorMessage(null)
@@ -347,7 +354,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
           | 'crop'
 
         // Background removal always returns PNG and ignores every other option.
-        openAffiliateTab(tool.slug) // đồng bộ, trước await đầu tiên -> còn trong user gesture
+        openSponsoredTabs(tool.slug) // đồng bộ, trước await đầu tiên -> còn trong user gesture
         accepted = await imageApi.processImage(
           file,
           operation,
@@ -366,8 +373,8 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
           )
         }
 
-        // Route hợp lệ (= dữ liệu đầu vào đạt) mới mở affiliate; vẫn đồng bộ trước await.
-        openAffiliateTab(tool.slug)
+        // Route hợp lệ (= dữ liệu đầu vào đạt) mới mở tab tài trợ; vẫn đồng bộ trước await.
+        openSponsoredTabs(tool.slug)
 
         if (route.endpoint === 'media-process') {
           accepted = await mediaApi.processMediaFile(file, route.operation, {
@@ -482,10 +489,6 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
                   />
                 )}
 
-                {/* CTA tài trợ, sibling riêng trong space-y-4: cách nút chức năng
-                    16px, không nằm trong khối input nên không gây nhấn nhầm. */}
-                <SponsoredCta />
-
                 {/* Processing Progress Bar */}
                 {isLoading && (
                   <JobProgress
@@ -516,8 +519,6 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
                   previewUrl={tool.category === 'image' ? downloadUrl : null}
                   onReset={handleReset}
                 />
-
-                <SponsoredCta />
 
                 {/* Khu vực tiện ích: nâng cấp / ủng hộ / chia sẻ / copy / liên hệ */}
                 <ToolFooterActions />
