@@ -116,6 +116,16 @@ export const en: Dict = {
     "successDesc": "The result file is ready to download to your computer.",
     "successTitle": "Processing complete!"
   },
+  "captcha": {
+    "title": "Verify you are not a robot",
+    "desc": "This session started several jobs in a short time. Complete the check to continue.",
+    "loading": "Loading the verification widget...",
+    "cancel": "Cancel",
+    "cancelled": "Verification cancelled, your job was not submitted.",
+    "error": "Verification failed. Please try again.",
+    "expired": "The verification expired. Please try again.",
+    "unavailable": "Verification is unavailable right now. Please try again later."
+  },
   "errorPopup": {
     "title": "Something went wrong",
     "ok": "Got it",

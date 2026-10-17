@@ -19,6 +19,14 @@ export const env = {
   supabaseAnonKey: import.meta.env.VITE_SUPABASE_ANON_KEY || '',
 
   /**
+   * Cloudflare Turnstile cho caller ẩn danh (nối GĐ1 chống spam của BE). Site key là public
+   * (widget render phía browser); secret key CHỈ nằm ở BE. Cờ tắt hoặc site key trống thì FE
+   * không hỏi xác minh — và một request bị BE chặn sẽ chết với thông báo không xác minh được.
+   */
+  turnstileEnabled: import.meta.env.VITE_TURNSTILE_ENABLED === 'true',
+  turnstileSiteKey: import.meta.env.VITE_TURNSTILE_SITE_KEY || '',
+
+  /**
    * Kiểm tra môi trường hiện tại
    */
   isDev: import.meta.env.DEV,

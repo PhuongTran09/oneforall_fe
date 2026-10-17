@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { t } from '../../i18n/langStore'
-import { isAdFreeNow, useEntitlements } from '../../services/entitlementsStore'
+import { useAdsDecision } from '../../services/adScripts'
 
 const enabled = import.meta.env.VITE_ADSENSE_ENABLED === 'true'
 const client = import.meta.env.VITE_ADSENSE_CLIENT
@@ -27,10 +27,8 @@ export interface AdSenseUnitProps {
 }
 
 export function AdSenseUnit({ slot, className = '' }: AdSenseUnitProps) {
-  // Gói Pro không quảng cáo — BE (/users/me plan_policy.ads=false) là nguồn xác nhận.
-  // Free và ẩn danh (me=null) luôn bật; cookie quảng cáo không còn là điều kiện nạp.
-  const { me } = useEntitlements()
-  const active = enabled && !!client && !!slot && !isAdFreeNow(me)
+  const adsDecision = useAdsDecision()
+  const active = enabled && !!client && !!slot && adsDecision === 'load'
   const pushed = useRef(false)
 
   useEffect(() => {

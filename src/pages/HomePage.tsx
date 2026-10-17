@@ -77,9 +77,11 @@ export function HomePage() {
         onSelectPremium={() => context?.openPro()}
       />
       <FaqSection />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <AdSenseUnit slot={import.meta.env.VITE_ADSENSE_SLOT_BOTTOM ?? ''} />
-      </div>
+      {session === null && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <AdSenseUnit slot={import.meta.env.VITE_ADSENSE_SLOT_BOTTOM ?? ''} />
+        </div>
+      )}
     </div>
   )
 }

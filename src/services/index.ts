@@ -1,4 +1,5 @@
 export { apiClient, ApiClient } from './api/client'
+export { ensureAnonymousSession } from './api/anonymousSessionApi'
 export { ApiClientError } from './api/types'
 export type {
   ApiErrorDetail,

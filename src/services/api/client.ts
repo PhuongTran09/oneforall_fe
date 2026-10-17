@@ -1,6 +1,7 @@
 import { env } from '../../utils/env'
 import { getAccessToken } from '../authStore'
 import { reportBackend } from '../backendStatusStore'
+import { requestCaptchaToken } from '../captchaStore'
 import {
   ApiClientError,
   type FastApiErrorResponse,
@@ -84,8 +85,62 @@ function extractFastApiErrorMessage(errorData: unknown, statusText: string): str
   return statusText || 'Request failed'
 }
 
+/** 403 mang mã `captcha_required` của BE (app/services/anon_captcha.py) = cần giải ải. */
+function isCaptchaChallenge(error: unknown): boolean {
+  if (!(error instanceof ApiClientError) || error.status !== 403) return false
+  const detail = (error.details as { detail?: unknown } | undefined)?.detail
+  return (detail as { code?: unknown } | undefined)?.code === 'captcha_required'
+}
+
+/**
+ * Gắn token vào body của request đã gửi: BE đọc `cf_token` từ form-data HOẶC JSON body
+ * (image.py:49-64). `set` chứ không `append` để một body gửi lại hai lần không mang hai token.
+ */
+function withCaptchaToken(init: RequestInit, token: string): RequestInit {
+  const body = init.body
+  if (body instanceof FormData) {
+    body.set('cf_token', token)
+    return init
+  }
+  if (typeof body === 'string') {
+    try {
+      const parsed = JSON.parse(body) as unknown
+      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+        return { ...init, body: JSON.stringify({ ...(parsed as object), cf_token: token }) }
+      }
+    } catch {
+      // body là chuỗi thô: không có chỗ nhét token, retry nguyên trạng.
+    }
+  }
+  // shortcut: request không body mà bị chặn ải thì retry sẽ ăn 403 tiếp (UI báo lỗi
+  // captcha). Không route nào gate ải ở tình trạng đó — /image|media|convert-file đều là
+  // FormData. Upgrade khi có endpoint GET bị gate.
+  return init
+}
+
 export class ApiClient {
+  /**
+   * Một điểm duy nhất cho luồng xác minh Turnstile: BE chống spam trả
+   * 403 `{"detail": {"code": "captcha_required"}}` khi một phiên ẩn danh bị nghi, FE mở panel
+   * xác minh rồi retry ĐÚNG MỘT lần với token gắn vào body. Không vòng lặp: 403 lần thứ hai
+   * (token hỏng/hết hạn/mới mà BE đã tiêu) phải ném thẳng cho UI, vì tự động hỏi lại sinh ra
+   * đúng cái bão request mà ải này chặn.
+   */
   private async request<T>(
+    endpoint: string,
+    init: RequestInit,
+    options?: RequestOptions,
+  ): Promise<T> {
+    try {
+      return await this.send<T>(endpoint, init, options)
+    } catch (error) {
+      if (!isCaptchaChallenge(error)) throw error
+      const token = await requestCaptchaToken()
+      return this.send<T>(endpoint, withCaptchaToken(init, token), options)
+    }
+  }
+
+  private async send<T>(
     endpoint: string,
     init: RequestInit,
     options?: RequestOptions,
@@ -118,6 +173,12 @@ export class ApiClient {
           ...init,
           headers,
           signal: controller.signal,
+          // Phiên ẩn danh GĐ1 là cookie HttpOnly (`ofs_anon`) mà JS không đọc được: browser
+          // chỉ gửi nó khi request tự khai credentials. Mặc định 'same-origin' = API trên
+          // host khác (api.oneforall.io.vn vs FE) không kèm cookie → mọi job ẩn danh 401.
+          // BE phải đặt BACKEND_CORS_ORIGINS là danh sách tường minh (không '*') thì
+          // allow_credentials mới bật, nếu không mọi request bị CORS chặn.
+          credentials: 'include',
         })
       } catch (err) {
         // AbortError = timeout 30s nội bộ hoặc caller hủy — một cú upload nặng trên mạng

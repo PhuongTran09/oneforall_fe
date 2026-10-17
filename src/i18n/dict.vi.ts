@@ -114,6 +114,16 @@ export const vi = {
     "successDesc": "Tệp kết quả đã sẵn sàng để tải xuống lưu trữ về máy tính của bạn.",
     "successTitle": "Xử lý thành công!"
   },
+  "captcha": {
+    "title": "Xác minh bạn không phải robot",
+    "desc": "Hệ thống thấy phiên này vừa tạo nhiều công việc trong thời gian ngắn. Hãy hoàn tất ô xác minh để tiếp tục.",
+    "loading": "Đang tải ô xác minh...",
+    "cancel": "Hủy",
+    "cancelled": "Bạn đã hủy xác minh, công việc chưa được gửi.",
+    "error": "Không xác minh được. Vui lòng thử lại.",
+    "expired": "Ô xác minh đã hết hạn. Vui lòng thử lại.",
+    "unavailable": "Chưa thể xác minh ngay lúc này. Vui lòng thử lại sau."
+  },
   "errorPopup": {
     "title": "Đã xảy ra lỗi",
     "ok": "Đã hiểu",
@@ -402,7 +412,7 @@ export const vi = {
     "proF4": "Tệp kết quả được lưu trữ lâu hơn trước khi tự xóa",
     "proF5": "Hỗ trợ theo chính sách dịch vụ của One ForAll",
     "proF6": "Kích hoạt sau thanh toán xác thực, tự động hạ về Free khi hết hạn",
-    "proPrice": "49.000 đ",
+    "proPrice": "50.000 đ",
     "title": "Gói dịch vụ phù hợp với mọi nhu cầu"
   },
   "proModal": {
