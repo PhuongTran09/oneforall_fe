@@ -50,7 +50,7 @@ export const mediaApi = {
       formData.append('params', JSON.stringify(params))
     }
 
-    return apiClient.upload<JobAccepted>('/v1/media/process', formData)
+    return apiClient.upload<JobAccepted>('/v1/media/process', formData, { captcha: 'proactive' })
   },
 
   /**
@@ -68,6 +68,6 @@ export const mediaApi = {
       formData.append('params', JSON.stringify(params))
     }
 
-    return apiClient.upload<JobAccepted>('/v1/media/process', formData)
+    return apiClient.upload<JobAccepted>('/v1/media/process', formData, { captcha: 'proactive' })
   },
 }

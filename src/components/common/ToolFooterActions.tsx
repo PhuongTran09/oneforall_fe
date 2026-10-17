@@ -6,7 +6,7 @@ import { t } from '../../i18n/langStore'
 import { showToast } from '../feedback/toastStore'
 import { showErrorPopup } from '../feedback/errorPopupStore'
 
-// Link ủng hộ Momo chính thức của dự án — đổi thành '' để ẩn hàng "Ủng hộ".
+// Link ủng hộ Momo chính thức của dự án.
 const DONATE_URL = 'https://me.momo.vn/MRI4ubs7CgtBuQfEi6T8'
 
 // Dùng lại đúng địa chỉ support mà Footer và trang Privacy đang trỏ tới.

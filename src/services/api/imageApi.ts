@@ -27,6 +27,6 @@ export const imageApi = {
       formData.append('options', JSON.stringify(options))
     }
 
-    return apiClient.upload<JobAccepted>('/v1/image/process', formData)
+    return apiClient.upload<JobAccepted>('/v1/image/process', formData, { captcha: 'proactive' })
   },
 }

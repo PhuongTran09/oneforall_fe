@@ -2,7 +2,7 @@ import { useSyncExternalStore } from 'react'
 
 // "API có với được không" của cả tab — một cờ, không phải hàng đợi message.
 // Không có request probe riêng: mọi call đi qua apiClient đều báo về đây (client.ts),
-// nên nhịp heartbeat 30s ở App.tsx đã là mạch đo sẵn và BE sống lại là banner tự tắt.
+// nên nhịp heartbeat ở App.tsx đã là mạch đo sẵn và BE sống lại là banner tự tắt.
 // shortcut: tab ẩn thì heartbeat không chạy (App.tsx chặn document.hidden) -> đang ở tab
 // khác sẽ không thấy hồi phục cho tới khi tab hiện lại.
 

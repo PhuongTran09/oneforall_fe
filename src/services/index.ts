@@ -19,3 +19,11 @@ export { mediaApi } from './api/mediaApi'
 export type { MediaProcessParams } from './api/mediaApi'
 export { statsApi } from './api/statsApi'
 export { filesApi } from './api/filesApi'
+export { paymentsApi } from './api/paymentsApi'
+export type {
+  CreatePaymentRequest,
+  CreatePaymentResponse,
+  PaymentHistoryItem,
+  PaymentHistoryResponse,
+  PaymentStatus,
+} from './api/types'

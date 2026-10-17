@@ -93,8 +93,45 @@ export interface UserMe {
   updated_at: string
 }
 
+// Khớp app/schemas/payment.py — checkout SePay hosted (POST /v1/payments/sepay).
+export interface CreatePaymentRequest {
+  plan_id: string
+  /** SePay POST trả về đây sau khi thanh toán; BE ký HMAC vào URL này nên phải dựng trước. */
+  return_url: string
+  cancel_url: string
+  error_url?: string
+}
+
+export interface CreatePaymentResponse {
+  payment_id: string
+  order_code: number
+  checkout_url?: string | null
+  /** Bộ field đã ký, phải gửi nguyên bộ qua POST form tới checkout_url — thêm/bớt/sửa là hỏng signature. */
+  checkout_fields: Record<string, string>
+}
+
+/** models/payment.py::PaymentStatus — SePay chỉ ghi `paid` (qua IPN); `cancelled`/`expired` là đường legacy. */
+export type PaymentStatus = 'pending' | 'paid' | 'cancelled' | 'expired'
+
+export interface PaymentHistoryItem {
+  id: string
+  order_code: number
+  plan_id: string
+  amount_vnd: number
+  currency: string
+  status: PaymentStatus
+  created_at: string
+  paid_at: string | null
+}
+
+export interface PaymentHistoryResponse {
+  payments: PaymentHistoryItem[]
+}
+
 export interface RequestOptions extends Omit<RequestInit, 'body'> {
   params?: Record<string, string | number | boolean | undefined | null>
+  /** 'proactive' = xin token Turnstile TRƯỚC khi gửi (BE đã báo `captcha_required`). */
+  captcha?: 'proactive'
 }
 
 export interface ApiErrorDetail {

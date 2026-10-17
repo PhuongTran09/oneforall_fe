@@ -311,7 +311,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     supportedFormatsDesc:
       'Định dạng đầu ra khả dụng gồm PDF, DOCX, DOC, CSV, JSON, PNG, JPG, WEBP, SVG, MP4, MOV, MKV, WEBM, AVI, MP3, WAV, AAC, M4A, FLAC và OGG. Các lựa chọn phụ thuộc vào tệp nguồn.',
     faqList: [
-      { q: 'Dung lượng tệp tối đa được phép chuyển đổi là bao nhiêu?', a: 'Gói Free hỗ trợ tệp tối đa 50 MB, gói Professional lên đến 2 GB.' },
+      { q: 'Dung lượng tệp tối đa được phép chuyển đổi là bao nhiêu?', a: 'Tùy loại tệp và gói: video tối đa 200 MB ở gói Free và 2 GB ở gói Professional; tài liệu, ảnh và âm thanh có trần nhỏ hơn, ghi đầy đủ ở bảng giá.' },
       { q: 'Tệp của tôi có bị xem trộm không?', a: 'One ForAll ưu tiên quyền riêng tư của người dùng. Tệp được xử lý để thực hiện yêu cầu bạn gửi và không được công khai trên nền tảng. Tệp được dọn dẹp theo chính sách lưu trữ hiện hành. Vui lòng không tải lên thông tin nhạy cảm nếu chưa xem chính sách quyền riêng tư.' },
     ],
     relatedSlugs: ['/pdf-converter', '/document-converter', '/image-converter', '/video-converter'],

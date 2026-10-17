@@ -7,7 +7,10 @@ import './App.css'
 // nên một tab giữ nguyên sid dù điều hướng bao nhiêu lần (không đếm trùng), tab mới
 // là một phiên mới. Không chứa user_id, IP hay bất kỳ định danh nào.
 const SID_KEY = 'ofa-presence-sid'
-const BEAT_MS = 30_000
+const BEAT_MS = 60_000
+const MIN_BEAT_GAP_MS = 5_000
+let lastBeatAt = 0
+let beatInFlight: Promise<void> | null = null
 
 export function App() {
   useEffect(() => {
@@ -15,7 +18,11 @@ export function App() {
     sessionStorage.setItem(SID_KEY, sid)
 
     const beat = () => {
-      if (!document.hidden) void statsApi.beat(sid).catch(() => {})
+      if (document.hidden || beatInFlight || Date.now() - lastBeatAt < MIN_BEAT_GAP_MS) return
+      lastBeatAt = Date.now()
+      beatInFlight = statsApi.beat(sid).catch(() => {}).finally(() => {
+        beatInFlight = null
+      })
     }
     beat()
     const timer = setInterval(beat, BEAT_MS)
