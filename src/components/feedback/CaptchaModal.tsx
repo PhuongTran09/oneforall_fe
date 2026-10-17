@@ -8,7 +8,8 @@ import { getTheme } from '../../utils/theme'
 import { t } from '../../i18n/langStore'
 
 /**
- * Panel xác minh Turnstile, chỉ hiện khi BE trả 403 `captcha_required` (xem captchaStore).
+ * Panel xác minh Turnstile, mở khi BE báo cần ải — chủ động lúc xin phiên ẩn danh
+ * (`captcha_required`) hoặc phản ứng khi ăn 403 `captcha_required` (xem captchaStore).
  * Widget render bằng JS vào một div rỗng — Cloudflare không có bản React chính thức và cũng
  * không cần: token bay thẳng về store, React chỉ vẽ khung.
  *

@@ -1,7 +1,7 @@
 import { env } from '../../utils/env'
 import { getAccessToken } from '../authStore'
 import { reportBackend } from '../backendStatusStore'
-import { requestCaptchaToken } from '../captchaStore'
+import { captchaRequiredByBackend, requestCaptchaToken } from '../captchaStore'
 import {
   ApiClientError,
   type FastApiErrorResponse,
@@ -120,17 +120,24 @@ function withCaptchaToken(init: RequestInit, token: string): RequestInit {
 
 export class ApiClient {
   /**
-   * Một điểm duy nhất cho luồng xác minh Turnstile: BE chống spam trả
-   * 403 `{"detail": {"code": "captcha_required"}}` khi một phiên ẩn danh bị nghi, FE mở panel
-   * xác minh rồi retry ĐÚNG MỘT lần với token gắn vào body. Không vòng lặp: 403 lần thứ hai
-   * (token hỏng/hết hạn/mới mà BE đã tiêu) phải ném thẳng cho UI, vì tự động hỏi lại sinh ra
-   * đúng cái bão request mà ải này chặn.
+   * Hai đường vào của một ải Turnstile, cùng một điểm duy nhất:
+   * - CHỦ ĐỘNG: BE đã báo `captcha_required` lúc xin phiên ẩn danh → xin token TRƯỚC khi gửi,
+   *   người dùng giải ải rồi hãy tải tệp lên (upload vài trăm MB ăn 403 là phí băng thông của
+   *   cả hai phía).
+   * - PHẢN ỨNG: 403 `{"detail": {"code": "captcha_required"}}` (app/services/anon_captcha.py)
+   *   → mở panel xác minh rồi retry ĐÚNG MỘT lần với token gắn vào body.
+   * Không vòng lặp: 403 lần thứ hai (token hỏng/hết hạn/mới mà BE đã tiêu) phải ném thẳng cho
+   * UI, vì tự động hỏi lại sinh ra đúng cái bão request mà ải này chặn.
    */
   private async request<T>(
     endpoint: string,
     init: RequestInit,
     options?: RequestOptions,
   ): Promise<T> {
+    // Bearer quyết định: user đăng nhập không bao giờ đi qua ải (BE cũng không hỏi họ).
+    if (options?.captcha === 'proactive' && !getAccessToken() && captchaRequiredByBackend()) {
+      init = withCaptchaToken(init, await requestCaptchaToken())
+    }
     try {
       return await this.send<T>(endpoint, init, options)
     } catch (error) {

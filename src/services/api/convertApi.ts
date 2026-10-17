@@ -33,6 +33,6 @@ export const convertApi = {
       formData.append('options', JSON.stringify(options))
     }
 
-    return apiClient.upload<JobAccepted>('/v1/convert-file', formData)
+    return apiClient.upload<JobAccepted>('/v1/convert-file', formData, { captcha: 'proactive' })
   },
 }

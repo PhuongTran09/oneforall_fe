@@ -7,6 +7,7 @@ import {
   ProfilePage,
   HistoryPage,
   ResetPasswordPage,
+  PaymentReturnPage,
   TermsPage,
   PrivacyPage,
 } from '../pages'
@@ -51,6 +52,9 @@ function LocaleRoutes() {
 
       {/* Đích redirect của Supabase "Reset password" (route thực, không phải callback OAuth) */}
       <Route path="auth/reset-password" element={<ResetPasswordPage />} />
+
+      {/* Đích SePay redirect về (success/cancel/error) — noindex, không phải trang SEO */}
+      <Route path="payment-return" element={<PaymentReturnPage />} />
 
       {/* Trang pháp lý */}
       <Route path="terms" element={<TermsPage />} />

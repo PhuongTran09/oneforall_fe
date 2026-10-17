@@ -8,7 +8,8 @@ import { t, getLang } from '../i18n/langStore'
 import { useAuth } from '../services/authStore'
 import { refreshEntitlements, useEntitlements } from '../services/entitlementsStore'
 import { jobsApi } from '../services/api/jobsApi'
-import type { JobStats, UserMe } from '../services/api/types'
+import { paymentsApi, PREMIUM_PLAN_ID } from '../services/api/paymentsApi'
+import type { JobStats, PaymentHistoryItem, UserMe } from '../services/api/types'
 
 interface LayoutContext {
   openAuth: (mode: 'login' | 'register') => void
@@ -21,6 +22,41 @@ function formatDate(iso: string): string {
   } catch {
     return iso
   }
+}
+
+// shortcut: chỉ 10 đơn gần nhất (BE cho phép tới 100), thêm phân trang khi user có nhiều đơn.
+const PAYMENT_HISTORY_LIMIT = 10
+
+const PAY_STATUS_KEYS = ['pending', 'paid', 'cancelled', 'expired'] as const
+
+function payStatusLabel(status: string): string {
+  return (PAY_STATUS_KEYS as readonly string[]).includes(status)
+    ? t(`profile.payStatus.${status}`)
+    : status
+}
+
+function payStatusClass(status: string): string {
+  if (status === 'paid') return 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10'
+  if (status === 'pending') return 'text-brand-3 border-brand-2/30 bg-brand-2/10'
+  return 'text-soft border-edge bg-page'
+}
+
+function formatVnd(amount: number): string {
+  try {
+    return new Intl.NumberFormat(getLang(), {
+      style: 'currency',
+      currency: 'VND',
+      maximumFractionDigits: 0,
+    }).format(amount)
+  } catch {
+    return `${amount} ₫`
+  }
+}
+
+function planLabel(planId: string): string {
+  if (planId === PREMIUM_PLAN_ID) return t('profile.planPremium')
+  if (planId === 'free') return t('profile.planFree')
+  return planId
 }
 
 type Plan = 'free' | 'premium'
@@ -58,15 +94,17 @@ export function ProfilePage() {
   const context = useOutletContext<LayoutContext | null>()
   const { session, ready } = useAuth()
   const user = session?.user ?? null
+  const userId = user?.id ?? null
 
   // /users/me là state toàn cục (entitlementsStore) — trang chỉ đọc, không tự gọi
   // nữa, nếu không mỗi lần focus tab/refresh token sẽ nhân đôi request.
   const { me } = useEntitlements()
   const [stats, setStats] = useState<JobStats | null>(null)
+  const [payments, setPayments] = useState<PaymentHistoryItem[] | null>(null)
   const [attempt, setAttempt] = useState(0)
 
   useEffect(() => {
-    if (!user) return
+    if (!userId) return
     const controller = new AbortController()
     // Đọc MỘT lần khi mở trang — không polling (§8).
     void (async () => {
@@ -79,10 +117,22 @@ export function ProfilePage() {
           showErrorPopup({ message: t('history.error'), onRetry: () => setAttempt((a) => a + 1) })
         }
       }
+      try {
+        const rows = await paymentsApi.history(PAYMENT_HISTORY_LIMIT, controller.signal)
+        if (controller.signal.aborted) return
+        setPayments(rows)
+      } catch {
+        if (!controller.signal.aborted) {
+          showErrorPopup({
+            message: t('profile.paymentsError'),
+            onRetry: () => setAttempt((a) => a + 1),
+          })
+        }
+      }
     })()
     void refreshEntitlements()
     return () => controller.abort()
-  }, [user, attempt])
+  }, [userId, attempt])
 
   if (!ready) {
     return <div className="py-16 text-center text-soft">{t('profile.loading')}</div>
@@ -208,6 +258,37 @@ export function ProfilePage() {
           <div className="text-sm text-soft mt-1">{t('profile.filesAvailable')}</div>
         </div>
       </div>
+
+      {/* Lịch sử thanh toán — chữ về gói chuyển từ modal Pro sang; chỉ hiện khi request thành công (thất bại đã có popup retry). */}
+      {payments && (
+        <div className="bg-surface border border-edge clip-corner-card p-5 sm:p-6 mt-4">
+          <h2 className="text-base font-bold text-ink tracking-tight">{t('profile.paymentsTitle')}</h2>
+          <p className="text-xs text-soft mt-1 leading-relaxed">{t('profile.paymentsNote')}</p>
+          {payments.length === 0 ? (
+            <p className="text-sm text-soft mt-3">{t('profile.paymentsEmpty')}</p>
+          ) : (
+            <ul className="mt-2">
+              {payments.map((p) => (
+                <li key={p.id} className="flex items-center gap-3 py-2.5 border-b border-edge/60 last:border-0">
+                  <div className="flex-1 min-w-0">
+                    <div className="truncate text-sm text-ink font-medium">
+                      {planLabel(p.plan_id)} · {formatVnd(p.amount_vnd)}
+                    </div>
+                    <div className="text-xs text-soft mt-0.5 tabular-nums">
+                      {t('profile.payOrder')}: {p.order_code} · {formatDate(p.created_at)}
+                    </div>
+                  </div>
+                  <span
+                    className={`shrink-0 inline-flex items-center px-2.5 py-1 text-[10px] font-bold badge-angular border ${payStatusClass(p.status)}`}
+                  >
+                    {payStatusLabel(p.status)}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
 
       <LocaleLink
         to="/history"

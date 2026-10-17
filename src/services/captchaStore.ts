@@ -6,9 +6,11 @@ import { env } from '../utils/env'
  * Challenge Turnstile theo yêu cầu — cùng mô hình singleton với errorPopupStore/toastStore:
  * module thuần gọi được ngoài React, modal chỉ render khi có request đang chờ.
  *
- * BE (GĐ1 chống spam) chỉ hỏi xác minh khi heuristic nổ — một phiên ẩn danh tạo >=3 job
- * trong 10 phút — nên widget KHÔNG nằm sẵn trong trang: request gặp 403 `captcha_required`
- * mới mở panel, lấy token, rồi retry MỘT lần.
+ * BE (chống spam GĐ1) là nguồn duy nhất của câu hỏi "bao giờ cần ải": POST /anonymous/session
+ * — route FE vốn đã gọi trước MỌI lần tạo job — trả `captcha_required`. Khi flag bật, request
+ * tạo job xin token TRƯỚC khi gửi (đỡ phải upload vài trăm MB rồi mới ăn 403). Lưới dự phòng
+ * vẫn còn: flag lấy lúc xin phiên nên có thể trễ khi BE chạy ngưỡng > 0, và request gặp
+ * 403 `captcha_required` vẫn mở panel rồi retry MỘT lần với token.
  *
  * Token là single-use (BE giữ sha256 của token đã tiêu trong `anon_captcha._consumed_tokens`),
  * nên hai request đua nhau KHÔNG được dùng chung một token — request thứ hai sẽ ăn 403 replay.
@@ -24,6 +26,8 @@ let nextId = 1
 let active: { id: number; slot: Slot } | null = null
 const queue: Slot[] = []
 const listeners = new Set<() => void>()
+// BE trả lời qua `captcha_required` của /anonymous/session — FE không tự đoán chính sách.
+let requiredByBackend = false
 
 function emit() {
   listeners.forEach((listener) => listener())
@@ -39,6 +43,15 @@ function subscribe(listener: () => void) {
 /** id của challenge đang mở (null = không có panel nào). */
 function getSnapshot(): number | null {
   return active?.id ?? null
+}
+
+/** BE nói phiên ẩn danh hiện tại phải kèm token ở MỌI job — xem anonymousSessionApi. */
+export function setCaptchaRequiredByBackend(required: boolean): void {
+  requiredByBackend = required
+}
+
+export function captchaRequiredByBackend(): boolean {
+  return requiredByBackend
 }
 
 /**
