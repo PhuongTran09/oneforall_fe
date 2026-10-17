@@ -86,33 +86,6 @@
       content="Các công cụ trực tuyến hỗ trợ xử lý ảnh, video và chuyển đổi tài liệu với One ForAll."
     />
 
-    <!-- Google AdSense -->
-    <script>
-      try {
-        var adFree = localStorage.getItem("ofa-plan") === "premium";
-
-        if (!adFree) {
-          var adsScript = document.createElement("script");
-
-          adsScript.async = true;
-          adsScript.crossOrigin = "anonymous";
-          adsScript.src =
-            "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8618568683865621";
-
-          document.head.appendChild(adsScript);
-        }
-      } catch (error) {
-        // Nếu localStorage không khả dụng, mặc định tải quảng cáo.
-        var fallbackAdsScript = document.createElement("script");
-
-        fallbackAdsScript.async = true;
-        fallbackAdsScript.crossOrigin = "anonymous";
-        fallbackAdsScript.src =
-          "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8618568683865621";
-
-        document.head.appendChild(fallbackAdsScript);
-      }
-    </script>
   </head>
 
   <body>

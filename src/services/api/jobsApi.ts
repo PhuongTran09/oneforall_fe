@@ -22,7 +22,6 @@ const SERVER_HEARTBEAT_MS = 15_000
 const STREAM_SILENCE_MS = SERVER_HEARTBEAT_MS * 3
 
 export interface PollJobOptions {
-  token?: string | null
   signal?: AbortSignal
   onJob?: (job: JobPublicResponse) => void
   timeoutMs?: number
@@ -115,9 +114,9 @@ export function parseSseFrames(buffer: string): { frames: SseFrame[]; rest: stri
  */
 async function openJobEventStream(
   jobId: string,
-  options: { token?: string | null; signal?: AbortSignal; onFrame: (frame: SseFrame) => void },
+  options: { signal?: AbortSignal; onFrame: (frame: SseFrame) => void },
 ): Promise<void> {
-  const url = resolveUrl(`/v1/jobs/${jobId}/events`, { token: options.token })
+  const url = resolveUrl(`/v1/jobs/${jobId}/events`)
 
   // Controller riêng: watchdog im lặng được phép giết fetch mà không giết cả luồng theo
   // dõi (trackJob còn cần chuyển sang polling sau đó).
@@ -139,10 +138,7 @@ async function openJobEventStream(
         Accept: 'text/event-stream',
         ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
       },
-      // 'include' chứ không 'omit': /jobs/{id}/events đi qua JobAuthDep
-      // (AUTH_REQUIRED_JOBS=true) nên khách ẩn danh phải trình phiên bằng cookie — download
-      // token trong URL chỉ đủ SAU khi dependency đã cho qua, thiếu cookie là 401 trước khi
-      // kịp đọc token, và trackJob sẽ rơi xuống polling vô ích.
+      // 'include' để khách ẩn danh gửi cookie phiên qua JobAuthDep; không đưa token vào URL.
       credentials: 'include',
       cache: 'no-store',
       signal: fetchController.signal,
@@ -200,30 +196,16 @@ export const jobsApi = {
     await apiClient.delete<void>(`/v1/jobs/${jobId}`)
   },
 
-  /**
-   * Hủy job queued/processing. BE CAS theo trạng thái và chấp nhận HOẶC Bearer của chủ
-   * job HOẶC download token của chính job (job ẩn danh trên trang tool không có Bearer).
-   * 409 khi job vừa hoàn tất/thất bại — coi như không hủy được, UI refresh lại.
-   */
-  async cancelJob(jobId: string, token?: string | null): Promise<void> {
-    await apiClient.post(`/v1/jobs/${jobId}/cancel`, undefined, {
-      params: token ? { token } : undefined,
-    })
+  /** Hủy job qua Bearer hoặc cookie phiên ẩn danh, không đưa credential vào URL. */
+  async cancelJob(jobId: string): Promise<void> {
+    await apiClient.post(`/v1/jobs/${jobId}/cancel`)
   },
 
   /**
    * Lấy trạng thái Job hiện tại từ FastAPI backend
    */
-  async getJobStatus(
-    jobId: string,
-    token?: string | null,
-    signal?: AbortSignal,
-  ): Promise<JobPublicResponse> {
-    const params: Record<string, string> = {}
-    if (token) {
-      params.token = token
-    }
-    return apiClient.get<JobPublicResponse>(`/v1/jobs/${jobId}`, { params, signal })
+  async getJobStatus(jobId: string, signal?: AbortSignal): Promise<JobPublicResponse> {
+    return apiClient.get<JobPublicResponse>(`/v1/jobs/${jobId}`, { signal })
   },
 
   /**
@@ -262,7 +244,7 @@ export const jobsApi = {
 
         let job: JobPublicResponse
         try {
-          job = await jobsApi.getJobStatus(jobId, options.token, controller.signal)
+          job = await jobsApi.getJobStatus(jobId, controller.signal)
           consecutiveErrors = 0
         } catch (error) {
           if (controller.signal.aborted) {
@@ -387,7 +369,6 @@ export const jobsApi = {
       void (async () => {
         try {
           await openJobEventStream(jobId, {
-            token: options.token,
             signal: controller.signal,
             onFrame,
           })
@@ -415,7 +396,6 @@ export const jobsApi = {
           // pollJob đọc ngay ở tick đầu tiên, nên đó chính là lần đọc dự phòng — không cần
           // gọi getJobStatus() trước rồi mới poll.
           polled = await jobsApi.pollJob(jobId, {
-            token: options.token,
             signal: options.signal,
             onJob: options.onJob,
             timeoutMs: Math.max(0, deadline - Date.now()),

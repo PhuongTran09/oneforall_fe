@@ -28,6 +28,7 @@ import { showErrorPopup } from '../components/feedback/errorPopupStore'
 import { hasAcceptedTerms, openConsentModal } from '../components/consent/consentStorage'
 import { stripLocale, t, useI18n, withLocale } from '../i18n/langStore'
 import { useToolConfig } from '../i18n/toolConfig'
+import { getAccessToken, useAuth } from '../services/authStore'
 import {
   mediaApi,
   convertApi,
@@ -48,6 +49,7 @@ import {
 
 export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfig }) {
   const location = useLocation()
+  const { session } = useAuth()
   const adsGate = useAdsDecision()
   const { lang } = useI18n()
   const tool = useToolConfig(
@@ -124,7 +126,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
       if (tool) updateToolSnapshot(tool.slug, { pending: null })
       setJob(finishedJob)
       if (finishedJob.status === 'completed') {
-        setDownloadUrl(filesApi.getDirectDownloadUrl(finishedJob.id, token))
+        setDownloadUrl(filesApi.getDirectDownloadUrl(finishedJob.id, getAccessToken() ? token : null))
         showToast({ type: 'success', message: t('toolsPage.processSuccess') })
         return
       }
@@ -182,12 +184,11 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
     const controller = beginTracking()
     jobsApi
       .trackJob(pending.jobId, {
-        token: pending.token,
         signal: controller.signal,
         onJob: setJob,
       })
       .then((finishedJob) => {
-        if (isCurrentTracking(controller)) applyFinishedJob(finishedJob, pending.token)
+        if (isCurrentTracking(controller)) applyFinishedJob(finishedJob, null)
       })
       .catch((err) => {
         if (!isCurrentTracking(controller) || err instanceof JobPollCancelled) return
@@ -233,17 +234,13 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
     setIsLoading(false)
   }
 
-  // Hủy job đang chạy ngay trên trang: BE CAS status -> cancelled và worker polling
-  // should_abort sẽ dừng ffmpeg/yt-dlp. Kèm download token của job (snapshot pending) để
-  // hủy được cả khi người dùng là khách ẩn danh, không có Bearer. Luồng theo dõi
-  // SSE/poll vẫn còn chạy nên nó nhận trạng thái cuối và đóng qua applyFinishedJob.
+  // Hủy job qua Bearer hoặc cookie phiên; SSE/poll vẫn nhận trạng thái cuối.
   const handleCancelCurrent = async () => {
     const jobId = job?.id
     if (!jobId || isCancelling) return
-    const pending = tool ? getToolSnapshot(tool.slug)?.pending : null
     setIsCancelling(true)
     try {
-      await jobsApi.cancelJob(jobId, pending?.token ?? null)
+      await jobsApi.cancelJob(jobId)
     } catch (err) {
       showErrorPopup({ message: describeError(err, t('job.cancelError')).message })
     } finally {
@@ -258,8 +255,8 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
   // Mọi tab tài trợ đi qua đây: phải gọi ĐỒNG BỘ trong user gesture, trước await
   // đầu tiên. Popup bị chặn thì window.open trả null — luồng xử lý vẫn chạy.
   const openSponsoredTabs = (key: string) => {
-    openAffiliateTab(key)
-    openSmartlinkTab(adsGate)
+    if (adsGate === 'load') openAffiliateTab(key)
+    openSmartlinkTab(adsGate, session === null)
   }
 
   const handleUrlSubmit = async (url: string, format: string, quality: string) => {
@@ -284,7 +281,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
       const operation = tool.backendOperation === 'extract-audio' ? 'extract-audio' : 'url_download'
       const accepted = await mediaApi.processUrl(url, operation, { format, quality })
       updateToolSnapshot(tool.slug, {
-        pending: { jobId: accepted.job_id, token: accepted.download_token ?? null },
+        pending: { jobId: accepted.job_id },
       })
 
       setResultFormat(format)
@@ -293,7 +290,6 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
       setResultFileName(`oneforall_${format}_${stamp}.${format}`)
 
       const finishedJob = await jobsApi.trackJob(accepted.job_id, {
-        token: accepted.download_token,
         signal: controller.signal,
         onJob: setJob,
       })
@@ -391,11 +387,10 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
       }
 
       updateToolSnapshot(tool.slug, {
-        pending: { jobId: accepted.job_id, token: accepted.download_token ?? null },
+        pending: { jobId: accepted.job_id },
       })
 
       const finishedJob = await jobsApi.trackJob(accepted.job_id, {
-        token: accepted.download_token,
         signal: controller.signal,
         onJob: setJob,
       })
