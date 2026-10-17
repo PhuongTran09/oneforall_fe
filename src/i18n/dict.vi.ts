@@ -114,6 +114,16 @@ export const vi = {
     "successDesc": "Tệp kết quả đã sẵn sàng để tải xuống lưu trữ về máy tính của bạn.",
     "successTitle": "Xử lý thành công!"
   },
+  "captcha": {
+    "title": "Xác minh bạn không phải robot",
+    "desc": "Hệ thống thấy phiên này vừa tạo nhiều công việc trong thời gian ngắn. Hãy hoàn tất ô xác minh để tiếp tục.",
+    "loading": "Đang tải ô xác minh...",
+    "cancel": "Hủy",
+    "cancelled": "Bạn đã hủy xác minh, công việc chưa được gửi.",
+    "error": "Không xác minh được. Vui lòng thử lại.",
+    "expired": "Ô xác minh đã hết hạn. Vui lòng thử lại.",
+    "unavailable": "Chưa thể xác minh ngay lúc này. Vui lòng thử lại sau."
+  },
   "errorPopup": {
     "title": "Đã xảy ra lỗi",
     "ok": "Đã hiểu",

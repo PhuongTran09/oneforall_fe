@@ -5,6 +5,7 @@ import App from './App.tsx'
 import { ToastProvider } from './components/feedback/ToastProvider'
 import { ErrorBoundary } from './components/feedback/ErrorBoundary'
 import { ErrorPopupViewport } from './components/feedback/ErrorPopupViewport'
+import { CaptchaModal } from './components/feedback/CaptchaModal'
 import { BackendStatusBanner } from './components/feedback/BackendStatusBanner'
 import { initCardMotion } from './utils/cardMotion'
 import { applyTheme, getTheme } from './utils/theme'
@@ -20,6 +21,7 @@ createRoot(document.getElementById('root')!).render(
       <ToastProvider>
         <App />
         <ErrorPopupViewport />
+        <CaptchaModal />
         <BackendStatusBanner />
       </ToastProvider>
     </ErrorBoundary>

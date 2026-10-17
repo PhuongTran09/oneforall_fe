@@ -12,6 +12,8 @@ interface ImportMetaEnv {
   readonly VITE_ADS_SMARTLINK_ENABLED?: string
   readonly VITE_ADS_SOCIALBAR_ENABLED?: string
   readonly VITE_ADS_POPUNDER_ENABLED?: string
+  readonly VITE_TURNSTILE_ENABLED?: string
+  readonly VITE_TURNSTILE_SITE_KEY?: string
 }
 
 interface ImportMeta {
