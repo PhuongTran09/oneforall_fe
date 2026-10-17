@@ -8,19 +8,21 @@ import { env } from '../utils/env'
  *
  * BE (GĐ1 chống spam) chỉ hỏi xác minh khi heuristic nổ — một phiên ẩn danh tạo >=3 job
  * trong 10 phút — nên widget KHÔNG nằm sẵn trong trang: request gặp 403 `captcha_required`
- * mới mở panel, lấy token, rồi retry MỘT lần. Token là single-use (BE giữ dấu vết token đã
- * tiêu), vì vậy một challenge chỉ có duy nhất một promise và hai request đua nhau cùng chờ
- * chung một panel chứ không mở hai cái.
+ * mới mở panel, lấy token, rồi retry MỘT lần.
+ *
+ * Token là single-use (BE giữ sha256 của token đã tiêu trong `anon_captcha._consumed_tokens`),
+ * nên hai request đua nhau KHÔNG được dùng chung một token — request thứ hai sẽ ăn 403 replay.
+ * Mỗi request bị gate có challenge RIÊNG và xếp hàng: panel vẫn chỉ có MỘT cái vì modal render
+ * theo `active.id`, hết challenge này tới challenge kế tiếp.
  */
-type Pending = {
-  id: number
-  promise: Promise<string>
+type Slot = {
   resolve: (token: string) => void
   reject: (error: Error) => void
 }
 
 let nextId = 1
-let pending: Pending | null = null
+let active: { id: number; slot: Slot } | null = null
+const queue: Slot[] = []
 const listeners = new Set<() => void>()
 
 function emit() {
@@ -36,7 +38,7 @@ function subscribe(listener: () => void) {
 
 /** id của challenge đang mở (null = không có panel nào). */
 function getSnapshot(): number | null {
-  return pending?.id ?? null
+  return active?.id ?? null
 }
 
 /**
@@ -48,33 +50,45 @@ export function requestCaptchaToken(): Promise<string> {
   if (!env.turnstileEnabled || !env.turnstileSiteKey) {
     return Promise.reject(new Error(t('captcha.unavailable')))
   }
-  if (!pending) {
-    let resolve!: (token: string) => void
-    let reject!: (error: Error) => void
-    const promise = new Promise<string>((settle, fail) => {
-      resolve = settle
-      reject = fail
-    })
-    pending = { id: nextId++, promise, resolve, reject }
-    emit()
-  }
-  return pending.promise
+  let resolve!: (token: string) => void
+  let reject!: (error: Error) => void
+  const promise = new Promise<string>((settle, fail) => {
+    resolve = settle
+    reject = fail
+  })
+  const slot: Slot = { resolve, reject }
+  if (active) queue.push(slot)
+  else active = { id: nextId++, slot }
+  emit()
+  return promise
 }
 
-/** Modal báo đã có token: trả cho MỌI request đang chờ challenge này. */
+/**
+ * Modal báo đã có token cho challenge hiện tại: trả đúng MỘT request chủ, rồi mở ngay
+ * challenge cho người kế hàng (widget mới, token mới).
+ * shortcut: request xếp hàng không có deadline riêng — nó chờ tới lượt rồi mới chạy timeout
+ * HTTP của chính mình; nâng cấp khi có route gửi nhiều request gate cùng lúc.
+ */
 export function fulfillCaptchaToken(token: string): void {
-  const current = pending
-  pending = null
+  const current = active
+  const next = queue.shift()
+  active = next ? { id: nextId++, slot: next } : null
   emit()
-  current?.resolve(token)
+  current?.slot.resolve(token)
 }
 
-/** Modal không lấy được token (Cloudflare từ chối, token hết hạn, user đóng, script lỗi). */
+/**
+ * Modal không lấy được token (Cloudflare từ chối, token hết hạn, user đóng, script lỗi).
+ * Cả hàng cùng chết theo: Cloudflare vừa nói không thì mở thêm widget chỉ để nhận lại lỗi đó.
+ */
 export function breakCaptcha(message: string): void {
-  const current = pending
-  pending = null
+  const current = active
+  const waiting = queue.splice(0, queue.length)
+  active = null
   emit()
-  current?.reject(new Error(message))
+  const error = new Error(message)
+  current?.slot.reject(error)
+  waiting.forEach((slot) => slot.reject(error))
 }
 
 export function useCaptchaChallenge(): number | null {
