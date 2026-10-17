@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useLocation, useOutletContext } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { Check, ShieldCheck, Zap, ChevronDown } from 'lucide-react'
 import { SEO_TOOLS, type ToolConfig } from '../config/seoTools'
 import { detectFileFormat, resolveRoute } from '../config/conversionMatrix'
@@ -28,13 +28,13 @@ import { showErrorPopup } from '../components/feedback/errorPopupStore'
 import { hasAcceptedTerms, openConsentModal } from '../components/consent/consentStorage'
 import { stripLocale, t, useI18n, withLocale } from '../i18n/langStore'
 import { useToolConfig } from '../i18n/toolConfig'
-import { useAuth } from '../services/authStore'
 import {
   mediaApi,
   convertApi,
   imageApi,
   jobsApi,
   filesApi,
+  ensureAnonymousSession,
   JobPollCancelled,
   type JobPublicResponse,
 } from '../services'
@@ -48,8 +48,6 @@ import {
 
 export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfig }) {
   const location = useLocation()
-  const layout = useOutletContext<{ openAuth?: (mode: 'login' | 'register') => void } | null>()
-  const { session } = useAuth()
   const adsGate = useAdsDecision()
   const { lang } = useI18n()
   const tool = useToolConfig(
@@ -253,14 +251,9 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
     }
   }
 
-  // BE từ chối tạo job khi chưa có Bearer (AUTH_REQUIRED_MEDIA/IMAGE/CONVERT = true,
-  // app/api/deps.py) → chặn ở nhịp bấm "Xử lý" và mở modal đăng nhập, thay vì gửi request
-  // ăn 401 rồi bật popup lỗi. Trang tool vẫn mở cho khách đọc (SEO); chỉ hành vi xử lý cần phiên.
-  const ensureLoggedIn = () => {
-    if (session) return true
-    layout?.openAuth?.('login')
-    return false
-  }
+  // Xử lý chạy được cho khách ẩn danh: quyền do BE chốt (AUTH_REQUIRED_* / phiên ẩn
+  // danh), FE không mở modal đăng nhập nữa — 401 hiện qua popup lỗi API. Trang tool vẫn
+  // mở cho khách đọc (SEO).
 
   // Mọi tab tài trợ đi qua đây: phải gọi ĐỒNG BỘ trong user gesture, trước await
   // đầu tiên. Popup bị chặn thì window.open trả null — luồng xử lý vẫn chạy.
@@ -270,7 +263,6 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
   }
 
   const handleUrlSubmit = async (url: string, format: string, quality: string) => {
-    if (!ensureLoggedIn()) return
     // Chức năng xử lý (không phải trang công khai) chỉ chạy sau khi người dùng đồng ý điều khoản.
     if (!hasAcceptedTerms()) {
       openConsentModal('main')
@@ -285,6 +277,9 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
     setDownloadUrl(null)
 
     try {
+      // Job ẩn danh được BE khoá theo phiên (cookie ofs_anon) — xin phiên trước khi tạo
+      // job; có Bearer rồi thì hàm này trả lời ngay, không thêm request.
+      await ensureAnonymousSession()
       // Xác định operation dựa trên tool config
       const operation = tool.backendOperation === 'extract-audio' ? 'extract-audio' : 'url_download'
       const accepted = await mediaApi.processUrl(url, operation, { format, quality })
@@ -324,7 +319,6 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
     format: string,
     options: ParamOptions = {},
   ) => {
-    if (!ensureLoggedIn()) return
     // Ngắt trước khi tạo job: chưa đồng ý điều khoản thì mở modal, không gửi request.
     if (!hasAcceptedTerms()) {
       openConsentModal('main')
@@ -355,6 +349,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
 
         // Background removal always returns PNG and ignores every other option.
         openSponsoredTabs(tool.slug) // đồng bộ, trước await đầu tiên -> còn trong user gesture
+        await ensureAnonymousSession()
         accepted = await imageApi.processImage(
           file,
           operation,
@@ -375,6 +370,10 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
 
         // Route hợp lệ (= dữ liệu đầu vào đạt) mới mở tab tài trợ; vẫn đồng bộ trước await.
         openSponsoredTabs(tool.slug)
+        // Phiên ẩn danh phải có trước khi tạo job (BE từ chối 401 nếu không có); có Bearer
+        // thì không gửi request nào. Đặt SAU openSponsoredTabs: window.open chỉ sống trong
+        // user gesture, await trước đó là tab tài trợ bị trình duyệt chặn.
+        await ensureAnonymousSession()
 
         if (route.endpoint === 'media-process') {
           accepted = await mediaApi.processMediaFile(file, route.operation, {

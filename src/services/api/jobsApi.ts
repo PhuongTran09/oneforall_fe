@@ -139,7 +139,11 @@ async function openJobEventStream(
         Accept: 'text/event-stream',
         ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
       },
-      credentials: 'omit',
+      // 'include' chứ không 'omit': /jobs/{id}/events đi qua JobAuthDep
+      // (AUTH_REQUIRED_JOBS=true) nên khách ẩn danh phải trình phiên bằng cookie — download
+      // token trong URL chỉ đủ SAU khi dependency đã cho qua, thiếu cookie là 401 trước khi
+      // kịp đọc token, và trackJob sẽ rơi xuống polling vô ích.
+      credentials: 'include',
       cache: 'no-store',
       signal: fetchController.signal,
     })

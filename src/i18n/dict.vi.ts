@@ -402,7 +402,7 @@ export const vi = {
     "proF4": "Tệp kết quả được lưu trữ lâu hơn trước khi tự xóa",
     "proF5": "Hỗ trợ theo chính sách dịch vụ của One ForAll",
     "proF6": "Kích hoạt sau thanh toán xác thực, tự động hạ về Free khi hết hạn",
-    "proPrice": "49.000 đ",
+    "proPrice": "50.000 đ",
     "title": "Gói dịch vụ phù hợp với mọi nhu cầu"
   },
   "proModal": {

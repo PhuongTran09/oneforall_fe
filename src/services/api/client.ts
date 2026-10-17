@@ -118,6 +118,12 @@ export class ApiClient {
           ...init,
           headers,
           signal: controller.signal,
+          // Phiên ẩn danh GĐ1 là cookie HttpOnly (`ofs_anon`) mà JS không đọc được: browser
+          // chỉ gửi nó khi request tự khai credentials. Mặc định 'same-origin' = API trên
+          // host khác (api.oneforall.io.vn vs FE) không kèm cookie → mọi job ẩn danh 401.
+          // BE phải đặt BACKEND_CORS_ORIGINS là danh sách tường minh (không '*') thì
+          // allow_credentials mới bật, nếu không mọi request bị CORS chặn.
+          credentials: 'include',
         })
       } catch (err) {
         // AbortError = timeout 30s nội bộ hoặc caller hủy — một cú upload nặng trên mạng
