@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { t } from '../../i18n/langStore'
+import { canonicalToolPath } from '../../config/seoTools'
 
 export interface SEOHeadProps {
   title: string
@@ -24,6 +25,9 @@ export function SEOHead({
   alternates,
 }: SEOHeadProps) {
   useEffect(() => {
+    const lang = canonicalUrl.includes('://oneforall.io.vn/en/') || canonicalUrl.endsWith('/en') ? 'en' : 'vi'
+    document.documentElement.lang = lang
+
     // 1. Cập nhật Title
     document.title = title
 
@@ -49,9 +53,9 @@ export function SEOHead({
     document.querySelectorAll('link[data-hreflang]').forEach((el) => el.remove())
     if (alternates) {
       const entries: { hreflang: string; href: string }[] = [
-        { hreflang: 'vi', href: `https://oneforall.io.vn${alternates.vi}` },
-        { hreflang: 'en', href: `https://oneforall.io.vn${alternates.en}` },
-        { hreflang: 'x-default', href: `https://oneforall.io.vn${alternates.vi}` },
+        { hreflang: 'vi', href: `https://oneforall.io.vn${canonicalToolPath(alternates.vi)}` },
+        { hreflang: 'en', href: `https://oneforall.io.vn${canonicalToolPath(alternates.en)}` },
+        { hreflang: 'x-default', href: `https://oneforall.io.vn${canonicalToolPath(alternates.vi)}` },
       ]
       for (const entry of entries) {
         const link = document.createElement('link')
@@ -79,6 +83,7 @@ export function SEOHead({
       'og:url': canonicalUrl,
       'og:type': ogType,
       'og:site_name': 'One ForAll',
+      'og:locale': lang === 'en' ? 'en_US' : 'vi_VN',
       'twitter:card': 'summary_large_image',
       'twitter:title': title,
       'twitter:description': description,
@@ -110,6 +115,9 @@ export function SEOHead({
     const existingBreadcrumb = document.getElementById('breadcrumb-jsonld')
     if (existingBreadcrumb) existingBreadcrumb.remove()
 
+    const existingWebApp = document.getElementById('webapp-jsonld')
+    if (existingWebApp) existingWebApp.remove()
+
     if (faqList && faqList.length > 0) {
       const faqSchema = {
         '@context': 'https://schema.org',
@@ -134,13 +142,16 @@ export function SEOHead({
 
     if (breadcrumbs && breadcrumbs.length > 0) {
       const fullBreadcrumbs = [
-        { name: t('common.home'), url: 'https://oneforall.io.vn/' },
-        ...breadcrumbs.map((b) => ({
-          name: b.name,
-          url: b.url.startsWith('http')
-            ? b.url
-            : `https://oneforall.io.vn${b.url.startsWith('/') ? '' : '/'}${b.url}`,
-        })),
+        { name: t('common.home'), url: `https://oneforall.io.vn${lang === 'en' ? '/en/' : '/'}` },
+        ...breadcrumbs.map((b) => {
+          const path = b.url.startsWith('/') ? b.url : `/${b.url}`
+          return {
+            name: b.name,
+            url: b.url.startsWith('http')
+              ? b.url
+              : `https://oneforall.io.vn${canonicalToolPath(lang === 'en' ? `/en${path}` : path)}`,
+          }
+        }),
       ]
 
       const breadcrumbSchema = {
@@ -160,6 +171,26 @@ export function SEOHead({
       scriptBreadcrumb.text = JSON.stringify(breadcrumbSchema)
       document.head.appendChild(scriptBreadcrumb)
       jsonLdElements.push(scriptBreadcrumb)
+    }
+
+    if (breadcrumbs && breadcrumbs.length > 0) {
+      const webAppSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'WebApplication',
+        name: title,
+        url: canonicalUrl,
+        description,
+        applicationCategory: 'MultimediaApplication',
+        operatingSystem: 'Any',
+        inLanguage: lang,
+        offers: { '@type': 'Offer', price: '0', priceCurrency: 'VND' },
+      }
+      const scriptWebApp = document.createElement('script')
+      scriptWebApp.type = 'application/ld+json'
+      scriptWebApp.id = 'webapp-jsonld'
+      scriptWebApp.text = JSON.stringify(webAppSchema)
+      document.head.appendChild(scriptWebApp)
+      jsonLdElements.push(scriptWebApp)
     }
 
     return () => {

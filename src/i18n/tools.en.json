@@ -1,8 +1,8 @@
 {
   "/youtube-to-mp4": {
-    "title": "Free YouTube to MP4 Converter Online | One ForAll",
+    "title": "YouTube to MP4 Downloader | One ForAll",
     "metaDescription": "Convert supported YouTube video links to MP4 online. Choose an available video quality and download the result to your device without installing software.",
-    "h1": "Convert YouTube Videos to MP4",
+    "h1": "Download YouTube Videos as MP4",
     "subtitle": "Paste a supported YouTube link, choose an available quality, and download the MP4 file to your device.",
     "badge": "YouTube to MP4 HD",
     "supportedFormatsDesc": "Works with all standard YouTube video links (watch?v=...), Shorts, and short youtu.be links.",
@@ -63,7 +63,7 @@
     "h1": "Convert YouTube Videos to MP3",
     "subtitle": "Extract audio from supported videos for listening offline, where you have permission to do so.",
     "badge": "YouTube to MP3 Audio",
-    "supportedFormatsDesc": "Output audio formats: MP3, WAV, M4A, AAC. Compatible with all standard YouTube videos.",
+    "supportedFormatsDesc": "Output audio formats: MP3, WAV, and M4A. Availability depends on the source link.",
     "howItWorksSteps": [
       {
         "step": "01",
@@ -117,7 +117,7 @@
     "h1": "YouTube Video and Audio Downloader",
     "subtitle": "Choose a supported video or audio output for a YouTube link and download the result to your device.",
     "badge": "Universal YouTube Downloader",
-    "supportedFormatsDesc": "Supports MP4 (720p, 1080p), WebM, MP3 (128kbps, 320kbps), WAV.",
+    "supportedFormatsDesc": "This page offers MP4 or WebM video and MP3 or WAV audio output. Available quality depends on the source, settings, and plan.",
     "howItWorksSteps": [
       {
         "step": "01",
@@ -170,7 +170,7 @@
     "metaDescription": "Process supported TikTok video links and download an MP4 when available. Use the tool in your browser without installing extra software.",
     "h1": "Download TikTok Videos as MP4",
     "subtitle": "Paste a supported TikTok video link and save the available MP4 result to your device.",
-    "badge": "TikTok No Watermark",
+    "badge": "TikTok to MP4",
     "supportedFormatsDesc": "Supports TikTok links in the form vm.tiktok.com, vt.tiktok.com, and tiktok.com/@user/video/...",
     "howItWorksSteps": [
       {
@@ -196,12 +196,12 @@
     ],
     "features": [
       {
-        "title": "Convenient video downloads",
-        "desc": "Process supported TikTok video links from your browser."
+        "title": "MP4 from a TikTok link",
+        "desc": "Create an MP4 from a TikTok link the tool can access. Availability and output depend on the source."
       },
       {
         "title": "Available source quality",
-        "desc": "The resulting quality depends on the source and options available."
+        "desc": "Output resolution depends on the source video and the quality cap for the current plan."
       },
       {
         "title": "Use on different devices",
@@ -214,8 +214,8 @@
         "a": "Open One ForAll in Safari, paste a supported link, and start processing. After downloading, open the file and use the available share or save options."
       },
       {
-        "q": "Is this tool free?",
-        "a": "Check the current plan and usage information shown on One ForAll before processing."
+        "q": "Will the downloaded video have a watermark?",
+        "a": "Watermark appearance depends on the file TikTok provides. The tool has no separate watermark-removal step; review the result before use."
       }
     ]
   },
@@ -264,8 +264,8 @@
     ],
     "faqList": [
       {
-        "q": "What affects the extracted audio quality?",
-        "a": "Quality depends on the original audio and the output format and settings."
+        "q": "Which output bitrates can I choose?",
+        "a": "The tool offers 128, 192, and 320 kbps options. Perceived quality also depends on the source audio and output format."
       },
       {
         "q": "Can I extract audio from a private TikTok video?",
@@ -318,12 +318,12 @@
     ],
     "faqList": [
       {
-        "q": "Will the downloaded video include a watermark?",
-        "a": "Watermark handling depends on the source and the output provided by the tool; review the preview or result before using it."
+        "q": "Will the downloaded video have a watermark?",
+        "a": "Watermark appearance depends on the file TikTok provides. The tool has no separate watermark-removal step; review the result before use."
       },
       {
-        "q": "Are there daily download limits?",
-        "a": "Limits, if any, depend on the current service rules and your plan."
+        "q": "Are downloads limited?",
+        "a": "Usage limits depend on the current plan and service rules. Check the information shown on the page before processing."
       }
     ]
   },
@@ -333,7 +333,7 @@
     "h1": "Convert Files Online",
     "subtitle": "Convert supported image, video, audio, and document formats in a few simple steps.",
     "badge": "Universal Converter",
-    "supportedFormatsDesc": "Available output formats include PDF, DOCX, DOC, TXT, CSV, JSON, XLSX, YAML, XML, MD, HTML, PNG, JPG, WEBP, SVG, ICO, GIF, MP4, MOV, MKV, WEBM, AVI, MP3, WAV, AAC, M4A, FLAC, OGG, ZIP, TAR and 7Z. The choices depend on the source file.",
+    "supportedFormatsDesc": "Available destination formats are shown after you select a file and the tool identifies its source format.",
     "howItWorksSteps": [
       {
         "step": "01",
@@ -373,11 +373,11 @@
     "faqList": [
       {
         "q": "What is the maximum file size?",
-        "a": "The maximum file size depends on your plan and the limits shown by the tool. Check the page before uploading."
+        "a": "The limit depends on the file type and your current plan. Check the maximum shown by the tool before uploading."
       },
       {
-        "q": "Who can access my files?",
-        "a": "Files are processed by the service to complete your request. Review One ForAll's Privacy Policy for details about access, storage, and deletion."
+        "q": "How long are my files stored?",
+        "a": "File retention follows the service's current storage policy. Review One ForAll's Privacy Policy for details."
       }
     ]
   },
@@ -545,7 +545,7 @@
     "h1": "Convert Documents Online",
     "subtitle": "Convert supported document and spreadsheet formats for work, study, or sharing.",
     "badge": "Document Office Suite",
-    "supportedFormatsDesc": "DOCX, DOC, XLSX, TXT, CSV, MD, HTML → PDF, DOCX, CSV, JSON, TXT, MD, HTML. PDF → Word, plain text, or images.",
+    "supportedFormatsDesc": "Available conversion pairs depend on the source file. Legacy Word .doc files are not supported.",
     "howItWorksSteps": [
       {
         "step": "01",
@@ -594,12 +594,12 @@
     ]
   },
   "/pdf-converter": {
-    "title": "Convert Word, Excel and Text Files to PDF | One ForAll",
-    "metaDescription": "Convert supported Word, spreadsheet, and text documents to PDF online. Check the available file types and options before processing.",
+    "title": "Convert Supported Documents and Images to PDF | One ForAll",
+    "metaDescription": "Create PDFs from supported DOCX, spreadsheet, text, HTML, and image files online. Legacy .doc files are not supported.",
     "h1": "Convert Documents to PDF",
-    "subtitle": "Create a PDF from a supported document or spreadsheet for sharing, printing, or archiving.",
+    "subtitle": "Create a PDF from a supported document, spreadsheet, text, HTML, or image file for sharing, printing, or archiving.",
     "badge": "Docs to PDF",
-    "supportedFormatsDesc": "DOCX, DOC, XLSX, TXT, HTML, PNG, JPG, WEBP → PDF, and PDF → DOCX or TXT.",
+    "supportedFormatsDesc": "DOCX, XLSX, TXT, HTML, PNG, JPG, WEBP, GIF, BMP, and TIFF → PDF. Legacy .doc files are not supported.",
     "howItWorksSteps": [
       {
         "step": "01",
@@ -624,8 +624,8 @@
     ],
     "features": [
       {
-        "title": "Document content conversion",
-        "desc": "Text and layout are converted as supported by the source file and conversion settings."
+        "title": "Review the layout",
+        "desc": "Fonts, tables, and page layout may change depending on the source file; check the generated PDF."
       },
       {
         "title": "Spreadsheet options",
@@ -650,8 +650,8 @@
   "/remove-background": {
     "title": "AI Background Remover Online | One ForAll",
     "metaDescription": "Remove the background from a supported image and export the result as a transparent PNG when processing is successful.",
-    "h1": "Remove Image Background with AI",
-    "subtitle": "Create a cutout of a person, product, or object to use in designs, presentations, and listings.",
+    "h1": "Remove an Image Background with AI",
+    "subtitle": "Create a cutout of a person, product, or object. Results may vary with the source image and subject complexity.",
     "badge": "AI Background Remover",
     "supportedFormatsDesc": "PNG, JPG, JPEG, WEBP. The result is exported as a transparent PNG image.",
     "howItWorksSteps": [
@@ -682,8 +682,8 @@
         "desc": "The tool attempts to separate the main subject without manual brushing."
       },
       {
-        "title": "Review fine details",
-        "desc": "Results may vary for hair, fur, transparent objects, and complex backgrounds."
+        "title": "Review edges and details",
+        "desc": "Check hair, fur, transparent objects, and complex backgrounds before using the result."
       },
       {
         "title": "Transparent PNG output",
@@ -706,8 +706,8 @@
     "metaDescription": "Compress supported JPG, PNG, WebP, and other image files online. Results depend on the image, format, and selected quality settings.",
     "h1": "Compress Images Online",
     "subtitle": "Reduce image file sizes to make them easier to store, share, or use on a website.",
-    "badge": "Smart Image Compressor",
-    "supportedFormatsDesc": "JPG, JPEG, PNG, WEBP, AVIF, GIF.",
+    "badge": "Image Compressor",
+    "supportedFormatsDesc": "The image processor must be able to read the uploaded file. Choose JPG, PNG, or WebP as the output format.",
     "howItWorksSteps": [
       {
         "step": "01",
@@ -732,16 +732,16 @@
     ],
     "features": [
       {
-        "title": "Adjustable file size",
-        "desc": "The amount of compression depends on the source image, format, and settings."
+        "title": "Adjust compression settings",
+        "desc": "File-size reduction and image quality depend on the source, output format, and selected settings."
       },
       {
-        "title": "Useful for websites",
-        "desc": "Smaller image files may help pages load faster, depending on how the site is built."
+        "title": "Use images on websites",
+        "desc": "Smaller image files may reduce page download size; the effect depends on how a website serves its images."
       },
       {
-        "title": "Check quality before use",
-        "desc": "Compression can affect image detail, especially at stronger settings."
+        "title": "Review the result",
+        "desc": "Compare file size and image details before downloading."
       }
     ],
     "faqList": [
@@ -757,7 +757,7 @@
     "h1": "Resize Images Online",
     "subtitle": "Change image dimensions for profile pictures, banners, thumbnails, and other common uses.",
     "badge": "Precision Image Resizer",
-    "supportedFormatsDesc": "JPG, PNG, WEBP, AVIF, BMP.",
+    "supportedFormatsDesc": "The image processor must be able to read the uploaded file. Choose JPG, PNG, or WebP as the output format.",
     "howItWorksSteps": [
       {
         "step": "01",
@@ -782,12 +782,12 @@
     ],
     "features": [
       {
-        "title": "Set image dimensions",
-        "desc": "Choose the width and height you need."
+        "title": "Enter custom dimensions",
+        "desc": "Set the width and height in pixels for your intended use."
       },
       {
-        "title": "Keep proportions where available",
-        "desc": "Use the aspect-ratio option, if provided, to help prevent stretching."
+        "title": "Keep the source proportions",
+        "desc": "When you enter only one dimension, the other is calculated from the original aspect ratio."
       },
       {
         "title": "Review image quality",
@@ -797,7 +797,7 @@
     "faqList": [
       {
         "q": "How can I avoid distorting an image?",
-        "a": "Keep the original aspect ratio when the tool offers that option, and avoid stretching width and height independently."
+        "a": "Enter only the width or height to calculate the other dimension from the original aspect ratio. If you enter both, the image is resized to those exact dimensions."
       }
     ]
   },
@@ -847,7 +847,7 @@
     "faqList": [
       {
         "q": "Does XML-to-JSON keep attributes?",
-        "a": "Not yet — element attributes are currently dropped during conversion. Only text content and nesting are preserved."
+        "a": "No. XML attributes are not included in the JSON output; the converter maps element structure and text content. Review the result before using it."
       },
       {
         "q": "Is there a size limit?",
@@ -856,17 +856,17 @@
     ]
   },
   "/archive-converter": {
-    "title": "Convert ZIP, TAR, TAR.GZ and 7Z Archives Online | One ForAll",
-    "metaDescription": "Convert archive files between ZIP, TAR, TAR.GZ and 7Z online. Files are processed and cleaned up under the storage policy.",
+    "title": "Convert ZIP to TAR or 7Z, and TAR to ZIP | One ForAll",
+    "metaDescription": "Convert ZIP to TAR or 7Z, and TAR or TAR.GZ to ZIP online. 7Z and RAR files are not supported as inputs.",
     "h1": "Archive Format Converter",
-    "subtitle": "Repack your archives between ZIP, TAR, GZIP and 7Z without installing any desktop tool.",
+    "subtitle": "Choose ZIP to TAR or 7Z, or TAR/TAR.GZ to ZIP. 7Z and RAR are not currently supported input formats.",
     "badge": "Archive tools",
-    "supportedFormatsDesc": "ZIP, TAR, TAR.GZ (TGZ), GZIP → ZIP, TAR, 7Z.",
+    "supportedFormatsDesc": "ZIP to TAR or 7Z; TAR and TAR.GZ (TGZ) to ZIP. 7Z and RAR are not supported as inputs.",
     "howItWorksSteps": [
       {
         "step": "01",
         "title": "Upload the archive",
-        "desc": "Select a ZIP, TAR, TGZ or GZIP file to convert."
+        "desc": "Select a ZIP, TAR, TAR.GZ, or TGZ file. ZIP is the only input that can produce 7Z output."
       },
       {
         "step": "02",
@@ -891,7 +891,7 @@
       },
       {
         "title": "Common formats covered",
-        "desc": "Convert between ZIP, TAR, TAR.GZ and 7Z for everyday archiving needs."
+        "desc": "Convert ZIP to TAR or 7Z, and TAR or TAR.GZ to ZIP."
       },
       {
         "title": "Temporary file handling",
@@ -900,12 +900,16 @@
     ],
     "faqList": [
       {
-        "q": "Can I convert RAR to ZIP?",
-        "a": "Not yet. RAR requires WinRAR’s proprietary extraction library, so the platform does not support it automatically."
+        "q": "Can I convert RAR or 7Z to ZIP?",
+        "a": "No. The current tool accepts ZIP, TAR, and TAR.GZ inputs. It can create 7Z output from ZIP."
       },
       {
         "q": "Are very large archives supported?",
-        "a": "Archives are subject to a maximum uncompressed size and entry count to protect the service; oversized archives are rejected."
+        "a": "Processing is limited to 2,000 file entries and 512 MiB of uncompressed file data. Archives above those limits are rejected."
+      },
+      {
+        "q": "Are archive filenames and folders preserved?",
+        "a": "File paths are used when files are repacked. Empty directories and archive metadata may not be preserved."
       }
     ]
   }

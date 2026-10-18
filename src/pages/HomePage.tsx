@@ -9,7 +9,7 @@ import {
   FaqSection,
   AdSenseUnit,
 } from '../components'
-import { t } from '../i18n/langStore'
+import { t, useI18n } from '../i18n/langStore'
 import { useAuth } from '../services/authStore'
 
 interface LayoutContext {
@@ -18,6 +18,7 @@ interface LayoutContext {
 }
 
 export function HomePage() {
+  const { lang } = useI18n()
   const context = useOutletContext<LayoutContext | null>()
   const { session } = useAuth()
 
@@ -62,7 +63,8 @@ export function HomePage() {
       <SEOHead
         title={t('home.seoTitle')}
         description={t('home.seoDesc')}
-        canonicalUrl="https://oneforall.io.vn/"
+        canonicalUrl={`https://oneforall.io.vn${lang === 'en' ? '/en/' : '/'}`}
+        alternates={{ vi: '/', en: '/en/' }}
         faqList={homeFaqs}
       />
       <HeroSection onTryFree={handleProAccount} />
