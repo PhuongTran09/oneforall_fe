@@ -44,7 +44,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     title: 'Tải Video YouTube sang MP4 Trực Tuyến | One ForAll',
     metaDescription:
       'Tải video YouTube sang MP4 trực tuyến trên trình duyệt. Không cần cài đặt phần mềm; chất lượng khả dụng tùy thuộc vào video nguồn và gói sử dụng.',
-    h1: 'Tải Video YouTube sang MP4 Nhanh Chóng',
+    h1: 'Tải Video YouTube sang MP4',
     subtitle:
       'Lưu video YouTube dưới dạng MP4 về máy tính hoặc điện thoại. Chất lượng đầu ra phụ thuộc vào video gốc và các tùy chọn khả dụng.',
     inputType: 'url',
@@ -70,7 +70,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
       { q: 'Tôi có cần tạo tài khoản để tải YouTube MP4 không?', a: 'Tùy công cụ và hạn mức gói sử dụng, bạn có thể dùng dịch vụ mà không cần đăng nhập. Một số tính năng hoặc hạn mức có thể yêu cầu tài khoản.' },
       { q: 'Chính sách bản quyền khi sử dụng công cụ như thế nào?', a: 'Vui lòng chỉ tải xuống nội dung bạn sở hữu, được chủ sở hữu cho phép hoặc được phép sử dụng theo quy định áp dụng. Bạn chịu trách nhiệm đảm bảo quyền sử dụng nội dung.' },
     ],
-    relatedSlugs: ['/youtube-to-mp3', '/youtube-downloader', '/tiktok-to-mp4', '/video-converter'],
+    relatedSlugs: ['/youtube-to-mp3', '/youtube-downloader', '/video-converter'],
   },
 
   '/youtube-to-mp3': {
@@ -80,7 +80,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     title: 'Chuyển YouTube Sang MP3 Trực Tuyến | One ForAll',
     metaDescription:
       'Chuyển âm thanh từ video YouTube sang MP3 trực tuyến. Chất lượng đầu ra phụ thuộc vào âm thanh nguồn và định dạng bạn chọn.',
-    h1: 'Tách Nhạc YouTube sang MP3 Chất Lượng Cao',
+    h1: 'Tách Âm Thanh YouTube sang MP3',
     subtitle:
       'Chuyển âm thanh từ video YouTube sang MP3 để nghe ngoại tuyến khi cần.',
     inputType: 'url',
@@ -103,9 +103,9 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     supportedFormatsDesc: 'Định dạng đầu ra khả dụng gồm MP3, WAV và M4A. Khả năng xử lý tùy thuộc vào liên kết video.',
     faqList: [
       { q: 'Âm thanh MP3 có bị nén giảm chất lượng không?', a: 'Chất lượng MP3 phụ thuộc vào âm thanh nguồn và thiết lập đầu ra. Chuyển sang MP3 có thể làm thay đổi chất lượng do đặc tính nén của định dạng.' },
-      { q: 'Có thể tách nhạc từ video YouTube Shorts không?', a: 'Có. Bạn chỉ cần sao chép link Shorts và dán vào công cụ như bình thường.' },
+      { q: 'Có thể tách âm thanh từ YouTube Shorts không?', a: 'Bạn có thể thử liên kết Shorts được công cụ hỗ trợ. Khả năng xử lý còn tùy nguồn và trạng thái hỗ trợ hiện tại.' },
     ],
-    relatedSlugs: ['/youtube-to-mp4', '/youtube-downloader', '/audio-converter', '/tiktok-to-mp3'],
+    relatedSlugs: ['/youtube-to-mp4', '/youtube-downloader', '/audio-converter'],
   },
 
   '/youtube-downloader': {
@@ -135,12 +135,12 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
       { title: 'Hạn mức rõ ràng', desc: 'Số lượt sử dụng phụ thuộc vào gói dịch vụ bạn đang dùng.' },
       { title: 'Bảo vệ thiết bị', desc: 'Không cần cài tiện ích mở rộng để sử dụng công cụ trên trình duyệt.' },
     ],
-    supportedFormatsDesc: 'Hỗ trợ MP4 (720p, 1080p), WebM, MP3 (128kbps, 320kbps), WAV.',
+    supportedFormatsDesc: 'Tùy chọn đầu ra của trang gồm MP4, WebM, MP3 và WAV. Các mức chất lượng phụ thuộc video, thiết lập và gói sử dụng.',
     faqList: [
-      { q: 'Video tải về được lưu ở đâu?', a: 'Tệp sẽ tự động được lưu vào thư mục Downloads mặc định trên thiết bị của bạn.' },
+      { q: 'Video tải về được lưu ở đâu?', a: 'Trình duyệt thường lưu tệp vào thư mục Downloads mặc định, trừ khi bạn đã đổi cài đặt tải xuống.' },
       { q: 'Tại sao một số video tải chậm hơn?', a: 'Video dài hoặc có chất lượng cao có thể mất nhiều thời gian xử lý hơn. Bạn hãy chờ tiến trình hoàn tất trước khi tải tệp.' },
     ],
-    relatedSlugs: ['/youtube-to-mp4', '/youtube-to-mp3', '/tiktok-downloader', '/video-converter'],
+    relatedSlugs: ['/youtube-to-mp4', '/youtube-to-mp3', '/video-converter', '/audio-converter'],
   },
 
   '/tiktok-to-mp4': {
@@ -150,7 +150,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     title: 'Tải Video TikTok MP4 | One ForAll',
     metaDescription:
       'Tải video TikTok dưới dạng MP4 để lưu về điện thoại hoặc máy tính. Tùy chọn và chất lượng khả dụng phụ thuộc vào video nguồn.',
-    h1: 'Tải Video TikTok Không Dính Logo (No Watermark)',
+    h1: 'Tải Video TikTok sang MP4',
     subtitle:
       'Lưu video TikTok dưới dạng MP4 với các tùy chọn khả dụng, thuận tiện xem lại trên thiết bị của bạn.',
     inputType: 'url',
@@ -163,19 +163,19 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
       { step: '01', title: 'Sao chép link TikTok', desc: 'Mở ứng dụng hoặc web TikTok, bấm nút Chia sẻ và chọn Sao chép liên kết.' },
       { step: '02', title: 'Dán vào One ForAll', desc: 'Dán URL TikTok vào ô bên dưới và bấm nút Tải video.' },
       { step: '03', title: 'Chuẩn bị video', desc: 'One ForAll xử lý liên kết và chuẩn bị tệp video để tải xuống.' },
-      { step: '04', title: 'Lưu về máy', desc: 'Tải video độ nét cao về thư viện ảnh hoặc máy tính của bạn.' },
+      { step: '04', title: 'Lưu về máy', desc: 'Tải tệp MP4 về thiết bị của bạn.' },
     ],
     features: [
-      { title: 'Tùy chọn không watermark', desc: 'Có thể tải video không watermark khi liên kết và nguồn video hỗ trợ tính năng này.' },
-      { title: 'Độ nét chuẩn Full HD', desc: 'Chất lượng và tỷ lệ khung hình phụ thuộc vào video nguồn và định dạng đầu ra.' },
+      { title: 'Tệp MP4 từ liên kết TikTok', desc: 'Tạo tệp MP4 từ liên kết TikTok được công cụ hỗ trợ; khả năng truy cập và kết quả phụ thuộc nguồn.' },
+      { title: 'Chất lượng theo nguồn', desc: 'Độ phân giải đầu ra phụ thuộc video nguồn và giới hạn chất lượng của gói đang dùng.' },
       { title: 'Hoạt động tốt trên iOS & Android', desc: 'Dễ dàng tải về thư viện máy mà không cần phần mềm thứ ba.' },
     ],
     supportedFormatsDesc: 'Hỗ trợ link TikTok dạng vm.tiktok.com, vt.tiktok.com và tiktok.com/@user/video/...',
     faqList: [
       { q: 'Làm thế nào để tải video TikTok trên iPhone?', a: 'Bạn dán link vào One ForAll trên Safari, bấm Tải về, sau đó mở tệp trong phần Tải về và chọn Lưu video vào thư viện Ảnh.' },
-      { q: 'Tải video TikTok không logo có bị thu phí không?', a: 'Việc sử dụng và số lượt tải phụ thuộc vào hạn mức của gói dịch vụ hiện tại.' },
+      { q: 'Video tải về có watermark không?', a: 'Watermark phụ thuộc vào tệp nguồn mà TikTok cung cấp. Công cụ không có bước xóa watermark riêng; hãy kiểm tra kết quả trước khi sử dụng.' },
     ],
-    relatedSlugs: ['/tiktok-to-mp3', '/tiktok-downloader', '/youtube-to-mp4', '/video-converter'],
+    relatedSlugs: ['/tiktok-to-mp3', '/tiktok-downloader', '/video-converter'],
   },
 
   '/tiktok-to-mp3': {
@@ -185,7 +185,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     title: 'Chuyển Âm Thanh TikTok sang MP3 | One ForAll',
     metaDescription:
       'Chuyển âm thanh từ video TikTok sang MP3 trực tuyến. Chất lượng đầu ra phụ thuộc vào video nguồn và các tùy chọn được hỗ trợ.',
-    h1: 'Tách Nhạc Nền TikTok sang MP3 Chất Lượng Cao',
+    h1: 'Trích Xuất Âm Thanh TikTok sang MP3',
     subtitle:
       'Chuyển âm thanh từ video TikTok sang MP3 để nghe hoặc sử dụng cho mục đích phù hợp với quyền của bạn.',
     inputType: 'url',
@@ -201,16 +201,16 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
       { step: '04', title: 'Tải về nghe thử', desc: 'Lưu tệp âm thanh về máy để làm nhạc chuông hoặc nghe offline.' },
     ],
     features: [
-      { title: 'Bắt trọn âm thanh trending', desc: 'Lưu các bản phối remix, acoustic hoặc giọng đọc thịnh hành nhất TikTok.' },
-      { title: 'Âm thanh trong trẻo', desc: 'Chất lượng âm thanh đầu ra phụ thuộc vào âm thanh gốc của video.' },
+      { title: 'Trích xuất âm thanh từ liên kết', desc: 'Tạo tệp âm thanh từ video TikTok mà công cụ có thể truy cập.' },
+      { title: 'Chất lượng theo nguồn', desc: 'Chất lượng âm thanh đầu ra phụ thuộc vào âm thanh gốc và định dạng được chọn.' },
       { title: 'Dùng làm nhạc chuông', desc: 'Dễ dàng cài đặt làm nhạc chuông báo thức hoặc chuông cuộc gọi thoại.' },
     ],
     supportedFormatsDesc: 'Đầu ra hỗ trợ định dạng MP3, WAV, M4A.',
     faqList: [
-      { q: 'Chất lượng tệp âm thanh tách ra có tốt không?', a: 'Chất lượng phụ thuộc vào âm thanh gốc của tác giả video TikTok, thường đạt mức 128kbps đến 192kbps chuẩn web.' },
-      { q: 'Có tải được âm thanh từ video TikTok bị ẩn không?', a: 'Chỉ các video ở chế độ Công khai (Public) mới có thể trích xuất âm thanh.' },
+      { q: 'Có thể chọn bitrate đầu ra nào?', a: 'Công cụ có các tùy chọn 128, 192 và 320 kbps. Chất lượng nghe được còn phụ thuộc âm thanh nguồn và định dạng đầu ra.' },
+      { q: 'Có tải được âm thanh từ video TikTok riêng tư không?', a: 'Công cụ có thể không truy cập được video riêng tư hoặc bị giới hạn.' },
     ],
-    relatedSlugs: ['/tiktok-to-mp4', '/tiktok-downloader', '/youtube-to-mp3', '/audio-converter'],
+    relatedSlugs: ['/tiktok-to-mp4', '/tiktok-downloader', '/audio-converter'],
   },
 
   '/tiktok-downloader': {
@@ -238,14 +238,14 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     features: [
       { title: 'Video và âm thanh', desc: 'Tùy chọn tải video hoặc chuyển âm thanh sang MP3 khi được công cụ hỗ trợ.' },
       { title: 'Quy trình đơn giản', desc: 'Thời gian xử lý phụ thuộc vào liên kết, độ dài video và tình trạng hệ thống.' },
-      { title: 'Tương thích đa nền tảng', desc: 'Sử dụng mượt mà trên iPhone, iPad, điện thoại Android, macOS và Windows.' },
+      { title: 'Dùng trên nhiều thiết bị', desc: 'Mở công cụ bằng trình duyệt trên điện thoại, máy tính bảng hoặc máy tính.' },
     ],
     supportedFormatsDesc: 'Hỗ trợ định dạng video MP4 và định dạng âm thanh MP3.',
     faqList: [
-      { q: 'Video tải về có dính ID người dùng trên video không?', a: 'Watermark có thể được loại bỏ nếu liên kết và nguồn video được công cụ hỗ trợ. Kết quả tùy thuộc vào video cụ thể.' },
-      { q: 'Có giới hạn số lần tải TikTok mỗi ngày không?', a: 'Không có giới hạn số lần tải đối với các tác vụ hợp lệ.' },
+      { q: 'Video tải về có watermark không?', a: 'Watermark phụ thuộc vào tệp nguồn mà TikTok cung cấp. Công cụ không có bước xóa watermark riêng; hãy kiểm tra kết quả trước khi sử dụng.' },
+      { q: 'Lượt tải có bị giới hạn không?', a: 'Giới hạn sử dụng phụ thuộc gói và quy tắc dịch vụ hiện tại; hãy xem thông tin hiển thị trên trang trước khi xử lý.' },
     ],
-    relatedSlugs: ['/tiktok-to-mp4', '/tiktok-to-mp3', '/youtube-downloader', '/video-converter'],
+    relatedSlugs: ['/tiktok-to-mp4', '/tiktok-to-mp3'],
   },
 
   '/convert': {
@@ -298,23 +298,23 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     backendType: 'convert_file',
     backendOperation: 'convert',
     howItWorksSteps: [
-      { step: '01', title: 'Tải tệp lên', desc: 'Kéo thả hoặc chọn tệp tin bất kỳ từ máy tính hoặc điện thoại của bạn.' },
+      { step: '01', title: 'Tải tệp lên', desc: 'Chọn một tệp thuộc định dạng mà công cụ hỗ trợ.' },
       { step: '02', title: 'Chọn định dạng đích', desc: 'Chọn định dạng bạn muốn chuyển đổi sang (ví dụ: PDF, DOCX, WEBP...).' },
       { step: '03', title: 'Bắt đầu chuyển đổi', desc: 'One ForAll chuyển đổi tệp sang định dạng bạn đã chọn. Kết quả có thể khác nhau tùy loại tệp và định dạng đích.' },
       { step: '04', title: 'Tải tệp kết quả', desc: 'Nhận tệp đã chuyển đổi và lưu về máy ngay lập tức.' },
     ],
     features: [
       { title: 'Tự động nhận diện nguồn', desc: 'Tự động nhận diện định dạng tệp tin, giúp lựa chọn phương án xử lý phù hợp mà không cần thao tác thủ công.' },
-      { title: 'Hỗ trợ giữ bố cục tài liệu', desc: 'Bảo toàn cấu trúc văn bản, bảng biểu, hình ảnh và định dạng chữ, giúp tài liệu sau chuyển đổi dễ đọc và thuận tiện chỉnh sửa.' },
-      { title: 'Dọn dẹp tệp tự động', desc: 'Tệp được dọn dẹp theo chính sách lưu trữ của nền tảng.' },
+      { title: 'Chọn định dạng theo tệp nguồn', desc: 'Các tùy chọn chuyển đổi phụ thuộc vào tệp và định dạng đích được backend hỗ trợ.' },
+      { title: 'Dọn dẹp tệp theo chính sách', desc: 'Tệp được dọn dẹp theo chính sách lưu trữ của nền tảng.' },
     ],
     supportedFormatsDesc:
-      'Định dạng đầu ra khả dụng gồm PDF, DOCX, DOC, CSV, JSON, PNG, JPG, WEBP, SVG, MP4, MOV, MKV, WEBM, AVI, MP3, WAV, AAC, M4A, FLAC và OGG. Các lựa chọn phụ thuộc vào tệp nguồn.',
+      'Các định dạng đích khả dụng được hiển thị sau khi bạn chọn tệp và công cụ nhận diện định dạng nguồn.',
     faqList: [
-      { q: 'Dung lượng tệp tối đa được phép chuyển đổi là bao nhiêu?', a: 'Tùy loại tệp và gói: video tối đa 200 MB ở gói Free và 2 GB ở gói Professional; tài liệu, ảnh và âm thanh có trần nhỏ hơn, ghi đầy đủ ở bảng giá.' },
-      { q: 'Tệp của tôi có bị xem trộm không?', a: 'One ForAll ưu tiên quyền riêng tư của người dùng. Tệp được xử lý để thực hiện yêu cầu bạn gửi và không được công khai trên nền tảng. Tệp được dọn dẹp theo chính sách lưu trữ hiện hành. Vui lòng không tải lên thông tin nhạy cảm nếu chưa xem chính sách quyền riêng tư.' },
+      { q: 'Dung lượng tệp tối đa là bao nhiêu?', a: 'Giới hạn phụ thuộc loại tệp và gói hiện tại. Hãy kiểm tra mức tối đa hiển thị trên công cụ trước khi tải lên.' },
+      { q: 'Tệp được lưu trong bao lâu?', a: 'Thời gian lưu tệp phụ thuộc chính sách lưu trữ hiện hành của dịch vụ. Hãy xem Chính sách quyền riêng tư để biết chi tiết.' },
     ],
-    relatedSlugs: ['/pdf-converter', '/document-converter', '/image-converter', '/video-converter'],
+    relatedSlugs: ['/pdf-converter', '/document-converter', '/image-converter', '/video-converter', '/data-converter', '/archive-converter'],
   },
 
   '/image-converter': {
@@ -346,7 +346,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     ],
     supportedFormatsDesc: 'PNG, JPG, WEBP, GIF, BMP, TIFF, ICO, HEIC → PNG, JPG, WEBP, PDF; PNG thêm ICO và SVG; SVG thêm PNG.',
     faqList: [
-      { q: 'Tại sao nên chuyển ảnh sang WebP?', a: 'WebP là định dạng ảnh hiện đại do Google phát triển, cho chất lượng tương đương JPG/PNG nhưng dung lượng nhẹ hơn đáng kể, giúp website tải nhanh hơn.' },
+      { q: 'Khi nào nên chuyển ảnh sang WebP?', a: 'WebP có thể giảm dung lượng trong một số trường hợp. Hãy so sánh kích thước và chất lượng ảnh kết quả trước khi dùng.' },
       { q: 'Ảnh nền trắng có bị đổi màu khi xuất JPG không?', a: 'Có thể. JPG không lưu vùng trong suốt nên nền trong suốt được tô trắng khi xuất ra JPG.' },
     ],
     relatedSlugs: ['/image-compressor', '/image-resizer', '/remove-background', '/convert'],
@@ -396,7 +396,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
       'Chuyển đổi âm thanh giữa MP3, WAV, AAC, M4A, OGG và FLAC trực tuyến. Chất lượng đầu ra phụ thuộc vào tệp nguồn và định dạng được chọn.',
     h1: 'Chuyển Đổi Định Dạng Âm Thanh Trực Tuyến',
     subtitle:
-      'Đổi định dạng âm thanh nhanh chóng để nghe nhạc trên mọi thiết bị hoặc phục vụ biên tập video.',
+      'Đổi định dạng âm thanh để nghe trên thiết bị phù hợp hoặc dùng trong quy trình biên tập video.',
     inputType: 'file',
     acceptedFileTypes: 'audio/*',
     outputFormats: ['mp3', 'wav', 'aac', 'm4a', 'flac', 'ogg'],
@@ -430,9 +430,9 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
       'Chuyển đổi tài liệu Word, Excel, TXT, CSV, JSON và PDF trực tuyến. Định dạng được hỗ trợ tùy thuộc vào loại tệp nguồn và định dạng đích.',
     h1: 'Chuyển Đổi Tài Liệu Văn Phòng Trực Tuyến',
     subtitle:
-      'Chuyển đổi linh hoạt giữa các định dạng tài liệu văn phòng phổ biến mà không làm sai lệch bảng biểu hay công thức.',
+      'Chuyển đổi các định dạng tài liệu và bảng tính được hỗ trợ. Bố cục, phông chữ và công thức có thể khác tài liệu gốc; hãy kiểm tra tệp sau khi chuyển đổi.',
     inputType: 'file',
-    acceptedFileTypes: '.doc,.docx,.txt,.xlsx,.pdf,.csv,.md,.html',
+    acceptedFileTypes: '.docx,.txt,.xlsx,.pdf,.csv,.md,.html',
     outputFormats: ['pdf', 'docx', 'doc', 'csv', 'json', 'txt', 'md', 'html'],
     defaultFormat: 'pdf',
     backendType: 'convert_file',
@@ -446,44 +446,44 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     features: [
       { title: 'Dễ đọc sau chuyển đổi', desc: 'Đoạn văn, tiêu đề và danh sách được chuyển đổi theo khả năng hỗ trợ của định dạng đích.' },
       { title: 'Chuyển đổi dữ liệu bảng tính', desc: 'Dữ liệu trong tệp XLSX có thể được chuyển sang CSV, JSON hoặc PDF tùy cấu trúc tệp.' },
-      { title: 'Bảo mật tài liệu doanh nghiệp', desc: 'Tệp được dọn dẹp theo chính sách lưu trữ của nền tảng.' },
+      { title: 'Dọn dẹp tệp theo chính sách', desc: 'Tệp được dọn dẹp theo chính sách lưu trữ của nền tảng.' },
     ],
-    supportedFormatsDesc: 'DOCX, XLSX, TXT, PDF, CSV, MD, HTML → PDF, DOCX, TXT, CSV, JSON, MD, HTML. Định dạng .doc cũ chưa hỗ trợ chiều sang PDF.',
+    supportedFormatsDesc: 'Các cặp chuyển đổi được hỗ trợ sẽ hiển thị theo loại tệp đã chọn. Định dạng Word .doc cũ không được hỗ trợ.',
     faqList: [
       { q: 'Chuyển Word sang PDF có bị lỗi font tiếng Việt không?', a: 'Kết quả phụ thuộc vào phông chữ và cách bố trí của tài liệu nguồn. Bạn nên mở và kiểm tra tài liệu sau khi chuyển đổi.' },
       { q: 'Có chuyển file Excel sang JSON được không?', a: 'Có, nếu tệp và định dạng đầu ra được công cụ hỗ trợ. Bạn cũng có thể chọn CSV để sử dụng với các ứng dụng bảng tính.' },
     ],
-    relatedSlugs: ['/pdf-converter', '/convert', '/image-converter'],
+    relatedSlugs: ['/pdf-converter', '/convert', '/data-converter'],
   },
 
   '/pdf-converter': {
     slug: '/pdf-converter',
     category: 'document',
     badge: 'Tài liệu sang PDF',
-    title: 'Chuyển Word, Excel, TXT sang PDF Trực Tuyến | One ForAll',
+    title: 'Chuyển Tài Liệu và Ảnh sang PDF | One ForAll',
     metaDescription:
-      'Chuyển DOCX, DOC, XLSX và TXT sang PDF trực tuyến. Không cần cài đặt phần mềm; kết quả có thể thay đổi tùy cấu trúc tài liệu nguồn.',
+      'Chuyển DOCX, XLSX và các loại tệp được hỗ trợ sang PDF trực tuyến. DOC cũ không được hỗ trợ; hãy kiểm tra kết quả sau khi chuyển đổi.',
     h1: 'Chuyển Đổi Tài Liệu Sang PDF',
     subtitle:
-      'Biến file Word (.docx, .doc), Excel (.xlsx) và văn bản (.txt) thành PDF để gửi đi, lưu trữ hoặc ký số — nhanh, không cần cài đặt.',
+      'Tạo PDF từ DOCX, XLSX, TXT, hình ảnh và các định dạng được hỗ trợ để chia sẻ, in hoặc lưu trữ.',
     inputType: 'file',
-    acceptedFileTypes: '.doc,.docx,.txt,.xlsx,.png,.jpg,.jpeg,.webp,.gif,.bmp,.tiff,.html',
+    acceptedFileTypes: '.docx,.txt,.xlsx,.png,.jpg,.jpeg,.webp,.gif,.bmp,.tiff,.html',
     outputFormats: ['pdf'],
     defaultFormat: 'pdf',
     backendType: 'convert_file',
     backendOperation: 'convert',
     howItWorksSteps: [
-      { step: '01', title: 'Tải tệp lên', desc: 'Chọn file Word, Excel, văn bản TXT, ảnh (JPG/PNG/WebP...) hoặc HTML cần xuất ra PDF.' },
+      { step: '01', title: 'Tải tệp lên', desc: 'Chọn DOCX, XLSX, văn bản TXT, ảnh (JPG/PNG/WebP...) hoặc HTML cần xuất ra PDF.' },
       { step: '02', title: 'Định dạng đích là PDF', desc: 'Mọi định dạng nguồn được hỗ trợ ở trên đều xuất ra PDF.' },
       { step: '03', title: 'Kết xuất PDF', desc: 'One ForAll tạo tệp PDF từ tài liệu hoặc ảnh bạn tải lên.' },
       { step: '04', title: 'Tải PDF về', desc: 'Mở file PDF bằng bất kỳ trình đọc nào hoặc đính kèm vào email.' },
     ],
     features: [
-      { title: 'Giữ bố cục dễ đọc', desc: 'Đoạn văn, tiêu đề và danh sách được chuyển sang PDF theo khả năng hỗ trợ của tài liệu nguồn.' },
+      { title: 'Kiểm tra bố cục sau chuyển đổi', desc: 'Bố cục, phông chữ và bảng có thể thay đổi tùy tài liệu nguồn; hãy mở PDF kết quả để kiểm tra.' },
       { title: 'Xuất bảng tính có chọn sheet', desc: 'Chỉ định sheet cần kết xuất khi chuyển file Excel sang PDF.' },
       { title: 'Tự dọn sau khi tải', desc: 'Tệp nguồn và tệp kết quả được dọn dẹp theo chính sách lưu trữ của nền tảng.' },
     ],
-    supportedFormatsDesc: 'DOCX, XLSX, TXT, HTML, PNG, JPG, WEBP, GIF, BMP, TIFF → PDF.',
+    supportedFormatsDesc: 'DOCX, XLSX, TXT, HTML, PNG, JPG, WEBP, GIF, BMP và TIFF → PDF. Định dạng .doc cũ không được hỗ trợ.',
     faqList: [
       { q: 'Có chuyển được PDF sang Word không?', a: 'Chưa. Công cụ này chỉ nhận tài liệu và xuất ra PDF; chiều ngược lại cần phân tích bố cục trang nên chưa được triển khai.' },
       { q: 'File của tôi có bị lưu lại không?', a: 'Tệp được xử lý để thực hiện yêu cầu của bạn và được dọn dẹp theo chính sách lưu trữ của nền tảng. Không nên tải lên dữ liệu nhạy cảm nếu bạn chưa xem chính sách quyền riêng tư.' },
@@ -498,9 +498,9 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     title: 'Xóa Nền Ảnh Bằng AI | One ForAll',
     metaDescription:
       'Xóa nền ảnh trực tuyến bằng AI và xuất ảnh PNG có nền trong suốt. Kết quả phụ thuộc vào chất lượng ảnh và độ phức tạp của chủ thể.',
-    h1: 'Xóa Nền Ảnh Tự Động Trong Suốt Bằng AI',
+    h1: 'Xóa Nền Ảnh Bằng AI',
     subtitle:
-      'Tách chủ thể người, sản phẩm thương mại điện tử, chữ ký hoặc đồ vật ra khỏi nền ảnh với độ chính xác đến từng sợi tóc.',
+      'Tách người, sản phẩm hoặc đồ vật khỏi nền ảnh. Kết quả có thể khác nhau tùy ảnh nguồn và độ phức tạp của chủ thể.',
     inputType: 'file',
     acceptedFileTypes: 'image/*',
     outputFormats: ['png'],
@@ -515,7 +515,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     ],
     features: [
       { title: 'Tách nền tự động', desc: 'AI hỗ trợ tách chủ thể khỏi nền, không cần thao tác tô chọn thủ công.' },
-      { title: 'Tách chi tiết phức tạp', desc: 'Xử lý mượt mà các chi tiết khó như tóc tơ, lông thú cưng và viền trong suốt.' },
+      { title: 'Xem lại đường viền', desc: 'Kiểm tra tóc, lông, vật thể trong suốt và nền phức tạp trước khi sử dụng ảnh kết quả.' },
       { title: 'Xuất ảnh PNG', desc: 'Tải ảnh PNG có nền trong suốt; kích thước đầu ra tùy thuộc vào ảnh nguồn và kết quả xử lý.' },
     ],
     supportedFormatsDesc: 'PNG, JPG, JPEG, WEBP. Ảnh kết quả xuất ra định dạng PNG trong suốt.',
@@ -533,7 +533,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     title: 'Nén Dung Lượng Ảnh Online | One ForAll',
     metaDescription:
       'Nén ảnh JPG, PNG và WebP trực tuyến để giảm dung lượng tệp. Mức giảm và chất lượng đầu ra phụ thuộc vào ảnh gốc và thiết lập nén.',
-    h1: 'Nén Dung Lượng Hình Ảnh Thông Minh Trực Tuyến',
+    h1: 'Nén Ảnh Trực Tuyến',
     subtitle:
       'Giảm dung lượng hình ảnh để tiết kiệm bộ nhớ và thuận tiện chia sẻ. Mức giảm thực tế phụ thuộc vào ảnh nguồn và thiết lập nén.',
     inputType: 'file',
@@ -544,16 +544,16 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     backendOperation: 'compress',
     howItWorksSteps: [
       { step: '01', title: 'Tải ảnh cần nén', desc: 'Chọn tệp ảnh nặng (JPG, PNG, WebP) từ thư viện của bạn.' },
-      { step: '02', title: 'Thuật toán nén thông minh', desc: 'Công cụ tối ưu cách lưu ảnh để giảm dung lượng tệp.' },
-      { step: '03', title: 'Đánh giá tỷ lệ nén', desc: 'Xem số KB đã được tiết kiệm so với kích thước ban đầu.' },
-      { step: '04', title: 'Lưu ảnh dung lượng nhẹ', desc: 'Tải ảnh siêu nhẹ về máy sẵn sàng sử dụng.' },
+      { step: '02', title: 'Chọn định dạng và mức chất lượng', desc: 'Chọn đầu ra và điều chỉnh mức chất lượng nếu tùy chọn đó khả dụng.' },
+      { step: '03', title: 'Kiểm tra ảnh kết quả', desc: 'So sánh chất lượng ảnh và dung lượng tệp sau khi xử lý.' },
+      { step: '04', title: 'Tải ảnh đã nén', desc: 'Lưu ảnh kết quả vào thiết bị nếu phù hợp với nhu cầu của bạn.' },
     ],
     features: [
-      { title: 'Tỷ lệ nén cao vượt trội', desc: 'Mức giảm dung lượng tùy thuộc vào ảnh gốc và thiết lập nén; chất lượng có thể thay đổi sau khi nén.' },
-      { title: 'Tối ưu Google PageSpeed', desc: 'Giải pháp lý tưởng cho lập trình viên và chủ website cần tăng tốc độ web.' },
-      { title: 'Xử lý cực nhanh', desc: 'Thời gian xử lý phụ thuộc vào dung lượng ảnh và tình trạng hệ thống.' },
+      { title: 'Điều chỉnh mức nén', desc: 'Mức giảm dung lượng và chất lượng phụ thuộc ảnh gốc, định dạng đầu ra và thiết lập.' },
+      { title: 'Dùng ảnh cho website', desc: 'Tệp ảnh nhỏ hơn có thể giúp giảm dung lượng tải trang; hiệu quả phụ thuộc cách website phân phối ảnh.' },
+      { title: 'Xem trước kết quả', desc: 'So sánh dung lượng và kiểm tra chi tiết ảnh trước khi tải xuống.' },
     ],
-    supportedFormatsDesc: 'JPG, JPEG, PNG, WEBP, AVIF, GIF.',
+    supportedFormatsDesc: 'Ảnh đầu vào cần được bộ xử lý ảnh chấp nhận; có thể chọn đầu ra JPG, PNG hoặc WebP.',
     faqList: [
       { q: 'Nén ảnh có làm mờ chi tiết không?', a: 'Tùy mức nén và định dạng đầu ra, chất lượng ảnh có thể thay đổi. Hãy xem trước kết quả trước khi tải xuống.' },
     ],
@@ -577,19 +577,19 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     backendType: 'image_process',
     backendOperation: 'resize',
     howItWorksSteps: [
-      { step: '01', title: 'Chọn ảnh cần đổi kích thước', desc: 'Tải lên hình ảnh bất kỳ từ thiết bị.' },
-      { step: '02', title: 'Chọn kích thước mong muốn', desc: 'Chọn kích thước tiêu chuẩn (ví dụ 1200x630, 800x800, 1920x1080).' },
+      { step: '01', title: 'Tải ảnh lên', desc: 'Chọn một hình ảnh mà bộ xử lý chấp nhận.' },
+      { step: '02', title: 'Nhập chiều rộng hoặc chiều cao', desc: 'Nhập một hoặc cả hai kích thước bằng pixel. Khi chỉ nhập một chiều, chiều còn lại được tính theo tỷ lệ ảnh gốc.' },
       { step: '03', title: 'Điều chỉnh ảnh', desc: 'Công cụ thay đổi kích thước ảnh theo thông số bạn đã chọn.' },
       { step: '04', title: 'Tải ảnh vừa vặn', desc: 'Lưu ảnh kích thước chuẩn về máy để đăng bài ngay.' },
     ],
     features: [
-      { title: 'Khóa tỷ lệ khung hình', desc: 'Tự động tính toán chiều cao tương ứng với chiều rộng để tránh méo ảnh.' },
-      { title: 'Sẵn các kích thước mạng xã hội', desc: 'Gợi ý kích thước chuẩn cho Facebook, Instagram, YouTube, TikTok.' },
+      { title: 'Tính tỷ lệ khi nhập một chiều', desc: 'Nếu chỉ nhập chiều rộng hoặc chiều cao, chiều còn lại được tính theo tỷ lệ ảnh gốc.' },
+      { title: 'Nhập kích thước tùy chỉnh', desc: 'Chọn chiều rộng và chiều cao phù hợp với nơi bạn sẽ dùng ảnh.' },
       { title: 'Điều chỉnh linh hoạt', desc: 'Chọn kích thước ảnh theo nhu cầu và kiểm tra kết quả trước khi lưu.' },
     ],
-    supportedFormatsDesc: 'JPG, PNG, WEBP, AVIF, BMP.',
+    supportedFormatsDesc: 'Ảnh đầu vào cần được bộ xử lý ảnh chấp nhận; có thể chọn đầu ra JPG, PNG hoặc WebP.',
     faqList: [
-      { q: 'Làm sao để ảnh không bị méo khi đổi kích thước?', a: 'Bật tùy chọn giữ tỷ lệ khung hình để chiều rộng và chiều cao thay đổi đồng bộ, hạn chế làm méo ảnh.' },
+      { q: 'Làm sao để ảnh không bị méo khi đổi kích thước?', a: 'Chỉ nhập chiều rộng hoặc chiều cao để chiều còn lại được tính theo tỷ lệ ảnh gốc. Nếu nhập cả hai, ảnh sẽ được đổi đúng theo hai kích thước đó.' },
     ],
     relatedSlugs: ['/image-compressor', '/image-converter', '/remove-background', '/convert'],
   },
@@ -623,7 +623,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     ],
     supportedFormatsDesc: 'JSON ↔ YAML, JSON ↔ XML, CSV → JSON/XLSX, JSON → CSV, TXT → MD, MD ↔ HTML, HTML → PDF.',
     faqList: [
-      { q: 'XML sang JSON có giữ được attribute không?', a: 'Bản hiện tại tập trung vào cấu trúc node và văn bản; attribute có thể không được giữ đầy đủ. Bạn nên kiểm tra kết quả trước khi dùng cho hệ thống quan trọng.' },
+      { q: 'XML sang JSON có giữ được attribute không?', a: 'Không. Bộ chuyển đổi hiện không đưa attribute XML vào JSON; kết quả phản ánh cấu trúc node và nội dung văn bản. Hãy kiểm tra kết quả trước khi dùng.' },
       { q: 'Tệp dữ liệu lớn có chuyển được không?', a: 'Tệp phải nằm trong giới hạn tải lên của gói sử dụng; dữ liệu quá lớn hoặc sai cấu trúc sẽ bị từ chối kèm thông báo lỗi.' },
     ],
     relatedSlugs: ['/convert', '/document-converter'],
@@ -633,12 +633,12 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     slug: '/archive-converter',
     category: 'archive',
     badge: 'Chuyển đổi tệp nén',
-    title: 'Chuyển Đổi ZIP, TAR, TAR.GZ, 7Z Trực Tuyến | One ForAll',
+    title: 'Chuyển ZIP sang TAR hoặc 7Z và TAR sang ZIP | One ForAll',
     metaDescription:
-      'Chuyển đổi tệp nén giữa ZIP, TAR và 7Z trực tuyến. TAR.GZ sang ZIP chỉ trong vài bước; không cần cài WinRAR hay 7-Zip.',
+      'Chuyển ZIP sang TAR hoặc 7Z, và TAR/TAR.GZ sang ZIP trực tuyến. 7Z và RAR không được hỗ trợ làm tệp đầu vào.',
     h1: 'Chuyển Đổi Định Dạng Tệp Nén Trực Tuyến',
     subtitle:
-      'Đổi ZIP sang TAR, TAR hoặc TAR.GZ sang ZIP, ZIP sang 7Z — nhanh, không cần cài phần mềm nén.',
+      'Chọn ZIP → TAR/7Z hoặc TAR/TAR.GZ → ZIP. Tệp 7Z và RAR hiện không phải định dạng đầu vào được hỗ trợ.',
     inputType: 'file',
     acceptedFileTypes: '.zip,.tar,.gz,.tgz',
     outputFormats: ['zip', 'tar', '7z'],
@@ -646,7 +646,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     backendType: 'convert_file',
     backendOperation: 'convert',
     howItWorksSteps: [
-      { step: '01', title: 'Tải tệp nén lên', desc: 'Chọn tệp ZIP, TAR, TAR.GZ hoặc TGZ cần đổi định dạng.' },
+      { step: '01', title: 'Tải tệp nén lên', desc: 'Chọn tệp ZIP, TAR, TAR.GZ hoặc TGZ. ZIP là định dạng đầu vào duy nhất có thể xuất ra 7Z.' },
       { step: '02', title: 'Chọn định dạng đích', desc: 'Các lựa chọn khả dụng hiển thị theo loại tệp nguồn.' },
       { step: '03', title: 'Chuyển đổi an toàn', desc: 'One ForAll đọc và repack từng file bên trong, chặn đường dẫn độc hại và archive quá lớn.' },
       { step: '04', title: 'Tải tệp mới', desc: 'Nhận tệp nén ở định dạng mong muốn về máy.' },
@@ -654,15 +654,27 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     features: [
       { title: 'ZIP ↔ TAR', desc: 'Chuyển hai chiều giữa hai định dạng nén phổ biến trên Linux và Windows.' },
       { title: 'TAR.GZ sang ZIP', desc: 'Giải nén gzip rồi repack ZIP mà không cần thao tác tay.' },
-      { title: 'ZIP sang 7Z', desc: 'Đóng gói lại bằng 7Z để giảm dung lượng lưu trữ.' },
+      { title: 'ZIP sang 7Z', desc: 'Tạo bản archive 7Z từ các tệp trong archive ZIP.' },
     ],
-    supportedFormatsDesc: 'ZIP → TAR, 7Z; TAR và TAR.GZ (TGZ) → ZIP. RAR chưa hỗ trợ vì cần công cụ giải nén độc quyền.',
+    supportedFormatsDesc: 'ZIP → TAR hoặc 7Z; TAR và TAR.GZ (TGZ) → ZIP. 7Z và RAR không được hỗ trợ làm đầu vào.',
     faqList: [
-      { q: 'Có chuyển được RAR sang ZIP không?', a: 'Chưa. Định dạng RAR cần thư viện giải nén độc quyền của WinRAR nên nền tảng chưa hỗ trợ tự động.' },
-      { q: 'Tệp nén bên trong có bị đổi tên không?', a: 'Không. Cấu trúc thư mục và tên file bên trong được giữ nguyên khi repack.' },
+      { q: 'Có chuyển được RAR hoặc 7Z sang ZIP không?', a: 'Không. Công cụ hiện nhận ZIP, TAR và TAR.GZ; chỉ ZIP có thể xuất ra 7Z.' },
+      { q: 'Archive lớn có được hỗ trợ không?', a: 'Mỗi lần xử lý giới hạn tối đa 2.000 tệp và 512 MiB dữ liệu sau giải nén. Archive vượt giới hạn sẽ bị từ chối.' },
+      { q: 'Tên và thư mục bên trong archive có được giữ không?', a: 'Tên đường dẫn của các tệp được repack khi định dạng hỗ trợ. Thư mục rỗng và metadata của archive có thể không được giữ.' },
     ],
-    relatedSlugs: ['/convert', '/data-converter'],
+    relatedSlugs: ['/convert'],
   },
+}
+
+export function canonicalToolPath(path: string): string {
+  const suffixIndex = path.search(/[?#]/)
+  const pathname = suffixIndex < 0 ? path : path.slice(0, suffixIndex)
+  const suffix = suffixIndex < 0 ? '' : path.slice(suffixIndex)
+  const localePrefix = pathname === '/en' || pathname.startsWith('/en/') ? '/en' : ''
+  const routePath = localePrefix ? pathname.slice(3) || '/' : pathname
+  const slug = routePath.replace(/\/+$/, '') || '/'
+
+  return SEO_TOOLS[slug] ? `${localePrefix}${slug}/${suffix}` : path
 }
 
 export const ALL_TOOL_SLUGS = Object.keys(SEO_TOOLS)

@@ -6,6 +6,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const rootDir = path.resolve(__dirname, '..')
 const distDir = path.resolve(rootDir, 'dist')
 const SITE = 'https://oneforall.io.vn'
+const canonicalToolPath = (slug) => `/${slug.replace(/^\/+|\/+$/g, '')}/`
 
 // ─── Cấu hình chỉnh tay ──────────────────────────────────────────────────────
 // Nội dung tĩnh của trang chủ (title/description/OG giữ nguyên từ index.html).
@@ -13,6 +14,14 @@ const HOME = {
   h1: 'One ForAll – Công cụ trực tuyến đa năng cho ảnh, video và tài liệu',
   intro:
     'Tải video YouTube/TikTok từ liên kết được hỗ trợ, xóa nền ảnh, nén ảnh, chuyển đổi PDF, Word, Excel, âm thanh, video và nhiều định dạng tệp ngay trên trình duyệt.',
+}
+const HOME_EN = {
+  title: 'One ForAll - The Versatile Online Tools Platform for Every Need',
+  description:
+    'Use One ForAll online to download supported YouTube and TikTok videos, remove image backgrounds, compress images and convert PDF, Word, Excel and other file formats. Available features and limits depend on the tool.',
+  h1: 'The online tools platform all in one for every need',
+  intro:
+    'Download supported YouTube and TikTok videos, remove image backgrounds with AI, compress images and convert files online. Choose a tool and follow the steps to get started.',
 }
 const CATEGORY_LABELS = {
   youtube: 'Tải video & nhạc YouTube',
@@ -23,6 +32,16 @@ const CATEGORY_LABELS = {
   data: 'Chuyển đổi dữ liệu',
   archive: 'Chuyển đổi tệp nén',
   media: 'Âm thanh & video',
+}
+const CATEGORY_LABELS_EN = {
+  youtube: 'YouTube video and audio tools',
+  tiktok: 'TikTok video and audio tools',
+  convert: 'File conversion',
+  document: 'Document conversion',
+  image: 'Image tools',
+  data: 'Data conversion',
+  archive: 'Archive conversion',
+  media: 'Audio and video',
 }
 // URL tĩnh khác muốn đưa vào sitemap (vd. '/privacy', '/terms', '/contact').
 const EXTRA_SITEMAP_PATHS = []
@@ -204,7 +223,7 @@ function landingBody(tool, tools) {
     .join('')
   const related = tool.related
     .filter((s) => tools[s])
-    .map((s) => `<li><a href="${esc(s)}">${esc(tools[s].badge)}</a></li>`)
+    .map((s) => `<li><a href="${esc(canonicalToolPath(s))}">${esc(tools[s].badge)}</a></li>`)
     .join('')
 
   return `<div id="root">${CSS}
@@ -222,6 +241,49 @@ function landingBody(tool, tools) {
 </div></div>`
 }
 
+function localePath(slug, lang) {
+  return `${lang === 'en' ? '/en' : ''}${canonicalToolPath(slug)}`
+}
+
+function landingBodyEnglish(tool, tools) {
+  const steps = tool.steps
+    .map((s) => `<div class="card"><p><strong>Step ${esc(s.step)}</strong></p><h3>${esc(s.title)}</h3><p>${esc(s.desc)}</p></div>`)
+    .join('')
+  const features = tool.features
+    .map((f) => `<div class="card"><h3>${esc(f.title)}</h3><p>${esc(f.desc)}</p></div>`)
+    .join('')
+  const faq = tool.faqList
+    .map((f) => `<div class="card"><h3>${esc(f.q)}</h3><p>${esc(f.a)}</p></div>`)
+    .join('')
+  const related = tool.related
+    .filter((s) => tools[s])
+    .map((s) => `<li><a href="${esc(localePath(s, 'en'))}">${esc(tools[s].badge)}</a></li>`)
+    .join('')
+
+  return `<div id="root">${CSS}
+<div class="pr prerendered-content">
+  <nav aria-label="Breadcrumb"><a href="/en/">Home</a> &rsaquo; <span>${esc(tool.badge)}</span></nav>
+  <header><h1>${esc(tool.h1)}</h1><p>${esc(tool.subtitle)}</p></header>
+  ${tool.steps.length ? `<section><h2>How to use ${esc(tool.badge)}</h2><div class="grid">${steps}</div></section>` : ''}
+  ${tool.features.length ? `<section><h2>Key features</h2><div class="grid">${features}</div></section>` : ''}
+  ${tool.supportedFormatsDesc ? `<section><h2>Supported formats</h2><p>${esc(tool.supportedFormatsDesc)}</p></section>` : ''}
+  ${tool.faqList.length ? `<section><h2>Frequently asked questions</h2><div class="grid">${faq}</div></section>` : ''}
+  ${related ? `<section><h2>Related tools</h2><ul>${related}</ul></section>` : ''}
+</div></div>`
+}
+
+function homeBodyEnglish(tools) {
+  const groups = {}
+  for (const t of Object.values(tools)) (groups[t.category || 'media'] ??= []).push(t)
+  const sections = Object.entries(groups)
+    .map(([cat, list]) => `<section><h2>${esc(CATEGORY_LABELS_EN[cat] || cat)}</h2><ul>${list
+      .map((t) => `<li><a href="${esc(localePath(t.slug, 'en'))}">${esc(t.badge)}</a> – ${esc(t.subtitle)}</li>`)
+      .join('')}</ul></section>`)
+    .join('')
+  return `<div id="root">${CSS}
+<div class="pr prerendered-content"><header><h1>${esc(HOME_EN.h1)}</h1><p>${esc(HOME_EN.intro)}</p></header>${sections}</div></div>`
+}
+
 function homeBody(tools) {
   const groups = {}
   for (const t of Object.values(tools)) (groups[t.category || 'media'] ??= []).push(t)
@@ -229,7 +291,7 @@ function homeBody(tools) {
     .map(
       ([cat, list]) =>
         `<section><h2>${esc(CATEGORY_LABELS[cat] || cat)}</h2><ul>${list
-          .map((t) => `<li><a href="${esc(t.slug)}">${esc(t.badge)}</a> – ${esc(t.subtitle)}</li>`)
+          .map((t) => `<li><a href="${esc(canonicalToolPath(t.slug))}">${esc(t.badge)}</a> – ${esc(t.subtitle)}</li>`)
           .join('')}</ul></section>`,
     )
     .join('')
@@ -241,7 +303,8 @@ function homeBody(tools) {
 }
 
 function landingHead(tool, ogImage) {
-  const url = `${SITE}${tool.slug}`
+  const url = `${SITE}${canonicalToolPath(tool.slug)}`
+  const enUrl = `${SITE}/en${canonicalToolPath(tool.slug)}`
   const schemas = [
     {
       '@context': 'https://schema.org',
@@ -289,6 +352,9 @@ function landingHead(tool, ogImage) {
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="One ForAll" />
     <meta property="og:locale" content="vi_VN" />
+    <link rel="alternate" hreflang="vi" href="${url}" data-hreflang="vi" />
+    <link rel="alternate" hreflang="en" href="${enUrl}" data-hreflang="en" />
+    <link rel="alternate" hreflang="x-default" href="${url}" data-hreflang="x-default" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="${esc(tool.title)}" />
     <meta name="twitter:description" content="${esc(tool.metaDescription)}" />
@@ -297,10 +363,109 @@ function landingHead(tool, ogImage) {
 `
 }
 
+function landingHeadEnglish(tool, ogImage) {
+  const viUrl = `${SITE}${canonicalToolPath(tool.slug)}`
+  const url = `${SITE}/en${canonicalToolPath(tool.slug)}`
+  const schemas = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebApplication',
+      name: tool.badge,
+      url,
+      description: tool.metaDescription,
+      applicationCategory: 'MultimediaApplication',
+      operatingSystem: 'Any',
+      inLanguage: 'en',
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'VND' },
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE}/en/` },
+        { '@type': 'ListItem', position: 2, name: tool.badge, item: url },
+      ],
+    },
+  ]
+  if (tool.faqList.length)
+    schemas.unshift({
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: tool.faqList.map((f) => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a },
+      })),
+    })
+  const ids = { FAQPage: 'faq-jsonld', BreadcrumbList: 'breadcrumb-jsonld', WebApplication: 'webapp-jsonld' }
+  const ld = schemas
+    .map((s) => `<script id="${ids[s['@type']]}" type="application/ld+json">${jsonLd(s)}</script>`)
+    .join('\n    ')
+
+  return `
+    <title>${esc(tool.title)}</title>
+    <meta name="description" content="${esc(tool.metaDescription)}" />
+    <link rel="canonical" href="${esc(url)}" />
+    <meta name="robots" content="index, follow" />
+    <meta property="og:title" content="${esc(tool.title)}" />
+    <meta property="og:description" content="${esc(tool.metaDescription)}" />
+    <meta property="og:url" content="${esc(url)}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One ForAll" />
+    <meta property="og:locale" content="en_US" />
+    <link rel="alternate" hreflang="vi" href="${viUrl}" data-hreflang="vi" />
+    <link rel="alternate" hreflang="en" href="${url}" data-hreflang="en" />
+    <link rel="alternate" hreflang="x-default" href="${viUrl}" data-hreflang="x-default" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="${esc(tool.title)}" />
+    <meta name="twitter:description" content="${esc(tool.metaDescription)}" />
+    ${ogImage ? `<meta name="twitter:image" content="${esc(ogImage)}" />` : ''}
+    ${ld}
+`
+}
+
+function englishHomeHead(ogImage) {
+  const url = `${SITE}/en/`
+  const website = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'One ForAll',
+    alternateName: 'OneForAll',
+    url,
+  }
+  return `
+    <title>${esc(HOME_EN.title)}</title>
+    <meta name="description" content="${esc(HOME_EN.description)}" />
+    <link rel="canonical" href="${url}" />
+    <meta name="robots" content="index, follow" />
+    <meta property="og:title" content="${esc(HOME_EN.title)}" />
+    <meta property="og:description" content="${esc(HOME_EN.description)}" />
+    <meta property="og:url" content="${url}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One ForAll" />
+    <meta property="og:locale" content="en_US" />
+    <link rel="alternate" hreflang="vi" href="${SITE}/" data-hreflang="vi" />
+    <link rel="alternate" hreflang="en" href="${url}" data-hreflang="en" />
+    <link rel="alternate" hreflang="x-default" href="${SITE}/" data-hreflang="x-default" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="${esc(HOME_EN.title)}" />
+    <meta name="twitter:description" content="${esc(HOME_EN.description)}" />
+    ${ogImage ? `<meta name="twitter:image" content="${esc(ogImage)}" />` : ''}
+    <script id="website-jsonld" type="application/ld+json">${jsonLd(website)}</script>
+`
+}
+
+function setHtmlLang(html, lang) {
+  return html.replace(/<html\b([^>]*)>/i, (tag, attrs) => {
+    const withoutLang = attrs.replace(/\s+lang=(['"])[^'"]*\1/i, '')
+    return `<html${withoutLang} lang="${lang}">`
+  })
+}
+
 function buildSitemap(slugs) {
-  const urls = ['/', ...slugs, ...EXTRA_SITEMAP_PATHS]
+  const urls = ['/', ...slugs.map(canonicalToolPath), ...EXTRA_SITEMAP_PATHS.map(canonicalToolPath)]
   // Không ghi changefreq/priority (Google bỏ qua) và không ghi lastmod giả.
-  const body = urls.map((u) => `  <url>\n    <loc>${SITE}${u === '/' ? '/' : u}</loc>\n  </url>`).join('\n')
+  const body = urls.map((u) => `  <url>\n    <loc>${SITE}${u}</loc>\n  </url>`).join('\n')
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${body}\n</urlset>\n`
 }
 
@@ -314,7 +479,13 @@ export function runPrerender() {
 
   const src = fs.readFileSync(path.resolve(rootDir, 'src/config/seoTools.ts'), 'utf8')
   const tools = parseTools(src)
+  const englishOverrides = JSON.parse(fs.readFileSync(path.resolve(rootDir, 'src/i18n/tools.en.json'), 'utf8'))
   const slugs = Object.keys(tools)
+  const missingEnglish = slugs.filter((slug) => !englishOverrides[slug])
+  const unknownEnglish = Object.keys(englishOverrides).filter((slug) => !tools[slug])
+  if (missingEnglish.length || unknownEnglish.length) {
+    throw new Error(`Locale route mismatch. Missing EN: ${missingEnglish.join(', ') || 'none'}; unknown EN: ${unknownEnglish.join(', ') || 'none'}`)
+  }
 
   const { errors, warns } = validate(tools, src)
   warns.forEach((w) => console.warn(`[SEO] ⚠ ${w}`))
@@ -329,7 +500,24 @@ export function runPrerender() {
   const ogImage = rawHtml.match(/property=["']og:image["'][^>]*content=["']([^"']+)["']/i)?.[1]
 
   // 1. Trang chủ: giữ nguyên head của index.html, chỉ thêm nội dung tĩnh.
-  fs.writeFileSync(indexPath, injectRoot(rawHtml, homeBody(tools)), 'utf8')
+  const viHomeHead = `
+    <link rel="alternate" hreflang="vi" href="${SITE}/" data-hreflang="vi" />
+    <link rel="alternate" hreflang="en" href="${SITE}/en/" data-hreflang="en" />
+    <link rel="alternate" hreflang="x-default" href="${SITE}/" data-hreflang="x-default" />
+  `
+  fs.writeFileSync(indexPath, injectRoot(injectHead(rawHtml, viHomeHead), homeBody(tools)), 'utf8')
+
+  // English home route has its own localized content and metadata.
+  const enHomeDir = path.resolve(distDir, 'en')
+  fs.mkdirSync(enHomeDir, { recursive: true })
+  const englishTools = Object.fromEntries(
+    slugs.map((slug) => [slug, { ...tools[slug], ...englishOverrides[slug] }]),
+  )
+  let enHomeHtml = stripInheritedSeo(rawHtml).replace(/<title>[\s\S]*?<\/title>/i, '')
+  enHomeHtml = setHtmlLang(enHomeHtml, 'en')
+  enHomeHtml = injectHead(enHomeHtml, englishHomeHead(ogImage))
+  enHomeHtml = injectRoot(enHomeHtml, homeBodyEnglish(englishTools))
+  fs.writeFileSync(path.resolve(enHomeDir, 'index.html'), enHomeHtml, 'utf8')
 
   // 2. Landing pages
   for (const slug of slugs) {
@@ -340,6 +528,15 @@ export function runPrerender() {
     const outDir = path.resolve(distDir, slug.replace(/^\//, ''))
     fs.mkdirSync(outDir, { recursive: true })
     fs.writeFileSync(path.resolve(outDir, 'index.html'), html, 'utf8')
+
+    const englishTool = englishTools[slug]
+    let englishHtml = childBase.replace(/<title>[\s\S]*?<\/title>/i, '')
+    englishHtml = setHtmlLang(englishHtml, 'en')
+    englishHtml = injectHead(englishHtml, landingHeadEnglish(englishTool, ogImage))
+    englishHtml = injectRoot(englishHtml, landingBodyEnglish(englishTool, englishTools))
+    const englishOutDir = path.resolve(distDir, 'en', slug.replace(/^\//, ''))
+    fs.mkdirSync(englishOutDir, { recursive: true })
+    fs.writeFileSync(path.resolve(englishOutDir, 'index.html'), englishHtml, 'utf8')
   }
 
   // 3. 404.html
@@ -352,7 +549,7 @@ export function runPrerender() {
   // 4. sitemap.xml sinh từ config (nhớ xóa public/sitemap.xml cũ để khỏi nhầm nguồn)
   fs.writeFileSync(path.resolve(distDir, 'sitemap.xml'), buildSitemap(slugs), 'utf8')
 
-  console.log(`[SEO Prerender] Xong: trang chủ + ${slugs.length} landing page + 404.html + sitemap.xml (${slugs.length + 1 + EXTRA_SITEMAP_PATHS.length} URL)`)
+  console.log(`[SEO Prerender] Xong: 2 trang chủ + ${slugs.length} landing page/locale + 404.html + sitemap.xml (${slugs.length * 2 + 2} HTML route; sitemap ${slugs.length + 1 + EXTRA_SITEMAP_PATHS.length} URL)`)
 }
 
 runPrerender()

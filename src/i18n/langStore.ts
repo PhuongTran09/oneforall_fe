@@ -1,6 +1,7 @@
 import { useSyncExternalStore } from 'react'
 import { vi, type Dict } from './dict.vi'
 import { en } from './dict.en'
+import { canonicalToolPath } from '../config/seoTools'
 
 export type Lang = 'vi' | 'en'
 
@@ -86,8 +87,9 @@ export function stripLocale(pathname: string): { lang: Lang; path: string } {
 }
 
 export function withLocale(path: string, lang: Lang = state): string {
-  if (lang === 'vi') return path
-  return path === '/' ? '/en' : `/en${path.startsWith('/') ? path : `/${path}`}`
+  const localizedPath =
+    lang === 'vi' ? path : path === '/' ? '/en' : `/en${path.startsWith('/') ? path : `/${path}`}`
+  return canonicalToolPath(localizedPath)
 }
 
 /** Gọi trước render (anti-flash): sync lang từ URL hiện tại vào store + <html lang>. */

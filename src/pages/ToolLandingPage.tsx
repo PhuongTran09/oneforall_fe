@@ -420,7 +420,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
         title={tool.title}
         description={tool.metaDescription}
         canonicalUrl={canonicalUrl}
-        alternates={{ vi: tool.slug, en: withLocale(tool.slug, 'en') }}
+        alternates={{ vi: withLocale(tool.slug, 'vi'), en: withLocale(tool.slug, 'en') }}
         breadcrumbs={breadcrumbsData}
         faqList={tool.faqList}
       />
