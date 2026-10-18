@@ -1,21 +1,26 @@
 /**
  * Cấu hình quảng cáo tập trung — chỗ duy nhất bật/tắt từng định dạng.
- * URL/ID Adsterra giữ nguyên từng ký tự: đổi URL là đổi đối tượng thống kê của
- * publisher, nên không tham số hoá, không suy luận từ env.
+ * URL Adsterra đọc từ env như VITE_AFFILIATE_URL. Env rỗng = định dạng đó TẮT:
+ * openSmartlinkTab không kiểm tra url, còn đổi URL là đổi đối tượng thống kê của
+ * publisher — giá trị thật vì thế nằm trong env của nơi deploy, không nằm trong code.
  */
+const smartlinkUrl = import.meta.env.VITE_ADS_SMARTLINK_URL ?? ''
+const socialBarSrc = import.meta.env.VITE_ADS_SOCIALBAR_SRC ?? ''
+const popunderSrc = import.meta.env.VITE_ADS_POPUNDER_SRC ?? ''
+
 export const ADS = {
   /**
    * Smartlink: không có block quảng cáo nào trên trang; một tab tự mở khi người
    * dùng bấm "Bắt đầu xử lý"/"Bắt đầu tải" hợp lệ — cùng cách mở với tab affiliate.
    */
   smartlink: {
-    enabled: import.meta.env.VITE_ADS_SMARTLINK_ENABLED === 'true',
-    url: 'https://auctionr.org/4/c82d1249e94901fde16ea842607a4c49',
+    enabled: import.meta.env.VITE_ADS_SMARTLINK_ENABLED === 'true' && smartlinkUrl !== '',
+    url: smartlinkUrl,
   },
   /** Social Bar: script bên thứ ba tự chèn thanh của nó vào document. */
   socialBar: {
-    enabled: import.meta.env.VITE_ADS_SOCIALBAR_ENABLED === 'true',
-    src: 'https://bauval.org/14/df18540f90166bd46c1f22815c909389',
+    enabled: import.meta.env.VITE_ADS_SOCIALBAR_ENABLED === 'true' && socialBarSrc !== '',
+    src: socialBarSrc,
   },
   /**
    * Popunder: mặc định TẮT. Đo 10/2026 trên chính script (87 KB) — nó bind
@@ -26,7 +31,7 @@ export const ADS = {
    * hàm nạp popunder — phải cố tình viết lại điểm nạp mới chạy được.
    */
   popunder: {
-    enabled: import.meta.env.VITE_ADS_POPUNDER_ENABLED === 'true',
-    src: 'https://abscloud.org/1/19969e1bfc84e619ca2e34966319c39a',
+    enabled: import.meta.env.VITE_ADS_POPUNDER_ENABLED === 'true' && popunderSrc !== '',
+    src: popunderSrc,
   },
 } as const
