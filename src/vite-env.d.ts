@@ -10,8 +10,11 @@ interface ImportMetaEnv {
   readonly VITE_ADSENSE_SLOT_CONTENT?: string
   readonly VITE_ADSENSE_SLOT_BOTTOM?: string
   readonly VITE_ADS_SMARTLINK_ENABLED?: string
+  readonly VITE_ADS_SMARTLINK_URL?: string
   readonly VITE_ADS_SOCIALBAR_ENABLED?: string
+  readonly VITE_ADS_SOCIALBAR_SRC?: string
   readonly VITE_ADS_POPUNDER_ENABLED?: string
+  readonly VITE_ADS_POPUNDER_SRC?: string
   readonly VITE_TURNSTILE_ENABLED?: string
   readonly VITE_TURNSTILE_SITE_KEY?: string
 }
