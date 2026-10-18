@@ -1,6 +1,7 @@
 import { useSyncExternalStore } from 'react'
 import { t } from '../i18n/langStore'
 import { env } from '../utils/env'
+import { getAccessToken } from './authStore'
 
 /**
  * Challenge Turnstile theo yêu cầu — cùng mô hình singleton với errorPopupStore/toastStore:
@@ -74,6 +75,37 @@ export function requestCaptchaToken(): Promise<string> {
   else active = { id: nextId++, slot }
   emit()
   return promise
+}
+
+/**
+ * Token đã giải sẵn lúc người dùng kéo/chọn tệp. Turnstile thụ token vài phút và BE tính
+ * single-use, nên ô này có TTL ngắn hơn để một token nguội tự được hỏi lại lúc gửi.
+ */
+const WARM_TTL_MS = 120_000
+let warm: { token: string; at: number } | null = null
+
+/**
+ * Mở ải SỚM ngay khi có tệp thay vì đợi bấm "Bắt đầu xử lý": upload vài trăm MB rồi mới ăn
+ * 403 là phí băng thông của cả hai phía. Không chờ kết quả — user đổi ý thì token chỉ nguội
+ * theo, và user đã đăng nhập không bao giờ bị hỏi (BE cũng không hỏi họ).
+ */
+export function warmCaptchaToken(): void {
+  if (!requiredByBackend || warm || getAccessToken()) return
+  void requestCaptchaToken().then(
+    (token) => {
+      warm = { token, at: Date.now() }
+    },
+    () => {
+      warm = null
+    },
+  )
+}
+
+/** Ăn token đã giải sẵn; null khi chưa có hoặc đã quá WARM_TTL_MS. */
+export function takeWarmCaptchaToken(): string | null {
+  const entry = warm
+  warm = null
+  return entry && Date.now() - entry.at < WARM_TTL_MS ? entry.token : null
 }
 
 /**

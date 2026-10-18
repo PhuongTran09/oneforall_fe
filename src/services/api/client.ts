@@ -1,7 +1,7 @@
 import { env } from '../../utils/env'
 import { getAccessToken } from '../authStore'
 import { reportBackend } from '../backendStatusStore'
-import { captchaRequiredByBackend, requestCaptchaToken } from '../captchaStore'
+import { captchaRequiredByBackend, requestCaptchaToken, takeWarmCaptchaToken } from '../captchaStore'
 import {
   ApiClientError,
   type FastApiErrorResponse,
@@ -136,7 +136,7 @@ export class ApiClient {
   ): Promise<T> {
     // Bearer quyết định: user đăng nhập không bao giờ đi qua ải (BE cũng không hỏi họ).
     if (options?.captcha === 'proactive' && !getAccessToken() && captchaRequiredByBackend()) {
-      init = withCaptchaToken(init, await requestCaptchaToken())
+      init = withCaptchaToken(init, takeWarmCaptchaToken() ?? (await requestCaptchaToken()))
     }
     try {
       return await this.send<T>(endpoint, init, options)

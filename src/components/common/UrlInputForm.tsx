@@ -15,6 +15,10 @@ export interface UrlInputFormProps {
 }
 
 const AUDIO_FORMATS = new Set(['mp3', 'wav', 'm4a', 'aac'])
+// ZIP là nguyên bộ ảnh gốc của bài ảnh TikTok — không có chất lượng nào để chọn.
+const NO_QUALITY_FORMATS = new Set(['zip'])
+// Duyệt qua 'share' để khớp cả dạng https://www.tiktok.com/share/photo/<id>
+const TIKTOK_PHOTO_URL = /\/(?:@[\w.-]+|share)\/photo\/\d+/
 const VIDEO_QUALITIES = ['best', '1080p', '720p', '480p']
 const AUDIO_QUALITIES = ['128', '192', '320']
 
@@ -97,6 +101,13 @@ export function UrlInputForm({
   const [previewAttempt, setPreviewAttempt] = useState(0)
 
   const urlValid = isValidForPlatform(url, platform)
+  // Bài ảnh TikTok có thêm lựa chọn ZIP (cả bộ ảnh gốc) mà link video không có.
+  const isTiktokPhoto = platform === 'tiktok' && TIKTOK_PHOTO_URL.test(url)
+  const visibleFormats = isTiktokPhoto && !formats.includes('zip') ? [...formats, 'zip'] : formats
+  // Derive thay vì setState trong effect: người dùng sửa link ảnh thành link video thì
+  // selectedFormat vẫn mang 'zip', radios không còn cái nào được chọn và handleSubmit sẽ
+  // gửi zip cho video thường (BE trả 400).
+  const activeFormat = visibleFormats.includes(selectedFormat) ? selectedFormat : defaultFormat
   const trimmedUrl = url.trim()
   const fetched = previewFetched && previewFetched.key === trimmedUrl ? previewFetched : null
   const preview: { status: 'idle' | 'loading' | 'ready' | 'error'; data: UrlInfo | null } =
@@ -128,7 +139,9 @@ export function UrlInputForm({
     }
   }, [url, platform, previewAttempt])
 
-  const qualityOptions = qualityOptionsFor(selectedFormat)
+  const qualityOptions = NO_QUALITY_FORMATS.has(activeFormat.toLowerCase())
+    ? []
+    : qualityOptionsFor(activeFormat)
 
   const handleFormatChange = (format: string) => {
     setSelectedFormat(format)
@@ -183,7 +196,7 @@ export function UrlInputForm({
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
     if (validateUrl(url)) {
-      onSubmit(url.trim(), selectedFormat, selectedQuality)
+      onSubmit(url.trim(), activeFormat, selectedQuality)
     }
   }
 
@@ -320,27 +333,31 @@ export function UrlInputForm({
       )}
 
       {/* Format + Quality Segmented Controls — hiện sau khi link hợp lệ */}
-      {urlValid && formats.length > 0 && qualityOptions.length > 1 && (
+      {urlValid && (visibleFormats.length > 1 || qualityOptions.length > 1) && (
         <div className="in-fade flex items-center justify-center sm:justify-start gap-4 flex-wrap text-xs">
-          {formats.length > 1 && (
+          {visibleFormats.length > 1 && (
             <>
               <span className="text-slate-400 font-medium whitespace-nowrap">{t('urlInput.outputFormat')}</span>
               <SegmentedControl
-                options={formats}
-                value={selectedFormat}
+                options={visibleFormats}
+                value={activeFormat}
                 onChange={handleFormatChange}
                 ariaLabel={t('urlInput.outputFormat')}
               />
             </>
           )}
-          <span className="text-slate-400 font-medium whitespace-nowrap">{t('urlInput.quality')}</span>
-          <SegmentedControl
-            options={qualityOptions}
-            value={selectedQuality}
-            onChange={setSelectedQuality}
-            ariaLabel={t('urlInput.quality')}
-            labelFor={qualityLabel}
-          />
+          {qualityOptions.length > 1 && (
+            <>
+              <span className="text-slate-400 font-medium whitespace-nowrap">{t('urlInput.quality')}</span>
+              <SegmentedControl
+                options={qualityOptions}
+                value={selectedQuality}
+                onChange={setSelectedQuality}
+                ariaLabel={t('urlInput.quality')}
+                labelFor={qualityLabel}
+              />
+            </>
+          )}
         </div>
       )}
 

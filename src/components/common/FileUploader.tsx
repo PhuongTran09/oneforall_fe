@@ -12,6 +12,8 @@ import {
   type ParamValues,
 } from '../../config/conversionParams'
 import type { ToolFormState } from '../../utils/toolStateStore'
+import { ensureAnonymousSession } from '../../services/api/anonymousSessionApi'
+import { warmCaptchaToken } from '../../services/captchaStore'
 import { t } from '../../i18n/langStore'
 
 export interface FileUploaderProps {
@@ -106,6 +108,12 @@ export function FileUploader({
   }
 
   const handleFile = (file: File) => {
+    // Kéo/chọn tệp là lúc mở ải, không phải lúc bấm nút. BE mới là nguồn của "phiên này có
+    // cần ải không" nên phải xin phiên trước; ensureAnonymousSession idempotent và đã cache.
+    void ensureAnonymousSession().then(
+      () => warmCaptchaToken(),
+      () => undefined,
+    )
     setSelectedFile(file)
     if (file.type.startsWith('image/')) {
       const url = URL.createObjectURL(file)
