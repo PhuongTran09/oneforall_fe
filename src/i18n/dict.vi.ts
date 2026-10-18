@@ -560,6 +560,8 @@ export const vi = {
     "quality": "Chất lượng:",
     "qualityBest": "Tốt nhất",
     "retry": "Thử lại",
+    "slides": "Ảnh",
+    "slidesAll": "Chọn tất cả",
     "startDownload": "Bắt đầu tải",
     "tiktokOnly": "Vui lòng nhập liên kết video hợp lệ từ TikTok (tiktok.com).",
     "viewsLabel": "lượt xem",
