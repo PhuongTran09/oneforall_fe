@@ -28,7 +28,7 @@ import { showErrorPopup } from '../components/feedback/errorPopupStore'
 import { hasAcceptedTerms, openConsentModal } from '../components/consent/consentStorage'
 import { stripLocale, t, useI18n, withLocale } from '../i18n/langStore'
 import { useToolConfig } from '../i18n/toolConfig'
-import { getAccessToken, useAuth } from '../services/authStore'
+import { getAccessToken } from '../services/authStore'
 import {
   mediaApi,
   convertApi,
@@ -49,7 +49,6 @@ import {
 
 export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfig }) {
   const location = useLocation()
-  const { session } = useAuth()
   const adsGate = useAdsDecision()
   const { lang } = useI18n()
   const tool = useToolConfig(
@@ -256,7 +255,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
   // đầu tiên. Popup bị chặn thì window.open trả null — luồng xử lý vẫn chạy.
   const openSponsoredTabs = (key: string) => {
     if (adsGate === 'load') openAffiliateTab(key)
-    openSmartlinkTab(adsGate, session === null)
+    openSmartlinkTab(adsGate)
   }
 
   const handleUrlSubmit = async (url: string, format: string, quality: string) => {

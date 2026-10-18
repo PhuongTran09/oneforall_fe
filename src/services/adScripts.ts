@@ -82,23 +82,18 @@ export function loadSocialBar(): boolean {
   return loadOnce(ADS.socialBar.src)
 }
 
-// Một tab tài trợ cho mỗi lượt bấm xử lý; chặn nhấn đúp/kích hoạt lặp.
-const SMARTLINK_COOLDOWN_MS = 5000
-let lastSmartlinkAt = 0
-let freeSmartlinkActions = 0
-
 /**
  * Điểm mở tab smartlink DUY NHẤT: theo cú bấm "Bắt đầu xử lý"/"Bắt đầu tải" hợp lệ
- * (chủ site yêu cầu 10/2026). Gọi ĐỒNG BỘ trong user gesture, trước await đầu tiên
- * — giống openAffiliateTab; popup bị chặn thì window.open trả null, luồng xử lý vẫn
- * chạy. `decision` bắt buộc truyền vào để không mở cho user Pro hoặc chưa đồng ý
- * cookie quảng cáo. Khách nhận mỗi lượt hợp lệ; Free đã đăng nhập nhận mỗi hai lượt.
+ * (chủ site yêu cầu 10/2026, nới thành MỖI lượt 10/2026). Gọi ĐỒNG BỘ trong user
+ * gesture, trước await đầu tiên — giống openAffiliateTab; popup bị chặn thì
+ * window.open trả null, luồng xử lý vẫn chạy. `decision` bắt buộc truyền vào để
+ * không mở cho user Pro hoặc chưa đồng ý cookie quảng cáo.
+ *
+ * Không còn cooldown lẫn "hai lượt một tab": nút bấm đã disabled suốt lượt xử lý
+ * (`isLoading` ở UrlInputForm/FileUploader) nên nhấn đúp không tạo được hai job,
+ * và trình duyệt đã tự chặn window.open ngoài gesture.
  */
-export function openSmartlinkTab(decision: AdsDecision, isAnonymous: boolean): void {
+export function openSmartlinkTab(decision: AdsDecision): void {
   if (!ADS.smartlink.enabled || decision !== 'load') return
-  if (!isAnonymous && ++freeSmartlinkActions % 2 === 0) return
-  const now = Date.now()
-  if (now - lastSmartlinkAt < SMARTLINK_COOLDOWN_MS) return
-  lastSmartlinkAt = now
   window.open(ADS.smartlink.url, '_blank', 'noopener,noreferrer')
 }
