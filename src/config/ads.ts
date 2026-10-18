@@ -10,7 +10,7 @@ export const ADS = {
    */
   smartlink: {
     enabled: import.meta.env.VITE_ADS_SMARTLINK_ENABLED === 'true',
-    url: 'https://araplhn.org/4/9a9585f576aa6d806985ecb4582b9dac',
+    url: 'https://auctionr.org/4/c82d1249e94901fde16ea842607a4c49',
   },
   /** Social Bar: script bên thứ ba tự chèn thanh của nó vào document. */
   socialBar: {
