@@ -1,116 +1,26 @@
 import type { LegalDoc } from './types'
 
-// To edit legal content: edit only this file (title/sections/lastUpdated).
-// No need to touch the display component or page. Entirely in English.
 export const termsEn: LegalDoc = {
   title: 'Terms of Use',
   route: '/en/terms',
-  description:
-    'Terms of use for the One ForAll online tools platform: scope of application, user responsibilities, limitation of liability.',
-  // TODO (project owner to verify): lastUpdated is the first-draft date; update it upon official publication.
-  lastUpdated: '12/10/2026',
-  intro:
-    'This document sets out your rights and obligations when you use the file processing and media download tools on One ForAll. The entire content is presented in English.',
+  description: 'Terms for using One ForAll online tools, user responsibilities, and limits of liability.',
+  lastUpdated: '18/10/2026',
+  intro: 'These terms apply when you visit One ForAll and use the service’s online tools.',
   sections: [
-    {
-      id: 'pham-vi',
-      title: 'Scope of Application',
-      blocks: [
-        {
-          type: 'p',
-          parts: [
-            'These Terms apply to all access to and use of the One ForAll website (media download and processing tools, online file conversion). By using the service, you are deemed to have read and agreed to the terms below.',
-          ],
-        },
-      ],
-    },
-    {
-      id: 'dich-vu',
-      title: 'Service Description',
-      blocks: [
-        {
-          type: 'p',
-          parts: [
-            'One ForAll provides server-side file processing tools: downloading media from public links, converting file formats, compressing, resizing, and processing images. Some features may require account registration or belong to a paid plan according to the pricing shown on the website.',
-          ],
-        },
-        {
-          type: 'p',
-          parts: [
-            'The service is provided "as is". Processing results are stored only temporarily and automatically deleted within a few minutes after the task finishes — you must download the results to your device within the time indicated on the page.',
-          ],
-        },
-      ],
-    },
-    {
-      id: 'trach-nhiem',
-      title: 'User Responsibilities',
-      blocks: [
-        { type: 'p', parts: ['You undertake to:'] },
-        {
-          type: 'ul',
-          items: [
-            ['Upload or process only content that you have the legal right to use.'],
-            [
-              'Comply with the terms and copyright rules of the source platform (YouTube, TikTok, etc.) when using the download tools; responsibility for the downloaded content lies with you.',
-            ],
-            [
-              'Refrain from abusing the service to distribute malware, exploit resources, or process content prohibited by law.',
-            ],
-          ],
-        },
-      ],
-    },
-    {
-      id: 'quang-cao-affiliate',
-      title: 'Advertising and Partner Links',
-      blocks: [
-        {
-          type: 'p',
-          parts: [
-            'The website may display advertisements (Google AdSense) when enabled and may open an affiliate partner link in a new tab when you begin processing a valid task. Your access to that third party\'s page is governed by their own policies; One ForAll is not responsible for the content or transactions on third-party websites.',
-          ],
-        },
-      ],
-    },
-    {
-      id: 'gioi-han',
-      title: 'Limitation of Liability',
-      blocks: [
-        {
-          type: 'p',
-          parts: [
-            'To the extent permitted by law, One ForAll is not liable for indirect damages arising from the use of, or inability to use, the service (loss of utility due to overload, changes to source platform APIs, etc.). We strive to keep the service stable but do not guarantee absolutely uninterrupted uptime.',
-          ],
-        },
-      ],
-    },
-    {
-      id: 'thay-doi',
-      title: 'Changes to the Terms',
-      blocks: [
-        {
-          type: 'p',
-          parts: [
-            'We may update these terms; the effective version is the one displayed on this page together with the last-updated date. Continuing to use the service after the terms change means you accept the new version.',
-          ],
-        },
-      ],
-    },
-    {
-      id: 'lien-he',
-      title: 'Contact',
-      blocks: [
-        {
-          type: 'p',
-          parts: [
-            'For any questions about the Terms of Use, please email ',
-            // TODO (project owner to verify): use the email already present in the Footer; confirm this is the official contact email.
-            { a: 'support@oneforall.io.vn', href: 'mailto:support@oneforall.io.vn' },
-            '.',
-          ],
-        },
-      ],
-    },
+    { id: 'pham-vi', title: 'Scope and Services', blocks: [{ type: 'p', parts: ['One ForAll provides tools for supported media links, file format conversion, image compression and resizing, and other image operations. Available tools and limits may vary by feature and plan; check the tool and pricing pages. Google Sign-In is provided for authentication and access to account features.'] }] },
+    { id: 'trach-nhiem', title: 'Your Responsibilities', blocks: [
+      { type: 'p', parts: ['You are responsible for content you submit, process, download, or share and must have the legal rights required for those actions. When using URL-based tools, you must also comply with applicable law, copyright, and the source platform’s terms.'] },
+      { type: 'ul', items: [
+        ['Do not use the service to distribute malware, attack systems, abuse resources, or bypass safeguards.'],
+        ['Do not violate privacy rights or create, edit, or distribute another person’s intimate imagery without consent and legal authority.'],
+        ['Do not download, convert, or distribute content in violation of an owner’s rights or source platform terms.'],
+      ] },
+    ] },
+    { id: 'han-che-truy-cap', title: 'Access Restrictions', blocks: [{ type: 'p', parts: ['To the extent permitted by law, One ForAll may refuse, limit, or suspend access when there are reasonable grounds to believe the service is being abused, may cause harm, or is being used contrary to these terms.'] }] },
+    { id: 'luu-tru', title: 'Results and Retention', blocks: [{ type: 'p', parts: ['Files and results are retained according to task and plan settings; download URLs have a separate lifetime. Retention periods, cleanup, and limits are described in the tool and Privacy Policy. Do not use the service as long-term storage; download results you need to keep.'] }] },
+    { id: 'quang-cao-affiliate', title: 'Advertising and Partner Links', blocks: [{ type: 'p', parts: ['The website includes Google AdSense and partner scripts/links subject to configuration; their display may depend on settings and advertising consent. Third-party pages and transactions are governed by that provider’s policies.'] }] },
+    { id: 'gioi-han', title: 'Limitation of Liability', blocks: [{ type: 'p', parts: ['The service is provided as is and may be interrupted or changed. To the extent permitted by law, One ForAll is not liable for indirect damages arising from use of, or inability to use, the service. Nothing in these terms excludes or limits liability, rights, or remedies that applicable law does not permit to be excluded or limited.'] }] },
+    { id: 'thay-doi', title: 'Changes to These Terms', blocks: [{ type: 'p', parts: ['The current terms and update date are published on this page. Continued use after a change is subject to applicable law; where separate consent is required, the service will request it in an appropriate manner.'] }] },
+    { id: 'lien-he', title: 'Contact', blocks: [{ type: 'p', parts: ['For questions about these terms, email ', { a: 'support@oneforall.io.vn', href: 'mailto:support@oneforall.io.vn' }, '.'] }] },
   ],
 }

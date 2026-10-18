@@ -1,6 +1,11 @@
 import { useEffect } from 'react'
 import { t } from '../../i18n/langStore'
-import { canonicalToolPath } from '../../config/seoTools'
+import { canonicalToolPath, SEO_TOOLS } from '../../config/seoTools'
+
+const alternatePath = (path: string) => {
+  const toolPath = path.replace(/^\/en(?=\/)/, '')
+  return toolPath in SEO_TOOLS ? canonicalToolPath(path) : path
+}
 
 export interface SEOHeadProps {
   title: string
@@ -53,9 +58,9 @@ export function SEOHead({
     document.querySelectorAll('link[data-hreflang]').forEach((el) => el.remove())
     if (alternates) {
       const entries: { hreflang: string; href: string }[] = [
-        { hreflang: 'vi', href: `https://oneforall.io.vn${canonicalToolPath(alternates.vi)}` },
-        { hreflang: 'en', href: `https://oneforall.io.vn${canonicalToolPath(alternates.en)}` },
-        { hreflang: 'x-default', href: `https://oneforall.io.vn${canonicalToolPath(alternates.vi)}` },
+        { hreflang: 'vi', href: `https://oneforall.io.vn${alternatePath(alternates.vi)}` },
+        { hreflang: 'en', href: `https://oneforall.io.vn${alternatePath(alternates.en)}` },
+        { hreflang: 'x-default', href: `https://oneforall.io.vn${alternatePath(alternates.vi)}` },
       ]
       for (const entry of entries) {
         const link = document.createElement('link')

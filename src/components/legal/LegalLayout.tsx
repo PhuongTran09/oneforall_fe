@@ -10,12 +10,16 @@ export interface LegalLayoutProps {
 }
 
 export function LegalLayout({ doc, siteUrl }: LegalLayoutProps) {
+  const viRoute = doc.route.replace(/^\/en/, '')
+  const enRoute = `/en${viRoute}`
+
   return (
     <>
       <SEOHead
         title={`${doc.title} | One ForAll`}
         description={doc.description}
         canonicalUrl={`${siteUrl}${doc.route}`}
+        alternates={{ vi: viRoute, en: enRoute }}
       />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-14">
         <div className="mb-8 heading-in">
