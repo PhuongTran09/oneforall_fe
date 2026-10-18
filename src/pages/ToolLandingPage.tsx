@@ -258,7 +258,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
     openSmartlinkTab(adsGate)
   }
 
-  const handleUrlSubmit = async (url: string, format: string, quality: string) => {
+  const handleUrlSubmit = async (url: string, format: string, quality: string, slides?: number[]) => {
     // Chức năng xử lý (không phải trang công khai) chỉ chạy sau khi người dùng đồng ý điều khoản.
     if (!hasAcceptedTerms()) {
       openConsentModal('main')
@@ -278,7 +278,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
       await ensureAnonymousSession()
       // Xác định operation dựa trên tool config
       const operation = tool.backendOperation === 'extract-audio' ? 'extract-audio' : 'url_download'
-      const accepted = await mediaApi.processUrl(url, operation, { format, quality })
+      const accepted = await mediaApi.processUrl(url, operation, { format, quality, slides })
       updateToolSnapshot(tool.slug, {
         pending: { jobId: accepted.job_id },
       })

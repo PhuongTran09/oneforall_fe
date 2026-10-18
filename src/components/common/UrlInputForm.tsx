@@ -9,7 +9,7 @@ export interface UrlInputFormProps {
   platform?: 'youtube' | 'tiktok'
   formats: string[]
   defaultFormat: string
-  onSubmit: (url: string, format: string, quality: string) => void
+  onSubmit: (url: string, format: string, quality: string, slides?: number[]) => void
   isLoading?: boolean
   disabled?: boolean
 }
@@ -17,6 +17,8 @@ export interface UrlInputFormProps {
 const AUDIO_FORMATS = new Set(['mp3', 'wav', 'm4a', 'aac'])
 // ZIP là nguyên bộ ảnh gốc của bài ảnh TikTok — không có chất lượng nào để chọn.
 const NO_QUALITY_FORMATS = new Set(['zip'])
+// Chỉ hai đầu ra này dựng từ ảnh; MP3 của bài ảnh là nhạc nền nên không có gì để chọn.
+const SLIDE_FORMATS = new Set(['zip', 'mp4'])
 // Duyệt qua 'share' để khớp cả dạng https://www.tiktok.com/share/photo/<id>
 const TIKTOK_PHOTO_URL = /\/(?:@[\w.-]+|share)\/photo\/\d+/
 const VIDEO_QUALITIES = ['best', '1080p', '720p', '480p']
@@ -99,6 +101,8 @@ export function UrlInputForm({
   const [dismissedPreviewKey, setDismissedPreviewKey] = useState<string | null>(null)
   // Bump khi bấm Thử lại — đưa vào deps để effect preview chạy lại cùng một URL.
   const [previewAttempt, setPreviewAttempt] = useState(0)
+  // Ảnh được chọn của bài ảnh TikTok; null = cả bộ (mặc định, và là những gì job cũ gửi).
+  const [pickedSlides, setPickedSlides] = useState<number[] | null>(null)
 
   const urlValid = isValidForPlatform(url, platform)
   // Bài ảnh TikTok có thêm lựa chọn ZIP (cả bộ ảnh gốc) mà link video không có.
@@ -116,6 +120,22 @@ export function UrlInputForm({
       : fetched
         ? { status: fetched.status, data: fetched.data }
         : { status: 'loading', data: null }
+
+  // Ảnh thật của bài ảnh (backend mới đọc được từ trang TikTok) — link video không có.
+  const slideUrls = isTiktokPhoto ? preview.data?.slides ?? [] : []
+  // 1 ảnh thì chẳng có gì để chọn; ZIP/MP4 của bài ảnh mới dựng output từ từng ảnh.
+  const showSlidePicker = SLIDE_FORMATS.has(activeFormat.toLowerCase()) && slideUrls.length > 1
+  const selectedSlides = pickedSlides ?? slideUrls.map((_, index) => index + 1)
+  const allSlidesSelected = selectedSlides.length === slideUrls.length
+
+  const toggleSlide = (slide: number) => {
+    const next = selectedSlides.includes(slide)
+      ? selectedSlides.filter((value) => value !== slide)
+      : [...selectedSlides, slide].sort((a, b) => a - b)
+    // Bỏ chọn ảnh cuối cùng = job không có gì để tải, BE sẽ 400 — chặn ngay ở đây.
+    if (next.length === 0) return
+    setPickedSlides(next)
+  }
 
   // Dán link xong debounce 700ms rồi mới fetch preview — tránh gọi oEmbed mỗi lần gõ.
   // /media/url-info là endpoint public nên khách chưa đăng nhập vẫn thấy preview;
@@ -156,6 +176,7 @@ export function UrlInputForm({
       const text = await navigator.clipboard.readText()
       if (text) {
         setUrl(text)
+        setPickedSlides(null)
         validateUrl(text)
       }
     } catch {
@@ -196,7 +217,9 @@ export function UrlInputForm({
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
     if (validateUrl(url)) {
-      onSubmit(url.trim(), activeFormat, selectedQuality)
+      // Chọn cả bộ thì không gửi `slides`: thiếu key đã là "tất cả" với job cũ và với BE.
+      const slides = showSlidePicker && !allSlidesSelected ? selectedSlides : undefined
+      onSubmit(url.trim(), activeFormat, selectedQuality, slides)
     }
   }
 
@@ -219,6 +242,8 @@ export function UrlInputForm({
               const value = e.target.value
               setUrl(value)
               setDismissedPreviewKey(null)
+              // Ảnh đã chọn thuộc về bài cũ: dán bài khác phải quay lại "cả bộ".
+              setPickedSlides(null)
               // Dán link (nhảy >=4 ký tự cùng lúc) -> báo lỗi sai platform ngay, không đợi bấm nút.
               if (value.length - url.length >= 4) {
                 validateUrl(value)
@@ -358,6 +383,65 @@ export function UrlInputForm({
               />
             </>
           )}
+        </div>
+      )}
+
+      {/* Bộ chọn ảnh của bài ảnh TikTok: bỏ bớt ảnh khỏi ZIP/MP4 thay vì tải cả bộ */}
+      {showSlidePicker && (
+        <div className="in-fade">
+          <div className="flex items-center justify-between gap-2 mb-1.5 text-xs">
+            <span className="text-slate-400 font-medium whitespace-nowrap">{t('urlInput.slides')}</span>
+            <div className="flex items-center gap-2">
+              <span className="text-slate-400 font-mono">
+                {selectedSlides.length}/{slideUrls.length}
+              </span>
+              {!allSlidesSelected && (
+                <button
+                  type="button"
+                  onClick={() => setPickedSlides(null)}
+                  className="px-2 py-0.5 font-medium text-slate-300 hover:text-brand bg-elev hover:bg-brand/10 border border-edge transition-colors cursor-pointer clip-corner-btn"
+                >
+                  {t('urlInput.slidesAll')}
+                </button>
+              )}
+            </div>
+          </div>
+          <div
+            role="group"
+            aria-label={t('urlInput.slides')}
+            className="grid grid-cols-4 sm:grid-cols-6 gap-1.5"
+          >
+            {slideUrls.map((src, index) => {
+              const slide = index + 1
+              const picked = selectedSlides.includes(slide)
+              return (
+                <button
+                  key={src}
+                  type="button"
+                  aria-pressed={picked}
+                  aria-label={`${t('urlInput.slides')} ${slide}`}
+                  onClick={() => toggleSlide(slide)}
+                  className={`relative aspect-[3/4] overflow-hidden border transition-all cursor-pointer clip-corner-btn ${
+                    picked
+                      ? 'border-brand ring-2 ring-brand/40'
+                      : 'border-edge opacity-40 hover:opacity-80'
+                  }`}
+                >
+                  <img
+                    src={src}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-cover pointer-events-none"
+                  />
+                  <span className="absolute bottom-0.5 left-1 text-[10px] font-mono text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]">
+                    {slide}
+                  </span>
+                </button>
+              )
+            })}
+          </div>
         </div>
       )}
 

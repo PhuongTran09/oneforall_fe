@@ -562,6 +562,8 @@ export const en: Dict = {
     "quality": "Quality:",
     "qualityBest": "Best",
     "retry": "Retry",
+    "slides": "Images",
+    "slidesAll": "Select all",
     "startDownload": "Start download",
     "tiktokOnly": "Please enter a valid TikTok video link (tiktok.com).",
     "viewsLabel": "views",

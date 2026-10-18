@@ -9,8 +9,10 @@ export interface MediaProcessParams {
   acodec?: string
   crf?: string | number
   time?: string
+  /** Số thứ tự ảnh (1-based) của bài ảnh TikTok; thiếu = cả bộ. */
+  slides?: number[]
   /** Extra keys are forwarded as-is; src/config/conversionParams.ts lists what ffmpeg gets. */
-  [key: string]: string | number | boolean | undefined
+  [key: string]: string | number | boolean | number[] | undefined
 }
 
 export interface UrlInfo {
@@ -24,6 +26,9 @@ export interface UrlInfo {
   view_count?: number | null
   like_count?: number | null
   upload_date?: string | null
+  /** Ảnh của bài ảnh TikTok, theo đúng thứ tự trượt; null với mọi link khác. URL CDN ký kèm
+   * ?x-expires= nên chỉ xem được vài giờ. */
+  slides?: string[] | null
 }
 
 export const mediaApi = {
