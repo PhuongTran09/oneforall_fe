@@ -13,15 +13,15 @@ const canonicalToolPath = (slug) => `/${slug.replace(/^\/+|\/+$/g, '')}/`
 const HOME = {
   h1: 'One ForAll – Công cụ trực tuyến đa năng cho ảnh, video và tài liệu',
   intro:
-    'Tải video YouTube/TikTok từ liên kết được hỗ trợ, xóa nền ảnh, nén ảnh, chuyển đổi PDF, Word, Excel, âm thanh, video và nhiều định dạng tệp ngay trên trình duyệt.',
+    'One ForAll cung cấp các công cụ trực tuyến giúp bạn tải media từ những liên kết được hỗ trợ, chuyển đổi định dạng tệp và xử lý hình ảnh. Tất cả trong một nền tảng, đơn giản và thuận tiện.',
 }
 const HOME_EN = {
   title: 'One ForAll - The Versatile Online Tools Platform for Every Need',
   description:
-    'Use One ForAll online to download supported YouTube and TikTok videos, remove image backgrounds, compress images and convert PDF, Word, Excel and other file formats. Available features and limits depend on the tool.',
+    'Use One ForAll to get media from supported links, convert file formats and process images with online tools.',
   h1: 'The online tools platform all in one for every need',
   intro:
-    'Download supported YouTube and TikTok videos, remove image backgrounds with AI, compress images and convert files online. Choose a tool and follow the steps to get started.',
+    'One ForAll offers online tools to get media from supported links, convert file formats, and process images—all in one simple, convenient platform.',
 }
 const CATEGORY_LABELS = {
   youtube: 'Tải video & nhạc YouTube',
@@ -281,7 +281,7 @@ function homeBodyEnglish(tools) {
       .join('')}</ul></section>`)
     .join('')
   return `<div id="root">${CSS}
-<div class="pr prerendered-content"><header><h1>${esc(HOME_EN.h1)}</h1><p>${esc(HOME_EN.intro)}</p></header>${sections}</div></div>`
+<div class="pr prerendered-content"><header><h1>${esc(HOME_EN.h1)}</h1><p>${esc(HOME_EN.intro)}</p><p>Google Sign-In lets you authenticate and use supported account features.</p><nav aria-label="Legal and support"><a href="/en/privacy">Privacy Policy</a> · <a href="/en/terms">Terms of Use</a> · <a href="mailto:support@oneforall.io.vn">support@oneforall.io.vn</a></nav></header>${sections}</div></div>`
 }
 
 function homeBody(tools) {
@@ -297,7 +297,7 @@ function homeBody(tools) {
     .join('')
   return `<div id="root">${CSS}
 <div class="pr prerendered-content">
-  <header><h1>${esc(HOME.h1)}</h1><p>${esc(HOME.intro)}</p></header>
+  <header><h1>${esc(HOME.h1)}</h1><p>${esc(HOME.intro)}</p><p>Google Sign-In giúp bạn xác thực và sử dụng các chức năng tài khoản được hỗ trợ.</p><nav aria-label="Chính sách và hỗ trợ"><a href="/privacy">Chính sách quyền riêng tư</a> · <a href="/terms">Điều khoản sử dụng</a> · <a href="mailto:support@oneforall.io.vn">support@oneforall.io.vn</a></nav></header>
   ${sections}
 </div></div>`
 }
@@ -430,7 +430,6 @@ function englishHomeHead(ogImage) {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: 'One ForAll',
-    alternateName: 'OneForAll',
     url,
   }
   return `

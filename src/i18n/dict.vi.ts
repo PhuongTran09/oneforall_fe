@@ -199,7 +199,7 @@ export const vi = {
   },
   "hero": {
     "badge": "One ForAll • Xử lý đa phương tiện",
-    "description": "Tải video từ YouTube và TikTok bằng liên kết được hỗ trợ, xóa nền ảnh, nén hình ảnh và chuyển đổi định dạng tài liệu, âm thanh, video ngay trên website.",
+    "description": "One ForAll cung cấp các công cụ trực tuyến giúp bạn tải media từ những liên kết được hỗ trợ, chuyển đổi định dạng tệp và xử lý hình ảnh. Tất cả trong một nền tảng, đơn giản và thuận tiện.",
     "exploreCta": "Khám phá toàn bộ công cụ",
     "pillFormats": "Hỗ trợ đa định dạng",
     "pillInstant": "Dễ sử dụng",
@@ -214,7 +214,7 @@ export const vi = {
     "titlePre": "Nền tảng công cụ trực tuyến"
   },
   "home": {
-    "seoDesc": "Tải video từ YouTube và TikTok bằng liên kết được hỗ trợ, xóa nền ảnh, nén ảnh WebP và chuyển đổi PDF, Word, Excel cùng nhiều định dạng tệp trực tuyến với One ForAll.",
+    "seoDesc": "One ForAll cung cấp công cụ trực tuyến giúp bạn tải media từ liên kết được hỗ trợ, chuyển đổi định dạng tệp và xử lý hình ảnh.",
     "seoTitle": "One ForAll - Nền Tảng Công Cụ Trực Tuyến Đa Năng Cho Mọi Nhu Cầu"
   },
   "homeFaq": {

@@ -201,7 +201,7 @@ export const en: Dict = {
   },
   "hero": {
     "badge": "One ForAll • Multimedia Processing",
-    "description": "Download supported YouTube and TikTok videos, remove image backgrounds with AI, compress images and convert files online. Choose a tool and follow the steps to get started.",
+    "description": "One ForAll offers online tools to get media from supported links, convert file formats, and process images—all in one simple, convenient platform.",
     "exploreCta": "Explore all tools",
     "pillFormats": "diverse formats supported",
     "pillInstant": "Easy-to-use online tools",
@@ -216,7 +216,7 @@ export const en: Dict = {
     "titlePre": "The online tools platform"
   },
   "home": {
-    "seoDesc": "Use One ForAll online to download supported YouTube and TikTok videos, remove image backgrounds, compress images and convert PDF, Word, Excel and other file formats. Available features and limits depend on the tool.",
+    "seoDesc": "Use One ForAll to get media from supported links, convert file formats and process images with online tools.",
     "seoTitle": "One ForAll - The Versatile Online Tools Platform for Every Need"
   },
   "homeFaq": {
