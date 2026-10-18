@@ -15,12 +15,12 @@ export interface UrlInputFormProps {
 }
 
 const AUDIO_FORMATS = new Set(['mp3', 'wav', 'm4a', 'aac'])
-// ZIP là nguyên bộ ảnh gốc của bài ảnh TikTok — không có chất lượng nào để chọn.
-const NO_QUALITY_FORMATS = new Set(['zip'])
-// Chỉ hai đầu ra này dựng từ ảnh; MP3 của bài ảnh là nhạc nền nên không có gì để chọn.
-const SLIDE_FORMATS = new Set(['zip', 'mp4'])
-// Duyệt qua 'share' để khớp cả dạng https://www.tiktok.com/share/photo/<id>
-const TIKTOK_PHOTO_URL = /\/(?:@[\w.-]+|share)\/photo\/\d+/
+// ZIP là nguyên bộ ảnh gốc, GIF là ảnh động dựng từ đúng ảnh đó — không có chất lượng để chọn.
+const NO_QUALITY_FORMATS = new Set(['zip', 'gif'])
+// Ba đầu ra này dựng từ từng ảnh; MP3 của bài ảnh là nhạc nền nên không có gì để chọn.
+const SLIDE_FORMATS = new Set(['zip', 'mp4', 'gif'])
+// Chỉ bài ảnh TikTok mới có; được nối thêm vào danh sách format của tool khi BE trả slides.
+const PHOTO_ONLY_FORMATS = ['zip', 'gif']
 const VIDEO_QUALITIES = ['best', '1080p', '720p', '480p']
 const AUDIO_QUALITIES = ['128', '192', '320']
 
@@ -105,13 +105,6 @@ export function UrlInputForm({
   const [pickedSlides, setPickedSlides] = useState<number[] | null>(null)
 
   const urlValid = isValidForPlatform(url, platform)
-  // Bài ảnh TikTok có thêm lựa chọn ZIP (cả bộ ảnh gốc) mà link video không có.
-  const isTiktokPhoto = platform === 'tiktok' && TIKTOK_PHOTO_URL.test(url)
-  const visibleFormats = isTiktokPhoto && !formats.includes('zip') ? [...formats, 'zip'] : formats
-  // Derive thay vì setState trong effect: người dùng sửa link ảnh thành link video thì
-  // selectedFormat vẫn mang 'zip', radios không còn cái nào được chọn và handleSubmit sẽ
-  // gửi zip cho video thường (BE trả 400).
-  const activeFormat = visibleFormats.includes(selectedFormat) ? selectedFormat : defaultFormat
   const trimmedUrl = url.trim()
   const fetched = previewFetched && previewFetched.key === trimmedUrl ? previewFetched : null
   const preview: { status: 'idle' | 'loading' | 'ready' | 'error'; data: UrlInfo | null } =
@@ -121,8 +114,20 @@ export function UrlInputForm({
         ? { status: fetched.status, data: fetched.data }
         : { status: 'loading', data: null }
 
-  // Ảnh thật của bài ảnh (backend mới đọc được từ trang TikTok) — link video không có.
-  const slideUrls = isTiktokPhoto ? preview.data?.slides ?? [] : []
+  // Bài ảnh TikTok = khi BE đọc được ảnh thật, không phải khi URL có /photo/: Share của app ra
+  // link vt./vm. (BE mở redirect rồi vẫn đủ ảnh) còn link /share/photo/ thì BE lại không có ảnh
+  // — suy từ URL vừa giấu picker với link mobile, vừa hứa chip ZIP ở nơi job sẽ chết 502.
+  const slideUrls = platform === 'tiktok' ? preview.data?.slides ?? [] : []
+  const isTiktokPhoto = slideUrls.length > 0
+  // Bài ảnh TikTok có thêm ZIP/GIF mà link video không có.
+  const visibleFormats = isTiktokPhoto
+    ? [...formats, ...PHOTO_ONLY_FORMATS.filter((format) => !formats.includes(format))]
+    : formats
+  // Derive thay vì setState trong effect: người dùng sửa link ảnh thành link video thì
+  // selectedFormat vẫn mang 'zip', radios không còn cái nào được chọn và handleSubmit sẽ
+  // gửi zip cho video thường (BE trả 400).
+  const activeFormat = visibleFormats.includes(selectedFormat) ? selectedFormat : defaultFormat
+
   // 1 ảnh thì chẳng có gì để chọn; ZIP/MP4 của bài ảnh mới dựng output từ từng ảnh.
   const showSlidePicker = SLIDE_FORMATS.has(activeFormat.toLowerCase()) && slideUrls.length > 1
   const selectedSlides = pickedSlides ?? slideUrls.map((_, index) => index + 1)
