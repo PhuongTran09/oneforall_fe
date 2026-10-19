@@ -535,9 +535,11 @@ export const en: Dict = {
     "title": "Every tool you need, at your fingertips"
   },
   "uploader": {
+    "dropOverlay": "Drop the file here to select it",
     "dropzoneBrowse": "browse from your device",
     "dropzoneHint": "Free plan limits: video 200MB · document 25MB · image 10MB · audio 30MB (higher on Pro) • Files are removed according to the service’s retention policy",
-    "dropzonePre": "Drag and drop your file here, or",
+    "dropzonePaste": "You can also copy an image elsewhere and paste it with Ctrl+V (⌘V on macOS) — no need to upload a file from your device.",
+    "dropzonePre": "Drag and drop a file anywhere on the page, or",
     "fileSize": "Size",
     "invalidParam": "Check the \"{label}\" item in Advanced options before converting.",
     "previewAlt": "Image preview",

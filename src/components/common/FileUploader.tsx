@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useRef, type ChangeEvent, type DragEvent } from 'react'
+import { useCallback, useEffect, useMemo, useState, useRef, type ChangeEvent } from 'react'
 import { UploadCloud, File as FileIcon, X, ArrowRight } from 'lucide-react'
 import { Button } from './Button'
 import { SegmentedControl } from './SegmentedControl'
@@ -15,6 +15,26 @@ import type { ToolFormState } from '../../utils/toolStateStore'
 import { ensureAnonymousSession } from '../../services/api/anonymousSessionApi'
 import { warmCaptchaToken } from '../../services/captchaStore'
 import { t } from '../../i18n/langStore'
+
+/** Ô nhập CHỮ giữ paste cho riêng nó (dán link vào ô URL, dán số vào ô width…). Loại input
+ * khác — checkbox, slider, button — không nhận text nào, nên Ctrl+V lúc chúng đang được focus
+ * vẫn phải dán ảnh: bấm một tùy chọn xong dán luôn là thao tác tự nhiên nhất. */
+const NON_TEXT_INPUT_TYPES = new Set([
+  'checkbox',
+  'radio',
+  'file',
+  'range',
+  'button',
+  'submit',
+  'reset',
+  'color',
+])
+
+function isTextBox(el: HTMLElement): boolean {
+  if (el.isContentEditable || el.tagName === 'TEXTAREA') return true
+  if (el.tagName !== 'INPUT') return false
+  return !NON_TEXT_INPUT_TYPES.has((el as HTMLInputElement).type.toLowerCase())
+}
 
 export interface FileUploaderProps {
   acceptedTypes?: string
@@ -107,8 +127,8 @@ export function FileUploader({
     setParamValues(initialParams ?? {})
   }
 
-  const handleFile = (file: File) => {
-    // Kéo/chọn tệp là lúc mở ải, không phải lúc bấm nút. BE mới là nguồn của "phiên này có
+  const handleFile = useCallback((file: File) => {
+    // Kéo/chọn/dán tệp là lúc mở ải, không phải lúc bấm nút. BE mới là nguồn của "phiên này có
     // cần ải không" nên phải xin phiên trước; ensureAnonymousSession idempotent và đã cache.
     void ensureAnonymousSession().then(
       () => warmCaptchaToken(),
@@ -121,7 +141,7 @@ export function FileUploader({
     } else {
       setPreviewUrl(null)
     }
-  }
+  }, [])
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -129,22 +149,73 @@ export function FileUploader({
     }
   }
 
-  const handleDragOver = (e: DragEvent) => {
-    e.preventDefault()
-    setIsDragging(true)
-  }
+  const dragDepth = useRef(0)
 
-  const handleDragLeave = () => {
-    setIsDragging(false)
-  }
+  // Thả tệp ở BẤT KỲ đâu trên trang cũng tính: chẳng ai nhìn trúng vùng nét đứt cả, và nếu
+  // không chặn default thì browser điều hướng thẳng tới ảnh vừa thả — mất form đang điền.
+  // Counter vì dragleave bắn trên từng phần tử con, không riêng lúc rời khỏi trang.
+  useEffect(() => {
+    if (disabled || isLoading) return
+    const dragsFiles = (e: DragEvent) =>
+      Array.from(e.dataTransfer?.types ?? []).includes('Files')
 
-  const handleDrop = (e: DragEvent) => {
-    e.preventDefault()
-    setIsDragging(false)
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      handleFile(e.dataTransfer.files[0])
+    const onEnter = (e: DragEvent) => {
+      if (!dragsFiles(e)) return
+      e.preventDefault()
+      dragDepth.current += 1
+      setIsDragging(true)
     }
-  }
+    const onOver = (e: DragEvent) => {
+      if (dragsFiles(e)) e.preventDefault()
+    }
+    const onLeave = () => {
+      dragDepth.current = Math.max(0, dragDepth.current - 1)
+      if (dragDepth.current === 0) setIsDragging(false)
+    }
+    const reset = () => {
+      dragDepth.current = 0
+      setIsDragging(false)
+    }
+    const onDrop = (e: DragEvent) => {
+      if (!dragsFiles(e)) return
+      e.preventDefault()
+      reset()
+      const file = e.dataTransfer?.files[0]
+      if (file) handleFile(file)
+    }
+
+    window.addEventListener('dragenter', onEnter)
+    window.addEventListener('dragover', onOver)
+    window.addEventListener('dragleave', onLeave)
+    window.addEventListener('dragend', reset)
+    window.addEventListener('drop', onDrop)
+    return () => {
+      window.removeEventListener('dragenter', onEnter)
+      window.removeEventListener('dragover', onOver)
+      window.removeEventListener('dragleave', onLeave)
+      window.removeEventListener('dragend', reset)
+      window.removeEventListener('drop', onDrop)
+    }
+  }, [handleFile, disabled, isLoading])
+
+  // Ctrl+V (⌘V trên macOS): ảnh copy từ Explorer/Finder/ảnh mở ở tab khác vào thẳng công cụ,
+  // không phải mở hộp thoại chọn tệp. Bỏ qua khi người dùng dán CHỮ vào một ô nhập —
+  // paste bắn từ phần tử đó rồi nổi lên document, nên phải xét target.
+  useEffect(() => {
+    if (disabled || isLoading) return
+    const onPaste = (e: ClipboardEvent) => {
+      const el = e.target as HTMLElement | null
+      if (el && isTextBox(el)) return
+      const file = Array.from(e.clipboardData?.items ?? []).find((i) => i.kind === 'file')
+        ?.getAsFile()
+      if (file) {
+        e.preventDefault()
+        handleFile(file)
+      }
+    }
+    document.addEventListener('paste', onPaste)
+    return () => document.removeEventListener('paste', onPaste)
+  }, [handleFile, disabled, isLoading])
 
   const handleClear = () => {
     if (previewUrl) {
@@ -173,15 +244,18 @@ export function FileUploader({
 
   return (
     <div className="w-full max-w-3xl mx-auto space-y-5">
+      {isDragging && (
+        <div className="pointer-events-none fixed inset-0 z-[55] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm in-backdrop">
+          <div className="px-10 py-8 text-center space-y-2 border-2 border-dashed border-brand/60 bg-surface clip-corner-lg">
+            <UploadCloud className="w-10 h-10 mx-auto text-brand" />
+            <p className="text-base font-semibold text-slate-100">{t('uploader.dropOverlay')}</p>
+          </div>
+        </div>
+      )}
       <div
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
         onClick={() => !selectedFile && fileInputRef.current?.click()}
         className={`relative border-2 border-dashed p-6 sm:p-10 text-center transition-all cursor-pointer input-3d clip-corner-lg ${
-          isDragging
-            ? 'border-brand/60 bg-brand/10'
-            : selectedFile
+          selectedFile
             ? 'border-edge bg-surface cursor-default'
             : 'border-[rgba(255,59,48,0.30)] hover:border-[rgba(255,59,48,0.60)] bg-surface hover:bg-brand/5'
         }`}
@@ -248,6 +322,9 @@ export function FileUploader({
               </p>
               <p className="text-xs text-slate-400">
                 {t('uploader.dropzoneHint')}
+              </p>
+              <p className="text-xs text-slate-400">
+                {t('uploader.dropzonePaste')}
               </p>
             </div>
           </div>

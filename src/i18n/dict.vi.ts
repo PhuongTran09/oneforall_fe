@@ -533,9 +533,11 @@ export const vi = {
     "title": "Tất cả công cụ bạn cần trong tầm tay"
   },
   "uploader": {
+    "dropOverlay": "Thả tệp vào đây để chọn",
     "dropzoneBrowse": "duyệt từ thiết bị",
     "dropzoneHint": "Giới hạn gói Free: video 200MB · tài liệu 25MB · ảnh 10MB · âm thanh 30MB (gói Pro cao hơn) • Tệp được lưu trữ tạm thời theo chính sách của hệ thống",
-    "dropzonePre": "Kéo thả tệp tin vào đây, hoặc",
+    "dropzonePaste": "Bạn cũng có thể copy ảnh ở nơi khác rồi dán bằng Ctrl+V (⌘V trên macOS), không cần tải tệp từ thiết bị.",
+    "dropzonePre": "Kéo thả tệp vào bất kỳ đâu trên trang, hoặc",
     "fileSize": "Dung lượng",
     "invalidParam": "Kiểm lại mục \"{label}\" trong Tùy chọn nâng cao trước khi chuyển đổi.",
     "previewAlt": "Xem trước ảnh",

@@ -132,6 +132,8 @@ export interface RequestOptions extends Omit<RequestInit, 'body'> {
   params?: Record<string, string | number | boolean | undefined | null>
   /** 'proactive' = xin token Turnstile TRƯỚC khi gửi (BE đã báo `captcha_required`). */
   captcha?: 'proactive'
+  /** Trần thời gian cho riêng request này — mặc định là mức của call JSON ngắn. */
+  timeoutMs?: number
 }
 
 export interface ApiErrorDetail {
