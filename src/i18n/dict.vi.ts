@@ -120,7 +120,7 @@ export const vi = {
     "loading": "Đang tải ô xác minh...",
     "cancel": "Hủy",
     "cancelled": "Bạn đã hủy xác minh, công việc chưa được gửi.",
-    "error": "Không xác minh được. Vui lòng thử lại.",
+    "error": "Không xác minh được (mã {code}). Vui lòng thử lại.",
     "expired": "Ô xác minh đã hết hạn. Vui lòng thử lại.",
     "unavailable": "Chưa thể xác minh ngay lúc này. Vui lòng thử lại sau."
   },

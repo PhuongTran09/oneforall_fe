@@ -31,8 +31,10 @@ export function SegmentedControl({ options, value, onChange, ariaLabel, labelFor
       role="radiogroup"
       aria-label={ariaLabel}
       onKeyDown={handleKeyDown}
-      className="flex h-10 max-w-full items-center gap-[3px] border border-edge bg-surface p-[3px] clip-corner-btn"
+      className="flex h-10 max-w-full items-center gap-[3px] overflow-x-auto scrollbar-none border border-edge bg-surface p-[3px] clip-corner-btn"
     >
+      {/* shrink-0 mỗi nút: 11 định dạng trong panel hẹp thì flex-1 + overflow-hidden cắt nhãn
+          còn 2 ký tự; giữ chữ nguyên vẹn và để thanh cuộn ngang lo phần thừa. */}
       {options.map((option) => (
         <button
           key={option}
@@ -41,7 +43,7 @@ export function SegmentedControl({ options, value, onChange, ariaLabel, labelFor
           aria-checked={value === option}
           tabIndex={value === option ? 0 : -1}
           onClick={() => onChange(option)}
-          className={`h-full flex-1 min-w-0 basis-auto cursor-pointer overflow-hidden whitespace-nowrap px-3 font-mono text-xs font-semibold uppercase clip-corner-btn transition-all duration-[180ms] focus-visible:outline-none focus-visible:shadow-[inset_0_0_0_2px_#ff3b30] ${
+          className={`h-full flex-1 shrink-0 basis-auto cursor-pointer whitespace-nowrap px-3 font-mono text-xs font-semibold uppercase clip-corner-btn transition-all duration-[180ms] focus-visible:outline-none focus-visible:shadow-[inset_0_0_0_2px_#ff3b30] ${
             value === option
               ? 'bg-brand-gradient text-white'
               : 'text-slate-300 hover:bg-brand/10 hover:text-ink'
