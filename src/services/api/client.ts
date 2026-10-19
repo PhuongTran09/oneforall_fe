@@ -10,6 +10,29 @@ import {
 
 const REQUEST_TIMEOUT_MS = 30000
 
+/**
+ * Ngân sách riêng cho cú upload. REQUEST_TIMEOUT_MS 30s được đặt cho call JSON ngắn, nhưng
+ * với `fetch` thì nó tính từ lúc gửi tới lúc server TRẢ LỜI — tức trọn thời gian đẩy tệp đi
+ * qua tunnel Cloudflare. 3MB trên mạng 4G (~1 Mbps up = ~125KB/s) đã ngốn ~24s chưa tính
+ * server parse multipart + ghi đĩa, nên người dùng ăn AbortError → "Yêu cầu hết thời gian
+ * chờ" dù mọi thứ vẫn đang chạy. Vì vậy trần upload tỉ lệ với dung lượng.
+ *
+ * shortcut: sàn 100KB/s + chốt 10 phút là trần thời gian CHỨ không phải idle timeout — fetch
+ * không có progress event. Tệp rất lớn trên mạng rất chậm vẫn bị cắt ở 10 phút. Nâng cấp:
+ * XHR + reset timer mỗi lần có byte (tiện tay có luôn % upload cho ToolPage).
+ */
+const UPLOAD_MIN_BYTES_PER_SECOND = 100_000
+const UPLOAD_TIMEOUT_MAX_MS = 600_000
+
+function uploadBudgetMs(formData: FormData): number {
+  let bytes = 0
+  for (const value of formData.values()) {
+    if (value instanceof Blob) bytes += value.size
+  }
+  const transferMs = Math.ceil((bytes / UPLOAD_MIN_BYTES_PER_SECOND) * 1000)
+  return Math.min(UPLOAD_TIMEOUT_MAX_MS, REQUEST_TIMEOUT_MS + transferMs)
+}
+
 // Ba status mà proxy/CDN đứng trước API trả khi chính API không đáp được.
 const GATEWAY_DOWN_STATUSES = new Set([502, 503, 504])
 
@@ -155,7 +178,7 @@ export class ApiClient {
     const url = resolveUrl(endpoint, options?.params)
 
     const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS)
+    const timeoutId = setTimeout(() => controller.abort(), options?.timeoutMs ?? REQUEST_TIMEOUT_MS)
 
     // Kết hợp signal nếu caller cung cấp signal riêng
     let relayAbort: (() => void) | undefined
@@ -188,9 +211,10 @@ export class ApiClient {
           credentials: 'include',
         })
       } catch (err) {
-        // AbortError = timeout 30s nội bộ hoặc caller hủy — một cú upload nặng trên mạng
-        // chậm cũng ra hình này, nên không được tính là hạ tầng chết. Ngoài ra mới là
-        // fetch chết thật (BE sập, proxy chết, laptop offline).
+        // AbortError = timeout nội bộ (30s cho call JSON, trần theo dung lượng cho upload)
+        // hoặc caller hủy — một cú upload nặng trên mạng chậm cũng ra hình này, nên không được
+        // tính là hạ tầng chết. Ngoài ra mới là fetch chết thật (BE sập, proxy chết, laptop
+        // offline).
         if ((err as Error)?.name !== 'AbortError') reportBackend('down')
         throw err
       }
@@ -298,7 +322,7 @@ export class ApiClient {
         body: formData,
         ...options,
       },
-      options,
+      { timeoutMs: uploadBudgetMs(formData), ...options },
     )
   }
 }
