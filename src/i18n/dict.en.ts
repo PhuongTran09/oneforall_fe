@@ -122,7 +122,7 @@ export const en: Dict = {
     "loading": "Loading the verification widget...",
     "cancel": "Cancel",
     "cancelled": "Verification cancelled, your job was not submitted.",
-    "error": "Verification failed. Please try again.",
+    "error": "Verification failed (code {code}). Please try again.",
     "expired": "The verification expired. Please try again.",
     "unavailable": "Verification is unavailable right now. Please try again later."
   },

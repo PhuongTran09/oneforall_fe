@@ -41,7 +41,10 @@ export function CaptchaModal() {
           // action KHÔNG gửi: BE chỉ so action khi TURNSTILE_EXPECTED_ACTION được khai, và
           // giá trị phải khớp widget trên Dashboard — để trống là an toàn nhất.
           callback: fulfillCaptchaToken,
-          'error-callback': () => breakCaptcha(t('captcha.error')),
+          // Mã lỗi là chẩn đoán DUY NHẤT đọc được từ iPhone: 110200 = trình duyệt chặn cookie
+          // của bên thứ ba (Cài đặt > Safari > Chặn tất cả cookie). Vứt nó đi thì user chỉ còn
+          // "vui lòng thử lại" và không ai biết vì sao.
+          'error-callback': (code) => breakCaptcha(t('captcha.error', { code: code ?? 'unknown' })),
           'expired-callback': () => breakCaptcha(t('captcha.expired')),
           'timeout-callback': () => breakCaptcha(t('captcha.expired')),
         })
@@ -66,8 +69,10 @@ export function CaptchaModal() {
   if (challengeId === null) return null
 
   return (
+    // KHÔNG bọc widget trong backdrop-filter hay transform 3D (.card-3d): iOS WebKit đưa
+    // iframe cross-origin vào lớp composite đó và mất hit-test — panel hiện mà bấm không ăn.
     <div
-      className="fixed inset-0 z-[78] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm in-backdrop"
+      className="fixed inset-0 z-[78] flex items-center justify-center p-4 bg-black/80 in-backdrop"
       onClick={closeCaptcha}
     >
       <div
@@ -75,7 +80,7 @@ export function CaptchaModal() {
         role="alertdialog"
         aria-modal="true"
         aria-label={t('captcha.title')}
-        className="relative w-full max-w-sm p-6 bg-surface border border-brand/30 clip-corner-lg card-3d in-up"
+        className="relative w-full max-w-sm p-6 bg-surface border border-brand/30 clip-corner-lg in-up"
       >
         <button
           type="button"
