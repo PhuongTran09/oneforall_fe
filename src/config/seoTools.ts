@@ -494,13 +494,12 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
   '/remove-background': {
     slug: '/remove-background',
     category: 'image',
-    badge: 'Xóa nền bằng AI',
-    title: 'Xóa Nền Ảnh Bằng AI | One ForAll',
+    badge: 'Xóa nền ảnh',
+    title: 'Xóa Nền Ảnh Trực Tuyến | One ForAll',
     metaDescription:
-      'Xóa nền ảnh trực tuyến bằng AI và xuất ảnh PNG có nền trong suốt. Kết quả phụ thuộc vào chất lượng ảnh và độ phức tạp của chủ thể.',
-    h1: 'Xóa Nền Ảnh Bằng AI',
-    subtitle:
-      'Tách người, sản phẩm hoặc đồ vật khỏi nền ảnh. Kết quả có thể khác nhau tùy ảnh nguồn và độ phức tạp của chủ thể.',
+      'Tiện ích tự động nhận diện chủ thể và tách phông nền ảnh nhanh chóng bằng AI, sau đó xuất ảnh PNG có nền trong suốt.',
+    h1: 'Xóa Nền Ảnh',
+    subtitle: 'Tiện ích tự động nhận diện chủ thể và tách phông nền ảnh nhanh chóng.',
     inputType: 'file',
     acceptedFileTypes: 'image/*',
     outputFormats: ['png'],
@@ -509,12 +508,12 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     backendOperation: 'remove_background',
     howItWorksSteps: [
       { step: '01', title: 'Tải ảnh lên', desc: 'Tải lên hình ảnh chụp chân dung, ảnh sản phẩm hoặc vật thể.' },
-      { step: '02', title: 'AI phân tích chủ thể', desc: 'AI phân tích hình ảnh và tách chủ thể khỏi nền.' },
+      { step: '02', title: 'AI phân tích chủ thể', desc: 'Công nghệ AI nhận diện chủ thể trong hình ảnh và tách chủ thể khỏi nền.' },
       { step: '03', title: 'Xem trước so sánh', desc: 'Kiểm tra đường cắt giữa ảnh gốc và ảnh nền trong suốt.' },
       { step: '04', title: 'Tải ảnh PNG', desc: 'Lưu ảnh nền trong suốt để ghép vào banner thiết kế hoặc Shopee/Lazada.' },
     ],
     features: [
-      { title: 'Tách nền tự động', desc: 'AI hỗ trợ tách chủ thể khỏi nền, không cần thao tác tô chọn thủ công.' },
+      { title: 'Tách nền tự động', desc: 'AI nhận diện chủ thể và tách chủ thể khỏi nền, không cần thao tác tô chọn thủ công.' },
       { title: 'Xem lại đường viền', desc: 'Kiểm tra tóc, lông, vật thể trong suốt và nền phức tạp trước khi sử dụng ảnh kết quả.' },
       { title: 'Xuất ảnh PNG', desc: 'Tải ảnh PNG có nền trong suốt; kích thước đầu ra tùy thuộc vào ảnh nguồn và kết quả xử lý.' },
     ],

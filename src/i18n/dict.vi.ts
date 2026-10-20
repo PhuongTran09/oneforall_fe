@@ -93,7 +93,7 @@ export const vi = {
     "catAdvertising": "Cookie quảng cáo",
     "catAdvertisingDesc": "Dùng để hiển thị quảng cáo phù hợp với bạn.",
     "catAnalytics": "Cookie phân tích",
-    "catAnalyticsDesc": "Giúp chúng tôi hiểu cách người dùng sử dụng trang để cải thiện.",
+    "catAnalyticsDesc": "Lựa chọn này được lưu trong cài đặt cookie. Hiện giao diện chưa tích hợp Google Analytics/GA4 hoặc công cụ phân tích bên thứ ba.",
     "catNecessary": "Cookie cần thiết",
     "catNecessaryDesc": "Cần cho các chức năng cơ bản của trang; không thể tắt.",
     "cookieSettings": "Cài đặt cookie",
@@ -291,12 +291,12 @@ export const vi = {
     "seoTitle": "One ForAll - Nền Tảng Công Cụ Trực Tuyến Đa Năng Cho Mọi Nhu Cầu"
   },
   "homeFaq": {
-    "a0": "One ForAll cung cấp 4 nhóm công cụ tiện ích trực tuyến: tải video YouTube và TikTok, chuyển đổi định dạng tài liệu và đa phương tiện, xóa nền ảnh bằng AI, cùng các công cụ tối ưu hình ảnh như nén dung lượng và thay đổi kích thước. Tất cả được tích hợp trên một nền tảng duy nhất, giúp bạn xử lý tệp tin thuận tiện mà không cần cài đặt phần mềm.",
+    "a0": "One ForAll cung cấp 4 nhóm công cụ tiện ích trực tuyến: tải video YouTube và TikTok, chuyển đổi định dạng tài liệu và đa phương tiện, xóa nền ảnh tự động bằng AI, cùng các công cụ tối ưu hình ảnh như nén dung lượng và thay đổi kích thước. Tất cả được tích hợp trên một nền tảng duy nhất, giúp bạn xử lý tệp tin thuận tiện mà không cần cài đặt phần mềm.",
     "a1": "One ForAll xử lý tệp theo chính sách lưu trữ của hệ thống. Thời gian lưu giữ có thể khác nhau tùy từng loại tác vụ. Bạn nên tải kết quả về thiết bị khi hoàn tất và tránh tải lên tệp chứa thông tin nhạy cảm hoặc dữ liệu cá nhân quan trọng.",
     "a2": "Không. One ForAll hoạt động trực tiếp trên trình duyệt web, cho phép bạn sử dụng các công cụ trực tuyến mà không cần cài đặt phần mềm. Chỉ cần truy cập website, chọn công cụ mong muốn và tải tệp lên để bắt đầu xử lý nhanh chóng, thuận tiện trên máy tính hoặc điện thoại.",
     "a3": "One ForAll có các gói sử dụng với hạn mức và quyền lợi khác nhau. Hãy xem bảng giá trên website để kiểm tra dung lượng tệp, hạn mức sử dụng và các tính năng được áp dụng cho từng gói trước khi nâng cấp.",
     "a4": "One ForAll được tối ưu để mang đến trải nghiệm xử lý tệp tin nhanh chóng và mượt mà. Thời gian hoàn tất tùy thuộc vào loại tác vụ, dung lượng tệp và mức độ phức tạp của nội dung. Hệ thống tự động điều phối quá trình xử lý, giúp bạn theo dõi tiến trình và nhận kết quả thuận tiện ngay trên nền tảng.",
-    "a5": "One ForAll cam kết không sử dụng API của Google để tạo, chỉnh sửa hoặc xử lý Hình ảnh nhạy cảm không đồng thuận bằng AI (AI-generated Non-Consensual Intimate Imagery - NCII).",
+    "a5": "Không. Điều khoản cấm tạo hoặc chia sẻ hình ảnh thân mật của người khác khi chưa được đồng ý. One ForAll không dùng Google API để tạo hoặc phát tán loại hình ảnh này.",
     "badge": "HỎI ĐÁP THƯỜNG GẶP",
     "desc": "Thông tin về các công cụ, cách sử dụng và những điều cần lưu ý khi xử lý tệp trên One ForAll.",
     "q0": "One ForAll hỗ trợ những loại công cụ nào?",
@@ -304,7 +304,7 @@ export const vi = {
     "q2": "Tôi có cần cài đặt phần mềm nào về máy không?",
     "q3": "Các công cụ trên One ForAll có miễn phí không?",
     "q4": "Tốc độ xử lý của nền tảng như thế nào?",
-    "q5": "One ForAll có sử dụng API của Google để tạo hoặc chỉnh sửa hình ảnh nhạy cảm không?",
+    "q5": "Có được tạo hoặc chia sẻ hình ảnh thân mật của người khác khi chưa được đồng ý không?",
     "title": "Giải đáp thắc mắc về One ForAll"
   },
   "howItWorks": {
@@ -335,7 +335,8 @@ export const vi = {
   },
   "legal": {
     "updatedOn": "Cập nhật ngày:",
-    "toc": "Mục lục"
+    "toc": "Mục lục",
+    "sections": "mục"
   },
   "nav": {
     "ariaMain": "Điều hướng chính",
@@ -354,7 +355,7 @@ export const vi = {
     "email": "Email",
     "plan": "Gói dịch vụ",
     "planFree": "Free Starter",
-    "planPremium": "Professional",
+    "planPremium": "Gói Pro",
     "viewPlan": "Xem chi tiết gói dịch vụ",
     "memberSince": "Tham gia từ",
     "totalCompleted": "Tác vụ đã xử lý",
@@ -477,7 +478,7 @@ export const vi = {
     "widthLabel": "Chiều rộng (px)"
   },
   "pay": {
-    "alreadyActive": "Bạn đã có gói Professional, không cần thanh toán lại.",
+    "alreadyActive": "Bạn đang dùng gói Pro, không cần thanh toán lại.",
     "backHome": "Về trang chủ",
     "cancelledBody": "Chưa có khoản nào được ghi nhận và gói của bạn vẫn giữ nguyên. Bạn có thể thanh toán lại bất cứ lúc nào.",
     "cancelledTitle": "Bạn đã hủy giao dịch",
@@ -499,7 +500,7 @@ export const vi = {
     "signedOutBody": "SePay đã trả bạn về trang này nhưng phiên đăng nhập không còn hiệu lực. Đăng nhập lại để kiểm tra trạng thái thanh toán.",
     "signedOutTitle": "Cần đăng nhập để hoàn tất",
     "signIn": "Đăng nhập",
-    "successBody": "Gói Professional đã được kích hoạt cho tài khoản của bạn và áp dụng ngay với các job tiếp theo.",
+    "successBody": "Gói Pro đã được kích hoạt và áp dụng cho các tác vụ tiếp theo.",
     "successTitle": "Đã thanh toán thành công",
     "toProfile": "Tới trang tài khoản",
     "unavailable": "Máy chủ không trả về liên kết thanh toán. Hãy thử lại hoặc liên hệ hỗ trợ."
@@ -519,6 +520,7 @@ export const vi = {
     "includes": "Quyền lợi bao gồm:",
     "period": "/ tháng",
     "proBadge": "Phổ biến nhất",
+    "proTitle": "Gói Pro",
     "proCta": "Nâng cấp gói Pro",
     "proDesc": "Dành cho người thường xuyên xử lý tệp lớn hoặc cần các quyền lợi mở rộng của gói Pro.",
     "proF1": "Tệp tải lên: video 2GB, tài liệu 100MB, ảnh 50MB, âm thanh 200MB",

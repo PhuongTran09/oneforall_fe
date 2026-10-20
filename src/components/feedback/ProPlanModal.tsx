@@ -122,7 +122,7 @@ export function ProPlanModal({ isOpen, onClose }: ProPlanModalProps) {
             <Sparkles className="w-3.5 h-3.5" />
             {t('pricing.proBadge')}
           </div>
-          <h3 className="text-2xl font-bold text-ink tracking-tight">Professional</h3>
+          <h3 className="text-2xl font-bold text-ink tracking-tight">{t('pricing.proTitle')}</h3>
           <div className="flex items-baseline justify-center gap-1.5">
             <span className="text-4xl font-bold text-brand-gradient tabular-nums">
               {t('pricing.proPrice')}

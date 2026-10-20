@@ -648,11 +648,11 @@
     ]
   },
   "/remove-background": {
-    "title": "AI Background Remover Online | One ForAll",
-    "metaDescription": "Remove the background from a supported image and export the result as a transparent PNG when processing is successful.",
-    "h1": "Remove an Image Background with AI",
-    "subtitle": "Create a cutout of a person, product, or object. Results may vary with the source image and subject complexity.",
-    "badge": "AI Background Remover",
+    "title": "Online Image Background Remover | One ForAll",
+    "metaDescription": "Automatically identify the subject and remove the image background quickly with AI, then export a transparent PNG.",
+    "h1": "Remove an Image Background",
+    "subtitle": "This tool automatically identifies the subject and removes the image background quickly.",
+    "badge": "Background Remover",
     "supportedFormatsDesc": "PNG, JPG, JPEG, WEBP. The result is exported as a transparent PNG image.",
     "howItWorksSteps": [
       {
@@ -663,7 +663,7 @@
       {
         "step": "02",
         "title": "Let the tool process it",
-        "desc": "The AI attempts to identify the main subject and separate it from the background."
+        "desc": "AI identifies the main subject in the image and separates it from the background."
       },
       {
         "step": "03",
