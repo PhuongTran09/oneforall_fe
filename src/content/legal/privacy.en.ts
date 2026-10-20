@@ -18,6 +18,11 @@ export const privacyEn: LegalDoc = {
       ] }],
     },
     {
+      id: 'google-api-muc-dich',
+      title: 'Purpose of Google API Use',
+      blocks: [{ type: 'p', parts: ['The Google OAuth API service is used solely to verify identity and support secure account sign-in. We comply strictly with the Google API Services User Data Policy. Data accessed through Google APIs is never used to train AI models, never shared with third parties, and never used for purposes that violate safety requirements.'] }],
+    },
+    {
       id: 'an-toan-su-dung',
       title: 'Safety and Responsible Use',
       blocks: [{ type: 'p', parts: ['One ForAll provides online tools for downloading supported media links, converting files, and processing images. Google Sign-In is used to authenticate users and provide supported account features.'] },

@@ -4,7 +4,7 @@ export const termsEn: LegalDoc = {
   title: 'Terms of Use',
   route: '/en/terms',
   description: 'Terms for using One ForAll online tools, user responsibilities, and limits of liability.',
-  lastUpdated: '18/10/2026',
+  lastUpdated: '20/10/2026',
   intro: 'These terms apply when you visit One ForAll and use the service’s online tools.',
   sections: [
     { id: 'pham-vi', title: 'Scope and Services', blocks: [{ type: 'p', parts: ['One ForAll provides tools for supported media links, file format conversion, image compression and resizing, and other image operations. Available tools and limits may vary by feature and plan; check the tool and pricing pages. Google Sign-In is provided for authentication and access to account features.'] }] },
@@ -15,6 +15,9 @@ export const termsEn: LegalDoc = {
         ['Do not violate privacy rights or create, edit, or distribute another person’s intimate imagery without consent and legal authority.'],
         ['Do not download, convert, or distribute content in violation of an owner’s rights or source platform terms.'],
       ] },
+    ] },
+    { id: 'an-toan-ncii', title: 'Content Safety and AI NCII Prohibition', blocks: [
+      { type: 'p', parts: ['The One ForAll platform strictly prohibits users from using its online tools or services integrated with Google APIs to upload, create, edit, process, or share obscene or pornographic content, or AI-generated non-consensual intimate imagery (AI NCII). Any violation results in a permanent account lock and immediate data deletion.'] },
     ] },
     { id: 'han-che-truy-cap', title: 'Access Restrictions', blocks: [{ type: 'p', parts: ['To the extent permitted by law, One ForAll may refuse, limit, or suspend access when there are reasonable grounds to believe the service is being abused, may cause harm, or is being used contrary to these terms.'] }] },
     { id: 'luu-tru', title: 'Results and Retention', blocks: [{ type: 'p', parts: ['Files and results are retained according to task and plan settings; download URLs have a separate lifetime. Retention periods, cleanup, and limits are described in the tool and Privacy Policy. Do not use the service as long-term storage; download results you need to keep.'] }] },

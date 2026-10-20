@@ -18,6 +18,11 @@ export const privacyVi: LegalDoc = {
       ] }],
     },
     {
+      id: 'google-api-muc-dich',
+      title: 'Mục đích sử dụng Google API',
+      blocks: [{ type: 'p', parts: ['Dịch vụ Google OAuth API được ứng dụng sử dụng duy nhất cho mục đích xác thực danh tính và hỗ trợ đăng nhập tài khoản an toàn. Chúng tôi tuân thủ nghiêm ngặt Chính sách dữ liệu người dùng của Google API Services (Google API Services User Data Policy). Dữ liệu truy cập qua Google API tuyệt đối không được dùng để huấn luyện các mô hình AI, không chia sẻ cho bên thứ ba và không dùng cho các mục đích vi phạm quy định an toàn.'] }],
+    },
+    {
       id: 'an-toan-su-dung',
       title: 'An toàn và sử dụng có trách nhiệm',
       blocks: [{ type: 'p', parts: ['One ForAll cung cấp các công cụ trực tuyến để tải liên kết media được hỗ trợ, chuyển đổi tệp và xử lý hình ảnh. Google Sign-In được dùng để xác thực người dùng và cung cấp các tính năng tài khoản được hỗ trợ.'] },

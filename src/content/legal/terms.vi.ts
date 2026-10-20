@@ -4,7 +4,7 @@ export const termsVi: LegalDoc = {
   title: 'Điều khoản sử dụng',
   route: '/terms',
   description: 'Điều khoản sử dụng các công cụ trực tuyến One ForAll, trách nhiệm người dùng và giới hạn trách nhiệm.',
-  lastUpdated: '18/10/2026',
+  lastUpdated: '20/10/2026',
   intro: 'Các điều khoản này áp dụng khi bạn truy cập One ForAll và sử dụng các công cụ trực tuyến của dịch vụ.',
   sections: [
     { id: 'pham-vi', title: 'Phạm vi và dịch vụ', blocks: [{ type: 'p', parts: ['One ForAll cung cấp công cụ xử lý liên kết media được hỗ trợ, chuyển đổi định dạng tệp, nén và thay đổi kích thước ảnh cùng một số thao tác hình ảnh khác. Công cụ và giới hạn khả dụng có thể khác nhau theo tính năng và gói; hãy tham khảo thông tin hiển thị tại công cụ và trang giá. Google Sign-In được cung cấp để xác thực và truy cập chức năng tài khoản.'] }] },
@@ -15,6 +15,9 @@ export const termsVi: LegalDoc = {
         ['Không xâm phạm quyền riêng tư; không tạo, chỉnh sửa hoặc phân phối hình ảnh nhạy cảm của người khác khi chưa có sự đồng thuận và quyền hợp pháp.'],
         ['Không tải xuống, chuyển đổi hoặc phân phối nội dung vi phạm quyền của chủ sở hữu hoặc điều khoản nền tảng nguồn.'],
       ] },
+    ] },
+    { id: 'an-toan-ncii', title: 'An toàn nội dung và cấm nội dung đồi trụy, AI NCII', blocks: [
+      { type: 'p', parts: ['Nền tảng One ForAll nghiêm cấm tuyệt đối người dùng sử dụng các công cụ trực tuyến hoặc các dịch vụ tích hợp Google API để tải lên, khởi tạo, chỉnh sửa, xử lý hoặc chia sẻ nội dung đồi trụy, khiêu dâm, hoặc hình ảnh nhạy cảm do AI tạo ra mà không có sự đồng thuận của chủ thể (AI-generated Non-Consensual Intimate Imagery - AI NCII). Mọi vi phạm sẽ bị khóa tài khoản vĩnh viễn và xoá dữ liệu lập tức.'] },
     ] },
     { id: 'han-che-truy-cap', title: 'Hạn chế sử dụng', blocks: [{ type: 'p', parts: ['Trong phạm vi pháp luật cho phép, One ForAll có thể từ chối, giới hạn hoặc đình chỉ quyền truy cập khi có căn cứ hợp lý cho thấy dịch vụ bị lạm dụng, có nguy cơ gây hại hoặc bị sử dụng trái với các điều khoản này.'] }] },
     { id: 'luu-tru', title: 'Kết quả và lưu trữ', blocks: [{ type: 'p', parts: ['Tệp và kết quả được lưu theo thời hạn của tác vụ và gói sử dụng; URL tải có thời hạn riêng. Thời hạn, quy trình dọn dẹp và các giới hạn được mô tả tại công cụ và Chính sách quyền riêng tư. Không coi dịch vụ là nơi lưu trữ lâu dài; hãy tải kết quả cần giữ về thiết bị.'] }] },
