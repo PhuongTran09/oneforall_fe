@@ -12,7 +12,7 @@ export function HeroSection({ onTryFree }: HeroSectionProps) {
   const quickTools = [
     { label: 'YouTube to MP4', to: '/youtube-to-mp4', badge: 'Hot' },
     { label: 'TikTok to MP4', to: '/tiktok-to-mp4', badge: 'Fast' },
-    { label: t('hero.quickRemoveBg'), to: '/remove-background', badge: 'AI' },
+    { label: t('hero.quickRemoveBg'), to: '/remove-background', badge: 'PNG' },
     { label: t('hero.quickPdf'), to: '/pdf-converter', badge: 'Doc' },
     { label: t('hero.quickCompress'), to: '/image-compressor', badge: 'WebP' },
   ]

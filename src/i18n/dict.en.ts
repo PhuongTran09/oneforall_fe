@@ -95,7 +95,7 @@ export const en: Dict = {
     "catAdvertising": "Advertising cookies",
     "catAdvertisingDesc": "Used to show ads relevant to you.",
     "catAnalytics": "Analytics cookies",
-    "catAnalyticsDesc": "Help us understand how the site is used so we can improve it.",
+    "catAnalyticsDesc": "This choice is saved in your cookie settings. The website interface does not currently include Google Analytics/GA4 or a third-party analytics tool.",
     "catNecessary": "Necessary cookies",
     "catNecessaryDesc": "Required for the site's core functions; cannot be disabled.",
     "cookieSettings": "Cookie settings",
@@ -293,12 +293,12 @@ export const en: Dict = {
     "seoTitle": "One ForAll - The Versatile Online Tools Platform for Every Need"
   },
   "homeFaq": {
-    "a0": "One ForAll brings together online tools for supported YouTube and TikTok links, file conversion, AI image background removal, image compression and resizing. Available formats and options vary by tool.",
+    "a0": "One ForAll brings together online tools for supported YouTube and TikTok links, file conversion, automatic AI image background removal, image compression and resizing. Available formats and options vary by tool.",
     "a1": "We take privacy seriously and handle files according to the service’s retention policy. Do not upload sensitive or confidential information unless you are comfortable processing it through an online service. See the Privacy Policy for details.",
     "a2": "No installation is needed for supported tools. Open One ForAll in your browser, choose a tool, then upload a file or paste a supported link.",
     "a3": "Some tools may be available for free with usage limits. Paid plans may offer higher limits or additional benefits. Check the pricing page for the current plan details.",
     "a4": "Processing time depends on the tool, file size, content and current service load. You can follow the task status on the page while it is being processed.",
-    "a5": "One ForAll commits to not using Google APIs to create, edit, or process AI-generated Non-Consensual Intimate Imagery (AI NCII).",
+    "a5": "No. The terms prohibit creating or sharing another person’s intimate images without consent. One ForAll does not use Google APIs to create or distribute such images.",
     "badge": "FREQUENTLY ASKED QUESTIONS",
     "desc": "Find answers about One ForAll’s tools, file handling and how to use the service.",
     "q0": "What types of tools does One ForAll support?",
@@ -306,7 +306,7 @@ export const en: Dict = {
     "q2": "Do I need to install any software?",
     "q3": "Are the tools on One ForAll free?",
     "q4": "How fast is the platform?",
-    "q5": "Does One ForAll use Google APIs to create or edit intimate imagery?",
+    "q5": "May I create or share another person’s intimate images without consent?",
     "title": "FAQs about One ForAll"
   },
   "howItWorks": {
@@ -337,7 +337,8 @@ export const en: Dict = {
   },
   "legal": {
     "updatedOn": "Last updated:",
-    "toc": "Contents"
+    "toc": "Contents",
+    "sections": "sections"
   },
   "nav": {
     "ariaMain": "Main navigation",
@@ -356,7 +357,7 @@ export const en: Dict = {
     "email": "Email",
     "plan": "Service plan",
     "planFree": "Free Starter",
-    "planPremium": "Professional",
+    "planPremium": "Pro plan",
     "viewPlan": "View plan details",
     "memberSince": "Member since",
     "totalCompleted": "Completed tasks",
@@ -479,7 +480,7 @@ export const en: Dict = {
     "widthLabel": "Width (px)"
   },
   "pay": {
-    "alreadyActive": "You already have Professional, no need to pay again.",
+    "alreadyActive": "You already have the Pro plan. No need to pay again.",
     "backHome": "Back to home",
     "cancelledBody": "No payment was recorded and your plan is unchanged. You can pay again at any time.",
     "cancelledTitle": "You cancelled the transaction",
@@ -501,7 +502,7 @@ export const en: Dict = {
     "signedOutBody": "SePay returned you to this page but your session is no longer valid. Sign in again to check the payment status.",
     "signedOutTitle": "Sign in to continue",
     "signIn": "Sign in",
-    "successBody": "Professional is now active on your account and applies to your next jobs.",
+    "successBody": "The Pro plan is now active and applies to your next tasks.",
     "successTitle": "Payment completed",
     "toProfile": "Go to my account",
     "unavailable": "The server did not return a payment link. Try again or contact support."
@@ -521,6 +522,7 @@ export const en: Dict = {
     "includes": "What is included:",
     "period": "/ month",
     "proBadge": "Most popular",
+    "proTitle": "Pro plan",
     "proCta": "Upgrade to Pro",
     "proDesc": "For users who need higher file limits or additional plan benefits.",
     "proF1": "Uploads: video 2GB, document 100MB, image 50MB, audio 200MB per file",

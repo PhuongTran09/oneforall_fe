@@ -31,7 +31,7 @@ export function PricingSection({ onSelectFree, onSelectPremium }: PricingSection
     },
     {
       id: 'premium',
-      name: 'Professional',
+      name: t('pricing.proTitle'),
       badge: t('pricing.proBadge'),
       price: t('pricing.proPrice'),
       period: t('pricing.period'),

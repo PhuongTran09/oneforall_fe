@@ -7,6 +7,7 @@ export type LegalBlock =
 export interface LegalSectionContent {
   id: string
   title: string
+  tone?: 'warning'
   blocks: LegalBlock[]
 }
 
@@ -16,5 +17,7 @@ export interface LegalDoc {
   description: string
   lastUpdated: string
   intro: string
+  quickFactsTitle: string
+  quickFacts: { label: string; text: string }[]
   sections: LegalSectionContent[]
 }
