@@ -4,7 +4,7 @@ export const privacyVi: LegalDoc = {
   title: 'Chính sách quyền riêng tư',
   route: '/privacy',
   description: 'Thông tin về dữ liệu tài khoản, Google Sign-In, xử lý tệp, thời hạn lưu trữ và dịch vụ bên thứ ba của One ForAll.',
-  lastUpdated: '18/10/2026',
+  lastUpdated: '20/10/2026',
   intro: 'One ForAll cung cấp các công cụ trực tuyến để xử lý liên kết media được hỗ trợ, chuyển đổi tệp và xử lý hình ảnh. Chính sách này mô tả dữ liệu được xử lý khi bạn sử dụng website và các công cụ đó.',
   sections: [
     {
@@ -16,6 +16,12 @@ export const privacyVi: LegalDoc = {
         [{ b: 'Dữ liệu tác vụ:' }, ' tệp đầu vào, kết quả, tên tệp, loại thao tác, tùy chọn, trạng thái và mốc thời gian có thể được xử lý để thực hiện tác vụ, hiển thị tiến trình và lịch sử. Với công cụ nhận liên kết, URL nguồn cũng được gửi đến dịch vụ One ForAll. Tác vụ đã đăng nhập có thể gắn với ID tài khoản; tác vụ ẩn danh dùng cơ chế phiên của dịch vụ.'],
         [{ b: 'Dữ liệu trình duyệt:' }, ' lựa chọn giao diện, ngôn ngữ, quyết định cookie/quảng cáo và một số trạng thái ứng dụng được lưu trong localStorage. Mã phiên tab và trạng thái khôi phục/hoàn tất thanh toán dùng sessionStorage. Tệp đang chọn và bản xem trước trong một số luồng được giữ trong bộ nhớ trình duyệt.'],
       ] }],
+    },
+    {
+      id: 'an-toan-su-dung',
+      title: 'An toàn và sử dụng có trách nhiệm',
+      blocks: [{ type: 'p', parts: ['One ForAll cung cấp các công cụ trực tuyến để tải liên kết media được hỗ trợ, chuyển đổi tệp và xử lý hình ảnh. Google Sign-In được dùng để xác thực người dùng và cung cấp các tính năng tài khoản được hỗ trợ.'] },
+        { type: 'p', parts: ['One ForAll không sử dụng Google API để tạo, sinh hoặc phát tán hình ảnh thân mật cá nhân không có sự đồng thuận (NCII – non-consensual intimate imagery) do AI tạo ra. Nền tảng cấm việc tạo hoặc phát tán hình ảnh thân mật cá nhân không có sự đồng thuận.'] }],
     },
     {
       id: 'luu-tru-xoa-tep',

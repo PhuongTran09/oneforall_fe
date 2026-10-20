@@ -4,7 +4,7 @@ export const privacyEn: LegalDoc = {
   title: 'Privacy Policy',
   route: '/en/privacy',
   description: 'How One ForAll handles account data, Google Sign-In, file processing, retention periods, and third-party services.',
-  lastUpdated: '18/10/2026',
+  lastUpdated: '20/10/2026',
   intro: 'One ForAll provides online tools for supported media links, file conversion, and image processing. This policy describes data processed when you use the website and its tools.',
   sections: [
     {
@@ -16,6 +16,12 @@ export const privacyEn: LegalDoc = {
         [{ b: 'Task data:' }, ' Input files, results, filenames, operation type, options, status, and timestamps may be processed to perform a task, show progress, and display history. URL-based tools also send the source URL to One ForAll’s service. Signed-in tasks may be associated with an account ID; anonymous tasks use the service session mechanism.'],
         [{ b: 'Browser data:' }, ' Theme, language, consent/ad choices, and some application state are stored in localStorage. A per-tab session ID and recovery/payment return state use sessionStorage. Selected files and previews in some flows stay in browser memory.'],
       ] }],
+    },
+    {
+      id: 'an-toan-su-dung',
+      title: 'Safety and Responsible Use',
+      blocks: [{ type: 'p', parts: ['One ForAll provides online tools for downloading supported media links, converting files, and processing images. Google Sign-In is used to authenticate users and provide supported account features.'] },
+        { type: 'p', parts: ['One ForAll does not use Google APIs to create, generate, or distribute AI-generated non-consensual intimate imagery (NCII). The platform prohibits the creation or distribution of non-consensual intimate imagery.'] }],
     },
     {
       id: 'luu-tru-xoa-tep',
