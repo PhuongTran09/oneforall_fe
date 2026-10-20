@@ -4,7 +4,7 @@ export const privacyVi: LegalDoc = {
   title: 'Chính sách quyền riêng tư',
   route: '/privacy',
   description: 'Thông tin về dữ liệu tài khoản, Google Sign-In, xử lý tệp, thời hạn lưu trữ và dịch vụ bên thứ ba của One ForAll.',
-  lastUpdated: '18/10/2026',
+  lastUpdated: '20/10/2026',
   intro: 'One ForAll cung cấp các công cụ trực tuyến để xử lý liên kết media được hỗ trợ, chuyển đổi tệp và xử lý hình ảnh. Chính sách này mô tả dữ liệu được xử lý khi bạn sử dụng website và các công cụ đó.',
   sections: [
     {
@@ -18,13 +18,19 @@ export const privacyVi: LegalDoc = {
       ] }],
     },
     {
+      id: 'an-toan-su-dung',
+      title: 'An toàn và sử dụng có trách nhiệm',
+      blocks: [{ type: 'p', parts: ['One ForAll cung cấp các công cụ trực tuyến để tải liên kết media được hỗ trợ, chuyển đổi tệp và xử lý hình ảnh. Google Sign-In được dùng để xác thực người dùng và cung cấp các tính năng tài khoản được hỗ trợ.'] },
+        { type: 'p', parts: ['One ForAll không sử dụng Google API để tạo, sinh hoặc phát tán hình ảnh thân mật cá nhân không có sự đồng thuận (NCII – non-consensual intimate imagery) do AI tạo ra. Nền tảng cấm việc tạo hoặc phát tán hình ảnh thân mật cá nhân không có sự đồng thuận.'] }],
+    },
+    {
       id: 'luu-tru-xoa-tep',
       title: 'Xử lý, lưu trữ và thời hạn tệp',
       blocks: [{ type: 'ul', items: [
         ['Tệp được gửi đến dịch vụ xử lý của One ForAll và được lưu tạm trong thời gian thực hiện tác vụ. Bản ghi tác vụ và lịch sử có thể được lưu riêng với nội dung tệp; nhà cung cấp lưu trữ cụ thể trong production chưa được xác minh.'],
         ['Theo thời hạn mặc định đang được cấu hình, kết quả hoàn tất được giữ 5 phút với gói Free và 12 giờ với gói Premium; tác vụ lỗi hoặc bị hủy dùng thời hạn mặc định 5 phút. Tiến trình dọn dẹp được lên lịch mỗi 5 phút, nên thời điểm xóa thực tế có thể trễ đến chu kỳ dọn dẹp kế tiếp. Cấu hình production có thể thay đổi các giá trị này và chưa được kiểm tra.'],
         ['URL tải kết quả được cấp cho tác vụ có thời hạn 3 phút. Đây là thời hạn của URL, khác với thời gian lưu tệp.'],
-        ['Bản ghi lịch sử có thể được giữ sau khi tệp hết hạn để hiển thị trạng thái hết hạn; mã nguồn đã kiểm tra không xác nhận thời hạn lưu bản ghi lịch sử lâu dài trên production.'],
+        ['Bản ghi lịch sử được giữ tối đa 7 ngày sau khi tệp kết quả hết hạn, sau đó bị xóa hẳn khỏi hệ thống. Việc dọn dẹp chạy mỗi 5 phút, nên thời điểm xóa thực tế có thể trễ đến chu kỳ kế tiếp.'],
       ] }],
     },
     {

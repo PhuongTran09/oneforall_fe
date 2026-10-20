@@ -4,7 +4,7 @@ export const privacyEn: LegalDoc = {
   title: 'Privacy Policy',
   route: '/en/privacy',
   description: 'How One ForAll handles account data, Google Sign-In, file processing, retention periods, and third-party services.',
-  lastUpdated: '18/10/2026',
+  lastUpdated: '20/10/2026',
   intro: 'One ForAll provides online tools for supported media links, file conversion, and image processing. This policy describes data processed when you use the website and its tools.',
   sections: [
     {
@@ -18,13 +18,19 @@ export const privacyEn: LegalDoc = {
       ] }],
     },
     {
+      id: 'an-toan-su-dung',
+      title: 'Safety and Responsible Use',
+      blocks: [{ type: 'p', parts: ['One ForAll provides online tools for downloading supported media links, converting files, and processing images. Google Sign-In is used to authenticate users and provide supported account features.'] },
+        { type: 'p', parts: ['One ForAll does not use Google APIs to create, generate, or distribute AI-generated non-consensual intimate imagery (NCII). The platform prohibits the creation or distribution of non-consensual intimate imagery.'] }],
+    },
+    {
       id: 'luu-tru-xoa-tep',
       title: 'File Processing, Storage, and Retention',
       blocks: [{ type: 'ul', items: [
         ['Files are sent to One ForAll’s processing service and are stored temporarily while a task runs. Task and history records may be stored separately from file contents; the specific production storage provider has not been verified.'],
         ['The configured defaults retain completed results for 5 minutes on the Free plan and 12 hours on the Premium plan. Failed or canceled tasks use a 5-minute default. Cleanup is scheduled every 5 minutes, so deletion may occur at the next cleanup cycle. Production settings may override these values and were not inspected.'],
         ['A result download URL provided for a task is valid for 3 minutes. This URL lifetime is separate from file retention.'],
-        ['A task history record may remain after its file expires so the interface can show an expired status. The checked source does not establish a long-term retention period for history records in production.'],
+        ['A task history record is kept for up to 7 days after its result files expire, then removed from the system. Cleanup runs every 5 minutes, so the actual deletion may happen at the next cycle.'],
       ] }],
     },
     {
