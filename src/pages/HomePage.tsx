@@ -56,6 +56,7 @@ export function HomePage() {
     { q: t('homeFaq.q0'), a: t('homeFaq.a0') },
     { q: t('homeFaq.q1'), a: t('homeFaq.a1') },
     { q: t('homeFaq.q3'), a: t('homeFaq.a3') },
+    { q: t('homeFaq.q5'), a: t('homeFaq.a5') },
   ]
 
   return (

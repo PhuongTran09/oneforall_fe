@@ -6,7 +6,7 @@ import { t } from '../../i18n/langStore'
 export function FaqSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(0)
 
-  const faqs = [0, 1, 2, 3, 4].map((i) => ({
+  const faqs = [0, 1, 2, 3, 4, 5].map((i) => ({
     q: t(`homeFaq.q${i}`),
     a: t(`homeFaq.a${i}`),
   }))

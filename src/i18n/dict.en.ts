@@ -298,6 +298,7 @@ export const en: Dict = {
     "a2": "No installation is needed for supported tools. Open One ForAll in your browser, choose a tool, then upload a file or paste a supported link.",
     "a3": "Some tools may be available for free with usage limits. Paid plans may offer higher limits or additional benefits. Check the pricing page for the current plan details.",
     "a4": "Processing time depends on the tool, file size, content and current service load. You can follow the task status on the page while it is being processed.",
+    "a5": "One ForAll commits to not using Google APIs to create, edit, or process AI-generated Non-Consensual Intimate Imagery (AI NCII).",
     "badge": "FREQUENTLY ASKED QUESTIONS",
     "desc": "Find answers about One ForAll’s tools, file handling and how to use the service.",
     "q0": "What types of tools does One ForAll support?",
@@ -305,6 +306,7 @@ export const en: Dict = {
     "q2": "Do I need to install any software?",
     "q3": "Are the tools on One ForAll free?",
     "q4": "How fast is the platform?",
+    "q5": "Does One ForAll use Google APIs to create or edit intimate imagery?",
     "title": "FAQs about One ForAll"
   },
   "howItWorks": {
