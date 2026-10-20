@@ -60,7 +60,9 @@ function isRetryableError(error: unknown): boolean {
 }
 
 function stateKey(job: JobPublicResponse): string {
-  return `${job.status}|${job.progress}|${job.error ?? ''}|${job.expires_at ?? ''}`
+  // error_code đi vào key giống fingerprint phía backend: hai lần fail cùng chuỗi message
+  // nhưng khác mã là hai trạng thái khác nhau, UI phải vẽ lại.
+  return `${job.status}|${job.progress}|${job.error ?? ''}|${job.error_code ?? ''}|${job.expires_at ?? ''}`
 }
 
 // Một luồng theo dõi duy nhất cho mỗi jobId — stream hay poll đều ghi vào đây, nên loop

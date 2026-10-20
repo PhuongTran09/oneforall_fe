@@ -5,6 +5,7 @@ import type { JobPublicResponse } from '../../services'
 import { Button } from './Button'
 import { ConfirmModal } from '../feedback/ConfirmModal'
 import { t } from '../../i18n/langStore'
+import { describeJobError } from '../../utils/apiError'
 
 export interface JobProgressProps {
   job: JobPublicResponse | null
@@ -148,7 +149,7 @@ export function JobProgress({ job, onRetry, onCancel, isCancelling }: JobProgres
       {/* Error message */}
       {isFailed && (
         <div className="p-3.5 bg-brand/10 border border-brand/30 text-red-400 text-xs sm:text-sm space-y-2 clip-corner-btn">
-          <p>{job?.error || t('job.errorFallback')}</p>
+          <p>{describeJobError(job, t('job.errorFallback'))}</p>
           {onRetry && (
             <Button variant="secondary" size="sm" onClick={onRetry}>
               {t('job.retry')}

@@ -60,6 +60,12 @@ function lookup(dict: unknown, key: string): string | undefined {
   return typeof cur === 'string' ? cur : undefined
 }
 
+/** hasKey('errors.network') — chỉ nhìn dict của ngôn ngữ đang dùng, để không rơi về câu tiếng
+ *  Việt trong UI tiếng Anh. */
+export function hasKey(key: string): boolean {
+  return lookup(DICTS[state], key) !== undefined
+}
+
 /** t('nav.home') hoặc t('params.minMax', { min: 1, max: 10 }) — gọi được ngoài React. */
 export function t(key: string, params?: Record<string, string | number>): string {
   let raw = lookup(DICTS[state], key) ?? lookup(DICTS.vi, key)

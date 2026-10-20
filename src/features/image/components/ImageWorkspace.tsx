@@ -3,7 +3,8 @@ import { UploadCloud, Image as ImageIcon, CheckCircle2, ArrowRight } from 'lucid
 import { Button } from '../../../components/common/Button'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../../components/common/Card'
 import { imageApi } from '../services/imageApi'
-import { describeError } from '../../../utils/apiError'
+import { describeError, humanSize } from '../../../utils/apiError'
+import { useEntitlements } from '../../../services/entitlementsStore'
 import { showErrorPopup } from '../../../components/feedback/errorPopupStore'
 import { t } from '../../../i18n/langStore'
 import type { ImageProcessTask } from '../types/image.types'
@@ -13,6 +14,14 @@ export function ImageWorkspace() {
   const [task, setTask] = useState<ImageProcessTask | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [message, setMessage] = useState<{ text: string; isError: boolean } | null>(null)
+
+  // Trần ảnh hiển thị ở hint lấy từ PLAN_POLICIES qua /users/me — BE không expose caps cho
+  // ẩn danh nên không có số thì im lặng, thay vì hardcode "10MB Free" sẽ nói dối user Pro.
+  const imageCap = useEntitlements().me?.plan_policy?.max_upload_bytes.image
+  const imageHint =
+    imageCap === undefined
+      ? t('ws.imageDropzoneHint')
+      : `${t('ws.imageDropzoneHint')} ${t('ws.imageDropzoneCap', { max: humanSize(imageCap) })}`
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -83,7 +92,7 @@ export function ImageWorkspace() {
                 <p className="text-sm font-medium text-slate-100">
                   {t('ws.imageDropzoneTitle')}
                 </p>
-                <p className="text-xs text-slate-400">{t('ws.imageDropzoneHint')}</p>
+                <p className="text-xs text-slate-400">{imageHint}</p>
               </div>
             )}
           </label>

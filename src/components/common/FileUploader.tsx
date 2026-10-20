@@ -14,6 +14,8 @@ import {
 import type { ToolFormState } from '../../utils/toolStateStore'
 import { ensureAnonymousSession } from '../../services/api/anonymousSessionApi'
 import { warmCaptchaToken } from '../../services/captchaStore'
+import { useEntitlements } from '../../services/entitlementsStore'
+import { humanSize } from '../../utils/apiError'
 import { t } from '../../i18n/langStore'
 
 /** Ô nhập CHỮ giữ paste cho riêng nó (dán link vào ô URL, dán số vào ô width…). Loại input
@@ -242,6 +244,20 @@ export function FileUploader({
     return `${(bytes / 1024).toFixed(1)} KB`
   }
 
+  // Trần upload hiển thị trong hint lấy từ PLAN_POLICIES mà BE trả qua /users/me. Chưa có dữ
+  // liệu (ẩn danh — BE không trả plan_policy công khai) thì nói chung chung: hardcode số của
+  // gói Free sẽ nói dối user Pro và mâu thuẫn với con số thật trên toast 413 khi BE đổi trần.
+  const { me } = useEntitlements()
+  const caps = me?.plan_policy?.max_upload_bytes
+  const capHint = caps
+    ? t('uploader.dropzoneCaps', {
+        video: humanSize(caps.video),
+        document: humanSize(caps.document),
+        image: humanSize(caps.image),
+        audio: humanSize(caps.audio),
+      })
+    : t('uploader.dropzoneCapsUnknown')
+
   return (
     <div className="w-full max-w-3xl mx-auto space-y-5">
       {isDragging && (
@@ -320,9 +336,7 @@ export function FileUploader({
                 {t('uploader.dropzonePre')}{' '}
                 <span className="text-brand underline underline-offset-2">{t('uploader.dropzoneBrowse')}</span>
               </p>
-              <p className="text-xs text-slate-400">
-                {t('uploader.dropzoneHint')}
-              </p>
+              <p className="text-xs text-slate-400">{capHint}</p>
               <p className="text-xs text-slate-400">
                 {t('uploader.dropzonePaste')}
               </p>
