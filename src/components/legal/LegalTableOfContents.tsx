@@ -1,4 +1,5 @@
 import type { LegalSectionContent } from '../../content/legal/types'
+import { t } from '../../i18n/langStore'
 
 export interface LegalTableOfContentsProps {
   sections: LegalSectionContent[]
@@ -7,10 +8,10 @@ export interface LegalTableOfContentsProps {
 export function LegalTableOfContents({ sections }: LegalTableOfContentsProps) {
   return (
     <nav
-      aria-label="Mục lục"
+      aria-label={t('legal.toc')}
       className="border border-edge bg-surface p-4 clip-corner-card lg:sticky lg:top-24"
     >
-      <p className="text-xs font-bold text-ink uppercase tracking-wider mb-3">Mục lục</p>
+      <p className="text-xs font-bold text-ink uppercase tracking-wider mb-3">{t('legal.toc')}</p>
       <ol className="space-y-2">
         {sections.map((s, i) => (
           <li key={s.id}>

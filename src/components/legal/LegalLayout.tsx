@@ -10,7 +10,9 @@ export interface LegalLayoutProps {
 }
 
 export function LegalLayout({ doc, siteUrl }: LegalLayoutProps) {
-  const viRoute = doc.route.replace(/^\/en/, '')
+  // Host phục vụ trang tĩnh dạng thư mục kèm 307 (/privacy -> /privacy/), nên URL cuối luôn có
+  // dấu /; canonical và hreflang phải khai đúng URL đó, cùng quy ước với landing page.
+  const viRoute = `${doc.route.replace(/^\/en/, '')}/`
   const enRoute = `/en${viRoute}`
 
   return (
@@ -18,7 +20,7 @@ export function LegalLayout({ doc, siteUrl }: LegalLayoutProps) {
       <SEOHead
         title={`${doc.title} | One ForAll`}
         description={doc.description}
-        canonicalUrl={`${siteUrl}${doc.route}`}
+        canonicalUrl={`${siteUrl}${doc.route}/`}
         alternates={{ vi: viRoute, en: enRoute }}
       />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-14">

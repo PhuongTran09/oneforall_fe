@@ -12,12 +12,18 @@ export interface JobAccepted {
   download_token?: string | null
 }
 
+// job.error_params (schemas/job.py::ErrorParams): BE đã chốt key là định danh, value là số hữu
+// hạn hoặc chuỗi ngắn. FE guard lại một tầng nữa vì row cũ và payload không phải từ BE.
+export type ErrorParams = Record<string, string | number>
+
 export interface JobPublicResponse {
   id: string
   type: string
   status: JobStatus
   progress: number
   error: string | null
+  error_code?: string | null
+  error_params?: ErrorParams | null
   created_at: string
   started_at: string | null
   completed_at: string | null
@@ -40,6 +46,8 @@ export interface JobHistoryItem {
   filename: string | null
   file_size: number | null
   error: string | null
+  error_code?: string | null
+  error_params?: ErrorParams | null
   created_at: string
   started_at: string | null
   completed_at: string | null
@@ -142,9 +150,18 @@ export interface ApiErrorDetail {
   type?: string
 }
 
+/**
+ * Payload lỗi FastAPI. `app_exception_handler` đặt `code`/`params` ở CẤP response, đi cạnh
+ * `detail` không đổi shape; năm mã phát hành trước (upload_too_large, rate_limited,
+ * rate_limiter_unavailable, captcha_required, captcha_unavailable) vẫn nhét code vào `detail`
+ * dạng object phẳng — cả hai đường đều đọc qua readErrorMeta().
+ */
 export interface FastApiErrorResponse {
-  detail?: string | ApiErrorDetail[]
+  detail?: string | ApiErrorDetail[] | Record<string, unknown>
   message?: string
+  code?: string
+  params?: ErrorParams
+  max_request_bytes?: number
 }
 
 export class ApiClientError extends Error {

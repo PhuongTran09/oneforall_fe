@@ -44,7 +44,21 @@ const CATEGORY_LABELS_EN = {
   media: 'Audio and video',
 }
 // URL tĩnh khác muốn đưa vào sitemap (vd. '/privacy', '/terms', '/contact').
-const EXTRA_SITEMAP_PATHS = []
+const EXTRA_SITEMAP_PATHS = ['/privacy', '/terms']
+
+// Trang pháp lý: nội dung lấy nguyên văn từ src/content/legal (module data thuần). Không soạn
+// chính sách trong file này — prerender chỉ render lại đúng những gì SPA đang render.
+const LEGAL = [
+  { file: 'privacy.vi.ts', name: 'privacyVi', lang: 'vi', dir: 'privacy' },
+  { file: 'privacy.en.ts', name: 'privacyEn', lang: 'en', dir: 'en/privacy' },
+  { file: 'terms.vi.ts', name: 'termsVi', lang: 'vi', dir: 'terms' },
+  { file: 'terms.en.ts', name: 'termsEn', lang: 'en', dir: 'en/terms' },
+]
+// Nhãn dùng cho HTML tĩnh; validateLegal() so từng chuỗi với dict để không lệch SPA.
+const LEGAL_LABELS = {
+  vi: { toc: 'Mục lục', updatedOn: 'Cập nhật ngày:', home: 'Trang chủ' },
+  en: { toc: 'Contents', updatedOn: 'Last updated:', home: 'Home' },
+}
 
 // ─── Tiện ích ────────────────────────────────────────────────────────────────
 const esc = (s = '') =>
@@ -141,6 +155,70 @@ function parseTools(src) {
     }
   }
   return tools
+}
+
+// ─── Đọc module pháp lý + nhãn dict ──────────────────────────────────────────
+// Bỏ `import type` rồi biến `export const X: LegalDoc =` thành `const X =`, chạy qua
+// new Function: không thêm dependency build, và nếu dạng khai báo đổi thì build chết tại đây
+// thay vì âm thinh sinh HTML rỗng. shortcut: thân hàm chỉ là một file data đã chốt trong repo,
+// không có input lúc build; nếu ai đó cho nội dung pháp lý vào chỗ có input ngoài thì phải
+// chuyển sang đọc JSON bằng fs.readFileSync + JSON.parse.
+function loadLegal(file, name) {
+  const src = fs.readFileSync(path.resolve(rootDir, 'src/content/legal', file), 'utf8')
+  const js = src
+    .replace(/^import type .*\r?\n/gm, '')
+    .replace(`export const ${name}: LegalDoc =`, `const ${name} =`)
+  if (!js.includes(`const ${name} =`)) {
+    throw new Error(`${file}: không nhận dạng "export const ${name}: LegalDoc =" — cập nhật loadLegal()`)
+  }
+  return new Function(`${js}\nreturn ${name}`)()
+}
+
+function dictValue(dictFile, block, key) {
+  const src = fs.readFileSync(path.resolve(rootDir, 'src/i18n', dictFile), 'utf8')
+  const start = src.indexOf(`"${block}": {`)
+  const body = start < 0 ? '' : src.slice(start, src.indexOf('\n  }', start))
+  const m = new RegExp(`"${key}": "([^"]*)"`).exec(body)
+  if (!m) throw new Error(`${dictFile}: không đọc được ${block}.${key}`)
+  return m[1]
+}
+
+function validateLegal(entries) {
+  const errors = []
+  for (const e of entries) {
+    const d = e.doc
+    const L = LEGAL_LABELS[e.lang]
+    const dictFile = e.lang === 'en' ? 'dict.en.ts' : 'dict.vi.ts'
+    for (const key of ['toc', 'updatedOn']) {
+      const got = dictValue(dictFile, 'legal', key)
+      if (got !== L[key]) errors.push(`${e.file}: nhãn ${key} "${L[key]}" lệch dict "${got}"`)
+    }
+    if (d.route !== `/${e.dir}`) errors.push(`${e.file}: route "${d.route}" != "/${e.dir}"`)
+    for (const f of ['title', 'description', 'lastUpdated', 'intro'])
+      if (!d[f]) errors.push(`${e.file}: thiếu ${f}`)
+    if (d.description && (d.description.length < 50 || d.description.length > 165))
+      errors.push(`${e.file}: description ${d.description.length} ký tự (nên 50–165)`)
+    if (!Array.isArray(d.sections) || !d.sections.length) errors.push(`${e.file}: không có section`)
+    const ids = new Set()
+    for (const s of d.sections ?? []) {
+      if (!/^[\w-]+$/.test(s.id ?? '')) errors.push(`${e.file}: id section "${s.id}" không dùng được làm anchor`)
+      if (ids.has(s.id)) errors.push(`${e.file}: trùng anchor "${s.id}"`)
+      ids.add(s.id)
+      if (!s.title) errors.push(`${e.file}: section "${s.id}" thiếu title`)
+      for (const b of s.blocks ?? []) {
+        const items = b.type === 'p' ? [b.parts] : b.type === 'ul' ? b.items : null
+        if (!items) {
+          errors.push(`${e.file}: section "${s.id}" có block type "${b.type}" lạ`)
+          continue
+        }
+        for (const item of items)
+          for (const p of item ?? [])
+            if (p && typeof p === 'object' && 'href' in p && !/^(?:https?:|mailto:|\/)/.test(p.href))
+              errors.push(`${e.file}: section "${s.id}" href không an toàn "${p.href}"`)
+      }
+    }
+  }
+  return errors
 }
 
 // ─── Kiểm tra dữ liệu: lỗi → fail build, cảnh báo → chỉ in ra ────────────────
@@ -300,6 +378,55 @@ function homeBody(tools) {
   <header><h1>${esc(HOME.h1)}</h1><p>${esc(HOME.intro)}</p><p>Google Sign-In giúp bạn xác thực và sử dụng các chức năng tài khoản được hỗ trợ.</p><nav aria-label="Chính sách và hỗ trợ"><a href="/privacy">Chính sách quyền riêng tư</a> · <a href="/terms">Điều khoản sử dụng</a> · <a href="mailto:support@oneforall.io.vn">support@oneforall.io.vn</a></nav></header>
   ${sections}
 </div></div>`
+}
+
+function legalBody(doc, lang) {
+  const L = LEGAL_LABELS[lang]
+  const inline = (p) =>
+    typeof p === 'string' ? esc(p) : 'b' in p ? `<strong>${esc(p.b)}</strong>` : `<a href="${esc(p.href)}">${esc(p.a)}</a>`
+  const block = (b) =>
+    b.type === 'p'
+      ? `<p>${b.parts.map(inline).join('')}</p>`
+      : `<ul>${b.items.map((item) => `<li>${item.map(inline).join('')}</li>`).join('')}</ul>`
+  const toc = doc.sections.map((s, i) => `<li><a href="#${esc(s.id)}">${i + 1}. ${esc(s.title)}</a></li>`).join('')
+  const sections = doc.sections
+    .map((s, i) => `<section id="${esc(s.id)}"><h2>${i + 1}. ${esc(s.title)}</h2>${s.blocks.map(block).join('')}</section>`)
+    .join('')
+  return `<div id="root">${CSS}
+<div class="pr prerendered-content">
+  <nav aria-label="Breadcrumb"><a href="${lang === 'en' ? '/en/' : '/'}">${esc(L.home)}</a> &rsaquo; <span>${esc(doc.title)}</span></nav>
+  <header><h1>${esc(doc.title)}</h1><p>${esc(L.updatedOn)} ${esc(doc.lastUpdated)}</p><p>${esc(doc.intro)}</p></header>
+  <nav aria-label="${esc(L.toc)}"><p><strong>${esc(L.toc)}</strong></p><ol>${toc}</ol></nav>
+  ${sections}
+</div></div>`
+}
+
+function legalHead(doc, lang, ogImage) {
+  // Host phục vụ thư mục kèm 307 /privacy -> /privacy/, nên canonical/hreflang phải mang dấu /
+  // cuối và trỏ đúng URL của chính ngôn ngữ đang render.
+  const clean = doc.route.replace(/^\/en/, '')
+  const viUrl = `${SITE}${clean}/`
+  const enUrl = `${SITE}/en${clean}/`
+  const url = lang === 'en' ? enUrl : viUrl
+  return `
+    <title>${esc(`${doc.title} | One ForAll`)}</title>
+    <meta name="description" content="${esc(doc.description)}" />
+    <link rel="canonical" href="${esc(url)}" />
+    <meta name="robots" content="index, follow" />
+    <meta property="og:title" content="${esc(doc.title)}" />
+    <meta property="og:description" content="${esc(doc.description)}" />
+    <meta property="og:url" content="${esc(url)}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One ForAll" />
+    <meta property="og:locale" content="${lang === 'en' ? 'en_US' : 'vi_VN'}" />
+    <link rel="alternate" hreflang="vi" href="${esc(viUrl)}" data-hreflang="vi" />
+    <link rel="alternate" hreflang="en" href="${esc(enUrl)}" data-hreflang="en" />
+    <link rel="alternate" hreflang="x-default" href="${esc(viUrl)}" data-hreflang="x-default" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="${esc(doc.title)}" />
+    <meta name="twitter:description" content="${esc(doc.description)}" />
+    ${ogImage ? `<meta name="twitter:image" content="${esc(ogImage)}" />` : ''}
+`
 }
 
 function landingHead(tool, ogImage) {
@@ -494,6 +621,14 @@ export function runPrerender() {
     process.exit(1)
   }
 
+  for (const entry of LEGAL) entry.doc = loadLegal(entry.file, entry.name)
+  const legalErrors = validateLegal(LEGAL)
+  if (legalErrors.length) {
+    legalErrors.forEach((e) => console.error(`[SEO] ✖ ${e}`))
+    console.error('[SEO Prerender] Dừng build vì trang pháp lý có lỗi.')
+    process.exit(1)
+  }
+
   const rawHtml = fs.readFileSync(indexPath, 'utf8')
   const childBase = stripInheritedSeo(rawHtml)
   const ogImage = rawHtml.match(/property=["']og:image["'][^>]*content=["']([^"']+)["']/i)?.[1]
@@ -538,17 +673,32 @@ export function runPrerender() {
     fs.writeFileSync(path.resolve(englishOutDir, 'index.html'), englishHtml, 'utf8')
   }
 
-  // 3. 404.html
+  // 3. Trang pháp lý. Thiếu mấy file này là mọi URL /privacy, /terms bị host rewrite về
+  //    index.html — curl và crawler nhận đúng trang chủ tiếng Việt.
+  for (const { doc, lang, dir } of LEGAL) {
+    const head = legalHead(doc, lang, ogImage)
+    const want = `${SITE}${doc.route}/`
+    if (!head.includes(`<link rel="canonical" href="${want}" />`)) throw new Error(`${dir}: canonical không phải ${want}`)
+    let html = childBase.replace(/<title>[\s\S]*?<\/title>/i, '')
+    html = setHtmlLang(html, lang)
+    html = injectHead(html, head)
+    html = injectRoot(html, legalBody(doc, lang))
+    const outDir = path.resolve(distDir, dir)
+    fs.mkdirSync(outDir, { recursive: true })
+    fs.writeFileSync(path.resolve(outDir, 'index.html'), html, 'utf8')
+  }
+
+  // 4. 404.html
   const notFound = injectHead(
     childBase.replace(/<title>[\s\S]*?<\/title>/i, '<title>404 - Trang không tồn tại | One ForAll</title>'),
     '    <meta name="robots" content="noindex, nofollow" />',
   )
   fs.writeFileSync(path.resolve(distDir, '404.html'), notFound, 'utf8')
 
-  // 4. sitemap.xml sinh từ config (nhớ xóa public/sitemap.xml cũ để khỏi nhầm nguồn)
+  // 5. sitemap.xml sinh từ config (nhớ xóa public/sitemap.xml cũ để khỏi nhầm nguồn)
   fs.writeFileSync(path.resolve(distDir, 'sitemap.xml'), buildSitemap(slugs), 'utf8')
 
-  console.log(`[SEO Prerender] Xong: 2 trang chủ + ${slugs.length} landing page/locale + 404.html + sitemap.xml (${slugs.length * 2 + 2} HTML route; sitemap ${slugs.length + 1 + EXTRA_SITEMAP_PATHS.length} URL)`)
+  console.log(`[SEO Prerender] Xong: 2 trang chủ + ${slugs.length} landing page/locale + ${LEGAL.length} trang pháp lý + 404.html + sitemap.xml (${slugs.length * 2 + LEGAL.length + 2} HTML route; sitemap ${slugs.length + 1 + EXTRA_SITEMAP_PATHS.length} URL)`)
 }
 
 runPrerender()

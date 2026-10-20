@@ -22,7 +22,7 @@ import {
 } from '../components'
 import { openAffiliateTab } from '../utils/affiliate'
 import { openSmartlinkTab, useAdsDecision } from '../services/adScripts'
-import { describeError, sanitizeUserMessage } from '../utils/apiError'
+import { describeError, describeJobError } from '../utils/apiError'
 import { showToast } from '../components/feedback/toastStore'
 import { showErrorPopup } from '../components/feedback/errorPopupStore'
 import { hasAcceptedTerms, openConsentModal } from '../components/consent/consentStorage'
@@ -135,7 +135,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
         finishedJob.status === 'failed'
           ? failureMessage
           : t('toolsPage.jobCancelled')
-      const safeError = sanitizeUserMessage(finishedJob.error, fallbackMessage)
+      const safeError = describeJobError(finishedJob, fallbackMessage)
       setErrorMessage(safeError)
       showErrorPopup({ message: safeError })
     },
@@ -191,7 +191,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
       })
       .catch((err) => {
         if (!isCurrentTracking(controller) || err instanceof JobPollCancelled) return
-        const message = t('toolsPage.trackFailed')
+        const { message } = describeError(err, t('toolsPage.trackFailed'))
         setErrorMessage(message)
         showErrorPopup({ message })
       })

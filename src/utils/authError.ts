@@ -40,13 +40,21 @@ export function describeAuthError(err: unknown): string {
   if (isEmailNotConfirmedError(err)) return t('auth.emailNotConfirmed')
   const message = messageOf(err).toLowerCase()
   if (message.includes('invalid login credentials')) return t('auth.invalidCredentials')
-  if (message.includes('already registered') || message.includes('user already')) {
+  if (message.includes('already registered') || message.includes('user already') || message.includes('already signed up')) {
     return t('auth.emailAlreadyRegistered')
   }
   if (message.includes('password') && (message.includes('at least') || message.includes('length'))) {
     return t('auth.passwordTooShort')
   }
-  if (message.includes('token') || message.includes('expired')) return t('auth.invalidCode')
-  // Message của supabase-js là thông điệp user-facing an toàn; fallback có sẵn thì dùng, không log raw.
-  return messageOf(err) || t('auth.genericError')
+  if (message.includes('different from the old password')) return t('auth.passwordSameAsOld')
+  if (message.includes('validate email') || message.includes('invalid email address')) return t('auth.emailInvalid')
+  // Gotrue dồn mọi thứ vượt cửa chống spam vào một câu "vì lý do bảo mật, chỉ yêu cầu lại sau…".
+  if (message.includes('security purposes')) return t('auth.rateLimited')
+  if (message.includes('token') || message.includes('expired') || message.includes('invalid otp')) return t('auth.invalidCode')
+  // Fallback có sẵn thì dùng, không log raw. shortcut: Supabase viết message tiếng Anh nên
+  // không xài isSafeUserMessage (hàm đó đòi dấu VI); chỉ chặn chuỗi kỹ thuật. Đổi sang hàm
+  // chung của apiError khi có thêm nguồn lỗi thứ hai cần cùng bộ lọc.
+  const raw = messageOf(err)
+  const technical = /[\n\r<>{}]|traceback|file "|secret|password|bearer|http|\.py|redis|postgres|sqlite|supabase|jwt|api call/i
+  return raw && raw.length <= 200 && !technical.test(raw) ? raw : t('auth.genericError')
 }
