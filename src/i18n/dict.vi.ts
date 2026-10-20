@@ -296,6 +296,7 @@ export const vi = {
     "a2": "Không. One ForAll hoạt động trực tiếp trên trình duyệt web, cho phép bạn sử dụng các công cụ trực tuyến mà không cần cài đặt phần mềm. Chỉ cần truy cập website, chọn công cụ mong muốn và tải tệp lên để bắt đầu xử lý nhanh chóng, thuận tiện trên máy tính hoặc điện thoại.",
     "a3": "One ForAll có các gói sử dụng với hạn mức và quyền lợi khác nhau. Hãy xem bảng giá trên website để kiểm tra dung lượng tệp, hạn mức sử dụng và các tính năng được áp dụng cho từng gói trước khi nâng cấp.",
     "a4": "One ForAll được tối ưu để mang đến trải nghiệm xử lý tệp tin nhanh chóng và mượt mà. Thời gian hoàn tất tùy thuộc vào loại tác vụ, dung lượng tệp và mức độ phức tạp của nội dung. Hệ thống tự động điều phối quá trình xử lý, giúp bạn theo dõi tiến trình và nhận kết quả thuận tiện ngay trên nền tảng.",
+    "a5": "One ForAll cam kết không sử dụng API của Google để tạo, chỉnh sửa hoặc xử lý Hình ảnh nhạy cảm không đồng thuận bằng AI (AI-generated Non-Consensual Intimate Imagery - NCII).",
     "badge": "HỎI ĐÁP THƯỜNG GẶP",
     "desc": "Thông tin về các công cụ, cách sử dụng và những điều cần lưu ý khi xử lý tệp trên One ForAll.",
     "q0": "One ForAll hỗ trợ những loại công cụ nào?",
@@ -303,6 +304,7 @@ export const vi = {
     "q2": "Tôi có cần cài đặt phần mềm nào về máy không?",
     "q3": "Các công cụ trên One ForAll có miễn phí không?",
     "q4": "Tốc độ xử lý của nền tảng như thế nào?",
+    "q5": "One ForAll có sử dụng API của Google để tạo hoặc chỉnh sửa hình ảnh nhạy cảm không?",
     "title": "Giải đáp thắc mắc về One ForAll"
   },
   "howItWorks": {

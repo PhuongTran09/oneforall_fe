@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { AlertTriangle, X } from 'lucide-react'
 import { Button } from '../common/Button'
 import { t } from '../../i18n/langStore'
@@ -23,7 +24,10 @@ export function ConfirmModal({ isOpen, title, message, onConfirm, onClose }: Con
 
   if (!isOpen) return null
 
-  return (
+  // Portal ra body: lớp phủ `fixed` ăn theo containing block của tổ tiên gần nhất
+  // có transform, mà .card-3d (JobProgress, History) luôn có `perspective(...)` —
+  // ở lại trong card thì backdrop chỉ phủ đúng cái card và bị che bởi sibling.
+  return createPortal(
     <div
       className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm in-backdrop"
       onClick={onClose}
@@ -63,6 +67,7 @@ export function ConfirmModal({ isOpen, title, message, onConfirm, onClose }: Con
           </Button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }
