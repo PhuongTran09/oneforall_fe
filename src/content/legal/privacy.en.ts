@@ -24,7 +24,7 @@ export const privacyEn: LegalDoc = {
         ['Files are sent to One ForAll’s processing service and are stored temporarily while a task runs. Task and history records may be stored separately from file contents; the specific production storage provider has not been verified.'],
         ['The configured defaults retain completed results for 5 minutes on the Free plan and 12 hours on the Premium plan. Failed or canceled tasks use a 5-minute default. Cleanup is scheduled every 5 minutes, so deletion may occur at the next cleanup cycle. Production settings may override these values and were not inspected.'],
         ['A result download URL provided for a task is valid for 3 minutes. This URL lifetime is separate from file retention.'],
-        ['A task history record may remain after its file expires so the interface can show an expired status. The checked source does not establish a long-term retention period for history records in production.'],
+        ['A task history record is kept for up to 7 days after its result files expire, then removed from the system. Cleanup runs every 5 minutes, so the actual deletion may happen at the next cycle.'],
       ] }],
     },
     {
