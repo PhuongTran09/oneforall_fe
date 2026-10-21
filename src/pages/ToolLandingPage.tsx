@@ -231,6 +231,9 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
     setOriginalImagePreview(null)
     setErrorMessage(null)
     setIsLoading(false)
+    // Đưa về đầu để rơi đúng khu tải tệp: khối kết quả vừa gỡ nên nếu đứng yên,
+    // người dùng sẽ ở lưng chừng trang. rAF để cuộn sau khi DOM đã thu gọn.
+    requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: 'smooth' }))
   }
 
   // Hủy job qua Bearer hoặc cookie phiên; SSE/poll vẫn nhận trạng thái cuối.

@@ -8,6 +8,52 @@
       content="width=device-width, initial-scale=1.0"
     />
 
+    <!-- Khung hình đầu tiên (trước khi bundle 850KB chạy xong) phải là loader, không phải
+         khối text SEO mà prerender.js nhét vào #root — khối đó tô màu cho nền trắng nên
+         trên nền tối thành chữ đen trên đen. Script này chạy trước paint: gắn .js để ẩn
+         nó đi (crawler không chạy JS vẫn đọc được full text), và gắn data-theme sớm để
+         người dùng nền sáng không bị loá một nhịp tối. -->
+    <script>
+      (function () {
+        var root = document.documentElement
+        root.classList.add('js')
+        try {
+          root.dataset.theme = localStorage.getItem('ofa-theme') === 'light' ? 'light' : 'dark'
+        } catch (e) {
+          root.dataset.theme = 'dark'
+        }
+        // main.tsx gỡ loader khi React mount. Nếu bundle không chạy được (ad-block,
+        // mạng đứt) thì gỡ sau 10s và bỏ luôn .js để khối text SEO hiện lại — thà đọc
+        // được tạm còn hơn vòng quay vô hạn.
+        setTimeout(function () {
+          var loader = document.getElementById('boot-loader')
+          if (!loader) return
+          loader.remove()
+          root.classList.remove('js')
+        }, 10000)
+      })()
+    </script>
+
+    <!-- Màu tự khai tại đây thay vì đọc var(--bg-base) của index.css: ở dev thì CSS
+         app chưa kịp nạp lúc loader hiện, còn đọc var() fallback sẽ luôn ra nền tối.
+         Script gắn data-theme ở trên chạy trước paint nên chọn đúng nhánh sáng/tối. -->
+    <style>
+      .js .prerendered-content{display:none}
+      #boot-loader{--bl-bg:#0a0a0f;--bl-surface:#14141b;--bl-elev:#1a1a24;--bl-grad-1:#ff3b30;--bl-grad-3:#ff8a65;position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;padding:24px;background:var(--bl-bg)}
+      html[data-theme='light'] #boot-loader{--bl-bg:#f3f4f9;--bl-surface:#ffffff;--bl-elev:#e9ebf4;--bl-grad-1:#cf2216;--bl-grad-3:#c8571d}
+      #boot-loader img{width:64px;height:64px;animation:bl-pulse 1.4s ease-in-out infinite}
+      #boot-loader .bl-lines{width:min(320px,80%);display:flex;flex-direction:column;gap:10px}
+      #boot-loader .bl-lines i{display:block;height:12px;border-radius:6px;background:linear-gradient(90deg,var(--bl-surface) 25%,var(--bl-elev) 37%,var(--bl-surface) 63%);background-size:400% 100%;animation:bl-shimmer 1.4s ease-in-out infinite}
+      #boot-loader .bl-lines i:nth-child(2){width:78%}
+      #boot-loader .bl-lines i:nth-child(3){width:52%}
+      #boot-loader .bl-track{width:min(200px,60%);height:3px;border-radius:999px;background:var(--bl-surface);overflow:hidden}
+      #boot-loader .bl-track b{display:block;height:100%;width:40%;border-radius:999px;background:linear-gradient(90deg,var(--bl-grad-1),var(--bl-grad-3));animation:bl-slide 1.2s ease-in-out infinite}
+      @keyframes bl-pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.93)}}
+      @keyframes bl-shimmer{0%{background-position:100% 0}100%{background-position:0 0}}
+      @keyframes bl-slide{0%{transform:translateX(-100%)}100%{transform:translateX(250%)}}
+      @media (prefers-reduced-motion:reduce){#boot-loader *{animation:none}}
+    </style>
+
     <!-- SEO: Website identity -->
     <script type="application/ld+json">
       {
@@ -88,6 +134,11 @@
   </head>
 
   <body>
+    <div id="boot-loader" aria-hidden="true">
+      <img src="/oneforall.svg" alt="" width="64" height="64" />
+      <div class="bl-lines"><i></i><i></i><i></i></div>
+      <div class="bl-track"><b></b></div>
+    </div>
     <div id="root"></div>
 
     <script

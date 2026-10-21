@@ -625,9 +625,9 @@ export const vi = {
   "uploader": {
     "dropOverlay": "Thả tệp vào đây để chọn",
     "dropzoneBrowse": "duyệt từ thiết bị",
-    "dropzoneCaps": "Trần tải lên theo gói của bạn: video {video} · tài liệu {document} · ảnh {image} · âm thanh {audio} • Tệp được lưu trữ tạm thời theo chính sách của hệ thống",
-    "dropzoneCapsUnknown": "Giới hạn dung lượng phụ thuộc gói — gói Pro có trần cao hơn • Tệp được lưu trữ tạm thời theo chính sách của hệ thống",
-    "dropzonePaste": "Bạn cũng có thể copy ảnh ở nơi khác rồi dán bằng Ctrl+V (⌘V trên macOS), không cần tải tệp từ thiết bị.",
+    "dropzoneCaps": "Trần tải lên theo gói: video {video} · tài liệu {document} · ảnh {image} · âm thanh {audio} • Tệp lưu tạm và tự xoá",
+    "dropzoneCapsUnknown": "Giới hạn phụ thuộc gói, Pro cho trần cao hơn • Tệp lưu tạm và tự xoá",
+    "dropzonePaste": "Bạn có thể copy ảnh từ nơi khác rồi dán, hoặc kéo vào đây.",
     "dropzonePre": "Kéo thả tệp vào bất kỳ đâu trên trang, hoặc",
     "fileSize": "Dung lượng",
     "invalidParam": "Kiểm lại mục \"{label}\" trong Tùy chọn nâng cao trước khi chuyển đổi.",
