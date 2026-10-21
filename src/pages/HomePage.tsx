@@ -4,6 +4,7 @@ import {
   HeroSection,
   ToolsSection,
   FeaturesSection,
+  GoogleApiSection,
   HowItWorksSection,
   PricingSection,
   FaqSection,
@@ -71,6 +72,7 @@ export function HomePage() {
       <HeroSection onTryFree={handleProAccount} />
       <ToolsSection />
       <FeaturesSection />
+      <GoogleApiSection />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <AdSenseUnit slot={import.meta.env.VITE_ADSENSE_SLOT_CONTENT ?? ''} />
       </div>
