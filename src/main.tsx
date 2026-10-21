@@ -27,3 +27,9 @@ createRoot(document.getElementById('root')!).render(
     </ErrorBoundary>
   </StrictMode>,
 )
+
+// root.render() chỉ lịch công việc chứ chưa chắc đã paint xong; gỡ boot-loader ở hai
+// frame sau để không lộ một nhịp màn hình trống.
+requestAnimationFrame(() =>
+  requestAnimationFrame(() => document.getElementById('boot-loader')?.remove()),
+)

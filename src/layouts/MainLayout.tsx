@@ -9,10 +9,15 @@ import { initReveal } from '../utils/revealMotion'
 
 // Vị trí cuộn theo pathname. React Router v7 ở chế độ khai báo (BrowserRouter + <Routes>)
 // không có <ScrollRestoration> (chỉ dùng được với data router), nên app tự quản lý:
-// trang đã ghé sẽ được khôi phục đúng chỗ cũ khi quay lại bằng Back/Forward hoặc link menu;
-// trang chưa từng ghé thì lên đầu. Không dùng localStorage — vị trí cuộn chỉ có nghĩa
-// trong phiên hiện tại.
+// bấm link sang trang mới thì luôn lên đầu, chỉ Back/Forward mới khôi phục chỗ cũ —
+// người dùng sang công cụ khác là để đọc từ đầu, còn Back là để quay lại đúng chỗ đang
+// đọc. Không dùng localStorage — vị trí cuộn chỉ có nghĩa trong phiên hiện tại.
 const scrollByPath = new Map<string, number>()
+
+// popstate là sự kiện gốc, router chỉ thông báo lại sau khi React render xong, nên
+// đánh dấu ở đây rồi cho effect theo pathname đọc. Listener đăng sau router cũng không
+// sao: cả hai chạy hết trong cùng lượt dispatch, trước khi React flush effect.
+let isPop = false
 
 export function MainLayout() {
   // Navbar/Footer/page con gọi t() trực tiếp (không hook) → layout phải subscribe
@@ -47,7 +52,17 @@ export function MainLayout() {
   )
 
   useEffect(() => {
-    const saved = scrollByPath.get(pathname)
+    const markPop = () => {
+      isPop = true
+    }
+    window.addEventListener('popstate', markPop)
+    return () => window.removeEventListener('popstate', markPop)
+  }, [])
+
+  useEffect(() => {
+    const pop = isPop
+    isPop = false
+    const saved = pop ? scrollByPath.get(pathname) : undefined
     const restore = () => window.scrollTo({ top: saved ?? 0, left: 0, behavior: 'instant' })
 
     // Khôi phục sau khi DOM của route mới đã commit (effect chạy sau commit) và một

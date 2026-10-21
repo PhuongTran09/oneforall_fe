@@ -627,9 +627,9 @@ export const en: Dict = {
   "uploader": {
     "dropOverlay": "Drop the file here to select it",
     "dropzoneBrowse": "browse from your device",
-    "dropzoneCaps": "Your plan's upload ceilings: video {video} · document {document} · image {image} · audio {audio} • Files are removed according to the service’s retention policy",
-    "dropzoneCapsUnknown": "Size limits depend on your plan — Pro has higher ceilings • Files are removed according to the service’s retention policy",
-    "dropzonePaste": "You can also copy an image elsewhere and paste it with Ctrl+V (⌘V on macOS) — no need to upload a file from your device.",
+    "dropzoneCaps": "Your plan's ceilings: video {video} · document {document} · image {image} · audio {audio} • Files are stored temporarily and auto-deleted",
+    "dropzoneCapsUnknown": "Limits depend on your plan, Pro allows more • Files are stored temporarily and auto-deleted",
+    "dropzonePaste": "You can copy an image from elsewhere and paste it, or drag it in here.",
     "dropzonePre": "Drag and drop a file anywhere on the page, or",
     "fileSize": "Size",
     "invalidParam": "Check the \"{label}\" item in Advanced options before converting.",

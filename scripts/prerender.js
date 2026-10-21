@@ -256,7 +256,8 @@ function validate(tools, src) {
 
 // ─── HTML helpers ────────────────────────────────────────────────────────────
 const CSS = `<style>
-.pr{max-width:1100px;margin:0 auto;padding:24px 16px;font-family:system-ui,-apple-system,sans-serif;color:#0f172a;line-height:1.6}
+body{margin:0;background:#f5f6fa}
+.pr{max-width:1100px;margin:0 auto;padding:24px 16px;font-family:system-ui,-apple-system,sans-serif;color:#0f172a;line-height:1.6;background:#f5f6fa;min-height:100vh;box-sizing:border-box}
 .pr nav{font-size:13px;color:#64748b;margin-bottom:24px}.pr a{color:#2563eb}
 .pr h1{font-size:34px;line-height:1.2;margin:0 0 12px}.pr h2{font-size:22px;margin:36px 0 14px}.pr h3{font-size:16px;margin:0 0 6px}
 .pr p{margin:0 0 8px;color:#475569}.pr ul{padding-left:20px}
