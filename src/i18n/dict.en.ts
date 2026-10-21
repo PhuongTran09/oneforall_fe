@@ -272,6 +272,18 @@ export const en: Dict = {
     "ytToMp3": "YouTube to MP3",
     "ytToMp4": "YouTube to MP4"
   },
+  "googleApi": {
+    "authDesc": "Google Sign-In is used only to verify identity and support account sign-in, with the openid, email and profile scopes. Data received through Google APIs is not used to train AI models, is not shared with third parties, and is not used for advertising.",
+    "authTitle": "How One ForAll uses Google Sign-In",
+    "badge": "GOOGLE API COMPLIANCE",
+    "desc": "One ForAll uses Google APIs for sign-in only. The platform does not use Google APIs to create non-consensual intimate imagery.",
+    "nciiDesc": "One ForAll does not use Google APIs to create, edit, generate, or distribute AI-generated Non-Consensual Intimate Imagery (AI NCII). This conduct is strictly prohibited across the platform; violating accounts are permanently locked and their data is deleted immediately.",
+    "nciiTitle": "No use of Google APIs for AI NCII",
+    "policySee": "See the full rules in",
+    "purposeDesc": "One ForAll is an online tools platform: downloading media from supported links, converting file and document formats, and processing images such as compression, resizing and background removal.",
+    "purposeTitle": "Purpose of the application",
+    "title": "Google API usage and content safety commitment"
+  },
   "hero": {
     "badge": "One ForAll • Multimedia Processing",
     "description": "One ForAll offers online tools to get media from supported links, convert file formats, and process images—all in one simple, convenient platform.",

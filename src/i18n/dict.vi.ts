@@ -270,6 +270,18 @@ export const vi = {
     "ytToMp3": "YouTube sang MP3",
     "ytToMp4": "YouTube sang MP4"
   },
+  "googleApi": {
+    "authDesc": "Google Sign-In chỉ được dùng để xác minh danh tính và hỗ trợ đăng nhập tài khoản, với các quyền openid, email và profile. Dữ liệu nhận qua Google API không dùng để huấn luyện mô hình AI, không chia sẻ cho bên thứ ba và không dùng cho mục đích quảng cáo.",
+    "authTitle": "Cách One ForAll dùng Google Sign-In",
+    "badge": "TUÂN THỦ GOOGLE API",
+    "desc": "One ForAll chỉ dùng Google API cho việc đăng nhập. Nền tảng không dùng Google API để tạo hình ảnh thân mật cá nhân không có sự đồng thuận.",
+    "nciiDesc": "One ForAll không sử dụng Google API để tạo, chỉnh sửa, sinh hoặc phát tán hình ảnh thân mật cá nhân không có sự đồng thuận do AI tạo ra (AI-generated Non-Consensual Intimate Imagery – AI NCII). Hành vi này bị nghiêm cấm trên toàn nền tảng; tài khoản vi phạm sẽ bị khóa vĩnh viễn và dữ liệu bị xóa ngay lập tức.",
+    "nciiTitle": "Không sử dụng Google API cho AI NCII",
+    "policySee": "Xem quy định chi tiết trong",
+    "purposeDesc": "One ForAll là nền tảng công cụ trực tuyến: tải media từ những liên kết được hỗ trợ, chuyển đổi định dạng tệp và tài liệu, xử lý hình ảnh như nén, đổi kích thước và xóa nền.",
+    "purposeTitle": "Mục đích của ứng dụng",
+    "title": "Mục đích sử dụng Google API và cam kết an toàn nội dung"
+  },
   "hero": {
     "badge": "One ForAll • Xử lý đa phương tiện",
     "description": "One ForAll cung cấp các công cụ trực tuyến giúp bạn tải media từ những liên kết được hỗ trợ, chuyển đổi định dạng tệp và xử lý hình ảnh. Tất cả trong một nền tảng, đơn giản và thuận tiện.",
