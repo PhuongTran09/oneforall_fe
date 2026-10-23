@@ -28,7 +28,6 @@ import { showErrorPopup } from '../components/feedback/errorPopupStore'
 import { hasAcceptedTerms, openConsentModal } from '../components/consent/consentStorage'
 import { stripLocale, t, useI18n, withLocale } from '../i18n/langStore'
 import { useToolConfig } from '../i18n/toolConfig'
-import { getAccessToken } from '../services/authStore'
 import {
   mediaApi,
   convertApi,
@@ -125,7 +124,9 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
       if (tool) updateToolSnapshot(tool.slug, { pending: null })
       setJob(finishedJob)
       if (finishedJob.status === 'completed') {
-        setDownloadUrl(filesApi.getDirectDownloadUrl(finishedJob.id, getAccessToken() ? token : null))
+        // Token phải nằm trong URL: in-app browser (Facebook/Threads) bàn giao cú tải sang
+        // browser hệ thống, ở đó cookie ofs_anon của phiên ẩn danh không tồn tại → 403.
+        setDownloadUrl(filesApi.getDirectDownloadUrl(finishedJob.id, token))
         showToast({ type: 'success', message: t('toolsPage.processSuccess') })
         return
       }
@@ -187,7 +188,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
         onJob: setJob,
       })
       .then((finishedJob) => {
-        if (isCurrentTracking(controller)) applyFinishedJob(finishedJob, null)
+        if (isCurrentTracking(controller)) applyFinishedJob(finishedJob, pending.downloadToken)
       })
       .catch((err) => {
         if (!isCurrentTracking(controller) || err instanceof JobPollCancelled) return
@@ -283,7 +284,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
       const operation = tool.backendOperation === 'extract-audio' ? 'extract-audio' : 'url_download'
       const accepted = await mediaApi.processUrl(url, operation, { format, quality, slides })
       updateToolSnapshot(tool.slug, {
-        pending: { jobId: accepted.job_id },
+        pending: { jobId: accepted.job_id, downloadToken: accepted.download_token },
       })
 
       setResultFormat(format)
@@ -389,7 +390,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
       }
 
       updateToolSnapshot(tool.slug, {
-        pending: { jobId: accepted.job_id },
+        pending: { jobId: accepted.job_id, downloadToken: accepted.download_token },
       })
 
       const finishedJob = await jobsApi.trackJob(accepted.job_id, {

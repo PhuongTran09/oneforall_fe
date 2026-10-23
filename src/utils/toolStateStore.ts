@@ -11,7 +11,7 @@ export interface ToolSnapshot {
   form: ToolFormState | null
   job: JobPublicResponse | null
   /** Job đang chạy khi người dùng rời trang — quay lại thì theo dõi tiếp, không gửi lại file. */
-  pending: { jobId: string } | null
+  pending: { jobId: string; downloadToken?: string | null } | null
   downloadUrl: string | null
   fileName: string
   format: string
