@@ -102,11 +102,11 @@ export function Navbar({ onOpenAuth }: NavbarProps) {
 
   return (
     <>
-      <header className="sticky top-0 z-40 w-full border-b border-edge bg-page/95 backdrop-blur-md">
+      <header className="sticky top-0 z-40 w-full border-b border-edge bg-page/90 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           {/* Logo Brand */}
           <LocaleLink to="/" className="flex items-center gap-2.5 group">
-            <div className="w-10 h-10 flex items-center justify-center">
+            <div className="w-10 h-10 flex items-center justify-center transition-all duration-300 group-hover:scale-105 group-hover:drop-shadow-[0_0_12px_rgba(255,59,48,0.45)]">
               <img src="/oneforall.svg" alt="One ForAll Logo" className="w-full h-full object-contain" />
             </div>
             <div className="flex flex-col">
@@ -128,10 +128,10 @@ export function Navbar({ onOpenAuth }: NavbarProps) {
                   key={item.to}
                   to={item.to}
                   aria-current={isActive ? 'page' : undefined}
-                  className={`inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium transition-colors duration-[180ms] clip-corner-btn focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4545]/60 ${
+                  className={`inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium transition-colors duration-150 clip-corner-btn focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4545]/60 ${
                     isActive
                       ? 'bg-tint text-brand-active font-semibold'
-                      : 'text-soft hover:text-ink'
+                      : 'text-soft hover:text-ink hover:bg-brand/10'
                   }`}
                 >
                   {item.icon}
@@ -225,6 +225,7 @@ export function Navbar({ onOpenAuth }: NavbarProps) {
                   size="sm"
                   onClick={() => handleAuthClick('register')}
                   rightIcon={<ArrowRight className="w-4 h-4" />}
+                  className="btn-shimmer shadow-[0_0_14px_rgba(255,59,48,0.25)]"
                 >
                   {t('auth.startFree')}
                 </Button>

@@ -84,7 +84,7 @@ export function JobProgress({ job, onRetry, onCancel, isCancelling }: JobProgres
   const displayLabel = isFailed ? t('job.failed') : t(STAGE_LABEL_KEY[stage])
 
   return (
-    <div className="w-full max-w-3xl mx-auto p-6 bg-surface border border-[rgba(255,59,48,0.25)] space-y-4 animate-fade-in clip-corner-lg card-3d card-3d-dim">
+    <div className="w-full max-w-3xl mx-auto p-6 bg-surface/90 border border-[rgba(255,59,48,0.35)] space-y-4 animate-fade-in clip-corner-lg card-3d card-3d-dim card-hover-glow">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div
@@ -119,14 +119,14 @@ export function JobProgress({ job, onRetry, onCancel, isCancelling }: JobProgres
 
       {/* Progress Bar */}
       {!isFailed && (
-        <div className="w-full h-2 bg-page overflow-hidden">
+        <div className="w-full h-2 bg-page overflow-hidden border border-edge/60">
           {isDeterminate ? (
             <div
-              className="bg-brand-gradient h-full transition-all duration-300"
+              className="bg-brand-gradient h-full transition-all duration-300 shadow-[0_0_12px_rgba(255,59,48,0.7)]"
               style={{ width: `${Math.min(reportedProgress, 100)}%` }}
             />
           ) : (
-            <div className="w-[30%] h-full bg-brand-gradient animate-loading-sweep" />
+            <div className="w-[30%] h-full bg-brand-gradient animate-loading-sweep shadow-[0_0_12px_rgba(255,59,48,0.7)]" />
           )}
         </div>
       )}

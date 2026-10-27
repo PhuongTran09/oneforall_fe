@@ -53,7 +53,7 @@ export function HowItWorksSection() {
               className={`relative group pipeline-step${index === 0 ? ' pipeline-first' : ''}`}
               style={{ '--step': index } as CSSProperties}
             >
-              <Card className="h-full p-6 flex flex-col justify-between card-tilt">
+              <Card className="h-full p-6 flex flex-col justify-between card-tilt card-hover-glow">
                 <span
                   aria-hidden="true"
                   className="pipeline-flare absolute inset-0 clip-corner-card"
@@ -63,7 +63,7 @@ export function HowItWorksSection() {
                     <span className="step-num text-xl sm:text-2xl font-black font-mono text-slate-400 group-hover:text-brand transition-colors">
                       {item.step}
                     </span>
-                    <div className="step-icon w-11 h-11 flex items-center justify-center border border-edge bg-page clip-corner-btn">
+                    <div className="step-icon w-11 h-11 flex items-center justify-center border border-edge bg-page clip-corner-btn group-hover:scale-110 group-hover:rotate-2 group-hover:border-brand/50 group-hover:bg-brand/10 group-hover:shadow-[0_0_14px_rgba(255,59,48,0.25)] transition-all duration-300">
                       {item.icon}
                     </div>
                   </div>

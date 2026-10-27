@@ -238,19 +238,19 @@ html[data-theme='light'] {
   transition: transform 0.25s ease-out, border-color 0.25s ease-out, filter 0.25s ease-out;
 }
 
-/* Soft red spotlight that follows the pointer (hidden on dim cards) */
+/* Bottom-up glow effect on card hover */
 .card-3d:not(.card-3d-dim)::before {
   content: '';
   position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    240px 180px at var(--gx, 50%) var(--gy, 30%),
-    rgba(255, 59, 48, 0.09),
-    transparent 70%
-  );
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  background: linear-gradient(to top, rgba(255, 59, 48, 0.14) 0%, transparent 100%);
   opacity: 0;
   transition: opacity 0.25s ease-out;
   pointer-events: none;
+  z-index: 5;
 }
 
 /* Dimmer variant for secondary / non-interactive cards */
@@ -446,7 +446,7 @@ html[data-theme='light'] .theme-thumb {
   width: 2px;
   height: 0.9rem;
   background: linear-gradient(180deg, transparent, #ff6b4a 35%, #ff3b30 65%, transparent);
-  box-shadow: 0 0 8px rgba(255, 59, 48, 0.55);
+  box-shadow: 0 0 10px rgba(255, 59, 48, 0.75), 0 0 20px rgba(255, 107, 74, 0.45);
 }
 
 /* Khung sáng trên card khi luồng chạy tới (overlay riêng để không cướp
@@ -578,6 +578,7 @@ html[data-theme='light'] .theme-thumb {
 .live-value {
   display: inline-block;
   animation: live-value-in 350ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  text-shadow: 0 0 16px rgba(255, 59, 48, 0.28);
 }
 
 .toast-item {
@@ -672,11 +673,136 @@ html[data-theme='light'] .card-3d:not(.card-3d-dim):not([data-disabled]):not([ar
 }
 
 html[data-theme='light'] .card-3d:not(.card-3d-dim)::before {
-  background: radial-gradient(
-    240px 180px at var(--gx, 50%) var(--gy, 30%),
-    rgba(255, 59, 48, 0.16),
-    transparent 70%
+  background: linear-gradient(to top, rgba(200, 30, 23, 0.10) 0%, transparent 100%);
+}
+
+/* Modern Eye-Catching Cyber Utilities */
+.bg-grid-cyber {
+  background-image: 
+    linear-gradient(to right, rgba(255, 59, 48, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 59, 48, 0.05) 1px, transparent 1px);
+  background-size: 36px 36px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 20%, #000 45%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 20%, #000 45%, transparent 100%);
+}
+
+html[data-theme='light'] .bg-grid-cyber {
+  background-image: 
+    linear-gradient(to right, rgba(200, 30, 23, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(200, 30, 23, 0.04) 1px, transparent 1px);
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 20%, #000 40%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 20%, #000 40%, transparent 100%);
+}
+
+.hero-ambient-glow {
+  position: absolute;
+  top: 0%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(850px, 94vw);
+  height: 400px;
+  background: radial-gradient(ellipse at center, rgba(255, 59, 48, 0.16) 0%, rgba(255, 107, 74, 0.07) 40%, transparent 70%);
+  filter: blur(65px);
+  pointer-events: none;
+  z-index: 0;
+  border-radius: 50%;
+  animation: ambient-pulse 9s ease-in-out infinite alternate;
+}
+
+html[data-theme='light'] .hero-ambient-glow {
+  background: radial-gradient(ellipse at center, rgba(200, 30, 23, 0.10) 0%, rgba(216, 67, 28, 0.04) 40%, transparent 70%);
+  filter: blur(55px);
+}
+
+@keyframes ambient-pulse {
+  0%   { transform: translateX(-50%) scale(0.95); opacity: 0.7; }
+  50%  { transform: translateX(-50%) scale(1.05) translateY(12px); opacity: 0.95; }
+  100% { transform: translateX(-50%) scale(0.95); opacity: 0.7; }
+}
+
+@keyframes float-gentle {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-5px); }
+}
+
+.animate-float-gentle {
+  animation: float-gentle 4s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 16px rgba(255, 59, 48, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 28px rgba(255, 59, 48, 0.65), 0 0 45px rgba(255, 107, 74, 0.22);
+  }
+}
+
+.btn-glow-pulse {
+  animation: pulse-glow 3.5s ease-in-out infinite;
+}
+
+/* Button Shimmer Sweep Effect */
+.btn-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-shimmer::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -70%;
+  width: 45%;
+  height: 200%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 100%
   );
+  transform: skewX(-25deg);
+  pointer-events: none;
+}
+
+.btn-shimmer:hover::after {
+  animation: btn-shine-sweep 0.75s ease-out;
+}
+
+@keyframes btn-shine-sweep {
+  0%   { left: -70%; }
+  100% { left: 140%; }
+}
+
+/* Cyber Badge Radar Pulse */
+.badge-radar {
+  position: relative;
+}
+.badge-radar::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  background: linear-gradient(90deg, #ff3b30, #ff8a65, #ff3b30);
+  background-size: 200% auto;
+  opacity: 0.35;
+  animation: badge-radar-shine 3s linear infinite;
+  z-index: -1;
+}
+
+@keyframes badge-radar-shine {
+  0%   { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+/* Card Hover Glow Effect - emits bottom-focused glow */
+.card-hover-glow {
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+}
+.card-hover-glow:hover {
+  box-shadow: 0 14px 24px -4px rgba(255, 59, 48, 0.26);
+}
+html[data-theme='light'] .card-hover-glow:hover {
+  box-shadow: 0 12px 20px -4px rgba(200, 30, 23, 0.16);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -698,11 +824,16 @@ html[data-theme='light'] .card-3d:not(.card-3d-dim)::before {
   .card-3d           { transform: none; transition: border-color 0.25s ease-out; }
   .card-3d::before   { display: none; }
   .card-3d:hover     { filter: none; }
-  .live-value { animation: none; }
+  .live-value { animation: none; text-shadow: none; }
   /* Pipeline: giữ line tĩnh + thứ tự số rõ, tắt toàn bộ chuyển động */
   .pipeline-step,
   .pipeline-flare,
   .pipeline-step .step-num,
   .pipeline-step .step-icon { animation: none; }
   .pipeline-step::after { display: none; }
+  .hero-ambient-glow,
+  .animate-float-gentle,
+  .btn-glow-pulse,
+  .badge-radar::before { animation: none; }
+  .btn-shimmer:hover::after { animation: none; }
 }

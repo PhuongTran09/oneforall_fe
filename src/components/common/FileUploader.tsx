@@ -267,7 +267,7 @@ export function FileUploader({
         className={`relative border-2 border-dashed p-6 sm:p-10 text-center transition-all cursor-pointer input-3d clip-corner-lg ${
           selectedFile
             ? 'border-edge bg-surface cursor-default'
-            : 'border-[rgba(255,59,48,0.30)] hover:border-[rgba(255,59,48,0.60)] bg-surface hover:bg-brand/5'
+            : 'border-[rgba(255,59,48,0.30)] hover:border-[rgba(255,59,48,0.70)] bg-surface/90 hover:bg-brand/5 card-hover-glow group'
         }`}
       >
         <input
@@ -322,7 +322,7 @@ export function FileUploader({
           </div>
         ) : (
           <div className="space-y-3">
-            <div className="w-16 h-16 mx-auto bg-brand/10 border border-brand/30 flex items-center justify-center text-brand group-hover:scale-105 transition-transform">
+            <div className="w-16 h-16 mx-auto bg-brand/10 border border-brand/30 flex items-center justify-center text-brand animate-float-gentle group-hover:scale-110 group-hover:border-brand/60 group-hover:shadow-[0_0_18px_rgba(255,59,48,0.35)] transition-all duration-300 clip-corner-btn">
               <UploadCloud className="w-8 h-8" />
             </div>
             <div className="space-y-1">
@@ -386,7 +386,7 @@ export function FileUploader({
               }
               onClick={handleSubmit}
               rightIcon={<ArrowRight className="w-4 h-4" />}
-              className="w-full sm:w-auto px-6 py-2.5"
+              className="w-full sm:w-auto px-6 py-2.5 btn-shimmer shadow-[0_0_18px_rgba(255,59,48,0.25)]"
             >
               {submitLabel}
             </Button>

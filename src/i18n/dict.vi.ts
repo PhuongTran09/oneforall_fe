@@ -142,7 +142,7 @@ export const vi = {
     "completedJobsHint": "Tổng số file đã xử lý thành công từ trước tới nay",
     "error": "Không đọc được số liệu trực tiếp. Vui lòng thử lại.",
     "loading": "Đang tải số liệu trực tiếp...",
-    "privacyNote": "Chỉ số liệu tổng hợp của hệ thống — không lưu hay hiển thị thông tin cá nhân.",
+    "privacyNote": "Chỉ số liệu tổng hợp của hệ thống.",
     "retry": "Thử lại",
     "title": "Số liệu trực tiếp"
   },
