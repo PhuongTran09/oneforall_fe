@@ -150,12 +150,7 @@ export interface ApiErrorDetail {
   type?: string
 }
 
-/**
- * Payload lỗi FastAPI. `app_exception_handler` đặt `code`/`params` ở CẤP response, đi cạnh
- * `detail` không đổi shape; năm mã phát hành trước (upload_too_large, rate_limited,
- * rate_limiter_unavailable, captcha_required, captcha_unavailable) vẫn nhét code vào `detail`
- * dạng object phẳng — cả hai đường đều đọc qua readErrorMeta().
- */
+/** Payload lỗi FastAPI. `app_exception_handler` đặt `code`/`params` ở CẤP response, đi cạnh */
 export interface FastApiErrorResponse {
   detail?: string | ApiErrorDetail[] | Record<string, unknown>
   message?: string

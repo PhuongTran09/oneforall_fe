@@ -11,15 +11,7 @@ const REISSUE_MARGIN_MS = 60_000
 let expiresAt: number | null = null
 let inflight: Promise<void> | null = null
 
-/**
- * BE GĐ1 khoá job ẩn danh theo phiên (cookie `ofs_anon`, HttpOnly → FE không đọc được,
- * chỉ nhận `expires_at`). Phải xin phiên TRƯỚC khi tạo job, nếu không mọi
- * /media|image|convert-process trả 401 (AUTH_REQUIRED_* = true).
- *
- * Có Bearer thì KHÔNG xin: job phải gắn user_id, không gắn một phiên ẩn danh tình cờ còn
- * sót trong browser. Called nhiều lần chỉ một request: promise đang chạy được chia sẻ, và
- * tab mở qua hạn phiên (TTL 7 ngày) sẽ tự xin lại ở lần xử lý kế tiếp.
- */
+/** BE GĐ1 khoá job ẩn danh theo phiên (cookie `ofs_anon`, HttpOnly → FE không đọc được, */
 export function ensureAnonymousSession(): Promise<void> {
   if (getAccessToken()) return Promise.resolve()
   if (expiresAt !== null && expiresAt - Date.now() > REISSUE_MARGIN_MS) {

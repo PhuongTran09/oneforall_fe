@@ -3,11 +3,7 @@ import { usersApi } from './api/usersApi'
 import type { PlanPolicy, UserMe } from './api/types'
 import { getAccessToken, subscribeAuthEvent } from './authStore'
 
-/**
- * Quyền lợi gói (plan + PLAN_POLICIES) do BE trả về qua GET /users/me — FE không
- * tự định nghĩa giới hạn hay giá gói. Chưa có dữ liệu = coi như Free (fail-closed
- * cho phía quyền lợi, ads vẫn bật cho tới khi BE xác nhận Pro).
- */
+/** Plan and limits come from GET /users/me; unknown users use Free limits until confirmed. */
 
 interface EntitlementState {
   me: UserMe | null
@@ -105,13 +101,7 @@ export function isAdFree(me: UserMe | null): boolean {
   return me?.plan === 'premium' || me?.plan_policy?.ads === false
 }
 
-/**
- * Pro theo cả bản cache của plan. /users/me về muộn hơn HTML, nên lúc chưa có `me`
- * phải nhìn cache ofa-plan — nếu không, trang đầu của user Pro vẫn render ad unit
- * (và auto-ads trong index.html cũng đã chặn bằng cache này). Nhưng khi BE đã trả
- * `me` thì `me` là nguồn duy nhất: bản cache có thể stale (user xuống gói Free) mà
- * chặn tiếp bằng cache là mất quyền lợi của họ cả phiên.
- */
+/** Pro theo cả bản cache của plan. /users/me về muộn hơn HTML, nên lúc chưa có `me` */
 export function isAdFreeNow(me: UserMe | null): boolean {
   if (me) return isAdFree(me)
   try {

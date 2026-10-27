@@ -7,18 +7,7 @@ import { env } from '../../utils/env'
 import { getTheme } from '../../utils/theme'
 import { t } from '../../i18n/langStore'
 
-/**
- * Panel xác minh Turnstile, mở khi BE báo cần ải — chủ động lúc xin phiên ẩn danh
- * (`captcha_required`) hoặc phản ứng khi ăn 403 `captcha_required` (xem captchaStore).
- * Widget render bằng JS vào một div rỗng — Cloudflare không có bản React chính thức và cũng
- * không cần: token bay thẳng về store, React chỉ vẽ khung.
- *
- * Mọi đường hết challenge (giải xong / Cloudflare từ chối / token hết hạn / user đóng / script
- * lỗi) đều settle promise ngay, nên panel không bao giờ còn mở với một message nội bộ: thất
- * bại hiện qua errorPopup của chính luồng submit (describeError), một chỗ báo lỗi duy nhất.
- *
- * z-[78]: trên ErrorPopupViewport (z-75) và ConsentModal (z-70), dưới toast (z-80).
- */
+/** Turnstile opens when the backend requires verification during session setup or after a 403. */
 export function CaptchaModal() {
   const challengeId = useCaptchaChallenge()
   const holder = useRef<HTMLDivElement>(null)

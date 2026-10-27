@@ -33,8 +33,7 @@ export function SegmentedControl({ options, value, onChange, ariaLabel, labelFor
       onKeyDown={handleKeyDown}
       className="flex h-10 max-w-full items-center gap-[3px] overflow-x-auto scrollbar-none border border-edge bg-surface p-[3px] clip-corner-btn"
     >
-      {/* shrink-0 mỗi nút: 11 định dạng trong panel hẹp thì flex-1 + overflow-hidden cắt nhãn
-          còn 2 ký tự; giữ chữ nguyên vẹn và để thanh cuộn ngang lo phần thừa. */}
+      {/* shrink-0 mỗi nút: 11 định dạng trong panel hẹp thì flex-1 + overflow-hidden cắt nhãn */}
       {options.map((option) => (
         <button
           key={option}

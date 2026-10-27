@@ -1,12 +1,4 @@
-/**
- * Nạp script Cloudflare Turnstile — MỘT điểm chèn <script> cho cả app (cùng kiểu với
- * src/services/adScripts.ts). `render=explicit` là bắt buộc: mặc định của api.js là tự quét
- * và render mọi phần tử `cf-turnstile`, mà trang này không có phần tử nào nằm sẵn.
- *
- * Promise được chia sẻ: hai request cùng bị 403 `captcha_required` chỉ nạp script một lần.
- * Thất bại thì xóa latch để lần sau thử lại — một cú chớp mạng không được khóa người dùng
- * tới hết page session.
- */
+/** Nạp script Cloudflare Turnstile — MỘT điểm chèn <script> cho cả app (cùng kiểu với */
 
 export interface TurnstileWidgetOptions {
   sitekey: string

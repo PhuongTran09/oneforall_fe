@@ -3,6 +3,7 @@ import { Link2, Clipboard, X, ArrowRight, AlertCircle, RefreshCw } from 'lucide-
 import { Button } from './Button'
 import { SegmentedControl } from './SegmentedControl'
 import { t, getLang } from '../../i18n/langStore'
+import { showToast } from '../feedback/toastStore'
 import { mediaApi, type UrlInfo } from '../../services/api/mediaApi'
 
 export interface UrlInputFormProps {
@@ -185,7 +186,9 @@ export function UrlInputForm({
         validateUrl(text)
       }
     } catch {
-      // Clipboard access might not be allowed in all browser contexts
+      // In-app browser (Facebook/Threads) từ chối đọc bộ nhớ tạm, iOS WKWebView thì không có
+      // API này — nếu im lặng người dùng tưởng nút hỏng.
+      showToast({ type: 'info', message: t('urlInput.pasteBlocked') })
     }
   }
 

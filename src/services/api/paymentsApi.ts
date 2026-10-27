@@ -12,11 +12,7 @@ export const PREMIUM_PLAN_ID = 'premium'
 
 const MARKER_KEY = 'ofa-checkout'
 
-/**
- * Trang SePay redirect người dùng về, cùng origin với trang đang xem (EN ở /en).
- * BE đưa ba URL này vào chuỗi ký HMAC nên giá trị gửi lúc tạo đơn PHẢI đúng bằng giá trị
- * dùng để chuyển hướng — vì vậy mới có hàm dựng riêng thay vì viết chuỗi ở hai nơi.
- */
+/** Trang SePay redirect người dùng về, cùng origin với trang đang xem (EN ở /en). */
 export function buildReturnUrl(exit: '' | 'cancel' | 'error'): string {
   const lang = stripLocale(window.location.pathname).lang
   const path = withLocale('/payment-return', lang)
@@ -28,11 +24,7 @@ export interface CheckoutMarker {
   orderCode: number
 }
 
-/**
- * payment_id do BE sinh SAU khi nhận request, nên lúc dựng return_url không thể nhét nó
- * vào query. Trang trả về đọc lại từ đây; sessionStorage chết (tab mới, storage bị chặn)
- * thì còn bè đỡ là paymentsApi.latest().
- */
+/** payment_id do BE sinh SAU khi nhận request, nên lúc dựng return_url không thể nhét nó */
 export const checkoutMarker = {
   save(marker: CheckoutMarker): void {
     try {

@@ -647,6 +647,7 @@ export const en: Dict = {
     "likesLabel": "likes",
     "outputFormat": "Output format:",
     "paste": "Paste",
+    "pasteBlocked": "This browser does not let the page read your clipboard. Press and hold the link field, then choose Paste.",
     "pasteFromClipboard": "Paste from clipboard",
     "placeholderGeneric": "Paste the URL to process...",
     "placeholderTiktok": "Paste a TikTok video link here (e.g. https://www.tiktok.com/@user/video/...)",

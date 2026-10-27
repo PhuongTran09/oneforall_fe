@@ -34,11 +34,7 @@ export function clearToolSnapshot(slug: string): void {
   snapshots.delete(slug)
 }
 
-/**
- * Job bị xóa ở nơi khác (trang Lịch sử) → gỡ nó khỏi snapshot của mọi tool đang giữ,
- * nếu không quay lại trang tool vẫn hiện "Xử lý thành công" + nút tải của tệp không còn
- * trên server nữa. Chỉ bỏ phần kết quả, giữ form và FAQ đang mở để làm tiếp.
- */
+/** Job bị xóa ở nơi khác (trang Lịch sử) → gỡ nó khỏi snapshot của mọi tool đang giữ, */
 export function forgetJobInToolSnapshots(jobId: string): void {
   for (const [slug, snap] of snapshots) {
     if (snap.job?.id !== jobId && snap.pending?.jobId !== jobId) continue

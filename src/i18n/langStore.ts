@@ -60,8 +60,7 @@ function lookup(dict: unknown, key: string): string | undefined {
   return typeof cur === 'string' ? cur : undefined
 }
 
-/** hasKey('errors.network') — chỉ nhìn dict của ngôn ngữ đang dùng, để không rơi về câu tiếng
- *  Việt trong UI tiếng Anh. */
+/** hasKey('errors.network') — chỉ nhìn dict của ngôn ngữ đang dùng, để không rơi về câu tiếng */
 export function hasKey(key: string): boolean {
   return lookup(DICTS[state], key) !== undefined
 }

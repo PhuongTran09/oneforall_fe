@@ -18,9 +18,7 @@ import { useEntitlements } from '../../services/entitlementsStore'
 import { humanSize } from '../../utils/apiError'
 import { t } from '../../i18n/langStore'
 
-/** Ô nhập CHỮ giữ paste cho riêng nó (dán link vào ô URL, dán số vào ô width…). Loại input
- * khác — checkbox, slider, button — không nhận text nào, nên Ctrl+V lúc chúng đang được focus
- * vẫn phải dán ảnh: bấm một tùy chọn xong dán luôn là thao tác tự nhiên nhất. */
+/** Ô nhập CHỮ giữ paste cho riêng nó (dán link vào ô URL, dán số vào ô width…). Loại input */
 const NON_TEXT_INPUT_TYPES = new Set([
   'checkbox',
   'radio',
@@ -43,11 +41,7 @@ export interface FileUploaderProps {
   outputFormats: string[]
   defaultFormat: string
   actionLabel?: string
-  /**
-   * Format-conversion tools hide targets the backend has no pair for.
-   * Image-processing tools (compress / resize / remove-background) keep their full list,
-   * because their chips describe the operation output rather than a conversion pair.
-   */
+  /** Format-conversion tools hide targets the backend has no pair for. */
   filterTargetsBySource?: boolean
   /** Extra options the backend honors for the current source + target. Empty list hides the panel. */
   resolveFields?: (sourceFormat: string | null, targetFormat: string) => ParamField[]

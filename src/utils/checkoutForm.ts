@@ -1,8 +1,4 @@
-/**
- * SePay ký HMAC lên bộ field checkout, trong đó có cả ba URL redirect, nên trang thanh
- * toán CHỈ mở được bằng POST form mang đúng bộ field đó — GET/redirect sẽ hỏng signature.
- * Form tự dựng và submit cùng tab: người dùng rời khỏi app, SePay trả về return_url.
- */
+/** SePay ký HMAC lên bộ field checkout, trong đó có cả ba URL redirect, nên trang thanh */
 export function submitAutoCheckout(action: string, fields: Record<string, string>): void {
   const form = document.createElement('form')
   form.method = 'POST'

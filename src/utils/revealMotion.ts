@@ -1,12 +1,4 @@
-/*
-  Scroll reveal cho các section mang [data-reveal] nằm dưới màn hình đầu.
-  Cùng pattern với cardMotion.ts: init một lần mỗi route, bail sớm khi
-  reduced-motion hoặc trình duyệt không có IntersectionObserver.
-
-  Điểm cốt lõi: file này KHÔNG ẩn nội dung bằng CSS thuần. `.is-in` mới là thứ
-  gắn animation (index.css), nên khi JS lỗi / thiếu IO / đọc HTML tĩnh mà
-  prerender.js sinh ra, mọi thứ vẫn hiển thị nguyên.
-*/
+/* Scroll reveal cho các section mang [data-reveal] nằm dưới màn hình đầu. */
 const NOOP = () => {}
 
 export function initReveal(): () => void {

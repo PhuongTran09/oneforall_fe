@@ -645,6 +645,7 @@ export const vi = {
     "likesLabel": "lượt thích",
     "outputFormat": "Định dạng đầu ra:",
     "paste": "Dán",
+    "pasteBlocked": "Trình duyệt này không cho web đọc bộ nhớ tạm. Hãy nhấn giữ vào ô nhập link rồi chọn Dán.",
     "pasteFromClipboard": "Dán từ bộ nhớ tạm",
     "placeholderGeneric": "Dán đường dẫn URL cần xử lý...",
     "placeholderTiktok": "Dán liên kết video TikTok tại đây (ví dụ: https://www.tiktok.com/@user/video/...)",

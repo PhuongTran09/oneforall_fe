@@ -1,7 +1,5 @@
 /* Smooth animations and subtle utilities */
-/* `translate` thay `transform`: lớp này có mặt trên phần tử vừa là .card-3d
-   (JobProgress.tsx:86) — transform keyframe sẽ xoá cả chain perspective/rotate
-   của tilt rồi nảy lại khi kết thúc. `backwards` để không giữ transform vĩnh viễn. */
+/* Independent translate preserves card transforms and resets after the enter animation. */
 @keyframes fadeIn {
   from {
     opacity: 0;

@@ -3,21 +3,7 @@ import { t } from '../i18n/langStore'
 import { env } from '../utils/env'
 import { getAccessToken } from './authStore'
 
-/**
- * Challenge Turnstile theo yêu cầu — cùng mô hình singleton với errorPopupStore/toastStore:
- * module thuần gọi được ngoài React, modal chỉ render khi có request đang chờ.
- *
- * BE (chống spam GĐ1) là nguồn duy nhất của câu hỏi "bao giờ cần ải": POST /anonymous/session
- * — route FE vốn đã gọi trước MỌI lần tạo job — trả `captcha_required`. Khi flag bật, request
- * tạo job xin token TRƯỚC khi gửi (đỡ phải upload vài trăm MB rồi mới ăn 403). Lưới dự phòng
- * vẫn còn: flag lấy lúc xin phiên nên có thể trễ khi BE chạy ngưỡng > 0, và request gặp
- * 403 `captcha_required` vẫn mở panel rồi retry MỘT lần với token.
- *
- * Token là single-use (BE giữ sha256 của token đã tiêu trong `anon_captcha._consumed_tokens`),
- * nên hai request đua nhau KHÔNG được dùng chung một token — request thứ hai sẽ ăn 403 replay.
- * Mỗi request bị gate có challenge RIÊNG và xếp hàng: panel vẫn chỉ có MỘT cái vì modal render
- * theo `active.id`, hết challenge này tới challenge kế tiếp.
- */
+/** Challenge Turnstile theo yêu cầu — cùng mô hình singleton với errorPopupStore/toastStore: */
 type Slot = {
   resolve: (token: string) => void
   reject: (error: Error) => void
@@ -55,11 +41,7 @@ export function captchaRequiredByBackend(): boolean {
   return requiredByBackend
 }
 
-/**
- * Mở panel xác minh và chờ token. Cửa này đóng khi FE chưa được cấu hình (cờ tắt/site key
- * trống) là chủ đích fail-closed: không có ải thì không có token, request cứ chết với thông
- * báo thay vì tự động cho qua.
- */
+/** Mở panel xác minh và chờ token. Cửa này đóng khi FE chưa được cấu hình (cờ tắt/site key */
 export function requestCaptchaToken(): Promise<string> {
   if (!env.turnstileEnabled || !env.turnstileSiteKey) {
     return Promise.reject(new Error(t('captcha.unavailable')))
@@ -77,18 +59,11 @@ export function requestCaptchaToken(): Promise<string> {
   return promise
 }
 
-/**
- * Token đã giải sẵn lúc người dùng kéo/chọn tệp. Turnstile thụ token vài phút và BE tính
- * single-use, nên ô này có TTL ngắn hơn để một token nguội tự được hỏi lại lúc gửi.
- */
+/** Token đã giải sẵn lúc người dùng kéo/chọn tệp. Turnstile thụ token vài phút và BE tính */
 const WARM_TTL_MS = 120_000
 let warm: { token: string; at: number } | null = null
 
-/**
- * Mở ải SỚM ngay khi có tệp thay vì đợi bấm "Bắt đầu xử lý": upload vài trăm MB rồi mới ăn
- * 403 là phí băng thông của cả hai phía. Không chờ kết quả — user đổi ý thì token chỉ nguội
- * theo, và user đã đăng nhập không bao giờ bị hỏi (BE cũng không hỏi họ).
- */
+/** Mở ải SỚM ngay khi có tệp thay vì đợi bấm "Bắt đầu xử lý": upload vài trăm MB rồi mới ăn */
 export function warmCaptchaToken(): void {
   if (!requiredByBackend || warm || getAccessToken()) return
   void requestCaptchaToken().then(
@@ -108,12 +83,7 @@ export function takeWarmCaptchaToken(): string | null {
   return entry && Date.now() - entry.at < WARM_TTL_MS ? entry.token : null
 }
 
-/**
- * Modal báo đã có token cho challenge hiện tại: trả đúng MỘT request chủ, rồi mở ngay
- * challenge cho người kế hàng (widget mới, token mới).
- * shortcut: request xếp hàng không có deadline riêng — nó chờ tới lượt rồi mới chạy timeout
- * HTTP của chính mình; nâng cấp khi có route gửi nhiều request gate cùng lúc.
- */
+/** Resolve the active challenge, then open the next queued request with a fresh token. */
 export function fulfillCaptchaToken(token: string): void {
   const current = active
   const next = queue.shift()
@@ -122,10 +92,7 @@ export function fulfillCaptchaToken(token: string): void {
   current?.slot.resolve(token)
 }
 
-/**
- * Modal không lấy được token (Cloudflare từ chối, token hết hạn, user đóng, script lỗi).
- * Cả hàng cùng chết theo: Cloudflare vừa nói không thì mở thêm widget chỉ để nhận lại lỗi đó.
- */
+/** Modal không lấy được token (Cloudflare từ chối, token hết hạn, user đóng, script lỗi). */
 export function breakCaptcha(message: string): void {
   const current = active
   const waiting = queue.splice(0, queue.length)

@@ -31,10 +31,7 @@ export function isOtpExpiredError(err: unknown): boolean {
   return code === 'otp_expired' || message.includes('otp_expired') || message.includes('token has expired')
 }
 
-/**
- * Map lỗi Supabase Auth sang thông điệp i18n, không để lộ thông tin nhạy cảm
- * (vd. "Invalid login credentials" → câu chung chung, không nói email nào sai).
- */
+/** Map auth failures to localized, non-sensitive messages. */
 export function describeAuthError(err: unknown): string {
   if (isRateLimitError(err)) return t('auth.rateLimited')
   if (isEmailNotConfirmedError(err)) return t('auth.emailNotConfirmed')

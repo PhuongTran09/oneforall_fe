@@ -1,12 +1,4 @@
-/**
- * Mirror of what the backend can actually convert.
- *
- * Source of truth lives in oneforall_be — re-check these when the matrix changes:
- *   app/services/format_detector.py  FORMAT_ALIASES, KNOWN_EXTENSIONS, SUPPORTED_CONVERSIONS
- *   app/worker/processors/image.py   Pillow branches (resize / crop / compress + save format)
- *   app/worker/tasks/image.py        content-type -> output extension map
- *   app/worker/processors/video.py   VIDEO_CODECS_BY_CONTAINER, AUDIO_ENCODERS, thumbnail
- */
+/** Mirror of what the backend can actually convert. */
 
 export type FileKind = 'image' | 'video' | 'audio' | 'document' | 'other'
 
@@ -82,16 +74,10 @@ export const VIDEO_TARGETS: readonly string[] = ['mp4', 'mov', 'mkv', 'webm', 'a
 /** Audio targets served by media-process/extract-audio. */
 export const AUDIO_TARGETS: readonly string[] = ['mp3', 'wav', 'aac', 'm4a', 'flac', 'ogg']
 
-/**
- * Raster formats image-process can emit with a correct filename: tasks/image.py only maps
- * image/jpeg, image/png and image/webp to an extension, anything else lands in a wrong one.
- */
+/** Image worker writes PNG, JPEG, or WebP with matching file extensions. */
 const RASTER_IMAGE_TARGETS: readonly string[] = ['png', 'jpg', 'webp']
 
-/**
- * Raster sources Pillow opens on the worker. HEIC and SVG now convert through
- * convert-file (pillow-heif / svglib), so they stay out of this fallback list.
- */
+/** Pillow opens these raster inputs directly; HEIC and SVG use convert-file. */
 const RASTER_IMAGE_SOURCES: ReadonlySet<string> = new Set([
   'png', 'jpg', 'webp', 'gif', 'bmp', 'tiff', 'ico',
 ])
