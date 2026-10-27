@@ -5,14 +5,7 @@ import { useI18n } from '../../i18n/langStore'
 import { watchLiveStats } from '../../services/api/statsApi'
 import type { PublicStats } from '../../services/api/types'
 
-/*
-  Public live stats — hai số THẬT từ kênh SSE /api/v1/public/stats/stream, không có giá
-  trị bịa:
-  - active_visitors: số phiên vừa heartbeat trong 5 phút gần nhất (Redis).
-  - completed_jobs : tổng số job xử lý thành công từ trước tới nay (đếm từ bảng jobs).
-  Backend trả null khi không đo được => UI hiện "—", phân biệt với 0 là số đếm được.
-  Transport (SSE + polling fallback + tab ẩn) nằm ở statsApi.watchLiveStats.
-*/
+/* Public live stats — hai số THẬT từ kênh SSE /api/v1/public/stats/stream, không có giá */
 
 type Phase = 'loading' | 'ready' | 'error'
 

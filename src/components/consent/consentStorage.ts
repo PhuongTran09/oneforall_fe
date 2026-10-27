@@ -92,7 +92,7 @@ function getSnapshot(): ConsentState {
   return state
 }
 
-// ---- Selectors (dùng được ngoài React) ----
+
 
 export function hasAcceptedTerms(): boolean {
   return state.record.terms.acceptedAt !== null && state.record.terms.version === TERMS_VERSION
@@ -109,7 +109,7 @@ export function needsCookieDecision(): boolean {
   return c.decidedAt === null || c.version !== COOKIE_VERSION
 }
 
-// ---- Actions ----
+
 
 export function openConsentModal(view: ConsentView = 'main') {
   setState({ modalOpen: true, view })

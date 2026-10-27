@@ -10,17 +10,7 @@ import {
 
 const REQUEST_TIMEOUT_MS = 30000
 
-/**
- * Ngân sách riêng cho cú upload. REQUEST_TIMEOUT_MS 30s được đặt cho call JSON ngắn, nhưng
- * với `fetch` thì nó tính từ lúc gửi tới lúc server TRẢ LỜI — tức trọn thời gian đẩy tệp đi
- * qua tunnel Cloudflare. 3MB trên mạng 4G (~1 Mbps up = ~125KB/s) đã ngốn ~24s chưa tính
- * server parse multipart + ghi đĩa, nên người dùng ăn AbortError → "Yêu cầu hết thời gian
- * chờ" dù mọi thứ vẫn đang chạy. Vì vậy trần upload tỉ lệ với dung lượng.
- *
- * shortcut: sàn 100KB/s + chốt 10 phút là trần thời gian CHỨ không phải idle timeout — fetch
- * không có progress event. Tệp rất lớn trên mạng rất chậm vẫn bị cắt ở 10 phút. Nâng cấp:
- * XHR + reset timer mỗi lần có byte (tiện tay có luôn % upload cho ToolPage).
- */
+/** Upload timeout scales with file size; the 10-minute cap is total time, not an idle timeout. */
 const UPLOAD_MIN_BYTES_PER_SECOND = 100_000
 const UPLOAD_TIMEOUT_MAX_MS = 600_000
 

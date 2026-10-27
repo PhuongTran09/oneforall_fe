@@ -1,14 +1,4 @@
-/**
- * Which extra parameters the backend actually reads for a given conversion.
- *
- * Source of truth lives in oneforall_be — re-check these when the processors change:
- *   app/worker/processors/document.py  per-operation sub_options
- *   app/worker/processors/image.py     quality, lossless, width, height
- *   app/worker/processors/video.py     vcodec, acodec, crf, time
- *
- * Anything the processors ignore is deliberately absent: a control that changes nothing is
- * worse than no control, because the job still reports success.
- */
+/** Which extra parameters the backend actually reads for a given conversion. */
 
 import { classifyFormat, normalizeFormat, resolveRoute } from './conversionMatrix'
 import { t } from '../i18n/langStore'

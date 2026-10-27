@@ -4,29 +4,10 @@ import { isAdFreeNow, useEntitlements } from './entitlementsStore'
 import { useAuth } from './authStore'
 import type { UserMe } from './api/types'
 
-/**
- * Bộ nạp script quảng cáo bên thứ ba — TẬP TRUNG, một chỗ duy nhất chèn <script>.
- *
- * Quyết định nạp là 3 trạng thái, không phải boolean: 'wait' (chưa xác định được
- * gói, hoặc người dùng chưa quyết định cookie — còn cơ hội ở lượt accept sau) khác
- * với 'off' (Pro, hoặc đã từ chối — không nạp trong cả page session này).
- *
- * shortcut: Adsterra không tài liệu hoá API gỡ banner. Đo 10/2026 trên chính
- * script Social Bar (89 KB): chèn DOM bằng createElement/appendChild (không
- * document.write -> hợp SPA/Vite), giữ ~11 setInterval + 1 MutationObserver trên
- * body, lưu frequency cap vào localStorage/sessionStorage. Vì vậy: đã nạp rồi thì
- * KHÔNG gỡ node của nó (DOM surgery không được bảo đảm), mất eligibility giữa
- * phiên chỉ chặn các lượt nạp còn lại và có hiệu lực đầy đủ từ lần tải trang kế
- * tiếp; người dùng vẫn có nút đóng của riêng Social Bar. Nâng cấp khi Adsterra
- * cung cấp API destroy được tài liệu hoá.
- */
+/** Central ad-script loader; loaded scripts stay mounted because Adsterra has no documented destroy API. */
 export type AdsDecision = 'load' | 'wait' | 'off'
 
-/**
- * 'wait' khi đã đăng nhập mà /users/me chưa về: nạp trước rồi phát hiện Pro là tự
- * lừa, vì script một khi nằm trong trang thì không có cách gỡ được bảo đảm.
- * 'off' là chốt của người dùng/publisher; 'wait' thì chưa.
- */
+/** Keep ads on hold until account status is known; loaded scripts cannot be reliably removed. */
 export function adsDecision(me: UserMe | null, planKnown: boolean): AdsDecision {
   // Pro = không quảng cáo. Nguồn xác nhận là BE qua /users/me (plan_policy.ads=false),
   // cộng bản cache ofa-plan vì /users/me về muộn hơn HTML.

@@ -1,22 +1,17 @@
 @import "tailwindcss";
 
-/* iPad mini portrait = 744px, nằm ngay dưới md mặc định (768px) nên bị xếp vào
-   layout mobile 1 cột dù màn rộng. Hạ md xuống 740px để khu tablet bật đúng. */
+/* Set md to 740px so 744px iPad mini portrait uses the tablet layout. */
 @theme {
   --breakpoint-md: 740px;
 
-  /* Semantic surface/ink utilities (bg-page, bg-surface, bg-elev, border-edge,
-     text-ink). Values reference the runtime tokens below so html[data-theme]
-     overrides cascade into every utility automatically. */
+  /* Surface and text utilities use runtime tokens, so theme overrides apply globally. */
   --color-page: var(--bg-base);
   --color-surface: var(--bg-surface);
   --color-elev: var(--bg-elevated);
   --color-edge: var(--border-subtle);
   --color-ink: var(--text-ink);
 
-  /* Brand colors dùng làm TEXT/NỀN trên surface (khác --brand-* là màu gradient):
-     ở nền trắng thì #FF3B30/#A1A1AA chỉ đạt 2.3–3.6:1, nên mọi chỗ từng hardcode
-     hex đều đi qua var này để chế độ sáng tô đậm lên mà không đổi giao diện tối. */
+  /* Light-theme text colors use stronger tokens without changing dark mode. */
   --color-soft: var(--text-soft);
   --color-tint: var(--bg-tint);
   --color-brand: var(--text-brand);
@@ -25,9 +20,7 @@
   --color-brand-active: var(--text-brand-active);
 }
 
-/* Light theme: override runtime tokens + flip the slate/soft-accent scales
-   (Tailwind v4 emits text-slate-* as var(--color-slate-*), so one override
-   re-themes all secondary text without touching components). */
+/* Light theme overrides runtime tokens and Tailwind slate scales. */
 html[data-theme='light'] {
   color-scheme: light;
 
@@ -35,8 +28,7 @@ html[data-theme='light'] {
   --bg-surface: #ffffff;
   --bg-elevated: #e9ebf4;
   --border-subtle: #d8dbe8;
-  /* Mặt khối 3D: border phải + dưới của mọi phần tử vát góc. Trên nền trắng
-     dùng xám-tối alpha thấp — đây là bóng mặt bên, không phải viền trang trí. */
+  /* In light mode, subtle dark borders show depth without looking decorative. */
   --extrude-face: rgba(42,47,61,.14);
   --extrude-face-dim: rgba(42,47,61,.09);
   --text-primary: #2a2f3d;
@@ -51,8 +43,7 @@ html[data-theme='light'] {
   --text-brand-3: #9a3412;
   --text-brand-active: #b91c1c;
 
-  /* Gradient chủ đạo giữ nguyên họ đỏ→cam, chỉ đậm hơn để chữ trắng trên nút
-     và các heading clip-gradient đọc được trên nền sáng. */
+  /* Darken brand gradient stops so white text stays readable in light mode. */
   --grad-1: #cf2216;
   --grad-2: #d8431c;
   --grad-3: #c8571d;
@@ -154,7 +145,6 @@ html[data-theme='light'] {
   }
 }
 
-/* ─── Brand Gradient ─────────────────────────────────────────────────────── */
 /* Đọc biến --grad-* để chế độ sáng đẩy đậm lên mà không phải sửa từng component. */
 .bg-brand-gradient {
   background: linear-gradient(135deg, var(--grad-1) 0%, var(--grad-2) 50%, var(--grad-3) 100%);
@@ -167,14 +157,7 @@ html[data-theme='light'] {
   background-clip: text;
 }
 
-/* ─── Angular corner helpers ─────────────────────────────────────────────── */
-/*
-  clip-corner-*  clips a small diagonal on the top-right + bottom-left.
-  Đây cũng là DẤU HIỆU nhận diện "bề mặt khối" của nhà: mặt bên 3-D được vẽ tự
-  động cho mọi phần tử mang class này (xem section 3-D Extrusion bên dưới), nên
-  JSX không cần thêm class nào khi muốn một surface mới có chiều sâu.
-  --extrude = độ dày mặt bên của riêng nhóm đó.
-*/
+/* clip-corner-* clips a small diagonal on the top-right + bottom-left. */
 .clip-corner-btn {
   --extrude: var(--extrude-btn);
   clip-path: polygon(
@@ -214,23 +197,7 @@ html[data-theme='light'] {
   border-radius: 0 !important;
 }
 
-/* ─── 3-D Extrusion: mặt khối cho MỌI surface vát góc ────────────────────── */
-/*
-  Mặt khối = chính border phải + dưới của phần tử, dày --extrude và tô
-  --extrude-face. Nguồn sáng của nhà là trên-trái nên hai cạnh đó là mặt bên;
-  border trên + trái vẫn là viền mỏng của component.
-
-  Vì sao không vẽ bằng ::after (bản trước): pseudo nằm trong padding box nên
-  dải tối chạy SONG SONG với viền 1px -> nhìn thành 3 lớp (viền | dải | nền),
-  và polygon inherit tính trên box nhỏ hơn thì lệch chamfer. Dùng border thì
-  khối chỉ còn 2 lớp, chamfer tự khớp (clip-path tính trên border box), không
-  cần position:relative (không còn rủi ro re-anchor phần tử con absolute),
-  pointer-events/z-index vô sự, và <input>/<select>/<img> cũng có mặt khối.
-
-  Xung đột đã soát: toàn src chỉ 2 chỗ dùng border theo cạnh đơn
-  (Button.tsx:60 spinner rounded-full, UrlInputForm.tsx:217 divider) — không
-  phần tử nào mang clip-corner.
-*/
+/* Light mode uses a subtle dark side face to show depth without a heavy border. */
 .clip-corner-btn,
 .clip-corner-card,
 .clip-corner-lg,
@@ -239,22 +206,14 @@ html[data-theme='light'] {
   border-bottom: var(--extrude) solid var(--extrude-face);
 }
 
-/* Chỉ card-3d cần containing block (cho ::before spotlight). :where() trong
-   @layer utilities giữ specificity 0 để utility absolute/fixed/sticky của
-   Tailwind vẫn thắng — bài học từ lần dropdown profile bị đẩy về dòng tĩnh. */
+/* Only card-3d needs a containing block; :where() keeps Tailwind positioning utilities dominant. */
 @layer utilities {
   :where(.card-3d) {
     position: relative;
   }
 }
 
-/* ─── 3-D Extrusion: primary buttons ────────────────────────────────────── */
-/*
-  Nút brand: mặt khối tối 45% đen đè lên nền đỏ cam cho ra màu nâu bẩn, nên
-  nút chính lấy mặt khối từ chính màu brand (color-mix theo --grad-1, đổi theme
-  tự cập nhật). .btn-3d chỉ còn phản hồi press — không đổi độ dày mặt khi hover
-  nữa vì mặt giờ là border: đổi width là đổi layout.
-*/
+/* Brand buttons use a tinted side face to avoid muddy colors and keep depth on hover. */
 .btn-3d {
   --extrude-face: color-mix(in srgb, var(--grad-1) 62%, #000);
   transition: transform 0.12s ease, border-color 0.12s ease;
@@ -270,14 +229,7 @@ html[data-theme='light'] {
   --extrude-face: color-mix(in srgb, var(--grad-1) 78%, #000);
 }
 
-/* ─── 3-D Extrusion: cards / containers ─────────────────────────────────── */
-/*
-  card-3d thêm chiều SÂU có tương tác (tilt theo con trỏ, lift, spotlight) lên
-  trên mặt khối mà .clip-corner-* đã vẽ sẵn bằng border phải + dưới.
-
-  Hover system (one source of truth): pointer tilt/lift được cardMotion.ts ghi
-  vào --rx/--ry/--gx/--gy; lift & glow compose ở đây. Chỉ .card-tilt nhận rotation.
-*/
+/* card-3d adds tilt, lift, and spotlight over the existing extruded border. */
 .card-3d {
   transform: perspective(700px)
     rotateX(var(--rx, 0deg))
@@ -314,8 +266,7 @@ html[data-theme='light'] {
   .card-3d:not(.card-3d-dim):not([data-disabled]):not([aria-disabled="true"]):hover::before {
     opacity: 1;
   }
-  /* Mặt khối sáng lên theo brand khi card nâng: border-color đã nằm trong
-     transition của .card-3d nên đổi màu là có animation. */
+  /* The side face follows the brand color when a card lifts. */
   .card-3d:not(.card-3d-dim):not([data-disabled]):not([aria-disabled="true"]):hover {
     border-right-color:  rgba(255, 107, 74, 0.8);
     border-bottom-color: rgba(255, 107, 74, 0.8);
@@ -339,16 +290,11 @@ html[data-theme='light'] {
   filter: none;
 }
 
-/* ─── 3-D Extrusion: upload zones / large inputs ────────────────────────── */
-/*
-  .clip-corner-lg đã vẽ mặt khối bằng border phải + dưới; input-3d chỉ chọn bản
-  mờ cho vùng upload / URL bar để không nặng bằng card tương tác.
-*/
+/* input-3d uses a dimmer side face on upload and URL fields. */
 .input-3d {
   --extrude-face: var(--extrude-face-dim);
 }
 
-/* ─── Section / badge labels ────────────────────────────────────────────── */
 /* Small pill used for section headings — subtle angular clip */
 .badge-angular {
   --extrude: 2px;
@@ -363,7 +309,6 @@ html[data-theme='light'] {
   border-radius: 0 !important;
 }
 
-/* ─── Page shell ─────────────────────────────────────────────────────────── */
 /* Single layout source for standalone workspace pages (image / video / convert). */
 .page-container {
   max-width: 56rem;
@@ -378,7 +323,6 @@ html[data-theme='light'] {
   }
 }
 
-/* ─── Hidden scrollbar (cuộn cảm ứng/trackpad vẫn hoạt động) ─────────────── */
 .scrollbar-none {
   scrollbar-width: none;
 }
@@ -386,11 +330,7 @@ html[data-theme='light'] {
   display: none;
 }
 
-/* ─── Page transition ────────────────────────────────────────────────────── */
-/* `translate` (property độc lập) thay `transform`, và `backwards` thay
-   `forwards`: keyframe kết thúc ở trạng thái tự nhiên nên hết animation là
-   property về none. forwards để transform dính vĩnh viễn -> lớp bọc ở
-   MainLayout.tsx:76 thành containing block cho mọi modal position:fixed. */
+/* Independent translate composes with transforms and resets after animation. */
 @keyframes page-enter {
   0%   { opacity: 0; translate: 0 6px; }
   100% { opacity: 1; translate: 0 0;   }
@@ -400,7 +340,6 @@ html[data-theme='light'] {
   animation: page-enter 220ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
 }
 
-/* ─── Heading reveal + hơi ơ gradient quét nhẹ một lượt khi vào trang ────── */
 @keyframes heading-in {
   0%   { opacity: 0; translate: 0 8px; }
   100% { opacity: 1; translate: 0 0;   }
@@ -410,8 +349,7 @@ html[data-theme='light'] {
   animation: heading-in 500ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
 }
 
-/* .text-brand-gradient đặt background: một màu gradient cố định, nên lớp này
-   chỉ thêm size/position để animation "shine" chạy được trên chữ. */
+/* The shine animation needs background size and position on gradient text. */
 .text-brand-gradient.text-shine {
   background-size: 200% auto;
   animation:
@@ -424,10 +362,7 @@ html[data-theme='light'] {
   100% { background-position: 100% center; }
 }
 
-/* ─── Theme toggle: phẳng theo house style (token, không shadow) ────────── */
-/* Trạng thái đọc từ html[data-theme] (theme.ts set) nên nền/thumb đổi theo đúng theme
-   thật của site, không cần class on/off từ React. Toàn bộ màu đi qua token runtime:
-   light theme tự re-map ở khối đầu file, không còn block hex riêng. */
+/* Trạng thái đọc từ html[data-theme] (theme.ts set) nên nền/thumb đổi theo đúng theme */
 .theme-toggle {
   position: relative;
   width: 56px;
@@ -458,21 +393,14 @@ html[data-theme='light'] {
   transition: transform 250ms cubic-bezier(0.4, 0, 0.2, 1), background 250ms ease, color 250ms ease;
 }
 
-/* Chế độ sáng = "bật": dùng crimson chủ đạo làm tín hiệu thay vì đổ bóng.
-   #fff duy nhất ở đây là có chủ đích: glyph phải trắng trên nền đỏ ở CẢ hai theme,
-   còn --text-ink thì light đã đổi thành gần đen. */
+/* Chế độ sáng = "bật": dùng crimson chủ đạo làm tín hiệu thay vì đổ bóng. */
 html[data-theme='light'] .theme-thumb {
   transform: translateX(26px);
   background: var(--text-brand);
   color: #fff;
 }
 
-/* ─── Animated workflow pipeline ────────────────────────────────────────── */
-/*
-  CHỈ là minh họa quy trình — không phản ánh tiến trình job thật, không ghi đè
-  telemetry (JobProgress/SSE giữ nguyên). Đồng bộ bằng animation-delay theo --step
-  (0..3) đặt inline trên wrapper; một chu kỳ 8s, mỗi bước 2s, không JS timer.
-*/
+/* Demo animation only; live progress remains owned by JobProgress and SSE. */
 .pipeline-step {
   position: relative;
   animation: step-lift 8s ease-in-out infinite;
@@ -633,7 +561,6 @@ html[data-theme='light'] .theme-thumb {
   }
 }
 
-/* ─── Indeterminate progress ───────────────────────────────────────────── */
 @keyframes loading-sweep {
   0%   { transform: translateX(-100%); }
   100% { transform: translateX(350%); }
@@ -643,9 +570,7 @@ html[data-theme='light'] .theme-thumb {
   animation: loading-sweep 1.4s ease-in-out infinite;
 }
 
-/* ─── Public live stats ─────────────────────────────────────────────────── */
-/* Số liệu đổi theo nhịp poll 30s. Một hiệu ứng nhẹ đủ để thấy giá trị vừa
-   thay đổi — không đếm số bằng JS vì timer sẽ re-render cả trang chủ. */
+/* Live stats animate on each 30s poll without a JS timer. */
 @keyframes live-value-in {
   from { opacity: 0; transform: translateY(3px); }
   to   { opacity: 1; transform: none; }
@@ -655,7 +580,6 @@ html[data-theme='light'] .theme-thumb {
   animation: live-value-in 350ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-/* ─── Toast ──────────────────────────────────────────────────────────────── */
 .toast-item {
   filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.35));
 }
@@ -689,15 +613,7 @@ html[data-theme='light'] .toast-item {
   }
 }
 
-/* ─── Enter animations (mọi sự kiện đổi state) ─────────────────────────────
-   Animate `translate` — property ĐỘC LẬP, áp trước `transform` — nên entrance
-   chạy song song với tilt/lift của .card-3d (:254) và .btn-3d (:212) thay vì
-   ghi đè chuỗi transform đó. `backwards`: hết animation là về none, không để
-   lại containing block cho modal position:fixed.
-   Không dùng `scale`: nó áp NGOÀI perspective(700px) nên biến dạng sai, mà mọi
-   surface ứng viên (5 modal, DownloadResult, JobProgress, ToolCard, step/feature
-   card) đều đang là .card-3d.
-   Chỉ dịch trục Y: body{overflow-x:hidden} (:142) + translateX = jitter mobile. */
+/* Enter animations use independent translate so card transforms remain intact. */
 @keyframes in-up {
   from { opacity: 0; translate: 0 10px; }
   to   { opacity: 1; translate: 0 0;    }
@@ -710,15 +626,10 @@ html[data-theme='light'] .toast-item {
 .in-up   { animation: in-up   260ms cubic-bezier(0.16, 1, 0.3, 1) backwards; }
 .in-fade { animation: in-fade 200ms ease-out                       backwards; }
 
-/* Backdrop là layer fixed + backdrop-blur: chỉ opacity. Dịch cả layer này bắt
-   GPU vẽ lại lớp blur mỗi frame — tụt fps rõ nhất trên điện thoại. */
+/* Animate backdrop opacity only to avoid repainting blur on every frame. */
 .in-backdrop { animation: in-fade 160ms ease-out backwards; }
 
-/* Stagger: delay tăng dần rồi CHỐT ở phần tử thứ 8 (muộn nhất 170ms) — lưới 17
-   ToolCard không phải chờ 340ms mà thứ tự trong hàng vẫn đơn điệu.
-   shortcut: `.stagger > *` là selector con phổ quát, chỉ gắn lên container mà
-   mọi child đều là item; nếu sau này có child trang trí thì chuyển sang
-   `.stagger > .stagger-item`. */
+/* Stagger delay caps at 170ms; use only when every child is an item. */
 .stagger > *               { animation: in-up 260ms cubic-bezier(0.16, 1, 0.3, 1) backwards; }
 .stagger > :nth-child(2)   { animation-delay:  30ms; }
 .stagger > :nth-child(3)   { animation-delay:  60ms; }
@@ -728,20 +639,13 @@ html[data-theme='light'] .toast-item {
 .stagger > :nth-child(7)   { animation-delay: 160ms; }
 .stagger > :nth-child(n+8) { animation-delay: 170ms; }
 
-/* Scroll reveal. MẶC ĐỊNH KHÔNG ẨN NỘI DUNG: `.is-in` do revealMotion.ts gắn,
-   nên JS chết / thiếu IntersectionObserver / HTML tĩnh từ prerender.js thì mọi
-   thứ hiện nguyên. Mobile chỉ fade, không dịch — tránh nội dung nhảy dưới
-   ngón tay khi đang cuộn. */
+/* Reveal applies only after .is-in, so content remains visible if JavaScript is unavailable. */
 [data-reveal].is-in { animation: in-fade 320ms ease-out backwards; }
 @media (min-width: 40rem) {
   [data-reveal].is-in { animation: in-up 420ms cubic-bezier(0.16, 1, 0.3, 1) backwards; }
 }
 
-/* Accordion mở bằng grid-template-rows 0fr -> 1fr (nội suy được, không đo
-   height bằng JS). Đây là transition chứ không phải keyframe, mà state đóng là
-   state tự nhiên của phần tử, nên trình duyệt không nội suy được cũng chỉ còn
-   mở tức thì — không bao giờ kẹt ở 0fr. visibility:hidden giữ phần đóng ra khỏi
-   a11y tree. Chỉ nội suy chiều MỞ: không hoãn unmount, không exit. */
+/* Accordion uses a 0fr-to-1fr grid transition; hidden content stays out of the accessibility tree. */
 .acc {
   display: grid;
   grid-template-rows: 0fr;
@@ -762,9 +666,7 @@ html[data-theme='light'] .toast-item {
     opacity 180ms ease-out;
 }
 
-/* ─── Reduced motion ─────────────────────────────────────────────────────── */
-/* Bản sáng: bóng đen đặc của nền tối sẽ thành vệt xám bẩn trên nền trắng,
-   còn spotlight đỏ 9% thì gần như vô hình trên card trắng. */
+/* Light mode uses a subtle shadow and spotlight on white cards. */
 html[data-theme='light'] .card-3d:not(.card-3d-dim):not([data-disabled]):not([aria-disabled="true"]):hover {
   filter: drop-shadow(0 8px 20px rgba(15, 23, 42, 0.16));
 }

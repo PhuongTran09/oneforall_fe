@@ -1,9 +1,4 @@
-/*
-  Pointer tilt for cards marked `.card-tilt` — writes --rx/--ry (rotation) and
-  --gx/--gy (spotlight origin) as CSS custom properties; index.css composes the
-  transform. Listeners attach only while a mouse is over a card, so nothing
-  runs when idle. Touch and reduced-motion users get the static design.
-*/
+/* Pointer tilt updates CSS variables only on hover; touch and reduced-motion users stay static. */
 const MAX_TILT_DEG = 5
 
 export function initCardMotion(): void {

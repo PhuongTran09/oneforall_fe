@@ -78,11 +78,7 @@ if (isSupabaseConfigured) {
     .catch(() => setState({ ...state, ready: true }))
 }
 
-/**
- * GoTrue trả lỗi qua URL hash khi verify link/OTP fail
- * (vd. #error=access_denied&error_code=otp_expired&error_description=...).
- * Đọc ngay lúc module khởi tạo — trước khi supabase-js kịp xoá hash.
- */
+/** Read GoTrue auth errors from the URL hash before Supabase removes it. */
 function readUrlAuthError(): { code: string; description: string } | null {
   try {
     const hash = window.location.hash.replace(/^#/, '')

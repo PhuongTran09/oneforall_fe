@@ -1,31 +1,18 @@
 import { apiClient, resolveUrl } from './client'
 import type { PublicStats } from './types'
 
-/**
- * Nhịp phát của stream backend (app/services/stats_stream.py: STATS_TTL_S/STREAM_TICK_S).
- * FE không đọc được hằng số đó nên phải khớp tay: watchdog chỉ đếm số lần error, còn
- * keepalive là dòng comment SSE — EventSource không thấy comment, nên không có im lặng
- * giả ở đây.
- */
+/** Nhịp phát của stream backend (app/services/stats_stream.py: STATS_TTL_S/STREAM_TICK_S). */
 const FALLBACK_POLL_MS = 60_000
 const MAX_STREAM_ERRORS = 3
 const STREAM_PATH = '/v1/public/stats/stream'
 
 export const statsApi = {
-  /**
-   * Hai chỉ số công khai cho khu live stats ở trang chủ (GET, không cần đăng nhập).
-   * Đây là đường fallback: trang chủ bình thường nhận số qua SSE, còn endpoint này
-   * phục vụ client cũ và lúc stream không dùng được.
-   */
+  /** Hai chỉ số công khai cho khu live stats ở trang chủ (GET, không cần đăng nhập). */
   async getStats(signal?: AbortSignal): Promise<PublicStats> {
     return apiClient.get<PublicStats>('/v1/public/stats', { signal })
   },
 
-  /**
-   * Nhịp sống của tab này cho chỉ số "đang có bao nhiêu người online".
-   * ``sid`` là UUID ngẫu nhiên lưu trong sessionStorage, không định danh ai và
-   * không đi kèm user_id/IP. Fail im lặng: stat công khai không đáng retry loop.
-   */
+  /** Nhịp sống của tab này cho chỉ số "đang có bao nhiêu người online". */
   async beat(sid: string, signal?: AbortSignal): Promise<void> {
     await apiClient.post<void>('/v1/public/heartbeat', { sid }, { signal })
   },
@@ -52,13 +39,7 @@ function parseStats(data: string): PublicStats | null {
   }
 }
 
-/**
- * Theo dõi số liệu công khai qua SSE ``GET /v1/public/stats/stream``, lùi về poll
- * ``GET /stats`` mỗi 60s khi stream không dùng được (backend cũ 404, proxy chặn
- * text/event-stream, mạng drop liên tiếp).
- *
- * Trả hàm dừng hẳn cả hai đường — component phải gọi trong cleanup của effect.
- */
+/** Watch live stats over SSE and fall back to polling when the stream is unavailable. */
 export function watchLiveStats(handlers: LiveStatsHandlers): () => void {
   let stopped = false
   let source: EventSource | null = null

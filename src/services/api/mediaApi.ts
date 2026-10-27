@@ -26,16 +26,12 @@ export interface UrlInfo {
   view_count?: number | null
   like_count?: number | null
   upload_date?: string | null
-  /** Ảnh của bài ảnh TikTok, theo đúng thứ tự trượt; null với mọi link khác. URL CDN ký kèm
-   * ?x-expires= nên chỉ xem được vài giờ. */
+  /** Ảnh của bài ảnh TikTok, theo đúng thứ tự trượt; null với mọi link khác. URL CDN ký kèm */
   slides?: string[] | null
 }
 
 export const mediaApi = {
-  /**
-   * Xem trước thông tin link YouTube/TikTok (title/thumbnail/kênh/số liệu) qua BE.
-   * Endpoint public; `signal` để URL cũ bị hủy khi người dùng dán link khác.
-   */
+  /** Xem trước thông tin link YouTube/TikTok (title/thumbnail/kênh/số liệu) qua BE. */
   async getUrlInfo(url: string, signal?: AbortSignal): Promise<UrlInfo> {
     return apiClient.get<UrlInfo>('/v1/media/url-info', { params: { url }, signal })
   },

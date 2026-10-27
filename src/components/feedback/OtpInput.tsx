@@ -9,10 +9,7 @@ export interface OtpInputProps {
   describedBy?: string
 }
 
-/**
- * Ô nhập OTP 6 chữ số: mỗi ô 1 ký tự, tự nhảy ô khi gõ, paste nguyên chuỗi,
- * Backspace ở ô trống quay về lùi ô trước, điều hướng mũi tên.
- */
+/** Six-digit OTP input with auto-advance, paste, Backspace, and arrow-key navigation. */
 export function OtpInput({ value, onChange, length = 6, disabled, describedBy }: OtpInputProps) {
   const refs = useRef<(HTMLInputElement | null)[]>([])
 

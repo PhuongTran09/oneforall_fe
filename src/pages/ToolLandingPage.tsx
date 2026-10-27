@@ -76,9 +76,9 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
     snapshotExpired ? null : (snapshot?.previewUrl ?? null),
   )
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(snapshot?.faqIndex ?? null)
-  const [errorMessage, setErrorMessage] = useState<string | null>(
-    snapshotExpired ? null : (snapshot?.errorMessage ?? null),
-  )
+  // Lỗi KHÔNG khôi phục vào state: chuỗi đã dịch sẵn mà render lại thì thành lỗi tái hiện mãi sau
+  // khi đã tắt popup. snapshot.errorMessage chỉ là "lỗi còn nhắc dở" — mount effect đọc một lần.
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   const breadcrumbsData = useMemo(
     () => (tool ? [{ name: tool.badge, url: tool.slug }] : []),
@@ -160,13 +160,23 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
       format: resultFormat,
       previewUrl: originalImagePreview,
       errorMessage,
+      // errorMessage là chuỗi ĐÃ DỊCH → gắn ngôn ngữ của nó; lần hiển thị sau chỉ nhắc lại khi
+      // người dùng vẫn đang đọc đúng ngôn ngữ đó.
+      errorLang: errorMessage ? lang : null,
       faqIndex: openFaqIndex,
     })
-  }, [tool, job, downloadUrl, resultFileName, resultFormat, originalImagePreview, errorMessage, openFaqIndex])
+  }, [tool, job, downloadUrl, resultFileName, resultFormat, originalImagePreview, errorMessage, openFaqIndex, lang])
 
-  // Lỗi từ snapshot cũ (quay lại trang) popup lại một lần; lỗi live do nơi bắt gọi showErrorPopup.
+  // Nhắc lại lỗi còn dở (người dùng rời trang khi chưa kịp thấy): đúng MỘT lần rồi mất, vì effect
+  // ghi trạng thái ở trên khôi phục errorMessage = null nên snapshot cũng bị ghi đè theo.
+  // So sánh với locale đọc từ URL chứ không phải `lang` của store: LangRouteSync sync trong effect
+  // của riêng nó, nên ở commit mount này `lang` vẫn là ngôn ngữ CŨ (đo bằng console.trace) — nếu
+  // dùng nó thì mọi cú đổi VI↔EN bị xem là "vẫn ngôn ngữ cũ" và popup bật lại mãi.
   useEffect(() => {
-    if (errorMessage) showErrorPopup({ message: errorMessage })
+    if (!tool || !snapshot?.errorMessage || !snapshot.errorLang) return
+    if (snapshot.errorLang === stripLocale(location.pathname).lang) {
+      showErrorPopup({ message: snapshot.errorMessage })
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- chỉ chạy trên mount, đọc giá trị khởi tạo
   }, [])
 

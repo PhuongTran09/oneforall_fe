@@ -41,7 +41,7 @@ function structuredDetail(err: ApiClientError): StructuredDetail | null {
 // Mã là ĐỊNH DANH: đổi wording thì chỉ sửa dict, không đụng table này, không đụng mapper.
 // Một mã có thể trỏ tới cùng một key với mã khác khi câu hiển thị trùng nhau.
 export const ERROR_CODE_KEYS: Record<string, string> = {
-  // --- Input phía user ---
+
   FILE_REQUIRED: 'noFile',
   FILE_OR_LINK_REQUIRED: 'noMediaInput',
   FILE_EMPTY: 'emptyFile',
@@ -54,7 +54,7 @@ export const ERROR_CODE_KEYS: Record<string, string> = {
   PARAM_VALUE_INVALID: 'paramInvalid',
   PHOTO_LIST_INVALID: 'photoListInvalid',
   SHEET_NOT_FOUND: 'sheetNotFound',
-  // --- Dung lượng, hạn mức, hàng đợi ---
+
   ARCHIVE_TOO_MANY_ENTRIES: 'archiveTooLarge',
   ARCHIVE_UNSAFE_NAME: 'fileRejected',
   ARCHIVE_TOO_LARGE: 'archiveTooLarge',
@@ -69,14 +69,14 @@ export const ERROR_CODE_KEYS: Record<string, string> = {
   QUEUE_UNAVAILABLE: 'queueDown',
   QUEUE_OVERLOADED: 'videoQueueFull',
   DISK_SPACE_LOW: 'diskFull',
-  // --- Phiên, ải, quyền ---
+
   SIGN_IN_CHECK_UNAVAILABLE: 'sessionCheckFailed',
   GUEST_SESSION_CHECK_UNAVAILABLE: 'sessionUnavailable',
   GUEST_SESSION_DISABLED: 'guestDisabled',
   GUEST_SESSION_CREATE_FAILED: 'sessionUnavailable',
   LOGIN_REQUIRED: '401',
   RESOURCE_FORBIDDEN: '403',
-  // --- Job ---
+
   JOB_NOT_FOUND: '404',
   DOWNLOAD_TOKEN_REQUIRED: 'downloadTokenExpired',
   DOWNLOAD_TOKEN_INVALID: 'downloadTokenExpired',
@@ -88,8 +88,9 @@ export const ERROR_CODE_KEYS: Record<string, string> = {
   RESULT_FILE_MISSING: 'resultMissing',
   FILE_DELETE_FAILED: 'deleteFailed',
   STREAM_DISABLED: 'streamDisabled',
-  // --- Liên kết ngoài / TikTok ---
+
   LINK_PLATFORM_UNSUPPORTED: 'linkSiteUnsupported',
+  LINK_PLAYLIST_UNSUPPORTED: 'linkPlaylistUnsupported',
   LINK_PREVIEW_UNAVAILABLE: 'linkNoPreview',
   LINK_PREVIEW_BUSY: 'linkPreviewBusy',
   LINK_CONTENT_REFUSED: 'linkContentRefused',
@@ -102,7 +103,7 @@ export const ERROR_CODE_KEYS: Record<string, string> = {
   TIKTOK_BAD_PHOTO_CONTENT: 'tiktokLinkUnavailable',
   SOURCE_NO_VIDEO_FRAME: 'tiktokZipFallback',
   SLIDESHOW_FAILED: 'slideshowFailed',
-  // --- Xử lý tệp thất bại ---
+
   CONVERSION_FAILED: 'conversionFailed',
   PDF_FROM_DOCUMENT_FAILED: 'pdfCreateFailed',
   IMAGE_PROCESS_FAILED: 'imageProcessFailed',
@@ -112,16 +113,16 @@ export const ERROR_CODE_KEYS: Record<string, string> = {
   STORAGE_WRITE_FAILED: 'storageWriteFailed',
   JOB_TYPE_UNAVAILABLE: 'jobTypeUnavailable',
   JOB_TIMED_OUT: 'jobTimeout',
-  // --- Server thiếu thành phần / cạn tài nguyên ---
+
   SERVER_COMPONENT_MISSING: 'serverSetup',
   SERVER_OUT_OF_MEMORY: 'outOfMemory',
-  // --- Thanh toán ---
+
   PAYMENT_NOT_FOUND: 'paymentNotFound',
   PAYMENTS_UNAVAILABLE: 'paymentUnavailable',
   PLAN_NOT_FOUND: 'planNotPurchasable',
   PLAN_NOT_PURCHASABLE: 'planNotPurchasable',
   PLAN_ALREADY_ACTIVE: 'planAlreadyActive',
-  // --- Năm mã phát hành trước registry (detail phẳng, handler BE mirror lên cấp response) ---
+
   upload_too_large: '413',
   rate_limited: '429',
   rate_limiter_unavailable: 'unavailable',
@@ -129,10 +130,7 @@ export const ERROR_CODE_KEYS: Record<string, string> = {
   captcha_unavailable: 'unavailable',
 }
 
-/**
- * metadata của một ApiClientError, đọc cả hai thế hệ payload: `code`/`params` ở cấp response
- * (mọi AppException) và dict phẳng của năm mã cũ, nơi phần còn lại của detail là params.
- */
+/** Read error code and params from current and legacy response shapes. */
 export function readErrorMeta(err: ApiClientError): { code?: string; params?: Record<string, unknown> } {
   const body = err.details as { code?: unknown; params?: unknown; detail?: unknown } | undefined
   if (typeof body?.code === 'string') {
@@ -170,8 +168,7 @@ function safeParams(raw: unknown): Record<string, string | number> | undefined {
   return Object.keys(out).length ? out : undefined
 }
 
-/** Câu theo locale cho một mã lỗi; null khi mã chưa map, từ điển chưa có entry hoặc params
- *  điền không khít placeholder (rơi về đường dịch theo text thay vì in "{max}" thô). */
+/** Câu theo locale cho một mã lỗi; null khi mã chưa map, từ điển chưa có entry hoặc params */
 function codedMessage(code?: string, params?: Record<string, unknown>): string | null {
   if (!code) return null
   const key = ERROR_CODE_KEYS[code]
@@ -338,7 +335,11 @@ export function describeError(
       const systemCeiling = (err.details as { max_request_bytes?: number } | undefined)
         ?.max_request_bytes
       const bytes = planCap ?? systemCeiling
-      if (typeof bytes !== 'number') return { type: 'warning', message: t('errors.413') }
+      if (typeof bytes !== 'number') {
+        // Link vượt trần gói bị preflight chặn bằng 413 + mã LINK_VIDEO_OVER_PLAN_LIMIT: không có
+        // max_bytes ở đây nên nếu bỏ qua `coded` thì câu báo lỗi rơi về errors.413 chung chung.
+        return { type: 'warning', message: coded ?? t('errors.413') }
+      }
       const kind = detail?.category && UPLOAD_KINDS.has(detail.category) ? detail.category : 'other'
       return {
         type: 'warning',
