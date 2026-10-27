@@ -4,6 +4,7 @@ import { Button } from './Button'
 import { SegmentedControl } from './SegmentedControl'
 import { t, getLang } from '../../i18n/langStore'
 import { showToast } from '../feedback/toastStore'
+import { describeError } from '../../utils/apiError'
 import { mediaApi, type UrlInfo } from '../../services/api/mediaApi'
 
 export interface UrlInputFormProps {
@@ -98,8 +99,9 @@ export function UrlInputForm({
     key: string
     status: 'ready' | 'error'
     data: UrlInfo | null
+    /** Lý do fail đã localize (playlist, quá trần gói, riêng tư…) — hiện ngay ở card lỗi. */
+    message?: string
   } | null>(null)
-  const [dismissedPreviewKey, setDismissedPreviewKey] = useState<string | null>(null)
   // Bump khi bấm Thử lại — đưa vào deps để effect preview chạy lại cùng một URL.
   const [previewAttempt, setPreviewAttempt] = useState(0)
   // Ảnh được chọn của bài ảnh TikTok; null = cả bộ (mặc định, và là những gì job cũ gửi).
@@ -108,12 +110,16 @@ export function UrlInputForm({
   const urlValid = isValidForPlatform(url, platform)
   const trimmedUrl = url.trim()
   const fetched = previewFetched && previewFetched.key === trimmedUrl ? previewFetched : null
-  const preview: { status: 'idle' | 'loading' | 'ready' | 'error'; data: UrlInfo | null } =
-    !urlValid || dismissedPreviewKey === trimmedUrl
-      ? { status: 'idle', data: null }
-      : fetched
-        ? { status: fetched.status, data: fetched.data }
-        : { status: 'loading', data: null }
+  const preview: { status: 'idle' | 'loading' | 'ready' | 'error'; data: UrlInfo | null } = !urlValid
+    ? { status: 'idle', data: null }
+    : fetched
+      ? { status: fetched.status, data: fetched.data }
+      : { status: 'loading', data: null }
+
+  // Nút "Bắt đầu tải" chỉ bật khi BE đọc được link: API vừa chặn playlist và video vượt trần gói
+  // TRƯỚC khi ghi job, nên một link chưa kiểm tra (hoặc fail) mà vẫn gửi thì chỉ nhận thêm một
+  // lỗi.
+  const canStart = urlValid && fetched?.status === 'ready'
 
   // Bài ảnh TikTok = khi BE đọc được ảnh thật, không phải khi URL có /photo/: Share của app ra
   // link vt./vm. (BE mở redirect rồi vẫn đủ ảnh) còn link /share/photo/ thì BE lại không có ảnh
@@ -154,9 +160,11 @@ export function UrlInputForm({
       try {
         const data = await mediaApi.getUrlInfo(key, controller.signal)
         setPreviewFetched({ key, status: 'ready', data })
-      } catch {
+      } catch (err) {
         // Chính ta abort vì URL đã đổi: đây không phải lỗi, đừng báo "không xem trước được".
-        if (!controller.signal.aborted) setPreviewFetched({ key, status: 'error', data: null })
+        if (!controller.signal.aborted) {
+          setPreviewFetched({ key, status: 'error', data: null, message: describeError(err).message })
+        }
       }
     }, 700)
     return () => {
@@ -176,6 +184,15 @@ export function UrlInputForm({
 
   const qualityLabel = (option: string) =>
     option === 'best' ? t('urlInput.qualityBest') : AUDIO_QUALITIES.includes(option) ? `${option} kbps` : option
+
+  // Nút X trong ô nhập: quên link hiện tại luôn. Card preview biến mất theo vì derive từ `url`.
+  const clearLink = () => {
+    setUrl('')
+    setValidationError(null)
+    setPickedSlides(null)
+    // Xóa luôn kết quả fetch: dán lại đúng link đó phải chờ kiểm tra lại từ đầu.
+    setPreviewFetched(null)
+  }
 
   const handlePaste = async () => {
     try {
@@ -224,11 +241,15 @@ export function UrlInputForm({
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
-    if (validateUrl(url)) {
-      // Chọn cả bộ thì không gửi `slides`: thiếu key đã là "tất cả" với job cũ và với BE.
-      const slides = showSlidePicker && !allSlidesSelected ? selectedSlides : undefined
-      onSubmit(url.trim(), activeFormat, selectedQuality, slides)
+    if (!validateUrl(url)) return
+    if (!canStart) {
+      // Enter bỏ qua được nút disabled — nói rõ link đang chờ kiểm tra hay đã bị từ chối.
+      setValidationError(fetched?.message ?? t('urlInput.waitingPreview'))
+      return
     }
+    // Chọn cả bộ thì không gửi `slides`: thiếu key đã là "tất cả" với job cũ và với BE.
+    const slides = showSlidePicker && !allSlidesSelected ? selectedSlides : undefined
+    onSubmit(url.trim(), activeFormat, selectedQuality, slides)
   }
 
   const placeholderText =
@@ -249,7 +270,6 @@ export function UrlInputForm({
             onChange={(e) => {
               const value = e.target.value
               setUrl(value)
-              setDismissedPreviewKey(null)
               // Ảnh đã chọn thuộc về bài cũ: dán bài khác phải quay lại "cả bộ".
               setPickedSlides(null)
               // Dán link (nhảy >=4 ký tự cùng lúc) -> báo lỗi sai platform ngay, không đợi bấm nút.
@@ -267,10 +287,7 @@ export function UrlInputForm({
           {url ? (
             <button
               type="button"
-              onClick={() => {
-                setUrl('')
-                setValidationError(null)
-              }}
+              onClick={clearLink}
               className="p-1 text-slate-400 hover:text-slate-200 clip-corner-btn"
               title={t('common.clear')}
             >
@@ -295,7 +312,8 @@ export function UrlInputForm({
             variant="primary"
             size="md"
             isLoading={isLoading}
-            disabled={disabled || !url.trim()}
+            disabled={disabled || !canStart}
+            title={canStart ? undefined : (fetched?.message ?? t('urlInput.waitingPreview'))}
             rightIcon={<ArrowRight className="w-4 h-4" />}
             className="w-full sm:w-auto px-6 py-2.5"
           >
@@ -334,21 +352,13 @@ export function UrlInputForm({
               {previewMetaLine(preview.data)}
             </p>
           </div>
-          <button
-            type="button"
-            onClick={() => {
-              setDismissedPreviewKey(trimmedUrl)
-            }}
-            className="p-1.5 text-slate-400 hover:text-slate-200 clip-corner-btn"
-            title={t('common.clear')}
-          >
-            <X className="w-4 h-4" />
-          </button>
         </div>
       )}
       {preview.status === 'error' && (
         <div className="in-fade flex items-center gap-3 p-2 bg-surface border border-edge clip-corner-card">
-          <p className="flex-1 min-w-0 text-xs text-slate-400">{t('urlInput.previewFailed')}</p>
+          <p className="flex-1 min-w-0 text-xs text-slate-400">
+            {fetched?.message ?? t('urlInput.previewFailed')}
+          </p>
           <Button
             type="button"
             variant="secondary"

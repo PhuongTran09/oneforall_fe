@@ -119,7 +119,7 @@ export function Navbar({ onOpenAuth }: NavbarProps) {
             </div>
           </LocaleLink>
 
-          {{/* Keep desktop navigation at 768px; the full menu does not fit at 740-767px. */}}
+          {/* Keep desktop navigation at 768px; the full menu does not fit at 740-767px. */}
           <nav className="hidden min-[768px]:flex items-center gap-1 lg:gap-1.5" aria-label={t('nav.ariaMain')}>
             {navCategories.map((item) => {
               const isActive = location.pathname.startsWith(withLocale(item.to))

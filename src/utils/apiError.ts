@@ -90,6 +90,7 @@ export const ERROR_CODE_KEYS: Record<string, string> = {
   STREAM_DISABLED: 'streamDisabled',
 
   LINK_PLATFORM_UNSUPPORTED: 'linkSiteUnsupported',
+  LINK_PLAYLIST_UNSUPPORTED: 'linkPlaylistUnsupported',
   LINK_PREVIEW_UNAVAILABLE: 'linkNoPreview',
   LINK_PREVIEW_BUSY: 'linkPreviewBusy',
   LINK_CONTENT_REFUSED: 'linkContentRefused',
@@ -334,7 +335,11 @@ export function describeError(
       const systemCeiling = (err.details as { max_request_bytes?: number } | undefined)
         ?.max_request_bytes
       const bytes = planCap ?? systemCeiling
-      if (typeof bytes !== 'number') return { type: 'warning', message: t('errors.413') }
+      if (typeof bytes !== 'number') {
+        // Link vượt trần gói bị preflight chặn bằng 413 + mã LINK_VIDEO_OVER_PLAN_LIMIT: không có
+        // max_bytes ở đây nên nếu bỏ qua `coded` thì câu báo lỗi rơi về errors.413 chung chung.
+        return { type: 'warning', message: coded ?? t('errors.413') }
+      }
       const kind = detail?.category && UPLOAD_KINDS.has(detail.category) ? detail.category : 'other'
       return {
         type: 'warning',

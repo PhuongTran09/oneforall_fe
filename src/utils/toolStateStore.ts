@@ -1,5 +1,6 @@
 import type { JobPublicResponse } from '../services'
 import type { ParamValues } from '../config/conversionParams'
+import type { Lang } from '../i18n/langStore'
 
 export interface ToolFormState {
   file: File
@@ -17,6 +18,8 @@ export interface ToolSnapshot {
   format: string
   previewUrl: string | null
   errorMessage: string | null
+  /** Ngôn ngữ đã dịch `errorMessage` — chuỗi dịch sẵn không dùng lại cho locale khác được. */
+  errorLang: Lang | null
   faqIndex: number | null
 }
 

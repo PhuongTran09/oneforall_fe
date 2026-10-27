@@ -188,6 +188,7 @@ export const vi = {
     "linkContentRefused": "Nhà cung cấp từ chối cho tải nội dung này (bài riêng tư hoặc cần đăng nhập).",
     "linkDownloadFailed": "Không tải được nội dung từ liên kết này. Hãy thử lại hoặc dùng liên kết khác.",
     "linkNoPreview": "Không xem trước được liên kết này (video riêng tư, đã bị xóa hoặc chặn theo độ tuổi).",
+    "linkPlaylistUnsupported": "Đây là playlist — mỗi lần chỉ dán liên kết của một video.",
     "linkPreviewBusy": "Dịch vụ xem trước liên kết đang bận, thử lại sau ít phút.",
     "linkSiteUnsupported": "Công cụ chỉ xem trước được liên kết YouTube hoặc TikTok.",
     "network": "Không gửi được yêu cầu — kiểm tra kết nối mạng của thiết bị.",
@@ -650,7 +651,7 @@ export const vi = {
     "placeholderGeneric": "Dán đường dẫn URL cần xử lý...",
     "placeholderTiktok": "Dán liên kết video TikTok tại đây (ví dụ: https://www.tiktok.com/@user/video/...)",
     "placeholderYoutube": "Dán liên kết video YouTube tại đây (ví dụ: https://www.youtube.com/watch?v=...)",
-    "previewFailed": "Không xem trước được liên kết này — bạn vẫn có thể bắt đầu tải.",
+    "previewFailed": "Không xem trước được liên kết này — hãy bấm Thử lại.",
     "quality": "Chất lượng:",
     "qualityBest": "Tốt nhất",
     "retry": "Thử lại",
@@ -659,6 +660,7 @@ export const vi = {
     "startDownload": "Bắt đầu tải",
     "tiktokOnly": "Vui lòng nhập liên kết video hợp lệ từ TikTok (tiktok.com).",
     "viewsLabel": "lượt xem",
+    "waitingPreview": "Đang kiểm tra liên kết, vui lòng đợi…",
     "youtubeOnly": "Vui lòng nhập liên kết hợp lệ từ YouTube (youtube.com hoặc youtu.be)."
   },
   "ws": {
