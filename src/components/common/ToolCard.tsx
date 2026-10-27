@@ -51,15 +51,15 @@ export function ToolCard({ tool }: ToolCardProps) {
   return (
     <LocaleLink
       to={tool.slug}
-      className="group flex flex-col justify-between p-5 sm:p-6 bg-surface border border-[rgba(255,59,48,0.22)] hover:border-[rgba(255,59,48,0.55)] card-3d card-tilt clip-corner-card"
+      className="group flex flex-col justify-between p-5 sm:p-6 bg-surface border border-[rgba(255,59,48,0.22)] hover:border-[rgba(255,59,48,0.6)] card-3d card-tilt card-hover-glow clip-corner-card"
     >
       <div>
         {/* Top Header */}
         <div className="flex items-center justify-between gap-2 mb-3.5">
-          <div className="w-10 h-10 bg-page border border-edge flex items-center justify-center group-hover:scale-105 group-hover:bg-brand/10 transition-all">
+          <div className="w-10 h-10 bg-page border border-edge flex items-center justify-center group-hover:scale-110 group-hover:rotate-2 group-hover:border-brand/50 group-hover:bg-brand/10 group-hover:shadow-[0_0_14px_rgba(255,59,48,0.25)] transition-all duration-300">
             {getToolIcon(tool.category, tool.slug)}
           </div>
-          <span className="text-[11px] font-medium font-mono px-2 py-0.5 bg-elev text-slate-300 group-hover:bg-brand/10 group-hover:text-brand transition-colors">
+          <span className="text-[11px] font-medium font-mono px-2 py-0.5 bg-elev text-slate-300 border border-transparent group-hover:border-brand/30 group-hover:bg-brand/10 group-hover:text-brand transition-all">
             {localized.badge}
           </span>
         </div>
@@ -81,7 +81,7 @@ export function ToolCard({ tool }: ToolCardProps) {
           {tool.outputFormats.slice(0, 3).map((fmt) => (
             <span
               key={fmt}
-              className="text-[10px] font-mono px-1.5 py-0.5 bg-elev text-slate-400 uppercase border border-edge"
+              className="text-[10px] font-mono px-1.5 py-0.5 bg-elev text-slate-400 uppercase border border-edge group-hover:border-brand/30 transition-colors"
             >
               .{fmt}
             </span>
@@ -91,7 +91,7 @@ export function ToolCard({ tool }: ToolCardProps) {
           )}
         </div>
 
-        <span className="inline-flex items-center gap-1 text-xs font-semibold text-brand group-hover:translate-x-1 transition-transform">
+        <span className="inline-flex items-center gap-1 text-xs font-semibold text-brand group-hover:translate-x-1.5 transition-transform">
           <span>{t('common.useNow')}</span>
           <ArrowRight className="w-3.5 h-3.5" />
         </span>

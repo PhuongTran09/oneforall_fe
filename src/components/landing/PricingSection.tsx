@@ -73,12 +73,12 @@ export function PricingSection({ onSelectFree, onSelectPremium }: PricingSection
               bordered={false}
               className={`flex flex-col justify-between p-2 sm:p-4 ${
                 plan.isPopular
-                  ? 'border border-[rgba(255,59,48,0.55)] relative overflow-hidden card-tilt'
-                  : 'border border-[rgba(255,59,48,0.22)] card-3d-dim'
+                  ? 'border border-[rgba(255,59,48,0.65)] relative overflow-hidden card-tilt card-hover-glow'
+                  : 'border border-[rgba(255,59,48,0.22)] card-3d-dim card-hover-glow'
               }`}
             >
               {plan.isPopular && (
-                <div className="absolute top-0 right-0 bg-brand-gradient text-white text-[10px] font-bold px-3 py-1 tracking-wider uppercase flex items-center gap-1 border-l border-b border-[rgba(255,59,48,0.4)]">
+                <div className="absolute top-0 right-0 bg-brand-gradient text-white text-[10px] font-bold px-3 py-1 tracking-wider uppercase flex items-center gap-1 border-l border-b border-[rgba(255,59,48,0.4)] shadow-[0_0_12px_rgba(255,59,48,0.4)]">
                   <Sparkles className="w-3 h-3" />
                   {plan.badge}
                 </div>
@@ -128,6 +128,7 @@ export function PricingSection({ onSelectFree, onSelectPremium }: PricingSection
                   fullWidth
                   onClick={plan.onAction}
                   rightIcon={<ArrowRight className="w-4 h-4" />}
+                  className={plan.isPopular ? 'btn-shimmer shadow-[0_0_18px_rgba(255,59,48,0.35)]' : ''}
                 >
                   {plan.ctaText}
                 </Button>

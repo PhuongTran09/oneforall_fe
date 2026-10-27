@@ -33,7 +33,7 @@ export function DownloadResult({
   }
 
   return (
-    <div className="w-full max-w-3xl mx-auto p-6 sm:p-8 bg-surface border border-[rgba(255,59,48,0.30)] space-y-6 in-up clip-corner-lg card-3d card-3d-dim">
+    <div className="w-full max-w-3xl mx-auto p-6 sm:p-8 bg-surface/90 border border-[rgba(255,59,48,0.35)] space-y-6 in-up clip-corner-lg card-3d card-3d-dim card-hover-glow">
       {/* Header status */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-edge/60">
         <div className="flex items-center gap-3.5">
@@ -96,7 +96,7 @@ export function DownloadResult({
             size="md"
             onClick={handleDownload}
             leftIcon={<Download className="w-4 h-4" />}
-            className="flex-1 sm:flex-initial"
+            className="flex-1 sm:flex-initial btn-shimmer btn-glow-pulse shadow-[0_0_20px_rgba(255,59,48,0.35)]"
           >
             {t('download.downloadNow')}
           </Button>

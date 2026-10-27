@@ -144,7 +144,7 @@ export const en: Dict = {
     "completedJobsHint": "Files processed successfully to date",
     "error": "Live stats are unavailable right now. Please try again.",
     "loading": "Loading live stats...",
-    "privacyNote": "System-wide totals only — no personal data is stored or shown.",
+    "privacyNote": "System-wide totals only.",
     "retry": "Try again",
     "title": "Live stats"
   },

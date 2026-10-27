@@ -261,7 +261,7 @@ export function UrlInputForm({
 
   return (
     <form onSubmit={handleSubmit} className="w-full max-w-3xl mx-auto space-y-4">
-      <div className="relative flex flex-col sm:flex-row items-stretch sm:items-center bg-surface border-2 border-[rgba(255,59,48,0.30)] hover:border-[rgba(255,59,48,0.55)] focus-within:border-[rgba(255,59,48,0.55)] p-1.5 sm:p-2 transition-all clip-corner-lg input-3d">
+      <div className="relative flex flex-col sm:flex-row items-stretch sm:items-center bg-surface/90 border-2 border-[rgba(255,59,48,0.30)] hover:border-[rgba(255,59,48,0.65)] focus-within:border-brand p-1.5 sm:p-2 transition-all clip-corner-lg input-3d card-hover-glow">
         <div className="flex items-center flex-1 px-3 py-2 sm:py-1">
           <Link2 className="w-5 h-5 text-slate-400 shrink-0 mr-2.5" />
           <input
@@ -315,7 +315,7 @@ export function UrlInputForm({
             disabled={disabled || !canStart}
             title={canStart ? undefined : (fetched?.message ?? t('urlInput.waitingPreview'))}
             rightIcon={<ArrowRight className="w-4 h-4" />}
-            className="w-full sm:w-auto px-6 py-2.5"
+            className="w-full sm:w-auto px-6 py-2.5 btn-shimmer shadow-[0_0_18px_rgba(255,59,48,0.25)]"
           >
             {t('urlInput.startDownload')}
           </Button>

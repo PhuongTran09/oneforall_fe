@@ -48,11 +48,12 @@ export function ImageWorkspace() {
   }
 
   return (
-    <div className="page-container">
-      <Card className="p-6 sm:p-8">
+    <div className="page-container relative">
+      <div className="hero-ambient-glow" aria-hidden="true" />
+      <Card className="p-6 sm:p-8 card-hover-glow relative z-10">
         <CardHeader className="p-0 pb-6 border-b border-edge">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-brand/10 border border-[rgba(255,59,48,0.30)] flex items-center justify-center text-brand clip-corner-btn">
+            <div className="w-10 h-10 bg-brand/10 border border-[rgba(255,59,48,0.30)] flex items-center justify-center text-brand clip-corner-btn shadow-[0_0_12px_rgba(255,59,48,0.2)]">
               <ImageIcon className="w-5 h-5" />
             </div>
             <div>
@@ -68,7 +69,7 @@ export function ImageWorkspace() {
         <CardContent className="p-0 pt-6 space-y-6">
           <label
             htmlFor="image-file-input"
-            className="flex flex-col items-center justify-center border-2 border-dashed border-[rgba(255,59,48,0.30)] hover:border-[rgba(255,59,48,0.60)] p-8 sm:p-12 text-center cursor-pointer bg-page hover:bg-brand/5 transition-all group clip-corner-lg input-3d"
+            className="flex flex-col items-center justify-center border-2 border-dashed border-[rgba(255,59,48,0.30)] hover:border-[rgba(255,59,48,0.70)] p-8 sm:p-12 text-center cursor-pointer bg-page hover:bg-brand/5 transition-all group clip-corner-lg input-3d card-hover-glow"
           >
             <input
               id="image-file-input"
@@ -77,7 +78,7 @@ export function ImageWorkspace() {
               className="hidden"
               onChange={handleFileChange}
             />
-            <div className="w-14 h-14 bg-brand/10 border border-[rgba(255,59,48,0.25)] flex items-center justify-center text-brand group-hover:scale-110 transition-transform mb-3 clip-corner-card">
+            <div className="w-14 h-14 bg-brand/10 border border-[rgba(255,59,48,0.25)] flex items-center justify-center text-brand animate-float-gentle group-hover:scale-110 group-hover:border-brand/60 group-hover:shadow-[0_0_16px_rgba(255,59,48,0.3)] transition-all mb-3 clip-corner-card">
               <UploadCloud className="w-7 h-7" />
             </div>
             {selectedFile ? (
@@ -105,6 +106,7 @@ export function ImageWorkspace() {
               isLoading={isLoading}
               onClick={handleProcess}
               rightIcon={<ArrowRight className="w-4 h-4" />}
+              className="btn-shimmer shadow-[0_0_16px_rgba(255,59,48,0.3)]"
             >
               {t('ws.imageStart')}
             </Button>

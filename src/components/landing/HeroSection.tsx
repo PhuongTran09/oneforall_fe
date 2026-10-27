@@ -19,6 +19,10 @@ export function HeroSection({ onTryFree }: HeroSectionProps) {
 
   return (
     <section className="relative pt-10 pb-16 sm:pt-16 sm:pb-24 overflow-hidden bg-page">
+      {/* Background Cyber Grid & Radiant Ambient Glow */}
+      <div className="absolute inset-0 bg-grid-cyber pointer-events-none" aria-hidden="true" />
+      <div className="hero-ambient-glow" aria-hidden="true" />
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center max-w-3xl mx-auto space-y-6">
           {/* Release Badge */}
@@ -30,7 +34,7 @@ export function HeroSection({ onTryFree }: HeroSectionProps) {
           {/* Main Title */}
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-ink tracking-tight leading-[1.15] heading-in">
             {t('hero.titlePre')}{' '}
-            <span className="text-brand-gradient text-shine">
+            <span className="text-brand-gradient text-shine drop-shadow-[0_0_24px_rgba(255,59,48,0.35)]">
               {t('hero.titleHighlight')}
             </span>{' '}
             {t('hero.titlePost')}
@@ -48,10 +52,10 @@ export function HeroSection({ onTryFree }: HeroSectionProps) {
               <LocaleLink
                 key={tool.to}
                 to={tool.to}
-                className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold bg-surface text-slate-200 hover:text-brand"
+                className="group inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold bg-surface/90 hover:bg-surface border border-edge/80 hover:border-brand/60 text-slate-200 hover:text-brand clip-corner-btn transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_0_14px_rgba(255,59,48,0.22)]"
               >
                 <span>{tool.label}</span>
-                <span className="text-[10px] px-1.5 py-0.5 bg-brand/10 text-brand font-bold">
+                <span className="text-[10px] px-1.5 py-0.5 bg-brand/10 text-brand font-bold border border-brand/20 group-hover:bg-brand group-hover:text-white transition-all">
                   {tool.badge}
                 </span>
               </LocaleLink>
@@ -59,7 +63,7 @@ export function HeroSection({ onTryFree }: HeroSectionProps) {
           </div>
 
           {/* Feature Highlights Pills */}
-          <div className="pt-6 flex flex-wrap items-center justify-center gap-6 text-xs sm:text-sm text-slate-400">
+          <div className="pt-4 flex flex-wrap items-center justify-center gap-6 text-xs sm:text-sm text-slate-400">
             <div className="flex items-center gap-2">
               <Zap className="w-4 h-4 text-amber-500" />
               <span>{t('hero.pillInstant')}</span>
@@ -80,8 +84,8 @@ export function HeroSection({ onTryFree }: HeroSectionProps) {
               <Button
                 variant="primary"
                 size="lg"
-                rightIcon={<ArrowRight className="w-5 h-5" />}
-                className="w-full sm:w-auto"
+                rightIcon={<ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />}
+                className="w-full sm:w-auto btn-shimmer btn-glow-pulse group"
               >
                 {t('hero.exploreCta')}
               </Button>
@@ -91,8 +95,8 @@ export function HeroSection({ onTryFree }: HeroSectionProps) {
                 variant="secondary"
                 size="lg"
                 onClick={onTryFree}
-                leftIcon={<Layers className="w-4 h-4" />}
-                className="w-full sm:w-auto"
+                leftIcon={<Layers className="w-4 h-4 text-brand" />}
+                className="w-full sm:w-auto hover:border-brand/60 hover:shadow-[0_0_16px_rgba(255,59,48,0.2)] transition-all"
               >
                 {t('hero.proAccount')}
               </Button>

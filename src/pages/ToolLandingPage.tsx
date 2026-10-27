@@ -446,10 +446,14 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
 
       {/* 2. Hero Interactive Workspace */}
       <section className="relative pt-6 pb-14 sm:pb-20 overflow-hidden">
+        {/* Background Cyber Grid & Radiant Ambient Glow */}
+        <div className="absolute inset-0 bg-grid-cyber pointer-events-none" aria-hidden="true" />
+        <div className="hero-ambient-glow" aria-hidden="true" />
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center max-w-3xl mx-auto space-y-4 mb-8 sm:mb-10">
             {/* Badge */}
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold bg-surface border border-[rgba(255,59,48,0.35)] text-brand badge-angular">
+            <div className="inline-flex items-center gap-1.5 px-3.5 py-1 text-xs font-bold bg-surface/90 border border-brand/40 text-brand badge-angular badge-radar shadow-[0_0_12px_rgba(255,59,48,0.2)]">
               <Zap className="w-3.5 h-3.5" />
               <span>{tool.badge}</span>
             </div>

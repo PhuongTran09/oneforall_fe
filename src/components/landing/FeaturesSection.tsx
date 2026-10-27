@@ -47,9 +47,9 @@ export function FeaturesSection() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
           {features.map((feat) => (
-            <Card key={feat.title} className="p-2 sm:p-4 card-tilt">
+            <Card key={feat.title} className="p-2 sm:p-4 card-tilt card-hover-glow group">
               <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                <div className="w-12 h-12 flex items-center justify-center shrink-0 bg-page border border-edge clip-corner-btn">
+                <div className="w-12 h-12 flex items-center justify-center shrink-0 bg-page border border-edge clip-corner-btn group-hover:scale-110 group-hover:rotate-2 group-hover:border-brand/50 group-hover:bg-brand/10 group-hover:shadow-[0_0_14px_rgba(255,59,48,0.25)] transition-all duration-300">
                   {feat.icon}
                 </div>
                 <div className="space-y-1">
