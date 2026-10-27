@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { CheckCircle2, RefreshCw, Users, ShieldCheck, Activity, Zap } from 'lucide-react'
+import { CheckCircle2, RefreshCw, Users, ShieldCheck, Activity } from 'lucide-react'
 import { Button } from '../common/Button'
 import { useI18n } from '../../i18n/langStore'
 import { watchLiveStats } from '../../services/api/statsApi'
