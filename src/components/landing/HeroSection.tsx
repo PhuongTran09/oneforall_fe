@@ -1,3 +1,4 @@
+import { Fragment, useState } from 'react'
 import { ArrowRight, Sparkles, Zap, Shield, FileCheck, Layers } from 'lucide-react'
 import { Button } from '../common/Button'
 import { PublicLiveStats } from './PublicLiveStats'
@@ -8,7 +9,22 @@ export interface HeroSectionProps {
   onTryFree?: () => void
 }
 
+const HERO_TAGLINE_COUNT = 4
+
 export function HeroSection({ onTryFree }: HeroSectionProps) {
+  // Một tagline ngẫu nhiên cho mỗi lần tải trang; index sống trong state nên đổi VI↔EN
+  // giữa chừng vẫn giữ nguyên câu, không nhảy chữ giữa lúc người dùng đang đọc.
+  const [taglineIndex] = useState(() => Math.floor(Math.random() * HERO_TAGLINE_COUNT))
+
+  const headingWords = [
+    ...t('hero.titlePre')
+      .split(' ')
+      .map((word) => ({ word, highlight: false })),
+    ...t(`hero.tagline${taglineIndex}`)
+      .split(' ')
+      .map((word) => ({ word, highlight: true })),
+  ]
+
   const quickTools = [
     { label: 'YouTube to MP4', to: '/youtube-to-mp4', badge: 'Hot' },
     { label: 'TikTok to MP4', to: '/tiktok-to-mp4', badge: 'Fast' },
@@ -31,13 +47,18 @@ export function HeroSection({ onTryFree }: HeroSectionProps) {
             <span>{t('hero.badge')}</span>
           </div>
 
-          {/* Main Title */}
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-ink tracking-tight leading-[1.15] heading-in">
-            {t('hero.titlePre')}{' '}
-            <span className="text-brand-gradient text-shine drop-shadow-[0_0_24px_rgba(255,59,48,0.35)]">
-              {t('hero.titleHighlight')}
-            </span>{' '}
-            {t('hero.titlePost')}
+          {/* Main Title: từng từ dựng lên so le, cụm tagline chảy gradient + glow nhịp */}
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-ink tracking-tight leading-[1.15]">
+            {headingWords.map(({ word, highlight }, i) => (
+              <Fragment key={`${word}-${i}`}>
+                <span
+                  className={highlight ? 'hero-word hero-word-hl text-brand-gradient' : 'hero-word'}
+                  style={{ animationDelay: `${i * 55}ms` }}
+                >
+                  {word}
+                </span>{' '}
+              </Fragment>
+            ))}
           </h1>
 
           {/* Description */}

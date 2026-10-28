@@ -12,6 +12,7 @@ type ToolTextOverride = Partial<
     | 'subtitle'
     | 'badge'
     | 'supportedFormatsDesc'
+    | 'introParagraphs'
     | 'howItWorksSteps'
     | 'features'
     | 'faqList'

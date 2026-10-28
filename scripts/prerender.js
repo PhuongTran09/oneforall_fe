@@ -132,6 +132,18 @@ function parseObjects(arraySrc, fields) {
   }
 }
 
+function parseStringArray(arraySrc) {
+  const out = []
+  let pos = 0
+  for (;;) {
+    const m = /['"`]/.exec(arraySrc.slice(pos))
+    if (!m) return out
+    const [val, end] = readString(arraySrc, pos + m.index)
+    out.push(val)
+    pos = end
+  }
+}
+
 function parseTools(src) {
   const tools = {}
   const re = /^ {2}'(\/[a-z0-9-]+)':\s*\{/gm
@@ -148,6 +160,7 @@ function parseTools(src) {
       h1: s('h1'),
       subtitle: s('subtitle'),
       supportedFormatsDesc: s('supportedFormatsDesc'),
+      introParagraphs: parseStringArray(getArray(body, 'introParagraphs')),
       steps: parseObjects(getArray(body, 'howItWorksSteps'), ['step', 'title', 'desc']),
       features: parseObjects(getArray(body, 'features'), ['title', 'desc']),
       faqList: parseObjects(getArray(body, 'faqList'), ['q', 'a']),
@@ -311,6 +324,7 @@ function landingBody(tool, tools) {
   <header>
     <h1>${esc(tool.h1)}</h1>
     <p>${esc(tool.subtitle)}</p>
+    ${(tool.introParagraphs ?? []).map((p) => `<p>${esc(p)}</p>`).join('')}
   </header>
   ${tool.steps.length ? `<section><h2>Hướng dẫn sử dụng ${esc(tool.badge)}</h2><div class="grid">${steps}</div></section>` : ''}
   ${tool.features.length ? `<section><h2>Tính năng nổi bật</h2><div class="grid">${features}</div></section>` : ''}
@@ -342,7 +356,7 @@ function landingBodyEnglish(tool, tools) {
   return `<div id="root">${CSS}
 <div class="pr prerendered-content">
   <nav aria-label="Breadcrumb"><a href="/en/">Home</a> &rsaquo; <span>${esc(tool.badge)}</span></nav>
-  <header><h1>${esc(tool.h1)}</h1><p>${esc(tool.subtitle)}</p></header>
+  <header><h1>${esc(tool.h1)}</h1><p>${esc(tool.subtitle)}</p>${(tool.introParagraphs ?? []).map((p) => `<p>${esc(p)}</p>`).join('')}</header>
   ${tool.steps.length ? `<section><h2>How to use ${esc(tool.badge)}</h2><div class="grid">${steps}</div></section>` : ''}
   ${tool.features.length ? `<section><h2>Key features</h2><div class="grid">${features}</div></section>` : ''}
   ${tool.supportedFormatsDesc ? `<section><h2>Supported formats</h2><p>${esc(tool.supportedFormatsDesc)}</p></section>` : ''}
@@ -613,6 +627,12 @@ export function runPrerender() {
   const unknownEnglish = Object.keys(englishOverrides).filter((slug) => !tools[slug])
   if (missingEnglish.length || unknownEnglish.length) {
     throw new Error(`Locale route mismatch. Missing EN: ${missingEnglish.join(', ') || 'none'}; unknown EN: ${unknownEnglish.join(', ') || 'none'}`)
+  }
+
+  // Mảng text VI được EN ghi đè nguyên khối, nên EN thiếu mảng nào là trang /en lãnh đúng tiếng Việt.
+  const arrayLeaks = slugs.filter((slug) => tools[slug].introParagraphs.length > 0 && !Array.isArray(englishOverrides[slug].introParagraphs))
+  if (arrayLeaks.length) {
+    throw new Error(`tools.en.json thiếu introParagraphs cho: ${arrayLeaks.join(', ')}`)
   }
 
   const { errors, warns } = validate(tools, src)

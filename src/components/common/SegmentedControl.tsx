@@ -6,9 +6,12 @@ export interface SegmentedControlProps {
   onChange: (option: string) => void
   ariaLabel: string
   labelFor?: (option: string) => string
+  /** 'sm' = cao 30px để đứng cạnh ThemeToggle trên navbar mà không vỡ nhịp hàng. */
+  size?: 'md' | 'sm'
 }
 
-export function SegmentedControl({ options, value, onChange, ariaLabel, labelFor }: SegmentedControlProps) {
+export function SegmentedControl({ options, value, onChange, ariaLabel, labelFor, size = 'md' }: SegmentedControlProps) {
+  const compact = size === 'sm'
   const groupRef = useRef<HTMLDivElement>(null)
 
   const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
@@ -31,7 +34,9 @@ export function SegmentedControl({ options, value, onChange, ariaLabel, labelFor
       role="radiogroup"
       aria-label={ariaLabel}
       onKeyDown={handleKeyDown}
-      className="flex h-10 max-w-full items-center gap-[3px] overflow-x-auto scrollbar-none border border-edge bg-surface p-[3px] clip-corner-btn"
+      className={`flex max-w-full items-center gap-[3px] overflow-x-auto scrollbar-none border border-edge bg-surface p-[3px] clip-corner-btn ${
+        compact ? 'h-[30px]' : 'h-10'
+      }`}
     >
       {/* shrink-0 mỗi nút: 11 định dạng trong panel hẹp thì flex-1 + overflow-hidden cắt nhãn */}
       {options.map((option) => (
@@ -42,7 +47,9 @@ export function SegmentedControl({ options, value, onChange, ariaLabel, labelFor
           aria-checked={value === option}
           tabIndex={value === option ? 0 : -1}
           onClick={() => onChange(option)}
-          className={`h-full flex-1 shrink-0 basis-auto cursor-pointer whitespace-nowrap px-3 font-mono text-xs font-semibold uppercase clip-corner-btn transition-all duration-[180ms] focus-visible:outline-none focus-visible:shadow-[inset_0_0_0_2px_#ff3b30] ${
+          className={`h-full flex-1 shrink-0 basis-auto cursor-pointer whitespace-nowrap font-mono font-semibold uppercase clip-corner-btn transition-all duration-[180ms] focus-visible:outline-none focus-visible:shadow-[inset_0_0_0_2px_#ff3b30] ${
+            compact ? 'px-2 text-[11px]' : 'px-3 text-xs'
+          } ${
             value === option
               ? 'bg-brand-gradient text-white'
               : 'text-slate-300 hover:bg-brand/10 hover:text-ink'
