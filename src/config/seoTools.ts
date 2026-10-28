@@ -22,7 +22,7 @@ export interface ToolConfig {
   metaDescription: string
   h1: string
   subtitle: string
-  /** Khối text SEO dưới ô nhập liệu; bản EN trong tools.en.json bắt buộc có nếu bản VI có. */
+  /** Text SEO dưới ô nhập; EN bắt buộc có nếu VI có. */
   introParagraphs?: string[]
   inputType: 'url' | 'file'
   urlPlatform?: 'youtube' | 'tiktok'

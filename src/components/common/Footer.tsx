@@ -165,8 +165,7 @@ export function Footer() {
             </div>
             <p>{t('footer.copyright', { year: currentYear })}</p>
           </div>
-          {/* Band 768–1279: navbar không đủ chỗ cho LanguageToggle (xem ghi chú trong Navbar),
-              dropdown mobile thì ẩn từ 768 → footer gánh khoảng này. */}
+          {/* 768–1279: navbar chưa đủ chỗ, xem ghi chú ở Navbar */}
           <div className="hidden min-[768px]:flex xl:hidden items-center gap-1 text-slate-500">
             <LanguageToggle />
           </div>

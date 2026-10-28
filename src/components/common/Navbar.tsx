@@ -144,8 +144,7 @@ export function Navbar({ onOpenAuth }: NavbarProps) {
 
           {/* Right Action Buttons */}
           <div className="hidden min-[768px]:flex items-center gap-3">
-            {/* Dưới xl thì nhãn tab đã phải tự xuống dòng; thêm 69px nữa là "Xoá nền ảnh"
-                thành 3 dòng tràn khỏi header cao 64px → bộ đổi ngôn ngữ chỉ lên navbar từ xl. */}
+            {/* <xl: thêm 69px là nhãn tab "Xoá nền ảnh" tràn khỏi header cao 64px */}
             <span className="hidden xl:inline-flex">
               <LanguageToggle />
             </span>
@@ -256,8 +255,6 @@ export function Navbar({ onOpenAuth }: NavbarProps) {
         {/* Mobile Dropdown Menu */}
         {mobileMenuOpen && (
           <div className="min-[768px]:hidden border-b border-edge bg-page px-4 pt-3 pb-6 in-up">
-            {/* Hàng utility: trên desktop LanguageToggle đứng cạnh ThemeToggle ở thanh nav,
-                còn ở đây không đủ chỗ nên xuống đầu dropdown. */}
             <div className="flex items-center justify-between gap-3 pb-3 mb-1 border-b border-edge/60">
               <span className="text-sm font-medium text-soft">{t('common.language')}</span>
               <LanguageToggle />

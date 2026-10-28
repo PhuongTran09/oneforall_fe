@@ -12,8 +12,7 @@ export interface HeroSectionProps {
 const HERO_TAGLINE_COUNT = 4
 
 export function HeroSection({ onTryFree }: HeroSectionProps) {
-  // Một tagline ngẫu nhiên cho mỗi lần tải trang; index sống trong state nên đổi VI↔EN
-  // giữa chừng vẫn giữ nguyên câu, không nhảy chữ giữa lúc người dùng đang đọc.
+  // index trong state để đổi VI↔EN không làm nhảy tagline giữa lúc đang đọc
   const [taglineIndex] = useState(() => Math.floor(Math.random() * HERO_TAGLINE_COUNT))
 
   const headingWords = [
@@ -47,7 +46,7 @@ export function HeroSection({ onTryFree }: HeroSectionProps) {
             <span>{t('hero.badge')}</span>
           </div>
 
-          {/* Main Title: từng từ dựng lên so le, cụm tagline chảy gradient + glow nhịp */}
+          {/* Main Title */}
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-ink tracking-tight leading-[1.15]">
             {headingWords.map(({ word, highlight }, i) => (
               <Fragment key={`${word}-${i}`}>

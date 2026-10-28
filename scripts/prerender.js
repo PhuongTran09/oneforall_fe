@@ -629,7 +629,7 @@ export function runPrerender() {
     throw new Error(`Locale route mismatch. Missing EN: ${missingEnglish.join(', ') || 'none'}; unknown EN: ${unknownEnglish.join(', ') || 'none'}`)
   }
 
-  // Mảng text VI được EN ghi đè nguyên khối, nên EN thiếu mảng nào là trang /en lãnh đúng tiếng Việt.
+  // EN ghi đè nguyên khối → thiếu mảng nào thì /en lộ text VI mảng đó
   const arrayLeaks = slugs.filter((slug) => tools[slug].introParagraphs.length > 0 && !Array.isArray(englishOverrides[slug].introParagraphs))
   if (arrayLeaks.length) {
     throw new Error(`tools.en.json thiếu introParagraphs cho: ${arrayLeaks.join(', ')}`)

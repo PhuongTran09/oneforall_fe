@@ -6,7 +6,7 @@ export interface SegmentedControlProps {
   onChange: (option: string) => void
   ariaLabel: string
   labelFor?: (option: string) => string
-  /** 'sm' = cao 30px để đứng cạnh ThemeToggle trên navbar mà không vỡ nhịp hàng. */
+  /** 'sm' = cao 30px, khớp ThemeToggle. */
   size?: 'md' | 'sm'
 }
 
