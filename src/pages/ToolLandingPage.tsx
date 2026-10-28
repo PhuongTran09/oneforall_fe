@@ -536,8 +536,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
               </div>
             )}
 
-            {/* Text SEO dưới ô nhập: câu "ô bên trên" chỉ đúng khi form còn hiển thị, nên khối này
-                gắn với điều kiện của form chứ không hiện trên trạng thái kết quả. */}
+            {/* "ô bên trên" trong text SEO chỉ đúng khi form còn hiển thị */}
             {!downloadUrl && tool.introParagraphs?.length ? (
               <div className="mt-8 space-y-3">
                 {tool.introParagraphs.map((para) => (

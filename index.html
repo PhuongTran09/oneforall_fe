@@ -7,12 +7,6 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0"
     />
-
-    <!-- Khung hình đầu tiên (trước khi bundle 850KB chạy xong) phải là loader, không phải
-         khối text SEO mà prerender.js nhét vào #root — khối đó tô màu cho nền trắng nên
-         trên nền tối thành chữ đen trên đen. Script này chạy trước paint: gắn .js để ẩn
-         nó đi (crawler không chạy JS vẫn đọc được full text), và gắn data-theme sớm để
-         người dùng nền sáng không bị loá một nhịp tối. -->
     <script>
       (function () {
         var root = document.documentElement
@@ -22,9 +16,6 @@
         } catch (e) {
           root.dataset.theme = 'dark'
         }
-        // main.tsx gỡ loader khi React mount. Nếu bundle không chạy được (ad-block,
-        // mạng đứt) thì gỡ sau 10s và bỏ luôn .js để khối text SEO hiện lại — thà đọc
-        // được tạm còn hơn vòng quay vô hạn.
         setTimeout(function () {
           var loader = document.getElementById('boot-loader')
           if (!loader) return
@@ -33,10 +24,6 @@
         }, 10000)
       })()
     </script>
-
-    <!-- Màu tự khai tại đây thay vì đọc var(--bg-base) của index.css: ở dev thì CSS
-         app chưa kịp nạp lúc loader hiện, còn đọc var() fallback sẽ luôn ra nền tối.
-         Script gắn data-theme ở trên chạy trước paint nên chọn đúng nhánh sáng/tối. -->
     <style>
       .js .prerendered-content{display:none}
       #boot-loader{--bl-bg:#0a0a0f;--bl-surface:#14141b;--bl-elev:#1a1a24;--bl-grad-1:#ff3b30;--bl-grad-3:#ff8a65;position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;padding:24px;background:var(--bl-bg)}
@@ -60,7 +47,7 @@
       "@context": "https://schema.org",
       "@type": "WebSite",
       "name": "One ForAll",
-      "alternateName": ["OneForAll", "oneforall.io.vn"],
+      "alternateName": ["One ForAll", "oneforall.io.vn"],
       "url": "https://oneforall.io.vn/"
     }
     </script>

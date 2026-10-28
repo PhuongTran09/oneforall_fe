@@ -349,8 +349,7 @@ html[data-theme='light'] {
   animation: heading-in 500ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
 }
 
-/* Hero: mỗi từ là một inline-block để dựng lên độc lập; animation-delay đặt inline trên
-   từng span nên cả ba animation dưới đây khởi chạy so le — thành hiệu ứng gợn sóng. */
+/* Hero: mỗi từ một inline-block, animation-delay đặt inline nên các từ dựng lên so le */
 @keyframes word-in {
   0%   { opacity: 0; translate: 0 14px; scale: 0.94; }
   100% { opacity: 1; translate: 0 0;    scale: 1;    }
@@ -361,8 +360,6 @@ html[data-theme='light'] {
   animation: word-in 560ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
 }
 
-/* Gradient chạy tới lui (không loop một chiều để tránh cú nhảy khung cuối) + glow nhịp.
-   drop-shadow ăn theo hình chữ đã clip nên quả là màu gradient, bóng là màu brand. */
 @keyframes gradient-flow {
   0%, 100% { background-position: 0% center; }
   50%      { background-position: 100% center; }
@@ -377,9 +374,7 @@ html[data-theme='light'] {
   --hero-glow-lo: 0.22;
   --hero-glow-hi: 0.5;
   background-size: 200% auto;
-  /* background-clip:text chỉ vẽ gradient trong padding box, còn line-height 1.15 của h1
-     ngắn hơn đuôi chữ (g, y) và dấu tiếng Việt (ễ, ố). Đệm ra rồi trừ margin trả chỗ
-     cũ nên ô vẽ rộng hơn mà nhịp dòng không đổi. */
+  /* background-clip:text chỉ vẽ trong padding box; margin âm giữ nhịp dòng */
   padding-block: 0.16em 0.22em;
   margin-block: -0.16em -0.22em;
   animation:
@@ -848,7 +843,6 @@ html[data-theme='light'] .card-hover-glow:hover {
   [data-reveal].is-in { animation: none; }
   .acc,
   .acc[data-open='true'] { transition: none; }
-  /* Hero: chữ hiện tức thì, gradient đứng yên, không glow */
   .hero-word,
   .hero-word-hl { animation: none; opacity: 1; translate: none; scale: none; filter: none; }
   .hero-word-hl { background-size: auto; }
