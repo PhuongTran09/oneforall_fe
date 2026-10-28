@@ -4,6 +4,7 @@ import {
   HomePage,
   ToolLandingPage,
   NotFoundPage,
+  CaseOpeningPage,
   ProfilePage,
   HistoryPage,
   ResetPasswordPage,
@@ -45,6 +46,9 @@ function LocaleRoutes() {
         path="video"
         element={<ToolLandingPage configOverride={SEO_TOOLS['/video-converter']} />}
       />
+
+      {/* Trang trải nghiệm không thuộc nhóm SEO tools: không nằm trong SEO_TOOLS nên không prerender/sitemap */}
+      <Route path="case-opening" element={<CaseOpeningPage />} />
 
       {/* Trang tài khoản: Profile + Lịch sử xử lý (cần đăng nhập — page tự gate) */}
       <Route path="profile" element={<ProfilePage />} />
