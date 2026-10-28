@@ -12,6 +12,7 @@ export function LanguageToggle() {
 
   return (
     <SegmentedControl
+      size="sm"
       options={OPTIONS}
       value={lang.toUpperCase()}
       ariaLabel={t('common.language')}

@@ -295,8 +295,10 @@ export const vi = {
     "quickCompress": "Nén ảnh",
     "quickPdf": "Chuyển đổi PDF",
     "quickRemoveBg": "Xóa nền ảnh",
-    "titleHighlight": "tất cả trong một",
-    "titlePost": "cho mọi nhu cầu",
+    "tagline0": "tất cả trong một cho mọi nhu cầu",
+    "tagline1": "miễn phí ngay trên trình duyệt",
+    "tagline2": "một lần dán link cho mọi định dạng",
+    "tagline3": "nhanh gọn cho ảnh, video và tài liệu",
     "titlePre": "Nền tảng công cụ trực tuyến"
   },
   "home": {

@@ -297,8 +297,10 @@ export const en: Dict = {
     "quickCompress": "Compress image",
     "quickPdf": "Convert PDF",
     "quickRemoveBg": "Remove image background",
-    "titleHighlight": "all in one",
-    "titlePost": "for every need",
+    "tagline0": "all in one for every need",
+    "tagline1": "free right in your browser",
+    "tagline2": "one paste for every format",
+    "tagline3": "fast for images, video and documents",
     "titlePre": "The online tools platform"
   },
   "home": {

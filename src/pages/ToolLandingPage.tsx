@@ -535,6 +535,18 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
                 <ToolFooterActions />
               </div>
             )}
+
+            {/* Text SEO dưới ô nhập: câu "ô bên trên" chỉ đúng khi form còn hiển thị, nên khối này
+                gắn với điều kiện của form chứ không hiện trên trạng thái kết quả. */}
+            {!downloadUrl && tool.introParagraphs?.length ? (
+              <div className="mt-8 space-y-3">
+                {tool.introParagraphs.map((para) => (
+                  <p key={para} className="text-xs sm:text-sm text-slate-400 leading-relaxed">
+                    {para}
+                  </p>
+                ))}
+              </div>
+            ) : null}
           </div>
         </div>
       </section>

@@ -1,11 +1,15 @@
 {
   "/youtube-to-mp4": {
-    "title": "YouTube to MP4 Downloader | One ForAll",
-    "metaDescription": "Convert supported YouTube video links to MP4 online. Choose an available video quality and download the result to your device without installing software.",
-    "h1": "Download YouTube Videos as MP4",
-    "subtitle": "Paste a supported YouTube link, choose an available quality, and download the MP4 file to your device.",
+    "title": "Download YouTube Videos in High Quality as MP4 | One ForAll",
+    "metaDescription": "Download high quality YouTube videos as MP4 with One ForAll. An easy online tool that saves video to your phone or computer with no software to install.",
+    "h1": "Download YouTube Videos in High Quality as MP4",
+    "subtitle": "Download high quality YouTube videos as MP4 with One ForAll. An easy online tool that saves video to your phone or computer with no software to install.",
     "badge": "YouTube to MP4 HD",
     "supportedFormatsDesc": "Works with all standard YouTube video links (watch?v=...), Shorts, and short youtu.be links.",
+    "introParagraphs": [
+      "To download a YouTube video as MP4: copy the video link, paste it into the box above on One ForAll, and tap Download. Save the MP4 video to your device quickly, with the quality options the tool supports.",
+      "One ForAll helps you download high quality YouTube videos as MP4 and convert file formats online. Save video for offline viewing on iPhone, Android, or a computer. No software installation is needed, and the steps stay simple."
+    ],
     "howItWorksSteps": [
       {
         "step": "01",
@@ -58,12 +62,16 @@
     ]
   },
   "/youtube-to-mp3": {
-    "title": "YouTube to MP3 Converter Online | One ForAll",
-    "metaDescription": "Convert supported YouTube video links to audio formats such as MP3. Paste a link, choose an available output option, and download the audio file.",
-    "h1": "Convert YouTube Videos to MP3",
-    "subtitle": "Extract audio from supported videos for listening offline, where you have permission to do so.",
+    "title": "Convert YouTube to MP3 in High Quality | One ForAll",
+    "metaDescription": "Convert YouTube videos to MP3 with One ForAll. An easy online tool that saves audio to your phone or computer with no software to install.",
+    "h1": "Convert YouTube Videos to MP3 in High Quality",
+    "subtitle": "Convert YouTube videos to MP3 with One ForAll. An easy online tool that saves audio to your phone or computer with no software to install.",
     "badge": "YouTube to MP3 Audio",
     "supportedFormatsDesc": "Output audio formats: MP3, WAV, and M4A. Availability depends on the source link.",
+    "introParagraphs": [
+      "To convert YouTube to MP3: copy the video link, paste it into the box above on One ForAll, and tap Download. Save the MP3 file to your device quickly, with the audio quality options the tool supports.",
+      "One ForAll helps you convert YouTube videos to MP3 online and download TikTok videos, alongside online file conversion tools. Save audio for offline listening on iPhone, Android, or a computer. No software installation is needed, and the steps stay simple."
+    ],
     "howItWorksSteps": [
       {
         "step": "01",
@@ -112,12 +120,16 @@
     ]
   },
   "/youtube-downloader": {
-    "title": "YouTube Video and Audio Downloader | One ForAll",
-    "metaDescription": "Use One ForAll to process supported YouTube links into available video or audio formats online, without installing extra software.",
-    "h1": "YouTube Video and Audio Downloader",
-    "subtitle": "Choose a supported video or audio output for a YouTube link and download the result to your device.",
+    "title": "High Quality YouTube Video and MP3 Downloader | One ForAll",
+    "metaDescription": "Download high quality YouTube videos and convert them to MP3 with One ForAll. An easy online tool for video and audio on your phone or computer.",
+    "h1": "Download YouTube Videos in High Quality and Convert to MP3",
+    "subtitle": "Download high quality YouTube videos and convert them to MP3 with One ForAll. An easy online tool for video and audio on your phone or computer.",
     "badge": "Universal YouTube Downloader",
     "supportedFormatsDesc": "This page offers MP4 or WebM video and MP3 or WAV audio output. Available quality depends on the source, settings, and plan.",
+    "introParagraphs": [
+      "To download a YouTube video: copy the video link, paste it into the box above on One ForAll, and tap Download. Get the file on your device quickly, with the format and quality options the tool supports.",
+      "One ForAll helps you download high quality YouTube videos and convert them to MP3 online. Save video or audio for offline use on iPhone, Android, or a computer. No software installation is needed, and the steps stay simple."
+    ],
     "howItWorksSteps": [
       {
         "step": "01",
@@ -172,6 +184,10 @@
     "subtitle": "Paste a supported TikTok video link and save the available MP4 result to your device.",
     "badge": "TikTok to MP4",
     "supportedFormatsDesc": "Supports TikTok links in the form vm.tiktok.com, vt.tiktok.com, and tiktok.com/@user/video/...",
+    "introParagraphs": [
+      "To download a TikTok video as MP4: copy the video link, paste it into the box above on One ForAll, and tap Download. Save the MP4 video to your device quickly, for free, with no app to install.",
+      "One ForAll supports TikTok video downloads, converting YouTube videos to MP4 or MP3, and online file conversion tools. Access it on iPhone, Android, or a computer straight from the browser. No software installation is needed, and the steps stay simple."
+    ],
     "howItWorksSteps": [
       {
         "step": "01",
@@ -226,6 +242,10 @@
     "subtitle": "Save audio from a supported TikTok video as an audio file, where you have permission to use it.",
     "badge": "TikTok Audio Extractor",
     "supportedFormatsDesc": "Supported output formats: MP3, WAV, M4A.",
+    "introParagraphs": [
+      "To download TikTok audio as MP3: copy the video link, paste it into the box above on One ForAll, and tap Download. Save the MP3 file to your device quickly, for free, with no app to install.",
+      "One ForAll supports TikTok video downloads, converting YouTube videos to MP4 or MP3, and online file conversion tools. Access it on iPhone, Android, or a computer straight from the browser. No software installation is needed, and the steps stay simple."
+    ],
     "howItWorksSteps": [
       {
         "step": "01",
@@ -280,6 +300,10 @@
     "subtitle": "Paste a supported TikTok link and choose an available video or audio output.",
     "badge": "All in One TikTok Tool",
     "supportedFormatsDesc": "Supports MP4 video format and MP3 audio format.",
+    "introParagraphs": [
+      "To download TikTok videos without a logo: copy the video link, paste it into the box above on One ForAll, and tap Download. Save the MP4 video to your device quickly, for free, with no app to install.",
+      "One ForAll supports TikTok video downloads, converting YouTube videos to MP4 or MP3, and online file conversion tools. Access it on iPhone, Android, or a computer straight from the browser. No software installation is needed, and the steps stay simple."
+    ],
     "howItWorksSteps": [
       {
         "step": "01",
@@ -648,12 +672,16 @@
     ]
   },
   "/remove-background": {
-    "title": "Online Image Background Remover | One ForAll",
-    "metaDescription": "Automatically identify the subject and remove the image background quickly with AI, then export a transparent PNG.",
-    "h1": "Remove an Image Background",
-    "subtitle": "This tool automatically identifies the subject and removes the image background quickly.",
+    "title": "Instant Background Remover | One ForAll",
+    "metaDescription": "Remove image backgrounds online for free with One ForAll. Upload a photo and download a transparent PNG to your device, with no software to install.",
+    "h1": "Instant Background Remover",
+    "subtitle": "Remove image backgrounds online for free with One ForAll. Upload a photo and download a transparent PNG to your device, with no software to install.",
     "badge": "Background Remover",
     "supportedFormatsDesc": "PNG, JPG, JPEG, WEBP. The result is exported as a transparent PNG image.",
+    "introParagraphs": [
+      "To remove a background online: upload your photo to the One ForAll background remover, wait for the tool to process it, and download the cut-out image to your device in a few simple steps.",
+      "One ForAll helps you remove image backgrounds online quickly, separating the subject from the background and creating a transparent image you can use right away. It works for product photos, portraits, profile pictures, and design visuals. Use it directly in your phone or computer browser with no software to install."
+    ],
     "howItWorksSteps": [
       {
         "step": "01",

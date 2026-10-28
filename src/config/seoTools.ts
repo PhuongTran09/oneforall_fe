@@ -22,6 +22,8 @@ export interface ToolConfig {
   metaDescription: string
   h1: string
   subtitle: string
+  /** Khối text SEO dưới ô nhập liệu; bản EN trong tools.en.json bắt buộc có nếu bản VI có. */
+  introParagraphs?: string[]
   inputType: 'url' | 'file'
   urlPlatform?: 'youtube' | 'tiktok'
   acceptedFileTypes?: string
@@ -41,12 +43,16 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     slug: '/youtube-to-mp4',
     category: 'youtube',
     badge: 'YouTube sang MP4',
-    title: 'Tải Video YouTube sang MP4 Trực Tuyến | One ForAll',
+    title: 'Tải Video YouTube sang MP4 Chất Lượng Cao | One ForAll',
     metaDescription:
-      'Tải video YouTube sang MP4 trực tuyến trên trình duyệt. Không cần cài đặt phần mềm; chất lượng khả dụng tùy thuộc vào video nguồn và gói sử dụng.',
-    h1: 'Tải Video YouTube sang MP4',
+      'Tải video YouTube chất lượng cao sang MP4 với One ForAll. Công cụ trực tuyến dễ sử dụng, lưu video về điện thoại và máy tính không cần cài đặt.',
+    h1: 'Tải Video YouTube sang MP4 Chất Lượng Cao',
     subtitle:
-      'Lưu video YouTube dưới dạng MP4 về máy tính hoặc điện thoại. Chất lượng đầu ra phụ thuộc vào video gốc và các tùy chọn khả dụng.',
+      'Tải video YouTube chất lượng cao sang MP4 với One ForAll. Công cụ trực tuyến dễ sử dụng, lưu video về điện thoại và máy tính không cần cài đặt.',
+    introParagraphs: [
+      'Để tải video YouTube sang MP4: sao chép liên kết video, dán vào ô bên trên tại One ForAll rồi nhấn Tải xuống. Lưu video MP4 về thiết bị nhanh chóng, thuận tiện với các tùy chọn chất lượng được hỗ trợ.',
+      'One ForAll giúp bạn tải video YouTube chất lượng cao sang MP4 và chuyển đổi các định dạng tệp trực tuyến. Dễ dàng lưu video để xem ngoại tuyến trên điện thoại iPhone, Android và máy tính. Không cần cài đặt phần mềm, thao tác đơn giản ngay trên trình duyệt.',
+    ],
     inputType: 'url',
     urlPlatform: 'youtube',
     outputFormats: ['mp4', 'webm'],
@@ -77,12 +83,16 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     slug: '/youtube-to-mp3',
     category: 'youtube',
     badge: 'YouTube sang MP3',
-    title: 'Chuyển YouTube Sang MP3 Trực Tuyến | One ForAll',
+    title: 'Chuyển YouTube Sang MP3 Chất Lượng Cao | One ForAll',
     metaDescription:
-      'Chuyển âm thanh từ video YouTube sang MP3 trực tuyến. Chất lượng đầu ra phụ thuộc vào âm thanh nguồn và định dạng bạn chọn.',
-    h1: 'Tách Âm Thanh YouTube sang MP3',
+      'Chuyển video YouTube sang MP3 với One ForAll. Công cụ trực tuyến dễ sử dụng, lưu nhạc về điện thoại và máy tính không cần cài đặt.',
+    h1: 'Chuyển Video YouTube Sang MP3 Chất Lượng Cao',
     subtitle:
-      'Chuyển âm thanh từ video YouTube sang MP3 để nghe ngoại tuyến khi cần.',
+      'Chuyển video YouTube sang MP3 với One ForAll. Công cụ trực tuyến dễ sử dụng, lưu nhạc về điện thoại và máy tính không cần cài đặt.',
+    introParagraphs: [
+      'Để chuyển YouTube sang MP3: sao chép liên kết video, dán vào ô bên trên tại One ForAll rồi nhấn Tải xuống. Lưu tệp MP3 về thiết bị nhanh chóng, thuận tiện với các tùy chọn chất lượng âm thanh được hỗ trợ.',
+      'One ForAll giúp bạn chuyển video YouTube sang MP3 trực tuyến và tải video TikTok, kèm các công cụ chuyển đổi file. Dễ dàng lưu âm thanh để nghe ngoại tuyến trên điện thoại iPhone, Android và máy tính. Không cần cài đặt phần mềm, thao tác đơn giản ngay trên trình duyệt.',
+    ],
     inputType: 'url',
     urlPlatform: 'youtube',
     outputFormats: ['mp3', 'wav', 'm4a'],
@@ -112,12 +122,16 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     slug: '/youtube-downloader',
     category: 'youtube',
     badge: 'Công cụ tải YouTube',
-    title: 'Trình Tải Video & Âm Thanh YouTube Toàn Diện | One ForAll',
+    title: 'Tải Video YouTube Chất Lượng Cao, Chuyển Sang MP3 | One ForAll',
     metaDescription:
-      'Tải video YouTube ở định dạng video hoặc chuyển âm thanh sang định dạng phổ biến. Không cần cài đặt phần mềm.',
-    h1: 'Trình Tải YouTube Đa Năng Trực Tuyến',
+      'Tải video YouTube chất lượng cao và chuyển YouTube sang MP3 với One ForAll. Công cụ trực tuyến dễ sử dụng, hỗ trợ tải video và âm thanh trên điện thoại, máy tính.',
+    h1: 'Tải Video YouTube Chất Lượng Cao, Chuyển Sang MP3',
     subtitle:
-      'Chọn định dạng video hoặc âm thanh phù hợp với nhu cầu và các tùy chọn được công cụ hỗ trợ.',
+      'Tải video YouTube chất lượng cao và chuyển YouTube sang MP3 với One ForAll. Công cụ trực tuyến dễ sử dụng, hỗ trợ tải video và âm thanh trên điện thoại, máy tính.',
+    introParagraphs: [
+      'Để tải video YouTube: sao chép liên kết video, dán vào ô bên trên tại One ForAll rồi nhấn Tải xuống. Tải video về thiết bị nhanh chóng, thuận tiện với các tùy chọn định dạng và chất lượng được hỗ trợ.',
+      'One ForAll giúp bạn tải video YouTube chất lượng cao và chuyển đổi video YouTube sang MP3 trực tuyến. Dễ dàng lưu video hoặc âm thanh để sử dụng ngoại tuyến trên điện thoại iPhone, Android và máy tính. Không cần cài đặt phần mềm, thao tác đơn giản ngay trên trình duyệt.',
+    ],
     inputType: 'url',
     urlPlatform: 'youtube',
     outputFormats: ['mp4', 'mp3', 'webm', 'wav'],
@@ -153,6 +167,10 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     h1: 'Tải Video TikTok sang MP4',
     subtitle:
       'Lưu video TikTok dưới dạng MP4 với các tùy chọn khả dụng, thuận tiện xem lại trên thiết bị của bạn.',
+    introParagraphs: [
+      'Để tải video TikTok sang MP4: sao chép liên kết video, dán vào ô bên trên tại One ForAll rồi nhấn Tải xuống. Lưu video MP4 về thiết bị nhanh chóng, miễn phí và không cần cài đặt ứng dụng.',
+      'One ForAll hỗ trợ tải video TikTok, chuyển đổi video YouTube sang MP4 hoặc MP3 và sử dụng các công cụ chuyển đổi file trực tuyến. Bạn có thể truy cập trên điện thoại iPhone, Android hoặc máy tính ngay từ trình duyệt. Không cần cài đặt phần mềm, thao tác đơn giản và thuận tiện.',
+    ],
     inputType: 'url',
     urlPlatform: 'tiktok',
     outputFormats: ['mp4'],
@@ -188,6 +206,10 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     h1: 'Trích Xuất Âm Thanh TikTok sang MP3',
     subtitle:
       'Chuyển âm thanh từ video TikTok sang MP3 để nghe hoặc sử dụng cho mục đích phù hợp với quyền của bạn.',
+    introParagraphs: [
+      'Để tải âm thanh TikTok sang MP3: sao chép liên kết video, dán vào ô bên trên tại One ForAll rồi nhấn Tải xuống. Lưu file MP3 về thiết bị nhanh chóng, miễn phí và không cần cài đặt ứng dụng.',
+      'One ForAll hỗ trợ tải video TikTok, chuyển đổi video YouTube sang MP4 hoặc MP3 và sử dụng các công cụ chuyển đổi file trực tuyến. Bạn có thể truy cập trên điện thoại iPhone, Android hoặc máy tính ngay từ trình duyệt. Không cần cài đặt phần mềm, thao tác đơn giản và thuận tiện.',
+    ],
     inputType: 'url',
     urlPlatform: 'tiktok',
     outputFormats: ['mp3', 'wav', 'm4a'],
@@ -216,13 +238,17 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
   '/tiktok-downloader': {
     slug: '/tiktok-downloader',
     category: 'tiktok',
-    badge: 'Công cụ TikTok đa năng',
-    title: 'Trình Tải TikTok Toàn Diện: Video MP4 & Âm Thanh MP3 | One ForAll',
+    badge: 'Công cụ TikTok',
+    title: 'Tải Video TikTok Không Logo, Tải Ảnh & Nhạc TikTok Miễn Phí | One ForAll',
     metaDescription:
       'Tải video TikTok hoặc chuyển âm thanh sang MP3 với giao diện đơn giản, dễ sử dụng.',
-    h1: 'Trình Tải Video & Âm Thanh TikTok Trực Tuyến',
+    h1: 'Tải Video TikTok Không Logo, Tải Ảnh & Nhạc TikTok Miễn Phí',
     subtitle:
-      'Tải video hoặc chuyển âm thanh từ các liên kết TikTok được hỗ trợ ngay trên trình duyệt, không cần cài ứng dụng.',
+      'Tải video TikTok không logo miễn phí với One ForAll. Hỗ trợ tải ảnh TikTok, nhạc MP3 và video Douyin HD, 4K trên iPhone, Android và máy tính, không cần cài đặt.',
+    introParagraphs: [
+      'Để tải video TikTok không logo: sao chép liên kết video, dán vào ô bên trên tại One ForAll rồi nhấn Tải xuống. Lưu video MP4 về thiết bị nhanh chóng, miễn phí và không cần cài đặt ứng dụng.',
+      'One ForAll hỗ trợ tải video TikTok, chuyển đổi video YouTube sang MP4 hoặc MP3 và sử dụng các công cụ chuyển đổi file trực tuyến. Bạn có thể truy cập trên điện thoại iPhone, Android hoặc máy tính ngay từ trình duyệt. Không cần cài đặt phần mềm, thao tác đơn giản và thuận tiện.',
+    ],
     inputType: 'url',
     urlPlatform: 'tiktok',
     outputFormats: ['mp4', 'mp3'],
@@ -495,11 +521,16 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     slug: '/remove-background',
     category: 'image',
     badge: 'Xóa nền ảnh',
-    title: 'Xóa Nền Ảnh Trực Tuyến | One ForAll',
+    title: 'Trình Xóa Hình Nền Tức Thì | One ForAll',
     metaDescription:
-      'Tiện ích tự động nhận diện chủ thể và tách phông nền ảnh nhanh chóng bằng AI, sau đó xuất ảnh PNG có nền trong suốt.',
-    h1: 'Xóa Nền Ảnh',
-    subtitle: 'Tiện ích tự động nhận diện chủ thể và tách phông nền ảnh nhanh chóng.',
+      'Xóa nền ảnh trực tuyến miễn phí với One ForAll. Tải ảnh lên, hệ thống tách chủ thể khỏi nền và xuất ảnh PNG trong suốt về thiết bị, không cần cài đặt phần mềm.',
+    h1: 'Trình Xóa Hình Nền Tức Thì',
+    subtitle:
+      'Xóa nền ảnh trực tuyến miễn phí với One ForAll. Tải ảnh lên, hệ thống tách chủ thể khỏi nền và xuất ảnh PNG trong suốt về thiết bị, không cần cài đặt phần mềm.',
+    introParagraphs: [
+      'Để xóa nền ảnh online: tải ảnh lên công cụ xóa nền của One ForAll, chờ hệ thống xử lý và tải ảnh đã tách nền về thiết bị chỉ với vài thao tác đơn giản.',
+      'One ForAll giúp bạn xóa nền ảnh trực tuyến nhanh chóng, tách chủ thể khỏi nền ảnh và tạo ảnh nền trong suốt thuận tiện. Phù hợp để xử lý ảnh sản phẩm, ảnh chân dung, ảnh đại diện và hình ảnh phục vụ thiết kế. Sử dụng trực tiếp trên trình duyệt điện thoại hoặc máy tính mà không cần cài đặt phần mềm.',
+    ],
     inputType: 'file',
     acceptedFileTypes: 'image/*',
     outputFormats: ['png'],

@@ -349,17 +349,48 @@ html[data-theme='light'] {
   animation: heading-in 500ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
 }
 
-/* The shine animation needs background size and position on gradient text. */
-.text-brand-gradient.text-shine {
-  background-size: 200% auto;
-  animation:
-    heading-in 500ms cubic-bezier(0.16, 1, 0.3, 1) backwards,
-    shine 2.4s ease-out 0.35s 1;
+/* Hero: mỗi từ là một inline-block để dựng lên độc lập; animation-delay đặt inline trên
+   từng span nên cả ba animation dưới đây khởi chạy so le — thành hiệu ứng gợn sóng. */
+@keyframes word-in {
+  0%   { opacity: 0; translate: 0 14px; scale: 0.94; }
+  100% { opacity: 1; translate: 0 0;    scale: 1;    }
 }
 
-@keyframes shine {
-  0%   { background-position: 0% center; }
-  100% { background-position: 100% center; }
+.hero-word {
+  display: inline-block;
+  animation: word-in 560ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+/* Gradient chạy tới lui (không loop một chiều để tránh cú nhảy khung cuối) + glow nhịp.
+   drop-shadow ăn theo hình chữ đã clip nên quả là màu gradient, bóng là màu brand. */
+@keyframes gradient-flow {
+  0%, 100% { background-position: 0% center; }
+  50%      { background-position: 100% center; }
+}
+
+@keyframes brand-glow {
+  0%, 100% { filter: drop-shadow(0 0 6px rgba(255, 59, 48, var(--hero-glow-lo))); }
+  50%      { filter: drop-shadow(0 0 18px rgba(255, 59, 48, var(--hero-glow-hi))); }
+}
+
+.hero-word-hl {
+  --hero-glow-lo: 0.22;
+  --hero-glow-hi: 0.5;
+  background-size: 200% auto;
+  /* background-clip:text chỉ vẽ gradient trong padding box, còn line-height 1.15 của h1
+     ngắn hơn đuôi chữ (g, y) và dấu tiếng Việt (ễ, ố). Đệm ra rồi trừ margin trả chỗ
+     cũ nên ô vẽ rộng hơn mà nhịp dòng không đổi. */
+  padding-block: 0.16em 0.22em;
+  margin-block: -0.16em -0.22em;
+  animation:
+    word-in 560ms cubic-bezier(0.16, 1, 0.3, 1) backwards,
+    gradient-flow 5.2s ease-in-out infinite,
+    brand-glow 3.4s ease-in-out infinite;
+}
+
+html[data-theme='light'] .hero-word-hl {
+  --hero-glow-lo: 0.1;
+  --hero-glow-hi: 0.26;
 }
 
 /* Trạng thái đọc từ html[data-theme] (theme.ts set) nên nền/thumb đổi theo đúng theme */
@@ -817,7 +848,10 @@ html[data-theme='light'] .card-hover-glow:hover {
   [data-reveal].is-in { animation: none; }
   .acc,
   .acc[data-open='true'] { transition: none; }
-  .text-brand-gradient.text-shine { animation: none; background-size: auto; }
+  /* Hero: chữ hiện tức thì, gradient đứng yên, không glow */
+  .hero-word,
+  .hero-word-hl { animation: none; opacity: 1; translate: none; scale: none; filter: none; }
+  .hero-word-hl { background-size: auto; }
   .theme-toggle,
   .theme-thumb { transition: none; }
   .btn-3d              { transition: none; }
