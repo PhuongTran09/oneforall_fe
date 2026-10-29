@@ -4,7 +4,7 @@ import { showToast } from '../../../components/feedback/toastStore'
 import type { CaseConfig, CaseItem, CaseSettings, EffectKind, OpenRecord, Rarity, SoundSlot } from '../types'
 import { clampCells, clampSpinMs } from '../utils/roulette'
 import { sanitizeWeight } from '../utils/random'
-import { createDefaultCase, createEmptyCase, DEFAULT_RARITIES, RARITY_PRESETS, uid } from '../defaults'
+import { createDefaultCase, createEmptyCase, defaultRarities, RARITY_PRESETS, uid } from '../defaults'
 import { dropAsset, saveAsset, type AssetKind } from '../utils/assets'
 
 const STORAGE_KEY = 'ofa-case-opening-v2'
@@ -33,9 +33,8 @@ function num(value: unknown, fallback: number): number {
   return Number.isFinite(n) ? n : fallback
 }
 
-function normalizeRarity(raw: unknown, index: number): Rarity {
+function normalizeRarity(raw: unknown, preset: Rarity): Rarity {
   const r = (raw ?? {}) as Partial<Rarity>
-  const preset = DEFAULT_RARITIES[index] ?? DEFAULT_RARITIES[DEFAULT_RARITIES.length - 1]
   return {
     id: text(r.id, 40) || preset.id,
     name: text(r.name, 40, preset.name),
@@ -61,7 +60,11 @@ function normalizeItem(raw: unknown, fallbackRarityId: string): CaseItem | null 
 
 function normalizeCase(raw: unknown): CaseConfig | null {
   const c = (raw ?? {}) as Partial<CaseConfig>
-  const rarities = Array.isArray(c.rarities) && c.rarities.length ? c.rarities.map(normalizeRarity) : DEFAULT_RARITIES.map((r) => ({ ...r }))
+  const presets = defaultRarities()
+  const rarities =
+    Array.isArray(c.rarities) && c.rarities.length
+      ? c.rarities.map((r, i) => normalizeRarity(r, presets[i] ?? presets[presets.length - 1]))
+      : presets
   const known = new Set(rarities.map((r) => r.id))
   const items = (Array.isArray(c.items) ? c.items : [])
     .map((i) => normalizeItem(i, rarities[0].id))

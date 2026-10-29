@@ -41,6 +41,7 @@ export { AdSenseUnit } from './common/AdSenseUnit'
 export type { AdSenseUnitProps } from './common/AdSenseUnit'
 export { SocialBarAds } from './common/SocialBarAds'
 export { ToolFooterActions } from './common/ToolFooterActions'
+export { BuyMeCoffee } from './common/BuyMeCoffee'
 
 // Feedback components
 export { AuthModal } from './feedback/AuthModal'

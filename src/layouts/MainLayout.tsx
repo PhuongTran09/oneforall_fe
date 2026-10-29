@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
-import { Navbar, Footer, AuthModal, ProPlanModal, SocialBarAds } from '../components'
+import { Navbar, Footer, AuthModal, ProPlanModal, SocialBarAds, BuyMeCoffee } from '../components'
 import { ConsentModal } from '../components/consent/ConsentModal'
 import { LangRouteSync } from '../i18n/LangRouteSync'
-import { useI18n, withLocale } from '../i18n/langStore'
+import { t, useI18n, withLocale } from '../i18n/langStore'
 import { subscribeAuthEvent, useAuth } from '../services/authStore'
 import { initReveal } from '../utils/revealMotion'
 
@@ -18,6 +18,17 @@ const scrollByPath = new Map<string, number>()
 // đánh dấu ở đây rồi cho effect theo pathname đọc. Listener đăng sau router cũng không
 // sao: cả hai chạy hết trong cùng lượt dispatch, trước khi React flush effect.
 let isPop = false
+
+// Chỗ chờ khi chunk của route chưa về. cao bằng khoảng một khối nội dung đầu
+// trang để footer không nhảy lên rồi tụt xuống lúc page thật render.
+function RouteFallback() {
+  return (
+    <div className="min-h-[60vh] flex flex-col items-center justify-center gap-3 text-brand-2">
+      <span className="w-8 h-8 rounded-full border-2 border-current border-t-transparent animate-spin" />
+      <span className="text-sm text-soft">{t('common.loading')}</span>
+    </div>
+  )
+}
 
 export function MainLayout() {
   // Navbar/Footer/page con gọi t() trực tiếp (không hook) → layout phải subscribe
@@ -105,7 +116,11 @@ export function MainLayout() {
       <Navbar onOpenAuth={(mode) => setAuthMode(mode)} />
       <main className="flex-1 w-full">
         <div key={pathname} className="animate-page-enter">
-          <Outlet context={{ openAuth: setAuthMode, openPro }} />
+          {/* Bọc Outlet chứ không bọc cả <Routes>: chờ chunk của route thì
+              Navbar/Footer/modal vẫn đứng nguyên, không chớp cả khung hình. */}
+          <Suspense fallback={<RouteFallback />}>
+            <Outlet context={{ openAuth: setAuthMode, openPro }} />
+          </Suspense>
         </div>
       </main>
       <Footer />
@@ -125,6 +140,9 @@ export function MainLayout() {
 
       {/* Điểm nạp script quảng cáo duy nhất của app (một lần cho cả phiên trang) */}
       <SocialBarAds />
+
+      {/* Nút ủng hộ nổi góc dưới phải — z-40 nên modal (z-50 trở lên) vẫn che được. */}
+      <BuyMeCoffee />
     </div>
   )
 }

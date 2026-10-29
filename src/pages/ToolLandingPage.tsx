@@ -445,7 +445,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
       </div>
 
       {/* 2. Hero Interactive Workspace */}
-      <section className="relative pt-6 pb-14 sm:pb-20 overflow-hidden">
+      <section className="cv-skip relative pt-6 pb-14 sm:pb-20 overflow-hidden">
         {/* Background Cyber Grid & Radiant Ambient Glow */}
         <div className="absolute inset-0 bg-grid-cyber pointer-events-none" aria-hidden="true" />
         <div className="hero-ambient-glow" aria-hidden="true" />
