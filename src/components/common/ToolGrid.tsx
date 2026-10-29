@@ -88,13 +88,15 @@ export function ToolGrid({ tools, showCategoryFilter = true }: ToolGridProps) {
                   type="button"
                   onClick={() => setSelectedCategory(cat.id)}
                   aria-pressed={isActive}
-                  className={`h-9 sm:h-11 shrink-0 inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 md:px-5 text-xs sm:text-sm whitespace-nowrap cursor-pointer clip-corner-btn transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#FF3B30] ${
+                  className={`h-9 sm:h-11 shrink-0 inline-flex items-center gap-2 sm:gap-2.5 px-3 sm:px-4 md:px-5 text-xs sm:text-sm whitespace-nowrap cursor-pointer clip-corner-btn transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#FF3B30] ${
                     isActive
                       ? 'bg-brand-gradient text-white font-semibold border border-[rgba(255,107,74,0.6)]'
                       : 'bg-surface text-slate-400 font-medium border border-edge hover:bg-[rgba(255,59,48,0.08)] hover:text-slate-100 hover:border-[rgba(255,59,48,0.35)] hover:-translate-y-px active:translate-y-0'
                   }`}
                 >
-                  <CatIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+                  {/* 18px ở desktop: icon lucide chỉ tô trong 16/24 ô, để 16px cạnh
+                      chữ 14px thì nó nhẹ hơn hẳn, trông rời thành hai khối. */}
+                  <CatIcon className="w-4 h-4 sm:w-4.5 sm:h-4.5 shrink-0" />
                   {categoryLabel(cat.id)}
                 </button>
               )

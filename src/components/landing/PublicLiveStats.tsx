@@ -93,7 +93,7 @@ export function PublicLiveStats() {
         <div className="relative z-10 mt-5 flex items-baseline justify-between gap-4">
           <p
             key={`v-${stats?.active_visitors ?? 'load'}`}
-            className="text-4xl sm:text-5xl font-black text-ink tabular-nums tracking-tight live-value group-hover:text-brand transition-colors drop-shadow-[0_2px_12px_rgba(255,59,48,0.2)]"
+            className="text-4xl sm:text-5xl font-black text-ink tabular-nums tracking-tight live-value group-hover:text-brand transition-colors"
           >
             {loading ? MISSING : count(stats.active_visitors)}
           </p>
@@ -148,7 +148,7 @@ export function PublicLiveStats() {
         <div className="relative z-10 mt-5 flex items-baseline justify-between gap-4">
           <p
             key={`j-${stats?.completed_jobs ?? 'load'}`}
-            className="text-4xl sm:text-5xl font-black text-emerald-400 tabular-nums tracking-tight live-value drop-shadow-[0_2px_12px_rgba(16,185,129,0.2)]"
+            className="text-4xl sm:text-5xl font-black text-emerald-400 tabular-nums tracking-tight live-value"
           >
             {loading ? MISSING : count(stats.completed_jobs)}
           </p>

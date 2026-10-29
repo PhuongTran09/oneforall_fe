@@ -1,4 +1,4 @@
-import { Mail, ShieldCheck, Sparkles } from 'lucide-react'
+import { Mail, ShieldCheck, Shuffle, Sparkles } from 'lucide-react'
 import { openConsentModal } from '../consent/consentStorage'
 import { LocaleLink } from '../../i18n/LocaleLink'
 import { LanguageToggle } from '../../i18n/LanguageToggle'
@@ -60,13 +60,20 @@ export function Footer() {
                 <Mail className="w-4 h-4" />
               </a>
             </div>
-            <div>
+            <div className="flex flex-col items-start gap-2">
               <LocaleLink
                 to="/case-opening"
                 className="inline-flex items-center gap-1.5 text-xs sm:text-sm text-slate-400 hover:text-brand transition-colors"
               >
                 <Sparkles className="w-3.5 h-3.5" />
                 {t('footer.caseOpening')}
+              </LocaleLink>
+              <LocaleLink
+                to="/square-spin"
+                className="inline-flex items-center gap-1.5 text-xs sm:text-sm text-slate-400 hover:text-brand transition-colors"
+              >
+                <Shuffle className="w-3.5 h-3.5" />
+                {t('footer.squareSpin')}
               </LocaleLink>
             </div>
           </div>

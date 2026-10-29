@@ -233,9 +233,9 @@ export function RangeField({ label, value, onChange, min, max, step = 1, format,
           step={step}
           disabled={disabled}
           onChange={(e) => onChange(Number(e.target.value))}
-          className="flex-1 h-1.5 bg-elev border border-edge cursor-pointer accent-[#ff3b30] disabled:cursor-not-allowed"
+          className="min-w-0 flex-1 h-1.5 bg-elev border border-edge cursor-pointer accent-[#ff3b30] disabled:cursor-not-allowed"
         />
-        <span className="w-16 shrink-0 text-right text-xs font-mono text-ink">{format(value)}</span>
+        <span className="min-w-[6ch] shrink-0 whitespace-nowrap text-right text-xs font-mono text-ink">{format(value)}</span>
       </div>
     </Field>
   )

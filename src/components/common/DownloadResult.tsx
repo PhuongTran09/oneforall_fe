@@ -96,7 +96,7 @@ export function DownloadResult({
             size="md"
             onClick={handleDownload}
             leftIcon={<Download className="w-4 h-4" />}
-            className="flex-1 sm:flex-initial btn-shimmer btn-glow-pulse shadow-[0_0_20px_rgba(255,59,48,0.35)]"
+            className="flex-1 sm:flex-initial btn-shimmer btn-glow-pulse"
           >
             {t('download.downloadNow')}
           </Button>

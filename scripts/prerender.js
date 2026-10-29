@@ -44,7 +44,9 @@ const CATEGORY_LABELS_EN = {
   media: 'Audio and video',
 }
 // URL tĩnh khác muốn đưa vào sitemap (vd. '/privacy', '/terms', '/contact').
-const EXTRA_SITEMAP_PATHS = ['/privacy', '/terms']
+// '/square-spin' là trang tính năng (như '/case-opening'): không có landing page prerender,
+// chỉ khai báo để crawler biết đường này tồn tại; nội dung do SPA render.
+const EXTRA_SITEMAP_PATHS = ['/privacy', '/terms', '/square-spin']
 
 // Trang pháp lý: nội dung lấy nguyên văn từ src/content/legal (module data thuần). Không soạn
 // chính sách trong file này — prerender chỉ render lại đúng những gì SPA đang render.
@@ -636,6 +638,11 @@ export function runPrerender() {
   }
 
   const { errors, warns } = validate(tools, src)
+  // validate() chỉ quét seoTools.ts (bản VI); EN là lớp ghi đè nên lọt lưới.
+  for (const slug of slugs) {
+    const en = englishOverrides[slug].title
+    if (en.length > 65) warns.push(`/en${slug}: title ${en.length} ký tự (>65, dễ bị cắt)`)
+  }
   warns.forEach((w) => console.warn(`[SEO] ⚠ ${w}`))
   if (errors.length) {
     errors.forEach((e) => console.error(`[SEO] ✖ ${e}`))

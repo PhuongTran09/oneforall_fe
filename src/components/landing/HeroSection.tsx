@@ -33,7 +33,7 @@ export function HeroSection({ onTryFree }: HeroSectionProps) {
   ]
 
   return (
-    <section className="relative pt-10 pb-16 sm:pt-16 sm:pb-24 overflow-hidden bg-page">
+    <section className="cv-skip relative pt-10 pb-16 sm:pt-16 sm:pb-24 overflow-hidden bg-page">
       {/* Background Cyber Grid & Radiant Ambient Glow */}
       <div className="absolute inset-0 bg-grid-cyber pointer-events-none" aria-hidden="true" />
       <div className="hero-ambient-glow" aria-hidden="true" />
