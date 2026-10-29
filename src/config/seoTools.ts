@@ -239,7 +239,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     slug: '/tiktok-downloader',
     category: 'tiktok',
     badge: 'Công cụ TikTok',
-    title: 'Tải Video TikTok Không Logo, Tải Ảnh & Nhạc TikTok Miễn Phí | One ForAll',
+    title: 'Tải Video TikTok Không Logo, Ảnh & Nhạc | One ForAll',
     metaDescription:
       'Tải video TikTok hoặc chuyển âm thanh sang MP3 với giao diện đơn giản, dễ sử dụng.',
     h1: 'Tải Video TikTok Không Logo, Tải Ảnh & Nhạc TikTok Miễn Phí',
@@ -347,7 +347,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     slug: '/image-converter',
     category: 'convert',
     badge: 'Chuyển đổi ảnh',
-    title: 'Chuyển Đổi Định Dạng Ảnh: PNG, JPG, WebP, GIF, BMP, SVG | One ForAll',
+    title: 'Chuyển Đổi Định Dạng Ảnh: PNG, JPG, WebP, GIF | One ForAll',
     metaDescription:
       'Chuyển đổi hình ảnh giữa PNG, JPG, WebP và các định dạng được hỗ trợ. Kết quả về kích thước và độ trong suốt tùy thuộc vào định dạng đầu ra.',
     h1: 'Chuyển Đổi Định Dạng Hình Ảnh Trực Tuyến',

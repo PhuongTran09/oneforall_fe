@@ -1,17 +1,34 @@
+import { lazy } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { MainLayout } from '../layouts/MainLayout'
-import {
-  HomePage,
-  ToolLandingPage,
-  NotFoundPage,
-  ProfilePage,
-  HistoryPage,
-  ResetPasswordPage,
-  PaymentReturnPage,
-  TermsPage,
-  PrivacyPage,
-} from '../pages'
+import { HomePage } from '../pages/HomePage'
+import { ToolLandingPage } from '../pages/ToolLandingPage'
+import { NotFoundPage } from '../pages/NotFoundPage'
 import { SEO_TOOLS } from '../config/seoTools'
+import { useI18n } from '../i18n/langStore'
+
+// Tách code theo route: page nào không nằm trên đường vào đầu thì chỉ tải khi
+// người dùng thực sự tới. Trang chủ và landing SEO để nguyên — crawler và người
+// vào thẳng URL đó, thêm một vòng xin chunk là nội dung prerender bị chớp.
+// React.lazy đòi default export nên phải bọc named export của từng page.
+const CaseOpeningPage = lazy(() =>
+  import('../pages/CaseOpeningPage').then((m) => ({ default: m.CaseOpeningPage })),
+)
+const SquareSpinPage = lazy(() =>
+  import('../pages/SquareSpinPage').then((m) => ({ default: m.SquareSpinPage })),
+)
+const ProfilePage = lazy(() => import('../pages/ProfilePage').then((m) => ({ default: m.ProfilePage })))
+const HistoryPage = lazy(() => import('../pages/HistoryPage').then((m) => ({ default: m.HistoryPage })))
+const ResetPasswordPage = lazy(() =>
+  import('../pages/ResetPasswordPage').then((m) => ({ default: m.ResetPasswordPage })),
+)
+const PaymentReturnPage = lazy(() =>
+  import('../pages/PaymentReturnPage').then((m) => ({ default: m.PaymentReturnPage })),
+)
+const TermsPage = lazy(() => import('../pages/legal/TermsPage').then((m) => ({ default: m.TermsPage })))
+const PrivacyPage = lazy(() =>
+  import('../pages/legal/PrivacyPage').then((m) => ({ default: m.PrivacyPage })),
+)
 
 // Bộ route dùng chung cho cả 2 locale: VI ở "/" và EN ở "/en" (ToolLandingPage tự
 // resolve text EN theo lang từ URL). Phải gọi như function ({LocaleRoutes()}) vì
@@ -46,6 +63,10 @@ function LocaleRoutes() {
         element={<ToolLandingPage configOverride={SEO_TOOLS['/video-converter']} />}
       />
 
+      {/* Trang trải nghiệm không thuộc nhóm SEO tools: không nằm trong SEO_TOOLS nên không prerender/sitemap */}
+      <Route path="case-opening" element={<CaseOpeningPage />} />
+      <Route path="square-spin" element={<SquareSpinPage />} />
+
       {/* Trang tài khoản: Profile + Lịch sử xử lý (cần đăng nhập — page tự gate) */}
       <Route path="profile" element={<ProfilePage />} />
       <Route path="history" element={<HistoryPage />} />
@@ -67,6 +88,10 @@ function LocaleRoutes() {
 }
 
 export function AppRoutes() {
+  // Subscribe ở đây chứ không phải từng page: <Route element={<X/>}> giữ phần tử
+  // ổn định nên MainLayout render lại vẫn không làm page con render lại — đổi VI/EN
+  // chỉ ra URL mà chữ vẫn giữ ngôn ngữ cũ.
+  useI18n()
   return (
     <BrowserRouter>
       <Routes>

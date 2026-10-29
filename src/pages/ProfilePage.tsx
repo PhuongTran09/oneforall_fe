@@ -242,7 +242,7 @@ export function ProfilePage() {
         <div className="bg-surface border border-edge clip-corner-card p-5 sm:p-6 text-center">
           <div
             key={`s-${stats?.total_completed ?? 'load'}`}
-            className="text-3xl sm:text-4xl font-bold text-brand-gradient tabular-nums live-value"
+            className="text-3xl sm:text-4xl font-bold text-brand-gradient tabular-nums live-value live-value-glow"
           >
             {stats ? stats.total_completed : '—'}
           </div>
@@ -251,7 +251,7 @@ export function ProfilePage() {
         <div className="bg-surface border border-edge clip-corner-card p-5 sm:p-6 text-center">
           <div
             key={`f-${stats?.files_available ?? 'load'}`}
-            className="text-3xl sm:text-4xl font-bold text-brand-gradient tabular-nums live-value"
+            className="text-3xl sm:text-4xl font-bold text-brand-gradient tabular-nums live-value live-value-glow"
           >
             {stats ? stats.files_available : '—'}
           </div>

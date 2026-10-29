@@ -277,6 +277,11 @@ html[data-theme='light'] {
   }
 }
 
+/* Panels that should always show the streak, not only on hover (e.g. donate card). */
+.card-3d.card-3d-glow::before {
+  opacity: 1;
+}
+
 /* Keyboard focus stays visible despite the clip-path */
 .card-3d:focus-visible {
   outline: none;
@@ -360,70 +365,20 @@ html[data-theme='light'] {
   animation: word-in 560ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
 }
 
-@keyframes gradient-flow {
-  0%, 100% { background-position: 0% center; }
-  50%      { background-position: 100% center; }
-}
-
-@keyframes brand-glow {
-  0%, 100% { filter: drop-shadow(0 0 6px rgba(255, 59, 48, var(--hero-glow-lo))); }
-  50%      { filter: drop-shadow(0 0 18px rgba(255, 59, 48, var(--hero-glow-hi))); }
-}
-
 .hero-word-hl {
-  --hero-glow-lo: 0.22;
-  --hero-glow-hi: 0.5;
-  background-size: 200% auto;
+  --hero-glow: 0.36;
+  /* Gradient đứng yên. Làm nền chảy thì phải đổi background-position trên chữ
+     background-clip:text — không composite được, mỗi khung hình phải vẽ lại cả
+     khối chữ kèm lớp drop-shadow blur của nó, suốt thời gian hero còn trên màn. */
+  filter: drop-shadow(0 0 12px rgba(255, 59, 48, var(--hero-glow)));
   /* background-clip:text chỉ vẽ trong padding box; margin âm giữ nhịp dòng */
   padding-block: 0.16em 0.22em;
   margin-block: -0.16em -0.22em;
-  animation:
-    word-in 560ms cubic-bezier(0.16, 1, 0.3, 1) backwards,
-    gradient-flow 5.2s ease-in-out infinite,
-    brand-glow 3.4s ease-in-out infinite;
+  animation: word-in 560ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
 }
 
 html[data-theme='light'] .hero-word-hl {
-  --hero-glow-lo: 0.1;
-  --hero-glow-hi: 0.26;
-}
-
-/* Trạng thái đọc từ html[data-theme] (theme.ts set) nên nền/thumb đổi theo đúng theme */
-.theme-toggle {
-  position: relative;
-  width: 56px;
-  height: 30px;
-  border: 1px solid var(--border-subtle);
-  background: var(--bg-surface);
-  transition: background 250ms ease, border-color 250ms ease, transform 120ms ease;
-}
-
-.theme-toggle:active {
-  transform: scale(0.97);
-}
-
-.theme-thumb {
-  /* rail 56 − 2 border − thumb 24 = hở đều 2px mỗi bên, travel 26px */
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--bg-elevated);
-  color: var(--text-soft);
-  /* cùng ngôn ngữ vát góc với clip-corner-btn, bo 5px trên thumb 24px */
-  clip-path: polygon(0 0, calc(100% - 5px) 0, 100% 5px, 100% 100%, 5px 100%, 0 calc(100% - 5px));
-  transition: transform 250ms cubic-bezier(0.4, 0, 0.2, 1), background 250ms ease, color 250ms ease;
-}
-
-/* Chế độ sáng = "bật": dùng crimson chủ đạo làm tín hiệu thay vì đổ bóng. */
-html[data-theme='light'] .theme-thumb {
-  transform: translateX(26px);
-  background: var(--text-brand);
-  color: #fff;
+  --hero-glow: 0.18;
 }
 
 /* Demo animation only; live progress remains owned by JobProgress and SSE. */
@@ -478,18 +433,12 @@ html[data-theme='light'] .theme-thumb {
 /* Khung sáng trên card khi luồng chạy tới (overlay riêng để không cướp
    border-hover của .card-3d) */
 .pipeline-flare {
-  border: 1px solid transparent;
+  /* Viền + quầng bake sẵn ở đây, keyframe chỉ động opacity: compositor lo được,
+     khỏi vẽ lại cả cái card mỗi khung hình. */
+  border: 1px solid rgba(255, 107, 74, 0.7);
+  box-shadow: inset 0 1px 0 rgba(255, 107, 74, 0.5), 0 0 18px rgba(255, 59, 48, 0.1);
   opacity: 0;
   animation: flare-frame 8s ease-out infinite;
-  animation-delay: calc(var(--step) * 2s);
-}
-
-.pipeline-step .step-num {
-  animation: flare-num 8s ease-in-out infinite;
-  animation-delay: calc(var(--step) * 2s);
-}
-.pipeline-step .step-icon {
-  animation: flare-icon 8s ease-in-out infinite;
   animation-delay: calc(var(--step) * 2s);
 }
 
@@ -498,18 +447,8 @@ html[data-theme='light'] .theme-thumb {
   5%, 14%       { transform: translateY(-2px); }
 }
 @keyframes flare-frame {
-  0%, 100%          { opacity: 0; border-color: transparent; box-shadow: none; }
-  5%, 14%           { opacity: 1; border-color: rgba(255, 107, 74, 0.7);
-                      box-shadow: inset 0 1px 0 rgba(255, 107, 74, 0.5), 0 0 18px rgba(255, 59, 48, 0.10); }
-  20%               { opacity: 0; }
-}
-@keyframes flare-num {
-  0%, 22%, 100% { text-shadow: none; }
-  5%, 14%       { text-shadow: 0 0 14px rgba(255, 90, 60, 0.9); }
-}
-@keyframes flare-icon {
-  0%, 22%, 100% { box-shadow: none; }
-  5%, 14%       { box-shadow: inset 0 0 0 1px rgba(255, 59, 48, 0.6), 0 0 10px rgba(255, 59, 48, 0.25); }
+  0%, 20%, 100% { opacity: 0; }
+  5%, 14%       { opacity: 1; }
 }
 @keyframes beam-y {
   0%           { transform: translateY(-6px); opacity: 0; }
@@ -604,6 +543,11 @@ html[data-theme='light'] .theme-thumb {
 .live-value {
   display: inline-block;
   animation: live-value-in 350ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Riêng số ở trang Profile giữ quầng đỏ — hai card live ngoài trang chủ đã
+   được yêu cầu để phẳng. */
+.live-value-glow {
   text-shadow: 0 0 16px rgba(255, 59, 48, 0.28);
 }
 
@@ -649,9 +593,15 @@ html[data-theme='light'] .toast-item {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
+@keyframes in-out {
+  from { opacity: 1; translate: 0 0;    }
+  to   { opacity: 0; translate: 0 10px; }
+}
 
 .in-up   { animation: in-up   260ms cubic-bezier(0.16, 1, 0.3, 1) backwards; }
 .in-fade { animation: in-fade 200ms ease-out                       backwards; }
+/* Keep the faded-out frame until React unmounts the node. */
+.in-out  { animation: in-out  180ms ease-in                       forwards; }
 
 /* Animate backdrop opacity only to avoid repainting blur on every frame. */
 .in-backdrop { animation: in-fade 160ms ease-out backwards; }
@@ -727,8 +677,9 @@ html[data-theme='light'] .bg-grid-cyber {
   transform: translateX(-50%);
   width: min(850px, 94vw);
   height: 400px;
-  background: radial-gradient(ellipse at center, rgba(255, 59, 48, 0.16) 0%, rgba(255, 107, 74, 0.07) 40%, transparent 70%);
-  filter: blur(65px);
+  /* Bỏ blur(65px): radial-gradient đã mềm sẵn, mà lớp blur chạy cùng animation
+     scale thì mỗi khung hình phải lọc lại từ đầu. Lớp này có mặt trên 5 trang. */
+  background: radial-gradient(ellipse at center, rgba(255, 59, 48, 0.15) 0%, rgba(255, 107, 74, 0.06) 45%, transparent 72%);
   pointer-events: none;
   z-index: 0;
   border-radius: 50%;
@@ -736,8 +687,7 @@ html[data-theme='light'] .bg-grid-cyber {
 }
 
 html[data-theme='light'] .hero-ambient-glow {
-  background: radial-gradient(ellipse at center, rgba(200, 30, 23, 0.10) 0%, rgba(216, 67, 28, 0.04) 40%, transparent 70%);
-  filter: blur(55px);
+  background: radial-gradient(ellipse at center, rgba(200, 30, 23, 0.09) 0%, rgba(216, 67, 28, 0.035) 45%, transparent 72%);
 }
 
 @keyframes ambient-pulse {
@@ -757,15 +707,28 @@ html[data-theme='light'] .hero-ambient-glow {
 
 @keyframes pulse-glow {
   0%, 100% {
-    box-shadow: 0 0 16px rgba(255, 59, 48, 0.35);
+    box-shadow: 0 0 14px rgba(255, 59, 48, 0.3);
   }
   50% {
-    box-shadow: 0 0 28px rgba(255, 59, 48, 0.65), 0 0 45px rgba(255, 107, 74, 0.22);
+    box-shadow: 0 0 22px rgba(255, 59, 48, 0.5);
   }
 }
 
 .btn-glow-pulse {
   animation: pulse-glow 3.5s ease-in-out infinite;
+}
+
+/* Nút ủng hộ nổi một mình nên phải tách khỏi nền: clip-path cắt box-shadow,
+   quầng sáng phải vẽ bằng drop-shadow thì mới ôm theo góc vát. */
+@keyframes float-glow {
+  0%, 100% { filter: drop-shadow(0 0 6px rgba(255, 59, 48, 0.45))
+              drop-shadow(0 4px 10px rgba(0, 0, 0, 0.55)); }
+  50%      { filter: drop-shadow(0 0 16px rgba(255, 59, 48, 0.75))
+              drop-shadow(0 4px 10px rgba(0, 0, 0, 0.55)); }
+}
+
+.float-glow {
+  animation: float-glow 2.4s ease-in-out infinite;
 }
 
 /* Button Shimmer Sweep Effect */
@@ -800,6 +763,113 @@ html[data-theme='light'] .hero-ambient-glow {
   100% { left: 140%; }
 }
 
+/* Pill điều hướng trên navbar: gạch gradient chạy từ trái sang khi hover/đang ở
+   trang công cụ (data-active), thay cho việc đổi nền đột ngột. */
+.nav-pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.875rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25rem;
+  letter-spacing: 0.01em;
+}
+
+.nav-pill::after {
+  content: '';
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 3px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--grad-1), var(--grad-3));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.22s ease-out;
+}
+
+.nav-pill:hover::after,
+.nav-pill[data-active='true']::after {
+  transform: scaleX(1);
+}
+
+/* Chữ giữ màu sáng, chỉ icon ăn màu brand: tô đỏ cả nhãn lẫn icon thì hai thứ
+   dính một vệt, nhãn 14px kèm dấu tiếng Việt (ô, ụ) chìm xuống nền. */
+.nav-pill[data-active='true'] {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.nav-pill[data-active='true'] > svg:first-child {
+  color: var(--text-brand-active);
+}
+
+/* Knob của công tắc giao diện: cùng ngôn ngữ vát góc + mặt 3D bên phải/dưới như
+   nút thường, chỉ thu số đo xuống cho vừa ô 24px. */
+.theme-knob {
+  clip-path: polygon(0 0, calc(100% - 4px) 0, 100% 4px, 100% 100%, 4px 100%, 0 calc(100% - 4px));
+  border-right: 2px solid color-mix(in srgb, var(--grad-1) 62%, #000);
+  border-bottom: 2px solid color-mix(in srgb, var(--grad-1) 62%, #000);
+}
+
+/* Dải đổi theme: View Transition chụp sẵn hai theme, ta cắt lớp mới từ trên xuống
+   và cắt lớp cũ từ dưới lên, chừa một khe 21px ngay mép quét. Khe đó để lộ nền
+   của ::view-transition-group — ba hàng brand, hàng cuối vụn thành ô vuông — nên
+   dải pixel chạy theo đường quét mà không cần lớp phủ che nội dung.
+   --wipe-y là biến đăng ký @property để animation nội suy được và các lớp con
+   (old/new/group) cùng đọc một giá trị -> ba chuyển động luôn khớp nhau. */
+@property --wipe-y {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: -21px;
+}
+
+@keyframes theme-wipe {
+  from {
+    --wipe-y: -21px;
+  }
+  to {
+    --wipe-y: 100vh;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
+  }
+
+  ::view-transition-group(root) {
+    animation: theme-wipe 520ms cubic-bezier(0.55, 0, 0.35, 1) both;
+    background-image:
+      linear-gradient(90deg, var(--grad-1), var(--grad-2)),
+      linear-gradient(90deg, var(--grad-2), var(--grad-3)),
+      repeating-linear-gradient(90deg, var(--grad-3) 0 14px, transparent 14px 28px);
+    background-size:
+      100% 7px,
+      100% 7px,
+      100% 7px;
+    background-repeat: no-repeat;
+    background-position:
+      0 var(--wipe-y),
+      0 calc(var(--wipe-y) + 7px),
+      0 calc(var(--wipe-y) + 14px);
+  }
+
+  /* Lớp mới chỉ hiện phần đã quét qua. */
+  ::view-transition-new(root) {
+    clip-path: inset(0 0 calc(100% - var(--wipe-y)) 0);
+  }
+
+  /* Lớp cũ giữ phần chưa quét; 21px = đúng chiều cao dải pixel. */
+  ::view-transition-old(root) {
+    clip-path: inset(calc(var(--wipe-y) + 21px) 0 0 0);
+  }
+}
+
 /* Cyber Badge Radar Pulse */
 .badge-radar {
   position: relative;
@@ -831,6 +901,808 @@ html[data-theme='light'] .card-hover-glow:hover {
   box-shadow: 0 12px 20px -4px rgba(200, 30, 23, 0.16);
 }
 
+/* ===== Random Case Opening: chỉ mô phỏng cơ chế mở hòm, không dùng tài sản của game nào ===== */
+.case-page-container {
+  max-width: min(78rem, 100%);
+}
+
+.case-stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: clamp(300px, 44vh, 440px);
+  padding: clamp(16px, 4vw, 30px) clamp(10px, 3vw, 22px);
+  color: var(--case-ink);
+  background:
+    radial-gradient(120% 80% at 50% -10%, color-mix(in srgb, var(--case-accent) 20%, transparent), transparent 62%),
+    var(--case-bg);
+  border: 1px solid color-mix(in srgb, var(--case-accent) 34%, var(--border-subtle));
+  overflow: hidden;
+}
+
+/* Hòm 3D: sáu mặt dựng bằng CSS transform, không ảnh, không canvas */
+@property --lid {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+.case-box {
+  --cw: min(360px, 58vw);
+  --ch: calc(var(--cw) * 0.64);
+  --cd: calc(var(--cw) * 0.42);
+  --pad-t: calc(var(--cw) * 0.36);
+  --pad-b: 26px;
+  --tilt-x: 18deg;
+  --tilt-y: -22deg;
+  --strap: color-mix(in srgb, var(--case-accent) 42%, #05060a);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: var(--pad-t) 0 var(--pad-b);
+  perspective: 1100px;
+  perspective-origin: 50% calc(var(--pad-t) + var(--ch) * 0.36);
+}
+
+.case-crate-tilt {
+  position: relative;
+  width: var(--cw);
+  height: var(--ch);
+  transform-style: preserve-3d;
+  transform: rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+  transition: transform 260ms ease-out;
+}
+.case-crate {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  animation: case-float 6.5s ease-in-out infinite;
+}
+.case-box[data-shaking='true'] .case-crate { animation: case-shake 620ms cubic-bezier(0.36, 0.07, 0.19, 0.97) both; }
+
+.case-crate-face,
+.case-crate-inside,
+.case-lid,
+.case-lid-inner {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+}
+.case-crate-face {
+  border: 1px solid color-mix(in srgb, var(--case-accent) 40%, transparent);
+  background-color: color-mix(in srgb, var(--case-bg) 92%, #000);
+}
+
+.case-crate-face-front {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateZ(calc(var(--cd) / 2));
+  background-image:
+    linear-gradient(90deg, transparent 13%, var(--strap) 13%, var(--strap) 17.5%, transparent 17.5%),
+    linear-gradient(90deg, transparent 82.5%, var(--strap) 82.5%, var(--strap) 87%, transparent 87%),
+    linear-gradient(90deg, transparent 78%, rgba(0, 0, 0, 0.45)),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.4), transparent 16%),
+    linear-gradient(168deg, color-mix(in srgb, #fff 14%, transparent), transparent 46%),
+    linear-gradient(180deg, color-mix(in srgb, var(--case-accent) 24%, var(--case-bg)), color-mix(in srgb, var(--case-bg) 82%, #000));
+  box-shadow: inset 0 1px 0 color-mix(in srgb, #fff 22%, transparent), inset 0 -18px 26px rgba(0, 0, 0, 0.42);
+}
+.case-crate-face-back {
+  transform: rotateY(180deg) translateZ(calc(var(--cd) / 2));
+  background-image: linear-gradient(180deg, color-mix(in srgb, var(--case-bg) 70%, #000), color-mix(in srgb, var(--case-bg) 94%, #000));
+}
+.case-crate-face-left,
+.case-crate-face-right {
+  width: var(--cd);
+  left: calc(50% - var(--cd) / 2);
+  background-image: linear-gradient(180deg, color-mix(in srgb, var(--case-accent) 12%, var(--case-bg)), color-mix(in srgb, var(--case-bg) 78%, #000));
+}
+.case-crate-face-left { transform: rotateY(-90deg) translateZ(calc(var(--cw) / 2)); }
+.case-crate-face-right {
+  transform: rotateY(90deg) translateZ(calc(var(--cw) / 2));
+  background-image:
+    linear-gradient(180deg, color-mix(in srgb, #fff 16%, transparent), transparent 42%),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.55), transparent 55%),
+    linear-gradient(180deg, color-mix(in srgb, var(--case-accent) 16%, var(--case-bg)), color-mix(in srgb, var(--case-bg) 55%, #000));
+}
+.case-crate-face-bottom {
+  height: var(--cd);
+  top: calc(50% - var(--cd) / 2);
+  transform: rotateX(-90deg) translateZ(calc(var(--ch) / 2));
+  background-image: linear-gradient(180deg, #04050a, color-mix(in srgb, var(--case-bg) 80%, #000));
+}
+/* lòng hộp: chỉ lộ ra khi nắp bật mở */
+.case-crate-inside {
+  inset: 6%;
+  height: calc(var(--cd) * 0.88);
+  top: calc(50% - var(--cd) / 2);
+  transform: rotateX(90deg) translateZ(calc(var(--ch) / 2 - 1px));
+  background:
+    radial-gradient(70% 120% at 50% 62%, color-mix(in srgb, var(--case-accent) 78%, transparent), transparent 72%),
+    linear-gradient(180deg, #12131c, #010206);
+  box-shadow: inset 0 0 26px color-mix(in srgb, var(--case-accent) 55%, transparent);
+}
+
+/* giá đỡ nằm trên mặt đỉnh: cạnh trên của tấm nắp trùng mép sau hộp */
+.case-lid-mount {
+  position: absolute;
+  left: 0;
+  top: calc(50% - var(--cd) / 2);
+  width: var(--cw);
+  height: var(--cd);
+  transform-style: preserve-3d;
+  transform: rotateX(90deg) translateZ(calc(var(--ch) / 2));
+}
+.case-lid {
+  inset: 0;
+  transform-origin: 50% 0%;
+  transform: rotateX(var(--lid, 0deg));
+  transition: transform 180ms ease-out;
+  transform-style: preserve-3d;
+  border: 1px solid color-mix(in srgb, var(--case-accent) 46%, transparent);
+  background-image:
+    linear-gradient(90deg, transparent 13%, var(--strap) 13%, var(--strap) 17.5%, transparent 17.5%),
+    linear-gradient(90deg, transparent 82.5%, var(--strap) 82.5%, var(--strap) 87%, transparent 87%),
+    linear-gradient(112deg, color-mix(in srgb, #fff 42%, transparent), transparent 44%),
+    linear-gradient(180deg, color-mix(in srgb, var(--case-accent) 52%, var(--case-bg)), color-mix(in srgb, var(--case-bg) 55%, #000));
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #fff 38%, transparent),
+    inset 0 -8px 16px rgba(0, 0, 0, 0.3);
+}
+.case-lid-inner {
+  inset: 0;
+  transform: rotateX(-179deg) translateZ(1.5px);
+  background:
+    radial-gradient(70% 120% at 50% 100%, color-mix(in srgb, var(--case-accent) 40%, transparent), transparent 70%),
+    linear-gradient(180deg, color-mix(in srgb, var(--case-accent) 14%, #0b0d16), #05060b);
+  box-shadow: inset 0 0 16px rgba(0, 0, 0, 0.6);
+}
+.case-lid-latch {
+  position: absolute;
+  left: 50%;
+  bottom: -7px;
+  translate: -50% 0;
+  width: 26px;
+  height: 14px;
+  border: 1px solid color-mix(in srgb, var(--case-accent) 70%, #000);
+  background: linear-gradient(180deg, color-mix(in srgb, #fff 30%, var(--case-accent)), color-mix(in srgb, var(--case-accent) 60%, #000));
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+.case-box[data-shaking='true'] .case-lid { animation: case-lid-open 620ms cubic-bezier(0.3, 0.9, 0.25, 1) both; }
+
+/* đinh tán ở bốn góc mọi mặt */
+.case-crate-face::after,
+.case-lid::after {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.55) 1.4px, transparent 2.1px),
+    radial-gradient(circle at 100% 0, rgba(255, 255, 255, 0.55) 1.4px, transparent 2.1px),
+    radial-gradient(circle at 0 100%, rgba(255, 255, 255, 0.4) 1.4px, transparent 2.1px),
+    radial-gradient(circle at 100% 100%, rgba(255, 255, 255, 0.4) 1.4px, transparent 2.1px);
+  background-repeat: no-repeat;
+}
+
+.case-crate-plate {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 12px 20px 14px;
+  margin: 10px 11%;
+  min-width: 44%;
+  background: color-mix(in srgb, #04050a 42%, transparent);
+  border: 1px solid color-mix(in srgb, var(--case-accent) 34%, transparent);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.case-box-title { font-weight: 700; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55); }
+.case-box-count,
+.case-reward-desc { color: color-mix(in srgb, var(--case-ink) 70%, transparent); }
+
+.case-box-glow {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--pad-t) + var(--ch) / 2);
+  translate: -50% -50%;
+  width: calc(var(--cw) * 1.5);
+  height: calc(var(--ch) * 1.9);
+  background: radial-gradient(circle at 50% 45%, color-mix(in srgb, var(--case-accent) 55%, transparent), transparent 66%);
+  opacity: 0.3;
+  pointer-events: none;
+}
+.case-box[data-shaking='true'] .case-box-glow { animation: case-glow-pulse 620ms ease-in-out both; }
+
+.case-crate-shadow {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--pad-t) + var(--ch) + 20px);
+  width: calc(var(--cw) * 1.1);
+  height: calc(var(--cd) * 0.52);
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.55), transparent 74%);
+  animation: case-shadow 6.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Vòng quay: chỉ một CSS transition trên transform, không có frame JS nào re-render */
+.case-roulette {
+  position: relative;
+  width: 100%;
+  padding: 10px 0;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent);
+}
+.case-roulette-track { will-change: transform; }
+
+.case-needle {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  translate: -50% 0;
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(180deg, #ff3b30, color-mix(in srgb, #ff3b30 30%, transparent));
+  box-shadow: 0 0 10px color-mix(in srgb, #ff3b30 70%, transparent);
+  pointer-events: none;
+}
+.case-needle::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  translate: -50% -1px;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 9px solid #ff3b30;
+}
+
+.case-reveal { position: relative; display: flex; flex-direction: column; align-items: center; width: 100%; }
+.case-reveal-pool {
+  position: absolute;
+  left: 50%;
+  bottom: -16%;
+  width: 168%;
+  height: 78%;
+  translate: -50% 0;
+  transform-origin: 50% 100%;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(50% 58% at 50% 100%, color-mix(in srgb, var(--fx) 85%, transparent) 0%, color-mix(in srgb, var(--fx) 26%, transparent) 42%, transparent 72%);
+  animation: case-fx-pool 1500ms ease-out both;
+}
+
+.case-rarity-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+}
+.case-reward-name { text-shadow: 0 0 18px color-mix(in srgb, var(--fx) 55%, transparent); }
+
+.case-pop { animation: case-pop 520ms cubic-bezier(0.2, 1.2, 0.3, 1) both; }
+
+.case-open-btn { min-width: min(240px, 100%); letter-spacing: 0.1em; }
+.case-open-btn:not(:disabled) { animation: case-btn-breathe 2.8s ease-in-out infinite; }
+.case-open-btn:active:not(:disabled) { scale: 0.97; }
+
+@keyframes case-shake {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  15% { transform: translate3d(-6px, 2px, 0) rotate(-1.6deg) rotateZ(1.2deg); }
+  30% { transform: translate3d(6px, -2px, 0) rotate(1.6deg) rotateZ(-1.2deg); }
+  45% { transform: translate3d(-5px, -3px, 6px) rotate(-1.2deg) rotateX(2deg); }
+  60% { transform: translate3d(5px, 3px, 6px) rotate(1.2deg) rotateX(-2deg); }
+  75% { transform: translate3d(-3px, 1px, 0) rotate(-0.6deg); }
+}
+@keyframes case-float {
+  0%, 100% { transform: translate3d(0, 0, 0) rotateY(-3deg); }
+  50% { transform: translate3d(0, -9px, 0) rotateY(3deg); }
+}
+@keyframes case-shadow {
+  0%, 100% { opacity: 0.9; scale: 1; }
+  50% { opacity: 0.55; scale: 0.9; }
+}
+@keyframes case-glow-pulse {
+  0% { opacity: 0.28; scale: 0.96; }
+  55% { opacity: 0.85; scale: 1.06; }
+  100% { opacity: 0.32; scale: 1; }
+}
+@keyframes case-lid-open {
+  0% { --lid: 0deg; }
+  55% { --lid: 122deg; }
+  100% { --lid: 116deg; }
+}
+@keyframes case-pop {
+  0% { opacity: 0; scale: 0.62; rotate: -6deg; }
+  100% { opacity: 1; scale: 1; rotate: 0deg; }
+}
+@keyframes case-fx-pool {
+  0% { opacity: 0; scale: 0.4 0.24; }
+  24% { opacity: 1; scale: 1.06 1.1; }
+  100% { opacity: 0.66; scale: 1; }
+}
+@keyframes case-btn-breathe {
+  0%, 100% { box-shadow: 0 0 0 rgba(255, 59, 48, 0); }
+  50% { box-shadow: 0 0 22px rgba(255, 59, 48, 0.45); }
+}
+
+/* Mobile: thanh điều khiển và hàng thẻ tab gọn lại cho vừa màn hình dọc */
+@media (max-width: 639px) {
+  .case-toolbar > button {
+    gap: 5px;
+    padding: 6px 9px;
+    font-size: 12px;
+  }
+  .case-toolbar > button > svg {
+    width: 14px;
+    height: 14px;
+    flex: none;
+  }
+  .case-editor > .flex[role='radiogroup'] {
+    height: auto;
+    flex-wrap: wrap;
+  }
+  .case-editor > .flex[role='radiogroup'] > button {
+    flex: 1 0 calc(50% - 3px);
+    height: 26px;
+    padding-inline: 4px;
+    font-size: 10px;
+  }
+  .case-stage { min-height: 300px; }
+  .case-box { --cw: min(230px, 48vw); --pad-b: 18px; }
+  .case-open-btn { padding: 7px 12px; font-size: 12px; letter-spacing: 0.08em; }
+}
+
+/* ── Square spin: vòng quay ô vuông ──────────────────────────────
+   Bảng vuông 1:1, ô xếp thành vành đai, không có kim — ánh sáng chạy và dừng ở ô đã chốt.
+   Hình học (--spin-*) và màu (--cell-*) do JS tính để tương phản đo được offline,
+   CSS chỉ vẽ. */
+
+/* Trang cần bảng lớn hơn bản 56rem chuẩn — danh sách dài mới đủ chỗ chữ. */
+.spin-page-container {
+  max-width: min(72rem, 100%);
+}
+
+/* Lưới bố cục: mobile xếp một cột để mỗi vòng lấy hết bề ngang, phần chỉnh sửa
+   nằm dưới; từ sm hai vòng kề nhau, lg một vòng thì thành 2 cột (vòng + kết quả | chỉnh sửa). */
+.spin-layout {
+  display: grid;
+  gap: 1rem;
+  align-items: start;
+}
+
+.spin-layout [data-area='wheel'][data-slot='A'] {
+  grid-area: wheelA;
+}
+.spin-layout [data-area='wheel'][data-slot='B'] {
+  grid-area: wheelB;
+}
+.spin-layout [data-area='result'] {
+  grid-area: result;
+}
+.spin-layout [data-area='setup'][data-slot='A'] {
+  grid-area: setupA;
+}
+.spin-layout [data-area='setup'][data-slot='B'] {
+  grid-area: setupB;
+}
+
+.spin-layout[data-mode='single'] {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    'wheelA'
+    'result'
+    'setupA';
+}
+
+/* Mobile: một cột — mỗi vòng lấy hết bề ngang, hai danh sách xếp chồng. */
+.spin-layout[data-mode='double'] {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    'wheelA'
+    'wheelB'
+    'result'
+    'setupA'
+    'setupB';
+}
+
+@media (min-width: 640px) {
+  .spin-layout {
+    gap: 1.5rem;
+  }
+  .spin-layout[data-mode='double'] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      'wheelA wheelB'
+      'result result'
+      'setupA setupB';
+  }
+}
+
+@media (min-width: 1024px) {
+  .spin-layout[data-mode='single'] {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 26rem);
+    grid-template-areas:
+      'wheelA setupA'
+      'result setupA';
+  }
+}
+
+/* Vòng chiếm hết bề ngang trên mobile nên toolbar phải gọn: icon loa đã nói
+   lên ô trượt, khỏi thêm nhãn chiếm thêm hàng. */
+@media (max-width: 639px) {
+  .spin-volume label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+}
+
+.spin-board {
+  position: relative;
+  width: 100%;
+  max-width: 620px;
+  aspect-ratio: 1 / 1;
+  margin-inline: auto;
+  container-type: inline-size;
+  /* Lưới + quầng brand dưới ô: ô kính vẽ trong suốt nên phải có gì đó sau kính
+     thì mới ra kính, nếu nền bảng chỉ một màu thì mờ đặc hay trong suốt như nhau. */
+  background-color: var(--bg-elevated);
+  background-image:
+    radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--text-brand) 12%, transparent), transparent 62%),
+    linear-gradient(color-mix(in srgb, var(--text-ink) 5%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--text-ink) 5%, transparent) 1px, transparent 1px);
+  background-size:
+    100% 100%,
+    24px 24px,
+    24px 24px;
+  border: 1px solid var(--border-subtle);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--text-brand) 12%, transparent), 0 18px 44px rgba(0, 0, 0, 0.35);
+}
+
+/* Ô chỉ đổi màu giữa các trạng thái — giữ nguyên hình học để phép đo chữ không lệch. */
+.spin-cell {
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spin-pad, 2px 3px);
+  /* 72% khớp CELL_TINT: cùng phép pha alpha JS dùng để chọn mực. */
+  border: 1px solid color-mix(in srgb, var(--cell-color, var(--border-subtle)) 55%, #ffffff);
+  background-color: color-mix(in srgb, var(--cell-color, transparent) 72%, transparent);
+  /* Sương trắng mép trên; JS đã kiểm tương phản cho cả dải này. */
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 55%);
+  /* Kính: gờ sáng trên + quầng neon loá ra ngoài. Không lớp sáng đáy, không
+     transition box-shadow — ô đổi màu liên tục lúc quay, mỗi lớp là một lần vẽ lại ô. */
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    0 0 12px -4px color-mix(in srgb, var(--cell-color, transparent) 85%, transparent);
+  text-align: center;
+  transition: background-color 70ms linear, border-color 70ms linear;
+}
+
+.spin-cell[data-empty='true'] {
+  border-color: color-mix(in srgb, var(--border-subtle) 75%, #ffffff);
+  background-color: color-mix(in srgb, var(--bg-elevated) 45%, transparent);
+  background-image: repeating-linear-gradient(135deg, transparent 0 6px, color-mix(in srgb, var(--border-subtle) 45%, transparent) 6px 7px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+
+.spin-cell-name {
+  display: block;
+  max-width: 100%;
+  /* --cell-fs do JS đo từ bề ngang thật của bảng; clamp chỉ là giá trị chờ. */
+  font-size: var(--cell-fs, clamp(8px, calc(100cqi * (1 - var(--spin-depth)) / var(--spin-per) / 4.5), 13px));
+  line-height: 1.2;
+  font-weight: 600;
+  color: var(--cell-ink, var(--text-ink));
+  /* Tên dài xuống dòng trong ô, không cắt. */
+  overflow-wrap: anywhere;
+}
+
+/* Ô đang rọi: sáng hơn + quầng viền, z-index 2 để quầng đè ô kề. */
+.spin-cell[data-lit='true'],
+.spin-cell[data-win='true'] {
+  z-index: 2;
+}
+
+.spin-cell[data-lit='true'] {
+  /* 88% khớp CELL_TINT_LIT: kính dày màu hơn khi bị rọi, quầng nhân đôi. */
+  border-color: color-mix(in srgb, var(--cell-lit, var(--text-brand)) 70%, #ffffff);
+  background-color: color-mix(in srgb, var(--cell-lit, transparent) 88%, transparent);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.75),
+    0 0 20px color-mix(in srgb, var(--cell-color, var(--text-brand)) 70%, transparent);
+}
+
+.spin-cell[data-lit='true'] .spin-cell-name {
+  color: var(--cell-lit-ink, var(--cell-ink, #fff));
+}
+
+.spin-cell[data-lit='true'][data-empty='true'] {
+  background-image: none;
+  background-color: color-mix(in srgb, var(--text-brand) 55%, var(--bg-elevated));
+}
+
+/* Ô thắng: đậu lại đúng màu đã rọi, thêm vòng viền dày và nhịp thở để phân biệt
+   với cú rọi đang chạy. */
+.spin-cell[data-win='true'] {
+  border-color: color-mix(in srgb, var(--cell-lit, var(--text-brand)) 70%, #ffffff);
+  background-color: color-mix(in srgb, var(--cell-lit, transparent) 88%, transparent);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.75),
+    inset 0 0 0 2px color-mix(in srgb, var(--cell-color, var(--text-brand)) 85%, #ffffff);
+  animation: spin-win-pulse 1.5s ease-in-out infinite;
+}
+
+.spin-cell[data-win='true'] .spin-cell-name {
+  color: var(--cell-lit-ink, var(--cell-ink, #fff));
+  /* Chữ trúng phát sáng theo màu của ô — cùng lối .case-reward-name vẫn dùng. */
+  text-shadow: 0 0 18px color-mix(in srgb, var(--cell-color, var(--text-brand)) 65%, transparent);
+}
+
+@keyframes spin-win-pulse {
+  0%,
+  100% {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.75),
+      inset 0 0 0 2px color-mix(in srgb, var(--cell-color, var(--text-brand)) 85%, #ffffff),
+      0 0 12px color-mix(in srgb, var(--cell-color, var(--text-brand)) 55%, transparent);
+  }
+  50% {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.75),
+      inset 0 0 0 2px color-mix(in srgb, var(--cell-color, var(--text-brand)) 85%, #ffffff),
+      0 0 26px color-mix(in srgb, var(--cell-color, var(--text-brand)) 85%, transparent);
+  }
+}
+
+.spin-wheel[data-phase='spinning'] .spin-board {
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--text-brand) 22%, transparent), 0 18px 44px rgba(0, 0, 0, 0.35);
+}
+
+/* Hub = hộp kết quả chung: nhãn + trạng thái + kết quả + nút quay nằm trong một
+   khung. Có kết quả thì JS tô nền khung bằng màu kính của ô trúng qua --hub-*. */
+.spin-hub {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  z-index: 4;
+  width: calc(100% * (1 - 2 * var(--spin-depth)) - 8px);
+  aspect-ratio: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* --hub-gap do utils/hub.ts tính: dải chật co còn 3px để kết quả không mất chỗ. */
+  gap: var(--hub-gap, 4px);
+  padding: 6px;
+  text-align: center;
+  background-color: color-mix(in srgb, var(--hub-bg, var(--bg-surface)) 72%, transparent);
+  border: 1px solid var(--hub-edge, var(--border-subtle));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    0 0 26px -8px color-mix(in srgb, var(--hub-bg, transparent) 70%, transparent);
+  transition: background-color 0.25s ease-out, border-color 0.25s ease-out;
+}
+
+.spin-hub-label {
+  font-size: var(--hub-meta-fs, 11px);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--hub-meta-ink, var(--text-brand));
+}
+
+.spin-hub-state {
+  font-size: var(--hub-meta-fs, 11px);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: var(--hub-meta-ink, var(--text-soft));
+}
+
+/* Nút quay đáy hub: nhỏ, dài — style nút primary của dự án (gradient, vát góc, 3D).
+   Kích thước do utils/hub.ts tính qua --hub-btn-w/h. */
+.spin-hub-btn {
+  --extrude: var(--extrude-btn);
+  --extrude-face: color-mix(in srgb, var(--grad-1) 62%, #000);
+  position: relative;
+  flex: none;
+  box-sizing: border-box;
+  width: var(--hub-btn-w, 72px);
+  height: var(--hub-btn-h, 28px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--clip-btn)) 0,
+    100% var(--clip-btn),
+    100% 100%,
+    var(--clip-btn) 100%,
+    0 calc(100% - var(--clip-btn))
+  );
+  border: 0;
+  border-right: var(--extrude) solid var(--extrude-face);
+  border-bottom: var(--extrude) solid var(--extrude-face);
+  background: linear-gradient(135deg, var(--grad-1) 0%, var(--grad-2) 50%, var(--grad-3) 100%);
+  color: #fff;
+  font-size: var(--hub-btn-fs, 11px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 0.12s ease, filter 0.12s ease;
+}
+
+.spin-hub-btn:hover:not(:disabled) {
+  transform: translate(-1px, -1px);
+  filter: brightness(1.1);
+}
+
+.spin-hub-btn:active:not(:disabled) {
+  transform: translate(1px, 1px);
+  --extrude-face: color-mix(in srgb, var(--grad-1) 78%, #000);
+}
+
+/* clip-path cắt luôn outline — vòng focus phải vẽ bằng inset ring. */
+.spin-hub-btn:focus-visible {
+  box-shadow: inset 0 0 0 2px #fff;
+}
+
+.spin-hub-btn[data-busy='true'] {
+  cursor: default;
+  opacity: 0.65;
+}
+
+.spin-hub-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.spin-hub-icon {
+  width: calc(var(--hub-btn-h, 28px) * 0.5);
+  height: calc(var(--hub-btn-h, 28px) * 0.5);
+}
+
+/* Vùng kết quả: không có khung riêng (hub mới là khung), chỉ giữ chỗ và
+   margin auto để nút luôn áp đáy. visibility do JS bật/tắt sau khi đo chữ. */
+.spin-hub-namebox {
+  width: 100%;
+  height: var(--hub-name-h, 0px);
+  margin-block: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 8px;
+  overflow: hidden;
+  visibility: hidden;
+}
+
+.spin-hub-name {
+  /* Chữ tự co theo bề rộng hộp — kết quả dài không tràn ra ngoài. */
+  font-size: var(--hub-name-fs, clamp(13px, calc(100cqi * (0.5 - var(--spin-depth)) / 6), 30px));
+  font-weight: 800;
+  line-height: 1.15;
+  color: var(--hub-ink, var(--text-ink));
+  overflow-wrap: anywhere;
+  text-shadow: 0 0 18px color-mix(in srgb, var(--text-brand) 40%, transparent);
+}
+
+/* Quầng sáng sau lượt quay: dùng filter vì box-shadow ngoài sẽ bị clip-path cắt mất. */
+.spin-wheel[data-phase='stopped'] .spin-hub-btn {
+  filter: drop-shadow(0 0 10px color-mix(in srgb, var(--grad-1) 55%, transparent));
+}
+
+.spin-result-row[data-phase='stopped'] {
+  border-color: color-mix(in srgb, var(--text-brand) 45%, var(--border-subtle));
+}
+
+/* Hai kết quả đặt cạnh nhau từ sm — khỏi phải cuộn qua từng dòng. */
+.spin-result-rows {
+  display: grid;
+  gap: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .spin-result-rows[data-double='true'] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.spin-result-name {
+  /* Không cắt tên ở vùng kết quả — cho phép xuống dòng. */
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 639px) {
+  .spin-board {
+    max-width: 360px;
+  }
+  .spin-hub-label {
+    font-size: 9px;
+  }
+  .spin-hub-state {
+    font-size: 10px;
+  }
+}
+
+/* ============ Cuộn trang dài ============
+   Trang chủ/landing dài ~13.000px. Không có gì chặn thì mọi section đều nằm
+   trong cây render: mỗi khung hình cuộn phải tính lại style cho hàng chục
+   element đang animation vô hạn bên trong, kể cả phần cách xa màn hình.
+   content-visibility:auto bảo trình duyệt bỏ qua section ngoài tầm nhìn —
+   không layout, không paint. "auto <dài>" nhớ kích thước thật sau lần vẽ đầu
+   nên thanh cuộn không bị nhảy. Lưu ý: nó KHÔNG dừng đồng hồ animation, style
+   recalc bên trong vẫn tick mỗi khung hình — muốn bớt recalc phải giảm số
+   animation vô hạn và chỉ animation thuộc tính compositor (transform/opacity).
+   Hero không có id/data-reveal nên đánh dấu bằng .cv-skip. Browser cũ không
+   hiểu thì bỏ qua rule, không sao. */
+main section[id],
+main section[data-reveal],
+.cv-skip {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 620px;
+}
+
+/* ============ Máy cảm ứng: tắt hiệu ứng phải vẽ lại mỗi khung hình ============
+   (hover: none) = điện thoại/tablet, không có con trỏ rời — mọi hiệu ứng chỉ
+   chạy lúc :hover ở đây là vô nghĩa, còn animation vô hạn + blur nền toàn
+   chiều ngang thì bắt GPU vẽ lại suốt khi cuộn. Desktop giữ nguyên toàn bộ. */
+@media (hover: none) {
+  /* 33 thẻ .card-3d: transform perspective + transition filter tạo layer riêng
+     cho từng thẻ, nhưng không có hover nên không bao giờ được dùng tới.
+     Lớp ::before để nguyên: opacity 0 nên không vẽ, trừ thẻ có chủ đích sáng
+     liên tục (.card-3d-glow). */
+  .card-3d { transform: none; transition: border-color 0.25s ease-out; }
+
+  /* Quầng sáng toàn trang chạy vô hạn trên lớp 850x400px. */
+  .hero-ambient-glow { animation: none; }
+
+  /* Pipeline: giữ line tĩnh như bản reduced-motion vẫn hiển thị. */
+  .pipeline-step,
+  .pipeline-flare { animation: none; }
+  .pipeline-step::after { display: none; }
+
+  .badge-radar::before { animation: none; }
+  .animate-float-gentle,
+  .btn-glow-pulse { animation: none; }
+
+  /* Nút ủng hộ: giữ quầng tĩnh để vẫn nổi bật, bỏ nhịp thở filter. */
+  .float-glow {
+    animation: none;
+    filter: drop-shadow(0 0 10px rgba(255, 59, 48, 0.55))
+            drop-shadow(0 4px 10px rgba(0, 0, 0, 0.55));
+  }
+
+  /* Hòm: crate 3D + bóng đổ nhún nhảy liên tục; cú lắc khi quay vẫn chạy vì
+     selector .case-box[data-shaking='true'] đặc hiệu hơn. */
+  .case-crate,
+  .case-crate-shadow,
+  .case-open-btn:not(:disabled) { animation: none; }
+
+  /* Ô thắng vẫn có viền dày + nền sáng + chữ phát sáng, chỉ bỏ nhịp thở. */
+  .spin-cell[data-win='true'] { animation: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-page-enter { animation: none; translate: none; }
   .toast-enter, .toast-leave { animation: none; }
@@ -838,30 +1710,45 @@ html[data-theme='light'] .card-hover-glow:hover {
   .heading-in { animation: none; }
   /* đang thiếu trong guard: .animate-fade-in chạy cả khi reduced-motion */
   .animate-fade-in { animation: none; }
-  .in-up, .in-fade, .in-backdrop,
+  .in-up, .in-out, .in-fade, .in-backdrop,
   .stagger > *,
   [data-reveal].is-in { animation: none; }
   .acc,
   .acc[data-open='true'] { transition: none; }
   .hero-word,
   .hero-word-hl { animation: none; opacity: 1; translate: none; scale: none; filter: none; }
-  .hero-word-hl { background-size: auto; }
-  .theme-toggle,
-  .theme-thumb { transition: none; }
   .btn-3d              { transition: none; }
   .card-3d           { transform: none; transition: border-color 0.25s ease-out; }
   .card-3d::before   { display: none; }
   .card-3d:hover     { filter: none; }
-  .live-value { animation: none; text-shadow: none; }
+  .live-value { animation: none; }
   /* Pipeline: giữ line tĩnh + thứ tự số rõ, tắt toàn bộ chuyển động */
   .pipeline-step,
-  .pipeline-flare,
-  .pipeline-step .step-num,
-  .pipeline-step .step-icon { animation: none; }
+  .pipeline-flare { animation: none; }
   .pipeline-step::after { display: none; }
   .hero-ambient-glow,
   .animate-float-gentle,
   .btn-glow-pulse,
+  .float-glow,
   .badge-radar::before { animation: none; }
   .btn-shimmer:hover::after { animation: none; }
+  .nav-pill::after { transition: none; }
+  /* Case opening: giữ nguyên kết quả, chỉ bỏ chuyển động */
+  .case-box[data-shaking='true'],
+  .case-box[data-shaking='true'] .case-lid,
+  .case-box[data-shaking='true'] .case-crate,
+  .case-box-glow,
+  .case-crate,
+  .case-crate-shadow,
+  .case-pop,
+  .case-open-btn:not(:disabled) { animation: none; }
+  .case-roulette-track { transition: none !important; }
+  .case-crate-tilt { transition: none; }
+  .case-lid { transition: none; }
+  /* Square spin: không chạy ánh sáng, chỉ sáng tĩnh ô trúng. JS cũng cho schedule = 1 bước. */
+  .spin-cell,
+  .spin-cell[data-lit='true'],
+  .spin-cell[data-win='true'] { animation: none; transition: none; }
+  .spin-hub-btn,
+  .spin-wheel[data-phase='stopped'] .spin-hub-btn { transition: none; }
 }

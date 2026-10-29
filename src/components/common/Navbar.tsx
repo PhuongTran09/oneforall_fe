@@ -1,16 +1,19 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, type ReactNode } from 'react'
 import { useLocation } from 'react-router-dom'
 import {
-  Menu,
-  X,
+  ArrowUpRight,
+  ChevronDown,
+  Dices,
   Files,
   Image as ImageIcon,
+  LayoutGrid,
   LogIn,
   LogOut,
-  ArrowRight,
+  Menu,
+  PackageOpen,
   User as UserIcon,
   History as HistoryIcon,
-  ChevronDown,
+  X,
 } from 'lucide-react'
 import { Button } from './Button'
 import { ThemeToggle } from './ThemeToggle'
@@ -21,7 +24,7 @@ import { LanguageToggle } from '../../i18n/LanguageToggle'
 import { t, withLocale } from '../../i18n/langStore'
 import { useAuth, signOut } from '../../services/authStore'
 
-// Lucide v1 đã bỏ brand icon (Youtube/TikTok) → giữ SVG chính hãng inline,
+// Lucide đã bỏ brand icon (Youtube/TikTok) → giữ SVG chính hãng inline,
 // fill currentColor để ăn theo màu của tab (active/hover/inactive).
 function YoutubeIcon({ className = 'w-5 h-5' }: { className?: string }) {
   return (
@@ -43,6 +46,50 @@ export interface NavbarProps {
   onOpenAuth?: (mode: 'login' | 'register') => void
 }
 
+interface NavItem {
+  to: string
+  label: string
+  icon: ReactNode
+}
+
+interface NavGroup {
+  id: string
+  title: string
+  items: NavItem[]
+}
+
+const ICON = 'w-4 h-4 shrink-0'
+
+/** Ba nhóm công cụ của mega-menu — cũng là danh sách hiển thị trong menu mobile. */
+function navGroups(): NavGroup[] {
+  return [
+    {
+      id: 'video',
+      title: t('nav.groupVideo'),
+      items: [
+        { to: '/youtube-downloader', label: 'YouTube', icon: <YoutubeIcon className={ICON} /> },
+        { to: '/tiktok-downloader', label: 'TikTok', icon: <TiktokIcon className={ICON} /> },
+      ],
+    },
+    {
+      id: 'media',
+      title: t('nav.groupMedia'),
+      items: [
+        { to: '/convert', label: t('nav.convertFiles'), icon: <Files className={ICON} /> },
+        { to: '/remove-background', label: t('nav.imageTools'), icon: <ImageIcon className={ICON} /> },
+      ],
+    },
+    {
+      id: 'fun',
+      title: t('nav.groupFun'),
+      items: [
+        { to: '/case-opening', label: t('nav.caseOpening'), icon: <PackageOpen className={ICON} /> },
+        { to: '/square-spin', label: t('nav.squareSpin'), icon: <Dices className={ICON} /> },
+      ],
+    },
+  ]
+}
+
 // Ưu tiên avatar/name từ Supabase Auth user_metadata (§1); fallback email.
 function accountLabel(user: NonNullable<ReturnType<typeof useAuth>['session']>['user']): string {
   const meta = (user.user_metadata ?? {}) as Record<string, unknown>
@@ -61,29 +108,39 @@ function accountAvatar(user: NonNullable<ReturnType<typeof useAuth>['session']>[
 
 export function Navbar({ onOpenAuth }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [toolsOpen, setToolsOpen] = useState(false)
   const [authModalMode, setAuthModalMode] = useState<'login' | 'register' | null>(null)
   const [accountOpen, setAccountOpen] = useState(false)
   const [confirmSignOutOpen, setConfirmSignOutOpen] = useState(false)
   const accountRef = useRef<HTMLDivElement>(null)
+  const toolsRef = useRef<HTMLDivElement>(null)
   const location = useLocation()
   const { session, ready } = useAuth()
   const user = session?.user ?? null
+  const groups = navGroups()
+  const toolItems = groups.flatMap((g) => g.items)
 
-  // Đóng dropdown khi click ra ngoài / Esc. Navigation đóng qua onClick của từng item
-  // (không dùng effect setState-sync — tránh cascading render).
+  // Đóng dropdown khi click ra ngoài / Esc. Navigation đóng qua onClick của từng
+  // item (không dùng effect setState-sync — tránh cascading render).
   useEffect(() => {
-    if (!accountOpen) return
+    if (!accountOpen && !toolsOpen) return
     const onDocClick = (e: MouseEvent) => {
-      if (accountRef.current && !accountRef.current.contains(e.target as Node)) setAccountOpen(false)
+      const target = e.target as Node
+      if (accountRef.current && !accountRef.current.contains(target)) setAccountOpen(false)
+      if (toolsRef.current && !toolsRef.current.contains(target)) setToolsOpen(false)
     }
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setAccountOpen(false)
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return
+      setAccountOpen(false)
+      setToolsOpen(false)
+    }
     document.addEventListener('mousedown', onDocClick)
     document.addEventListener('keydown', onKey)
     return () => {
       document.removeEventListener('mousedown', onDocClick)
       document.removeEventListener('keydown', onKey)
     }
-  }, [accountOpen])
+  }, [accountOpen, toolsOpen])
 
   const handleAuthClick = (mode: 'login' | 'register') => {
     setMobileMenuOpen(false)
@@ -94,66 +151,110 @@ export function Navbar({ onOpenAuth }: NavbarProps) {
     }
   }
 
-  const navCategories = [
-    { label: 'YouTube', to: '/youtube-downloader', icon: <YoutubeIcon className="w-5 h-5" /> },
-    { label: 'TikTok', to: '/tiktok-downloader', icon: <TiktokIcon className="w-5 h-5" /> },
-    { label: t('nav.convertFiles'), to: '/convert', icon: <Files className="w-5 h-5" /> },
-    { label: t('nav.imageTools'), to: '/remove-background', icon: <ImageIcon className="w-5 h-5" /> },
-  ]
+  const isActive = (to: string): boolean => location.pathname.startsWith(withLocale(to))
+  const onToolPage = toolItems.some((item) => isActive(item.to))
+
+  const itemClass = (active: boolean): string =>
+    `flex items-center gap-2.5 px-2 py-2 text-sm clip-corner-btn transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4545]/60 ${
+      active ? 'bg-tint text-brand-active font-semibold' : 'text-soft hover:text-ink hover:bg-brand/10'
+    }`
 
   return (
     <>
-      <header className="sticky top-0 z-40 w-full border-b border-edge bg-page/90 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          {/* Logo Brand */}
-          <LocaleLink to="/" className="flex items-center gap-2.5 group">
-            <div className="w-10 h-10 flex items-center justify-center transition-all duration-300 group-hover:scale-105 group-hover:drop-shadow-[0_0_12px_rgba(255,59,48,0.45)]">
+      {/* backdrop-blur toàn chiều ngang bắt GPU lọc lại nền mọi khung hình cuộn,
+          mà máy cảm ứng thì không đủ mạnh — chuyển sang nền đặc, không blur. */}
+      <header className="sticky top-0 z-40 w-full border-b border-edge bg-page/85 backdrop-blur-xl pointer-coarse:bg-page pointer-coarse:backdrop-blur-none">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-[72px] flex items-center gap-3">
+          {/* Logo */}
+          <LocaleLink to="/" onClick={() => setToolsOpen(false)} className="flex items-center gap-2.5 shrink-0 group">
+            <div className="w-9 h-9 flex items-center justify-center transition-all duration-300 group-hover:scale-105 group-hover:drop-shadow-[0_0_12px_rgba(255,59,48,0.45)]">
               <img src="/oneforall.svg" alt="One ForAll Logo" className="w-full h-full object-contain" />
             </div>
-            <div className="flex flex-col">
-              <span className="font-bold text-xl tracking-tight text-ink flex items-center gap-1.5">
-                One<span className="text-brand-gradient">ForAll</span>
-                <span className="text-[10px] font-mono px-1.5 py-0.5 bg-brand/10 text-brand border border-brand/30 font-semibold clip-corner-btn">
-                  Tools
-                </span>
+            <span className="font-bold text-xl tracking-tight text-ink flex items-center gap-1.5">
+              One<span className="text-brand-gradient">ForAll</span>
+              <span className="hidden sm:inline-block text-[10px] font-mono px-1.5 py-0.5 bg-brand/10 text-brand border border-brand/30 font-semibold clip-corner-btn">
+                Tools
               </span>
-            </div>
+            </span>
           </LocaleLink>
 
-          {/* Keep desktop navigation at 768px; the full menu does not fit at 740-767px. */}
-          <nav className="hidden min-[768px]:flex items-center gap-1 lg:gap-1.5" aria-label={t('nav.ariaMain')}>
-            {navCategories.map((item) => {
-              const isActive = location.pathname.startsWith(withLocale(item.to))
-              return (
-                <LocaleLink
-                  key={item.to}
-                  to={item.to}
-                  aria-current={isActive ? 'page' : undefined}
-                  className={`inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium transition-colors duration-150 clip-corner-btn focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4545]/60 ${
-                    isActive
-                      ? 'bg-tint text-brand-active font-semibold'
-                      : 'text-soft hover:text-ink hover:bg-brand/10'
-                  }`}
-                >
-                  {item.icon}
-                  <span>{item.label}</span>
-                </LocaleLink>
-              )
-            })}
+          {/* Điều hướng desktop: một pill "Công cụ" mở mega-menu. Pill sáng lên khi
+              đang ở trang của một công cụ nào đó trong danh mục. */}
+          <nav className="hidden lg:flex items-center" aria-label={t('nav.ariaMain')}>
+            <div className="relative" ref={toolsRef}>
+              <button
+                type="button"
+                onClick={() => setToolsOpen((open) => !open)}
+                aria-haspopup="true"
+                aria-expanded={toolsOpen}
+                aria-label={t('nav.ariaTools')}
+                data-active={onToolPage || toolsOpen}
+                className="nav-pill text-soft hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4545]/60"
+              >
+                <LayoutGrid className="w-4.5 h-4.5 shrink-0" />
+                <span>{t('nav.tools')}</span>
+                {/* Mũi đóng/mở để nhỏ hơn và mờ hơn: cùng 16px với chữ thì nó
+                    tranh sự chú ý với nhãn, hàng icon-chữ-mũi không còn một khối. */}
+                <ChevronDown className={`w-3.5 h-3.5 shrink-0 opacity-70 transition-transform duration-200 ${toolsOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {toolsOpen && (
+                <div className="absolute left-0 top-full pt-2 w-[40rem] max-w-[calc(100vw-4rem)] z-50 animate-fade-in">
+                  <div className="bg-surface border border-[rgba(255,59,48,0.35)] clip-corner-card shadow-[0_24px_60px_rgba(0,0,0,0.5)] overflow-hidden">
+                    <div className="grid grid-cols-3 gap-x-3 p-3">
+                      {groups.map((group) => (
+                        <div key={group.id} className="min-w-0 space-y-1">
+                          <p className="px-2 pb-1 text-[10px] font-mono uppercase tracking-[0.14em] text-slate-500">{group.title}</p>
+                          {group.items.map((item) => (
+                            <LocaleLink
+                              key={item.to}
+                              to={item.to}
+                              onClick={() => setToolsOpen(false)}
+                              aria-current={isActive(item.to) ? 'page' : undefined}
+                              className={itemClass(isActive(item.to))}
+                            >
+                              <span className="grid place-items-center w-7 h-7 shrink-0 bg-elev border border-edge text-brand clip-corner-btn">{item.icon}</span>
+                              <span className="truncate">{item.label}</span>
+                            </LocaleLink>
+                          ))}
+                        </div>
+                      ))}
+                    </div>
+                    <div className="border-t border-edge/60 bg-page/40 px-5 py-2.5">
+                      <LocaleLink
+                        to="/"
+                        onClick={() => setToolsOpen(false)}
+                        className="inline-flex items-center gap-1.5 text-xs font-medium text-soft hover:text-ink transition-colors"
+                      >
+                        {t('toolsGrid.all')}
+                        <ArrowUpRight className="w-3.5 h-3.5" />
+                      </LocaleLink>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           </nav>
 
-          {/* Right Action Buttons */}
-          <div className="hidden min-[768px]:flex items-center gap-3">
-            {/* <xl: thêm 69px là nhãn tab "Xoá nền ảnh" tràn khỏi header cao 64px */}
-            <span className="hidden xl:inline-flex">
-              <LanguageToggle />
-            </span>
-            <ThemeToggle />
-            {!ready ? (
-              // Loading state trong khi bootstrap phiên (§1): khung tĩnh, không nhấp nháy "đăng nhập".
-              <div className="h-9 w-24 rounded-md bg-surface/60 animate-pulse" aria-hidden="true" />
-            ) : user ? (
-              <div className="relative" ref={accountRef}>
+          <div className="flex-1" />
+
+          {/* Cụm phải nằm trong một thanh glass riêng cho khỏi rời rạc. Menu tài khoản
+              là ANH EM của thanh glass chứ không phải con: clip-path của clip-corner-card
+              cắt mọi phần tử rơi ra ngoài hộp pill, nên để menu bên trong thì mở ra
+              không thấy gì. */}
+          <div className="relative hidden min-[768px]:flex" ref={accountRef}>
+            {/* KHÔNG blur lớp này: header đã blur cả dải phía sau rồi, blur lồng
+                nhau là bắt GPU lọc lại kết quả vừa lọc, mỗi khung hình cuộn. */}
+            <div className="flex items-center gap-2 px-2 py-1.5 bg-surface/45 border border-edge clip-corner-card pointer-coarse:bg-surface">
+              <span className="hidden xl:inline-flex">
+                <LanguageToggle />
+              </span>
+              <ThemeToggle />
+              <span className="w-px h-6 bg-edge/70" aria-hidden="true" />
+              {!ready ? (
+                // Loading state trong khi bootstrap phiên (§1): khung tĩnh, không nhấp nháy "đăng nhập".
+                <div className="h-9 w-24 rounded-md bg-surface/60 animate-pulse" aria-hidden="true" />
+              ) : user ? (
                 <button
                   type="button"
                   onClick={() => setAccountOpen((o) => !o)}
@@ -176,111 +277,111 @@ export function Navbar({ onOpenAuth }: NavbarProps) {
                   <span className="truncate">{accountLabel(user)}</span>
                   <ChevronDown className="w-4 h-4 shrink-0 text-soft" />
                 </button>
-                {accountOpen && (
-                  <div
-                    role="menu"
-                    className="absolute right-0 mt-2 w-56 bg-surface border border-[rgba(255,59,48,0.35)] clip-corner-card shadow-xl py-1 z-50 animate-fade-in"
+              ) : (
+                <>
+                  <Button variant="ghost" size="sm" onClick={() => handleAuthClick('login')} leftIcon={<LogIn className="w-4 h-4" />}>
+                    {t('auth.login')}
+                  </Button>
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    onClick={() => handleAuthClick('register')}
+                    className="btn-shimmer shadow-[0_0_14px_rgba(255,59,48,0.25)]"
                   >
-                    <LocaleLink
-                      to="/profile"
-                      role="menuitem"
-                      onClick={() => setAccountOpen(false)}
-                      className="flex items-center gap-2 px-3 py-2 text-sm text-soft hover:text-ink hover:bg-brand/10"
-                    >
-                      <UserIcon className="w-4 h-4 text-brand-2" />
-                      {t('nav.myProfile')}
-                    </LocaleLink>
-                    <LocaleLink
-                      to="/history"
-                      role="menuitem"
-                      onClick={() => setAccountOpen(false)}
-                      className="flex items-center gap-2 px-3 py-2 text-sm text-soft hover:text-ink hover:bg-brand/10"
-                    >
-                      <HistoryIcon className="w-4 h-4 text-brand-2" />
-                      {t('nav.history')}
-                    </LocaleLink>
-                    <div className="my-1 border-t border-edge/60" />
-                    <button
-                      type="button"
-                      role="menuitem"
-                      onClick={() => {
-                        setAccountOpen(false)
-                        setConfirmSignOutOpen(true)
-                      }}
-                      className="flex w-full items-center gap-2 px-3 py-2 text-sm text-soft hover:text-ink hover:bg-brand/10"
-                    >
-                      <LogOut className="w-4 h-4 text-brand-2" />
-                      {t('auth.signOut')}
-                    </button>
-                  </div>
-                )}
+                    {t('auth.startFree')}
+                  </Button>
+                </>
+              )}
+            </div>
+
+            {accountOpen && user && (
+              <div
+                role="menu"
+                className="absolute right-2 top-full mt-0.5 w-56 bg-surface border border-[rgba(255,59,48,0.35)] clip-corner-card shadow-xl py-1 z-50 animate-fade-in"
+              >
+                <LocaleLink
+                  to="/profile"
+                  role="menuitem"
+                  onClick={() => setAccountOpen(false)}
+                  className="flex items-center gap-2 px-3 py-2 text-sm text-soft hover:text-ink hover:bg-brand/10"
+                >
+                  <UserIcon className="w-4 h-4 text-brand-2" />
+                  {t('nav.myProfile')}
+                </LocaleLink>
+                <LocaleLink
+                  to="/history"
+                  role="menuitem"
+                  onClick={() => setAccountOpen(false)}
+                  className="flex items-center gap-2 px-3 py-2 text-sm text-soft hover:text-ink hover:bg-brand/10"
+                >
+                  <HistoryIcon className="w-4 h-4 text-brand-2" />
+                  {t('nav.history')}
+                </LocaleLink>
+                <div className="my-1 border-t border-edge/60" />
+                <button
+                  type="button"
+                  role="menuitem"
+                  onClick={() => {
+                    setAccountOpen(false)
+                    setConfirmSignOutOpen(true)
+                  }}
+                  className="flex w-full items-center gap-2 px-3 py-2 text-sm text-soft hover:text-ink hover:bg-brand/10"
+                >
+                  <LogOut className="w-4 h-4 text-brand-2" />
+                  {t('auth.signOut')}
+                </button>
               </div>
-            ) : (
-              <>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleAuthClick('login')}
-                  leftIcon={<LogIn className="w-4 h-4" />}
-                >
-                  {t('auth.login')}
-                </Button>
-                <Button
-                  variant="primary"
-                  size="sm"
-                  onClick={() => handleAuthClick('register')}
-                  rightIcon={<ArrowRight className="w-4 h-4" />}
-                  className="btn-shimmer shadow-[0_0_14px_rgba(255,59,48,0.25)]"
-                >
-                  {t('auth.startFree')}
-                </Button>
-              </>
             )}
           </div>
 
-          {/* Mobile Menu Toggle Button */}
-          <div className="flex min-[768px]:hidden items-center gap-2">
-            <ThemeToggle />
+          {/* Mobile: theme + hamburger. Từ 768px theme đã nằm trong thanh glass nên
+              cluster này chỉ còn mỗi hamburger. */}
+          <div className="flex lg:hidden items-center gap-2">
+            <span className="min-[768px]:hidden">
+              <ThemeToggle />
+            </span>
             <button
               type="button"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              onClick={() => setMobileMenuOpen((open) => !open)}
               className="p-2 text-slate-300 hover:text-ink hover:bg-brand/10 focus:outline-none clip-corner-btn"
               aria-label={mobileMenuOpen ? t('common.closeMenu') : t('common.openMenu')}
+              aria-expanded={mobileMenuOpen}
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
           </div>
         </div>
 
-        {/* Mobile Dropdown Menu */}
+        {/* Menu mobile: cùng bộ nhóm với mega-menu desktop. */}
         {mobileMenuOpen && (
-          <div className="min-[768px]:hidden border-b border-edge bg-page px-4 pt-3 pb-6 in-up">
+          <div className="lg:hidden border-b border-edge bg-page px-4 pt-3 pb-6 in-up">
             <div className="flex items-center justify-between gap-3 pb-3 mb-1 border-b border-edge/60">
               <span className="text-sm font-medium text-soft">{t('common.language')}</span>
               <LanguageToggle />
             </div>
-            <nav className="flex flex-col space-y-1 mb-4">
-              {navCategories.map((item) => {
-                const isActive = location.pathname.startsWith(withLocale(item.to))
-                return (
-                  <LocaleLink
-                    key={item.to}
-                    to={item.to}
-                    onClick={() => setMobileMenuOpen(false)}
-                    aria-current={isActive ? 'page' : undefined}
-                    className={`flex items-center gap-2 px-3 py-2.5 text-sm font-medium transition-colors duration-[180ms] clip-corner-btn focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4545]/60 ${
-                      isActive
-                        ? 'bg-tint text-brand-active font-semibold'
-                        : 'text-soft hover:text-ink'
-                    }`}
-                  >
-                    {item.icon}
-                    <span>{item.label}</span>
-                  </LocaleLink>
-                )
-              })}
+            <nav className="space-y-4 py-3" aria-label={t('nav.ariaMain')}>
+              {groups.map((group) => (
+                <div key={group.id} className="min-w-0">
+                  <p className="px-1 pb-1.5 text-[10px] font-mono uppercase tracking-[0.14em] text-slate-500">{group.title}</p>
+                  <div className="grid grid-cols-2 gap-1.5">
+                    {group.items.map((item) => (
+                      <LocaleLink
+                        key={item.to}
+                        to={item.to}
+                        onClick={() => setMobileMenuOpen(false)}
+                        aria-current={isActive(item.to) ? 'page' : undefined}
+                        className={itemClass(isActive(item.to))}
+                      >
+                        <span className="grid place-items-center w-7 h-7 shrink-0 bg-elev border border-edge text-brand clip-corner-btn">{item.icon}</span>
+                        {/* Nhãn mobile cho phép xuống dòng: cột hẹp ~170px không đủ cho "Vòng quay ô vuông". */}
+                        <span className="min-w-0 leading-tight">{item.label}</span>
+                      </LocaleLink>
+                    ))}
+                  </div>
+                </div>
+              ))}
             </nav>
-            <div className="flex flex-col gap-2 pt-2 border-t border-edge/60">
+            <div className="flex flex-col gap-2 pt-3 border-t border-edge/60">
               {user ? (
                 <>
                   <span
@@ -339,13 +440,7 @@ export function Navbar({ onOpenAuth }: NavbarProps) {
                   >
                     {t('auth.login')}
                   </Button>
-                  <Button
-                    variant="primary"
-                    fullWidth
-                    size="md"
-                    onClick={() => handleAuthClick('register')}
-                    rightIcon={<ArrowRight className="w-4 h-4" />}
-                  >
+                  <Button variant="primary" fullWidth size="md" onClick={() => handleAuthClick('register')}>
                     {t('auth.startNow')}
                   </Button>
                 </>
