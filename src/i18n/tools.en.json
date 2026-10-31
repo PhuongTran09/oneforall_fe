@@ -569,7 +569,7 @@
     "h1": "Convert Documents Online",
     "subtitle": "Convert supported document and spreadsheet formats for work, study, or sharing.",
     "badge": "Document Office Suite",
-    "supportedFormatsDesc": "Available conversion pairs depend on the source file. Legacy Word .doc files are not supported.",
+    "supportedFormatsDesc": "Available conversion pairs depend on the source file.",
     "howItWorksSteps": [
       {
         "step": "01",
@@ -619,11 +619,11 @@
   },
   "/pdf-converter": {
     "title": "Convert Supported Documents and Images to PDF | One ForAll",
-    "metaDescription": "Create PDFs from supported DOCX, spreadsheet, text, HTML, and image files online. Legacy .doc files are not supported.",
+    "metaDescription": "Create PDFs from supported DOCX, spreadsheet, text, HTML, and image files online. Available pairs are shown after you upload a file.",
     "h1": "Convert Documents to PDF",
     "subtitle": "Create a PDF from a supported document, spreadsheet, text, HTML, or image file for sharing, printing, or archiving.",
     "badge": "Docs to PDF",
-    "supportedFormatsDesc": "DOCX, XLSX, TXT, HTML, PNG, JPG, WEBP, GIF, BMP, and TIFF → PDF. Legacy .doc files are not supported.",
+    "supportedFormatsDesc": "DOCX, XLSX, TXT, HTML, PNG, JPG, WEBP, GIF, BMP, and TIFF → PDF.",
     "howItWorksSteps": [
       {
         "step": "01",
@@ -663,7 +663,7 @@
     "faqList": [
       {
         "q": "Can I convert PDF to Word with this tool?",
-        "a": "This page is for converting supported source documents to PDF. Check the available tools for other conversion directions."
+        "a": "This page only outputs PDF. The other direction — PDF to DOCX — runs on the Document Converter page."
       },
       {
         "q": "How long are my files stored?",

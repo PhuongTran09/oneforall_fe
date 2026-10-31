@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Pencil, Plus, Trash2, PackageSearch, Wand2 } from 'lucide-react'
+import { Pencil, Plus, Trash2, PackageSearch, WandSparkles } from 'lucide-react'
 import { Button } from '../../../components/common/Button'
 import { ConfirmModal } from '../../../components/feedback/ConfirmModal'
 import { showToast } from '../../../components/feedback/toastStore'
@@ -48,7 +48,7 @@ export function ItemListPanel({ caseId, items, rarities, imageUrls, onAdd, onEdi
             <Button
               variant="ghost"
               size="sm"
-              leftIcon={<Wand2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
+              leftIcon={<WandSparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
               className="whitespace-nowrap"
               onClick={() => normalizeWeightsToHundred(caseId)}
             >
@@ -70,7 +70,9 @@ export function ItemListPanel({ caseId, items, rarities, imageUrls, onAdd, onEdi
           </Button>
         </div>
       ) : (
-        <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 stagger">
+        <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+          {/* Không .stagger ở đây: đây là danh sách đang sửa, mỗi mục mới phải hiện ngay
+              theo cú bấm. Nhịp so le chỉ có nghĩa với lưới người dùng cuộn tới. */}
           {items.map((item, index) => {
             const rarity = byRarity[item.rarityId]
             return (

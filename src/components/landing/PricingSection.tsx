@@ -1,6 +1,7 @@
 import { Check, Sparkles, ArrowRight } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '../common/Card'
 import { Button } from '../common/Button'
+import { SectionHeading } from '../common/SectionHeading'
 import { t } from '../../i18n/langStore'
 
 export interface PricingSectionProps {
@@ -54,19 +55,9 @@ export function PricingSection({ onSelectFree, onSelectPremium }: PricingSection
   return (
     <section id="pricing" data-reveal className="py-16 sm:py-24 bg-page/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold bg-surface border border-[rgba(255,59,48,0.35)] text-brand badge-angular">
-            {t('pricing.badge')}
-          </div>
-          <h2 className="text-2xl sm:text-4xl font-extrabold text-ink tracking-tight">
-            {t('pricing.title')}
-          </h2>
-          <p className="text-slate-300 text-xs sm:text-base leading-relaxed">
-            {t('pricing.desc')}
-          </p>
-        </div>
+        <SectionHeading badge={t('pricing.badge')} title={t('pricing.title')} desc={t('pricing.desc')} />
 
-        <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
+        <div className="stagger max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch" data-reveal-items>
           {plans.map((plan) => (
             <Card
               key={plan.id}

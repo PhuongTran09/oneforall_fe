@@ -1,5 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react'
-import { AlertOctagon, RotateCcw, Home } from 'lucide-react'
+import { OctagonAlert, RotateCcw, Home } from 'lucide-react'
 import { Button } from '../common/Button'
 import { t } from '../../i18n/langStore'
 
@@ -30,7 +30,7 @@ export class ErrorBoundary extends Component<{ children: ReactNode }, State> {
       <div className="min-h-[70vh] flex items-center justify-center px-4 py-16">
         <div className="w-full max-w-md p-6 sm:p-8 bg-surface border border-[rgba(255,59,48,0.35)] clip-corner-lg card-3d text-center space-y-4">
           <div className="inline-flex w-14 h-14 items-center justify-center bg-brand/10 border border-brand/30 text-brand clip-corner-btn">
-            <AlertOctagon className="w-7 h-7" />
+            <OctagonAlert className="w-7 h-7" />
           </div>
           <h2 className="text-lg font-bold text-ink">{t('errorBoundary.title')}</h2>
           <p className="text-sm text-slate-400 leading-relaxed">{t('errorBoundary.desc')}</p>

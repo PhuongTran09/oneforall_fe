@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useMemo, useState, useRef, type ChangeEvent } from 'react'
-import { UploadCloud, File as FileIcon, X, ArrowRight } from 'lucide-react'
+import { CloudUpload, File as FileIcon, X, ArrowRight } from 'lucide-react'
 import { Button } from './Button'
+import { useExitFade } from '../../hooks/useExitFade'
 import { SegmentedControl } from './SegmentedControl'
 import { AdvancedParamsPanel } from './AdvancedParamsPanel'
 import { detectFileFormat, getSupportedTargets } from '../../config/conversionMatrix'
+import type { FormatPair } from '../../config/formatSuggestions'
 import {
   buildParamOptions,
   findInvalidParam,
@@ -43,6 +45,8 @@ export interface FileUploaderProps {
   actionLabel?: string
   /** Format-conversion tools hide targets the backend has no pair for. */
   filterTargetsBySource?: boolean
+  /** Cặp from → to đã qua resolveRoute() — lối tắt chọn sẵn định dạng đích trước khi tải tệp. */
+  popularConversions?: FormatPair[]
   /** Extra options the backend honors for the current source + target. Empty list hides the panel. */
   resolveFields?: (sourceFormat: string | null, targetFormat: string) => ParamField[]
   initialParams?: ParamValues
@@ -61,6 +65,7 @@ export function FileUploader({
   defaultFormat,
   actionLabel,
   filterTargetsBySource = false,
+  popularConversions = [],
   resolveFields,
   initialParams,
   initialForm,
@@ -252,14 +257,57 @@ export function FileUploader({
       })
     : t('uploader.dropzoneCapsUnknown')
 
+  // Lớp phủ "thả file vào đây" fade cả hai chiều: dragleave bắn liên tục khi con trỏ đi
+  // qua mép con, cắt tức thì thì panel nhấp nháy.
+  const { show: dropShow, closing: dropClosing } = useExitFade(isDragging)
+
   return (
     <div className="w-full max-w-3xl mx-auto space-y-5">
-      {isDragging && (
-        <div className="pointer-events-none fixed inset-0 z-[55] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm in-backdrop">
-          <div className="px-10 py-8 text-center space-y-2 border-2 border-dashed border-brand/60 bg-surface clip-corner-lg">
-            <UploadCloud className="w-10 h-10 mx-auto text-brand" />
+      {dropShow && (
+        <div
+          className={`pointer-events-none fixed inset-0 z-[55] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm ${
+            dropClosing ? 'out-fade' : 'in-backdrop'
+          }`}
+        >
+          <div
+            className={`px-10 py-8 text-center space-y-2 border-2 border-dashed border-brand/60 bg-surface clip-corner-lg ${
+              dropClosing ? 'in-out' : 'in-up'
+            }`}
+          >
+            <CloudUpload className="w-10 h-10 mx-auto text-brand" />
             <p className="text-base font-semibold text-slate-100">{t('uploader.dropOverlay')}</p>
           </div>
+        </div>
+      )}
+      {!selectedFile && popularConversions.length > 0 && (
+        <div className="space-y-2">
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+            {t('formatPicker.popularTitle')}
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {popularConversions.map((pair) => {
+              const selected = pickedFormat === pair.to
+              return (
+                <button
+                  key={`${pair.from}-${pair.to}`}
+                  type="button"
+                  aria-pressed={selected}
+                  disabled={disabled || isLoading}
+                  onClick={() => setPickedFormat(pair.to)}
+                  className={`inline-flex items-center gap-1.5 h-8 px-3 border text-[11px] sm:text-xs font-mono uppercase transition-colors clip-corner-btn disabled:opacity-50 ${
+                    selected
+                      ? 'text-brand-active bg-brand/10 border-[rgba(255,59,48,0.55)]'
+                      : 'text-slate-300 bg-page border-edge hover:text-brand hover:border-[rgba(255,59,48,0.5)]'
+                  }`}
+                >
+                  {pair.from}
+                  <ArrowRight className="w-3 h-3 text-brand" aria-hidden="true" />
+                  {pair.to}
+                </button>
+              )
+            })}
+          </div>
+          <p className="text-[11px] leading-relaxed text-slate-400">{t('formatPicker.hint')}</p>
         </div>
       )}
       <div
@@ -323,7 +371,7 @@ export function FileUploader({
         ) : (
           <div className="space-y-3">
             <div className="w-16 h-16 mx-auto bg-brand/10 border border-brand/30 flex items-center justify-center text-brand animate-float-gentle group-hover:scale-110 group-hover:border-brand/60 group-hover:shadow-[0_0_18px_rgba(255,59,48,0.35)] transition-all duration-300 clip-corner-btn">
-              <UploadCloud className="w-8 h-8" />
+              <CloudUpload className="w-8 h-8" />
             </div>
             <div className="space-y-1">
               <p className="text-base font-semibold text-slate-100">
@@ -346,6 +394,11 @@ export function FileUploader({
             <>
               <div className="flex items-center gap-4 flex-wrap">
                 <span className="text-xs font-semibold text-slate-300">{t('uploader.targetFormat')}</span>
+                {sourceFormat && activeFormat && (
+                  <span className="text-[11px] font-mono uppercase text-brand-2">
+                    {t('formatPicker.fromTo', { from: sourceFormat, to: activeFormat })}
+                  </span>
+                )}
                 <SegmentedControl
                   options={availableFormats}
                   value={activeFormat}

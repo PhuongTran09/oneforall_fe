@@ -14,6 +14,8 @@ import { ModalShell } from './ModalShell'
 
 export interface ItemEditorModalProps {
   caseId: string
+  /** false = đang fade ra; parent giữ node thêm một nhịp cho ModalShell mờ dần. */
+  isOpen: boolean
   /** null = thêm vật phẩm mới. */
   item: CaseItem | null
   rarities: Rarity[]
@@ -23,8 +25,9 @@ export interface ItemEditorModalProps {
   onClose: () => void
 }
 
-/** Parent chỉ mount component này khi cần sửa, nên state khởi tạo thẳng từ props, không cần effect reset. */
-export function ItemEditorModal({ caseId, item, rarities, caseItems, existingImageUrl, onClose }: ItemEditorModalProps) {
+/** Parent mount lúc mở và giữ nguyên instance suốt nhịp fade ra (key đổi theo nhịp MỞ), nên
+ *  state khởi tạo thẳng từ props, không cần effect reset. */
+export function ItemEditorModal({ caseId, isOpen, item, rarities, caseItems, existingImageUrl, onClose }: ItemEditorModalProps) {
   const [name, setName] = useState(item?.name ?? '')
   const [description, setDescription] = useState(item?.description ?? '')
   const [color, setColor] = useState(item?.color ?? RARITY_PRESETS[0])
@@ -95,7 +98,7 @@ export function ItemEditorModal({ caseId, item, rarities, caseItems, existingIma
 
   return (
     <ModalShell
-      isOpen
+      isOpen={isOpen}
       title={item ? t('case.editItemTitle') : t('case.addItemTitle')}
       onClose={onClose}
       footer={

@@ -17,6 +17,7 @@ import { Button } from '../components/common/Button'
 import { ConfirmModal } from '../components/feedback/ConfirmModal'
 import { showErrorPopup } from '../components/feedback/errorPopupStore'
 import { t, getLang } from '../i18n/langStore'
+import { useExitFade } from '../hooks/useExitFade'
 import { useAuth } from '../services/authStore'
 import { jobsApi } from '../services/api/jobsApi'
 import { filesApi } from '../services/api/filesApi'
@@ -108,6 +109,8 @@ function FilterSelect({
   const [open, setOpen] = useState(false)
   const rootRef = useRef<HTMLDivElement>(null)
   const selected = options.find((o) => o.value === value) ?? options[0]
+  // Chọn xong / Esc / click ra ngoài: listbox mờ ra chứ không cắt cụt.
+  const { show, closing } = useExitFade(open)
 
   useEffect(() => {
     if (!open) return
@@ -141,11 +144,13 @@ function FilterSelect({
           className={`w-4 h-4 shrink-0 text-soft transition-transform ${open ? 'rotate-180' : ''}`}
         />
       </button>
-      {open && (
+      {show && (
         <div
           role="listbox"
           aria-label={ariaLabel}
-          className="in-fade absolute left-0 mt-2 min-w-full bg-surface border border-[rgba(255,59,48,0.35)] clip-corner-card shadow-xl py-1 z-50"
+          className={`absolute left-0 mt-2 min-w-full bg-surface border border-[rgba(255,59,48,0.35)] clip-corner-card shadow-xl py-1 z-50 ${
+            closing ? 'out-fade' : 'in-fade'
+          }`}
         >
           {options.map((o) => (
             <button
@@ -411,7 +416,9 @@ export function HistoryPage() {
           <p className="text-soft">{t('history.empty')}</p>
         </div>
       ) : (
-        <div className="stagger in-fade bg-surface border border-[rgba(255,59,48,0.35)] clip-corner-lg overflow-hidden divide-y divide-edge">
+        <div className="in-fade bg-surface border border-[rgba(255,59,48,0.35)] clip-corner-lg overflow-hidden divide-y divide-edge">
+          {/* in-fade cho cả khối, không stagger từng dòng: bảng này người dùng mở ra để
+              bấm tiếp vào file, dòng thứ 6 chờ 350ms rồi trồi lên 720ms là chậm tay. */}
           {items.map((item) => (
             <div
               key={item.id}

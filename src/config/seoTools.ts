@@ -16,7 +16,7 @@ export interface ToolFeature {
 
 export interface ToolConfig {
   slug: string
-    category: 'youtube' | 'tiktok' | 'convert' | 'image' | 'media' | 'document' | 'data' | 'archive'
+  category: 'youtube' | 'tiktok' | 'convert' | 'image' | 'media' | 'document' | 'data' | 'archive'
   badge: string
   title: string
   metaDescription: string
@@ -286,7 +286,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
       'Chuyển đổi hình ảnh, video, âm thanh và tài liệu văn phòng qua vài bước đơn giản. Định dạng đầu ra tùy thuộc vào loại tệp và các tùy chọn được hỗ trợ.',
     inputType: 'file',
     acceptedFileTypes:
-      '.txt,.doc,.docx,.xlsx,.pdf,.csv,.json,.xml,.yaml,.yml,.md,.html,.png,.jpg,.jpeg,.webp,.gif,.bmp,.tif,.tiff,.ico,.heic,.heif,.svg,.zip,.tar,.gz,.tgz,.7z,.mp4,.webm,.mkv,.avi,.mov,.flv,.wmv,.mp3,.wav,.ogg,.flac,.aac,.m4a',
+      '.txt,.doc,.docx,.xlsx,.pdf,.csv,.json,.xml,.yaml,.yml,.md,.html,.png,.jpg,.jpeg,.webp,.gif,.bmp,.tif,.tiff,.ico,.heic,.heif,.svg,.zip,.tar,.gz,.tgz,.mp4,.webm,.mkv,.avi,.mov,.flv,.wmv,.mp3,.wav,.ogg,.flac,.aac,.m4a',
     outputFormats: [
       'pdf',
       'docx',
@@ -474,7 +474,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
       { title: 'Chuyển đổi dữ liệu bảng tính', desc: 'Dữ liệu trong tệp XLSX có thể được chuyển sang CSV, JSON hoặc PDF tùy cấu trúc tệp.' },
       { title: 'Dọn dẹp tệp theo chính sách', desc: 'Tệp được dọn dẹp theo chính sách lưu trữ của nền tảng.' },
     ],
-    supportedFormatsDesc: 'Các cặp chuyển đổi được hỗ trợ sẽ hiển thị theo loại tệp đã chọn. Định dạng Word .doc cũ không được hỗ trợ.',
+    supportedFormatsDesc: 'Các cặp chuyển đổi được hỗ trợ sẽ hiển thị theo loại tệp đã chọn.',
     faqList: [
       { q: 'Chuyển Word sang PDF có bị lỗi font tiếng Việt không?', a: 'Kết quả phụ thuộc vào phông chữ và cách bố trí của tài liệu nguồn. Bạn nên mở và kiểm tra tài liệu sau khi chuyển đổi.' },
       { q: 'Có chuyển file Excel sang JSON được không?', a: 'Có, nếu tệp và định dạng đầu ra được công cụ hỗ trợ. Bạn cũng có thể chọn CSV để sử dụng với các ứng dụng bảng tính.' },
@@ -488,7 +488,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     badge: 'Tài liệu sang PDF',
     title: 'Chuyển Tài Liệu và Ảnh sang PDF | One ForAll',
     metaDescription:
-      'Chuyển DOCX, XLSX và các loại tệp được hỗ trợ sang PDF trực tuyến. DOC cũ không được hỗ trợ; hãy kiểm tra kết quả sau khi chuyển đổi.',
+      'Chuyển DOCX, XLSX, TXT, HTML và ảnh sang PDF trực tuyến. Các cặp định dạng khả dụng hiển thị sau khi tải tệp lên; hãy kiểm tra kết quả.',
     h1: 'Chuyển Đổi Tài Liệu Sang PDF',
     subtitle:
       'Tạo PDF từ DOCX, XLSX, TXT, hình ảnh và các định dạng được hỗ trợ để chia sẻ, in hoặc lưu trữ.',
@@ -509,9 +509,9 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
       { title: 'Xuất bảng tính có chọn sheet', desc: 'Chỉ định sheet cần kết xuất khi chuyển file Excel sang PDF.' },
       { title: 'Tự dọn sau khi tải', desc: 'Tệp nguồn và tệp kết quả được dọn dẹp theo chính sách lưu trữ của nền tảng.' },
     ],
-    supportedFormatsDesc: 'DOCX, XLSX, TXT, HTML, PNG, JPG, WEBP, GIF, BMP và TIFF → PDF. Định dạng .doc cũ không được hỗ trợ.',
+    supportedFormatsDesc: 'DOCX, XLSX, TXT, HTML, PNG, JPG, WEBP, GIF, BMP và TIFF → PDF.',
     faqList: [
-      { q: 'Có chuyển được PDF sang Word không?', a: 'Chưa. Công cụ này chỉ nhận tài liệu và xuất ra PDF; chiều ngược lại cần phân tích bố cục trang nên chưa được triển khai.' },
+      { q: 'Có chuyển được PDF sang Word không?', a: 'Trang này chỉ nhận tệp và xuất ra PDF. Chiều ngược lại — PDF sang DOCX — được xử lý ở trang Chuyển đổi tài liệu.' },
       { q: 'File của tôi có bị lưu lại không?', a: 'Tệp được xử lý để thực hiện yêu cầu của bạn và được dọn dẹp theo chính sách lưu trữ của nền tảng. Không nên tải lên dữ liệu nhạy cảm nếu bạn chưa xem chính sách quyền riêng tư.' },
     ],
     relatedSlugs: ['/document-converter', '/convert', '/image-converter'],
@@ -704,7 +704,10 @@ export function canonicalToolPath(path: string): string {
   const routePath = localePrefix ? pathname.slice(3) || '/' : pathname
   const slug = routePath.replace(/\/+$/, '') || '/'
 
-  return SEO_TOOLS[slug] ? `${localePrefix}${slug}/${suffix}` : path
+  // '/tools' và trang danh mục phải có '/' cuối ở cả SPA lẫn prerender (prerender luôn thêm '/'),
+  // nếu không hai bên khai canonical khác nhau trên cùng một URL.
+  const isDirectoryPage = slug === '/tools' || slug.startsWith('/tools/')
+  return SEO_TOOLS[slug] || isDirectoryPage ? `${localePrefix}${slug}/${suffix}` : path
 }
 
 export const ALL_TOOL_SLUGS = Object.keys(SEO_TOOLS)

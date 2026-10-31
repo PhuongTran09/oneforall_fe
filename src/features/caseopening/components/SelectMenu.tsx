@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, useState, type CSSProperties, type KeyboardEvent } from 'react'
 import { createPortal } from 'react-dom'
 import { Check, ChevronDown } from 'lucide-react'
+import { useExitFade } from '../../../hooks/useExitFade'
 
 export interface SelectOption {
   value: string
@@ -42,6 +43,8 @@ export function SelectMenu({ options, value, onChange, id, ariaLabel, disabled =
   const [open, setOpen] = useState(false)
   const [active, setActive] = useState(0)
   const [box, setBox] = useState<Box | null>(null)
+  // List fade ra khi đóng (Escape/click ngoài/chọn xong) — `box` vẫn còn nên vị trí không nhảy.
+  const { show, closing } = useExitFade(open)
 
   const selectedIndex = Math.max(
     0,
@@ -136,7 +139,7 @@ export function SelectMenu({ options, value, onChange, id, ariaLabel, disabled =
         <ChevronDown className={`w-4 h-4 shrink-0 text-slate-400 transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
 
-      {open &&
+      {show &&
         box &&
         createPortal(
           <ul
@@ -146,7 +149,9 @@ export function SelectMenu({ options, value, onChange, id, ariaLabel, disabled =
             aria-labelledby={ariaLabel ? undefined : triggerId}
             aria-label={ariaLabel}
             style={menuStyle}
-            className="z-[70] max-h-60 overflow-y-auto bg-surface border border-edge p-1 shadow-[0_16px_40px_rgba(0,0,0,0.5)] clip-corner-btn"
+            className={`z-[70] max-h-60 overflow-y-auto bg-surface border border-edge p-1 shadow-[0_16px_40px_rgba(0,0,0,0.5)] clip-corner-btn ${
+              closing ? 'out-fade' : 'in-fade'
+            }`}
           >
             {options.map((option, i) => (
               <li

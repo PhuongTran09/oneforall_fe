@@ -300,6 +300,34 @@ html[data-theme='light'] {
   --extrude-face: var(--extrude-face-dim);
 }
 
+/* Ô tìm kiếm có nút X riêng (màu brand + aria-label + xóa được cả bàn phím), nên tắt
+   nút xóa mặc định của WebKit — hai con X cùng lúc là thừa và chồng lên nhau. */
+input[type='search']::-webkit-search-cancel-button,
+input[type='search']::-webkit-search-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* Danh sách kết quả của ô tìm công cụ. Mặc định nở xuống; ToolSearch đo chỗ trống thật
+   quanh ô (visualViewport co lại khi bàn phím ảo hiện) rồi bật .drop-up — trên mobile
+   đang gõ, danh sách hiện lên phía trên thay vì bị bàn phím che mất. max-height đặt trên
+   listbox chứ không đặt trên hộp: đặt trên hộp thì phần tràn bị cắt luôn, không cuộn được. */
+.tool-search-list {
+  top: 100%;
+  margin-top: 0.5rem;
+}
+
+.tool-search-list [role='listbox'] {
+  max-height: var(--search-list-max, 20rem);
+}
+
+.tool-search-list.drop-up {
+  top: auto;
+  bottom: 100%;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
 /* Small pill used for section headings — subtle angular clip */
 .badge-angular {
   --extrude: 2px;
@@ -362,7 +390,7 @@ html[data-theme='light'] {
 
 .hero-word {
   display: inline-block;
-  animation: word-in 560ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  animation: word-in 620ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
 }
 
 .hero-word-hl {
@@ -374,11 +402,39 @@ html[data-theme='light'] {
   /* background-clip:text chỉ vẽ trong padding box; margin âm giữ nhịp dòng */
   padding-block: 0.16em 0.22em;
   margin-block: -0.16em -0.22em;
-  animation: word-in 560ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  animation: word-in 620ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
 }
 
 html[data-theme='light'] .hero-word-hl {
   --hero-glow: 0.18;
+}
+
+/* Tiêu đề section dựng chữ theo đúng nhịp hero, nhưng chỉ khi nó lọt vào khung hình:
+   .is-in do SectionHeading thêm một lần bằng IntersectionObserver. Không có .is-in
+   (JS chưa chạy, bản prerender) thì chữ và mô tả vẫn hiện bình thường — không bao giờ
+   trống. --word-step (từ gắn trên h2) và --desc-delay (gắn trên <p>) là số học nguyên
+   SectionHeading tính từ số từ của nhãn, đã theo ngôn ngữ — xem chú thích ở file đó.
+   Fallback 80ms/1300ms dưới đây chỉ dùng khi style inline thiếu. */
+.reveal-heading .reveal-word {
+  display: inline-block;
+}
+
+.reveal-heading.is-in .reveal-word {
+  animation: word-in 780ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  animation-delay: calc(var(--i) * var(--word-step, 80ms));
+}
+
+/* Mô tả TrƯỢT XUỐNG sau khi từ cuối của tiêu đề dựng hẳn rồi NGHỈ thêm một hơi
+   (DESC_GAP_MS trong SectionHeading.tsx). 560ms cho 12px nên nó trượt tới chứ không rơi.
+   Muốn thấy hai khối tách rõ hơn thì tăng DESC_GAP_MS, không sửa gì ở đây. */
+@keyframes desc-in {
+  from { opacity: 0; translate: 0 -12px; }
+  to   { opacity: 1; translate: 0 0; }
+}
+
+.reveal-heading.is-in + .reveal-desc {
+  animation: desc-in 560ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  animation-delay: var(--desc-delay, 1300ms);
 }
 
 /* Demo animation only; live progress remains owned by JobProgress and SSE. */
@@ -600,26 +656,196 @@ html[data-theme='light'] .toast-item {
 
 .in-up   { animation: in-up   260ms cubic-bezier(0.16, 1, 0.3, 1) backwards; }
 .in-fade { animation: in-fade 200ms ease-out                       backwards; }
+
+/* Dropdown "Công cụ" mở bằng hover: panel trượt XUỐNG từ mép trigger (start ở -10px)
+   thay vì bật ra tại chỗ. 10px đủ để mắt đọc được hướng, 300ms chậm hơn .in-up một bậc
+   vì đây là cả một khối chữ — nhanh quá thành chớp. Đóng vẫn là .out-fade (chỉ opacity):
+   dịch thêm khi đóng là ngược hướng với cú rời chuột. */
+@keyframes in-down {
+  from { opacity: 0; translate: 0 -10px; }
+  to   { opacity: 1; translate: 0 0;    }
+}
+.in-down { animation: in-down 300ms cubic-bezier(0.16, 1, 0.3, 1) backwards; }
 /* Keep the faded-out frame until React unmounts the node. */
 .in-out  { animation: in-out  180ms ease-in                       forwards; }
 
 /* Animate backdrop opacity only to avoid repainting blur on every frame. */
 .in-backdrop { animation: in-fade 160ms ease-out backwards; }
 
-/* Stagger delay caps at 170ms; use only when every child is an item. */
-.stagger > *               { animation: in-up 260ms cubic-bezier(0.16, 1, 0.3, 1) backwards; }
-.stagger > :nth-child(2)   { animation-delay:  30ms; }
-.stagger > :nth-child(3)   { animation-delay:  60ms; }
-.stagger > :nth-child(4)   { animation-delay:  90ms; }
-.stagger > :nth-child(5)   { animation-delay: 120ms; }
-.stagger > :nth-child(6)   { animation-delay: 140ms; }
-.stagger > :nth-child(7)   { animation-delay: 160ms; }
-.stagger > :nth-child(n+8) { animation-delay: 170ms; }
+/* Chiều RA. Backdrop/popover chỉ fade opacity: dịch một khối `fixed inset-0` lên 10px là
+   để lộ dải trống ở đầu trang. Panel dùng .in-out (fade + 10px xuống) cho khớp .in-up.
+   `reverse forwards` = chạy ngược keyframes vào và giữ frame cuối tới lúc React gỡ node. */
+.out-fade { animation: in-fade 160ms ease-in reverse forwards; }
 
-/* Reveal applies only after .is-in, so content remains visible if JavaScript is unavailable. */
-[data-reveal].is-in { animation: in-fade 320ms ease-out backwards; }
+/* AuthModal đổi tab: chỉ vùng form diễn, khung modal giữ nguyên vị trí. 10px nằm giữa
+   hai ràng buộc — đủ để mắt theo được hướng đổi (8px trở xuống gần như chỉ là chớp),
+   đủ ngắn để chưa kịp xong là người dùng đã gõ chữ đầu tiên. */
+@keyframes auth-swap {
+  from { opacity: 0; translate: 0 10px; }
+  to   { opacity: 1; translate: 0 0;    }
+}
+.auth-swap { animation: auth-swap 240ms cubic-bezier(0.16, 1, 0.3, 1) backwards; }
+
+/* ============ Modal và bàn phím on-screen ============
+   --auth-vh/--auth-vt CHỈ tồn tại khi bàn phím on-screen đang mở (xem AuthModal). Lúc
+   không có bàn phím thì height: auto + top: 0px chính là `fixed inset-0` như cũ, từng
+   pixel — không có chuyện nền tối co lại một dải khi iPhone/Android thu thanh địa chỉ.
+   Kẹp cả hai lớp: nền tối phải dừng đúng vùng nhìn thấy thì panel đứng giữa mới đúng,
+   và max-height của panel phải tính theo cùng số chứ không theo 100dvh cũ.
+   Unlayered nên thắng utility Tailwind (top/height/max-h đã bỏ khỏi JSX để một nguồn).
+   Safe area: iPhone có panel cao tối đa sẽ đè nút "tiếp tục ẩn danh" lên vạch home. */
+.auth-backdrop {
+  top: var(--auth-vt, 0px);
+  height: var(--auth-vh, auto);
+  padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+}
+/* Trừ đúng phần backdrop đã chừa: 2rem padding của inset-0 + safe area vừa cộng vào
+   đáy ở trên — không thì panel cao tối đa lại tràn xuống vùng vạch home của iPhone. */
+.auth-panel {
+  max-height: calc(var(--auth-vh, 100dvh) - 2rem - env(safe-area-inset-bottom, 0px));
+}
+
+/* Thanh cookie trượt lên từ đáy, không fade cả màn hình như modal cũ. */
+@keyframes in-bar-up {
+  from { opacity: 0; translate: 0 16px; }
+  to   { opacity: 1; translate: 0 0;    }
+}
+.in-bar-up { animation: in-bar-up 260ms cubic-bezier(0.16, 1, 0.3, 1) backwards; }
+
+/* Thanh cookie và modal đăng nhập cùng hiện được (thanh không còn chặn màn hình),
+   nên modal phải chừa đúng phần đáy bị che: không nút guest/submit/thông báo nào
+   nằm dưới thanh. Trình duyệt không hỗ trợ :has() thì bỏ qua — modal vẫn dùng được. */
+body:has(.cookie-bar) .auth-backdrop { padding-bottom: 13rem; }
+/* max(): bàn phím mở thì thanh cookie nằm SAU bàn phím, giữ chừa 14rem trong khi
+   vùng nhìn thấy chỉ còn ~340px sẽ bóp panel thành một dải dùng không được. */
+body:has(.cookie-bar) .auth-panel {
+  max-height: max(15rem, calc(var(--auth-vh, 100dvh) - 14rem));
+}
+@media (min-width: 64rem) {
+  body:has(.cookie-bar) .auth-backdrop { padding-bottom: 8rem; }
+  body:has(.cookie-bar) .auth-panel { max-height: calc(var(--auth-vh, 100dvh) - 9rem); }
+}
+/* Dock "Buy me a coffee" cũng neo đáy; để hai lớp nổi không đè nhau thì nó nhường chỗ
+   cho tới khi khách quyết định xong về cookie. */
+body:has(.cookie-bar) .coffee-dock { display: none; }
+
+/* Autofill phủ nền vàng + chữ tối lên input; giữ đúng mặt màu của theme. */
+.auth-input:-webkit-autofill,
+.auth-input:-webkit-autofill:hover,
+.auth-input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--text-ink);
+  -webkit-box-shadow: 0 0 0 600px var(--bg-base) inset;
+  caret-color: var(--text-ink);
+  transition: background-color 99999s ease-out;
+}
+
+/* Stagger delay caps at 350ms; use only when every child is an item.
+   70ms/card nằm trong nhịp 60–90ms của thiết kế; chặn ở card thứ 6 vì lưới tool mà giãn
+   đều tới cuối thì card hiện sau hơn một giây — người cuộn đã nhìn chỗ khác. Duration
+   720ms: card sau bắt đầu khi card chưa kịp đứng (720 > 350), cả lưới trôi thành một
+   khối liền thay vì "pop" từng cái — đấy là nghĩa của "so le nhưng đồng bộ". */
+@keyframes card-in {
+  from { opacity: 0; translate: 0 22px; }
+  to   { opacity: 1; translate: 0 0;    }
+}
+.stagger > *               { animation: card-in 720ms cubic-bezier(0.16, 1, 0.3, 1) backwards; }
+.stagger > :nth-child(2)   { animation-delay: 70ms; }
+.stagger > :nth-child(3)   { animation-delay: 140ms; }
+.stagger > :nth-child(4)   { animation-delay: 210ms; }
+.stagger > :nth-child(5)   { animation-delay: 280ms; }
+.stagger > :nth-child(n+6) { animation-delay: 350ms; }
+
+/* .stagger diễn ngay khi element mount, nên lưới tool nằm dưới fold chạy xong trước khi
+   người dùng kịp cuộn tới — họ thấy một lưới đứng im. Gắn thêm [data-reveal-items] vào
+   chính lưới: initReveal() thêm .is-in đúng lúc lưới vào khung hình, lúc đó các con mới
+   diễn. Chỉ ghi animation-name để không đè animation-delay (nhịp so le) của .stagger. */
+[data-reveal-items] > * { animation-name: none; }
+[data-reveal-items].is-in > * { animation-name: card-in; }
+
+/* Section dựng lên khi vào khung nhìn: fade + 22–28px trong 860–960ms, không dịch ngang,
+   không scale (scale trên khối chữ làm nét chữ rung một frame). Dải thời gian này là nhịp
+   "chậm rãi" của cả trang: đủ dài để mắt kịp đọc tiêu đề trước khi khối dưới đứng lại, đủ
+   ngắn để không ai phải chờ. Chỉ diễn sau .is-in nên bản prerender/JS lỗi vẫn thấy hết
+   nội dung — không có kiểu "ẩn chờ JS" vĩnh viễn. */
+@keyframes reveal-up {
+  from { opacity: 0; translate: 0 var(--reveal-shift, 28px); }
+  to   { opacity: 1; translate: 0 0; }
+}
+[data-reveal].is-in {
+  --reveal-shift: 22px;
+  animation: reveal-up 860ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
 @media (min-width: 40rem) {
-  [data-reveal].is-in { animation: in-up 420ms cubic-bezier(0.16, 1, 0.3, 1) backwards; }
+  [data-reveal].is-in { --reveal-shift: 28px; animation-duration: 960ms; }
+}
+
+/* Section có SectionHeading: tiêu đề TỰ dựng từng từ (word-in 780ms) rồi mô tả TrƯỢT
+   XUỐNG — hai nhịp đó đã kể hết câu chuyện "chữ vào trước, giải thích vào sau" nên section
+   không nhún lên nữa (--reveal-shift: 0px), nếu không badge/mô tả bị hai lớp chuyển động
+   cộng dồn kéo cùng lúc. Quãng nghỉ giữa hai nhịp là DESC_GAP_MS trong SectionHeading. */
+section[data-reveal]:has(.reveal-heading) { --reveal-shift: 0px; }
+
+/* ============ Card diễn theo TIẾN TRÌNH CUỘN, không theo đồng hồ ============
+   Bản .stagger ở trên quay bằng thời gian: lưới vừa vào khung hình là đồng hồ bật, ai
+   cuộn nhanh thì bắt gặp card đang dở ở 40% quãng đường — đó là chuyển động của máy,
+   không phải của người đọc. Khối này gắn ĐÚNG keyframe card-in kia lên nguồn tiến trình
+   khác: view(block) của chính từng card, nghĩa là thẻ đi hết 22px đúng bằng quãng nó được
+   cuộn vào khung nhìn, cuộn ngược lại là thẻ lùi lại một phần. Không thêm hệ thống
+   animation thứ hai, chỉ đổi nguồn tiến trình.
+
+   animation-duration: auto không phải cách viết cho đẹp: timeline scroll-driven không có
+   "giây". MDN đo được số <time> đặt trên view progress timeline đẩy animation về phía CUỐI
+   timeline (0s = nhảy cóc một frame, không có quãng nội suy), còn auto = trải kín
+   animation-range đã khai. animation-delay: 0s đi kèm vì delay 70ms/card của .stagger là
+   số THỜI GIAN, để nó sống sót sang đây thì chẳng engine nào hứa đối xử giống nhau — nhịp
+   "lần lượt" chuyển hết sang --card-lag (phần trăm của timeline).
+
+   Range nằm gọn trong phase entry→cover sớm, và khối vẫn khoá bằng đúng cánh cổng
+   `.is-in` của bản thời gian, nên không có cảnh nội dung ẩn vĩnh viễn: initReveal() BỎ
+   QUA lưới đã nằm trong khung nhìn lúc tải trang (revealMotion.ts lọc top > 90%
+   innerHeight) → không có .is-in → không có animation → card hiện đặc, không mờ hờ half
+   -half suốt cho tới khi ai đó cuộn. Lưới dưới fold thì .is-in tới đúng lúc card sắp nhô
+   vào, và card nào chưa từng được cuộn tới vẫn còn nguyên frame đầu (opacity 0) — muốn
+   thấy thì cuộn, đó là toàn bộ cái giá của scroll-linked. Không có JS (bản prerender) thì
+   không có .is-in: `[data-reveal-items] > * { animation-name: none }` ở trên vẫn còn hiệu
+   lực, lưới hiện hết. Browser chưa có timeline (Firefox) bỏ nguyên khối @supports và vẫn
+   dùng bản thời gian + IntersectionObserver: đúng MỘT cơ chế trên một máy, không có cảnh
+   hai bên cùng giành transform.
+
+   :not([data-pin] *) loại dải card đã bị ghim (ValueBandSection) — trong .pin-viewport
+   overflow:hidden thì view() đo theo quãng dải card bị đẩy ngang chứ không theo cuộn dọc
+   trang, card sẽ đứng chết ở một frame thay vì dựng lên; dải đó có animation-range riêng.
+
+   Cả khối nằm trong @media (prefers-reduced-motion: no-preference): không ai chắc
+   `animation: none` có đặt lại animation-timeline/animation-range hay không (shorthand
+   theo css-animations-1 không chứa hai longhand này, còn bộ gom CSS của dự án thì bỏ
+   luôn dòng animation-timeline khi gộp selector — thấy rõ trong dist). Khoá ở điều kiện
+   media thì không cần đoán: máy giảm chuyển động không áp khối này ngay từ đầu. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    [data-reveal-items].is-in > *:not([data-pin] *) {
+      animation-name: card-in;
+      animation-duration: auto;
+      animation-delay: 0s;
+      animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+      animation-fill-mode: both;
+      animation-timeline: view(block);
+      /* var có fallback 0% thay vì khai --card-lag: 0% ở đây: khai thì rule này (đặc hiệu
+         bằng rule nth-child, lại đứng trước) nuốt luôn số của nth-child và mất nhịp so le. */
+      animation-range:
+        entry calc(10% + var(--card-lag, 0%))
+        cover calc(28% + var(--card-lag, 0%));
+    }
+
+    /* So le theo vị trí trong timeline chứ không theo giờ: card 1 đứng trước card 6 một
+       quãng cuộn nhỏ. Chặn ở 20% (bản thời gian chặn ở 350ms) — lưới 12 thẻ mà giãn đều tới
+       cuối thì thẻ số 12 phải cuộn thêm nửa màn hình mới xong, thành "card chạy bằng bánh
+       xe" thay vì dựng lên. Dùng % nên bản dịch dài/ngắn vẫn cùng một nhịp. */
+    [data-reveal-items] > :nth-child(2)   { --card-lag: 5%; }
+    [data-reveal-items] > :nth-child(3)   { --card-lag: 10%; }
+    [data-reveal-items] > :nth-child(4)   { --card-lag: 15%; }
+    [data-reveal-items] > :nth-child(n+5) { --card-lag: 20%; }
+  }
 }
 
 /* Accordion uses a 0fr-to-1fr grid transition; hidden content stays out of the accessibility tree. */
@@ -1663,6 +1889,203 @@ main section[data-reveal],
   contain-intrinsic-size: auto 620px;
 }
 
+/* Section đang ghim dải card: content-visibility:auto nhét containment + chiều cao dự
+   đoán vào section, mà containment trên tổ tiên thì element con sticky bị tính lại vị trí
+   đúng lúc section vào/ra tầm nhìn — lệch một nhịp ngay chỗ bắt đầu ghim, tức là giật.
+   Bỏ cơ chế này cho riêng section có [data-pin] (JS chỉ gắn [data-pin] khi đủ rộng và
+   không reduced-motion, nên mobile/không JS vẫn được content-visibility như cũ). */
+main section[id][data-pin] {
+  content-visibility: visible;
+}
+
+/* ============ Dải card cuộn ngang khi bị ghim ============
+   Kết cấu: .pin-root (cao = màn ghim + quãng tràn) > .pin-stage (sticky, cao tối thiểu
+   một màn hình) > .pin-viewport (cắt ngang, gốc tính đơn vị cqi) > .pin-track (dải card,
+   dịch ngang theo cuộn).
+   usePinnedCardScroll đo và viết bốn biến lên .pin-root: --pin-stage-h (chiều cao thật
+   của màn ghim, phòng khi tiêu đề + card dài hơn một màn hình), --pin-shift (quãng tràn
+   ngang, quyết định chiều cao hộp cha và độ dài animation-range), --pin-stick-start
+   (điểm bắt đầu bám tính trong cover phase) và --pin-x (tiến trình — chỉ bản JS fallback
+   viết; bản timeline để engine nội suy). Quãng đường nhả ghim = đúng --pin-shift, nên
+   card chót dừng sát mép phải khung nhìn ngay khung hình section được giải phóng.
+   Không có JS thì mấy biến kia không tồn tại: --pin-shift fallback 0, hộp cao đúng bằng
+   màn ghim, dải card không dịch — và [data-pin] cũng không được gắn, nghĩa là markup
+   trở về lưới grid gốc, toàn bộ card thấy hết. */
+:root {
+  /* header sticky = h-[72px] + border-b 1px (Navbar.tsx) — dải ghim phải nằm dưới header. */
+  --pin-top: 73px;
+  --pin-gap: 1rem;
+  --pin-card: 30rem;
+  /* Miếng card thứ ba lộ ra mép phải khi đứng yên: không có nó thì ở 1024px hai card
+     choán vừa khít khung nhìn, chỉ còn vạch tiến trình báo là còn nội dung bên phải. */
+  --pin-peek: 3rem;
+}
+
+[data-pin] {
+  --pin-stage-h: calc(100vh - var(--pin-top));
+}
+@supports (height: 100dvh) {
+  [data-pin] {
+    --pin-stage-h: calc(100dvh - var(--pin-top));
+  }
+}
+
+[data-pin] .pin-root {
+  height: calc(var(--pin-stage-h) + var(--pin-shift, 0px));
+}
+
+[data-pin] .pin-stage {
+  position: sticky;
+  top: var(--pin-top);
+  min-height: var(--pin-stage-h);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+[data-pin] .pin-viewport {
+  overflow: hidden;
+  /* cqi là bề rộng CHÍNH XÁC của khung nhìn dải card — `100vw` thì tính cả thanh cuộn
+     đứng nên luôn thừa 6–15px, lệch đủ để card chót dừng sai chỗ. container-type biến
+     hộp này thành gốc tính đơn vị cho card và cho keyframe; inline-size containment
+     không làm nó phụ thuộc vào nội dung, nên không có vòng phản hồi kích thước. */
+  container-type: inline-size;
+}
+
+/* Basis tính theo cqi chứ không theo %: .pin-track rộng max-content (xem keyframe), %
+   trong một hộp co theo nội dung là vòng tròn không giải được, card sẽ co về bề rộng
+   nội dung. Dải card tràn ra ngoài .pin-viewport và bị hộp này cắt. Hook đo độ tràn bằng
+   rect của card đầu/cuối chứ không đo .pin-track — đo track thì luôn ra 100%, không bao
+   giờ thấy đoạn tràn. */
+[data-pin] .pin-track {
+  display: flex;
+  align-items: stretch;
+  gap: var(--pin-gap);
+  /* max-content để `100%` trong keyframe = đúng chiều dài dải, bất kể bao nhiêu card.
+     Không đếm số card bằng tay trong CSS: thêm/bớt card là công thức tự đúng theo. */
+  width: max-content;
+}
+
+[data-pin] .pin-track > * {
+  /* Gấp đôi cột lưới cũ nhưng không vượt quá 30rem: chữ mô tả dài hơn nữa là mất nhịp
+     đọc. Trừ thêm --pin-peek để hai card không bao giờ choán kín khung nhìn. */
+  flex: 0 0 min(calc((100cqi - var(--pin-gap) - var(--pin-peek)) / 2), var(--pin-card));
+  min-width: 0;
+}
+
+/* Vấn đề duy nhất của kiểu ghim là người dùng không biết còn card phía bên phải.
+   Một vạch tiến trình 2px, cùng họ màu với thanh cuộn đầu trang, chạy bằng scaleX. */
+.pin-rail {
+  display: none;
+}
+[data-pin] .pin-rail {
+  display: block;
+  margin-top: 22px;
+  height: 2px;
+  /* --border-subtle chứ không color-mix(): Lightning CSS hạ color-mix xuống thành MÀU
+     ĐẶC khi engine không hiểu, vạch 2px sẽ sáng chói trên nền tối đúng chỗ lẽ ra nó mờ.
+     Token này cũng là màu viền của chính section và card nên không thêm màu mới. */
+  background: var(--border-subtle);
+}
+[data-pin] .pin-rail-fill {
+  display: block;
+  height: 100%;
+  transform: scaleX(var(--pin-x, 0));
+  transform-origin: 0 50%;
+  background: linear-gradient(90deg, var(--grad-1) 0%, var(--grad-2) 55%, var(--grad-3) 100%);
+}
+
+/* ============ Bản mượt: để trình duyệt tự nội suy theo cuộn ============
+   Scroll-driven animation (animation-timeline) chạy trên compositor và lấy số đo cuộn
+   NGAY tại khung hình vẽ, không qua tay JS. Bản JS ở hook bên kia thì mỗi lần cuộn phải
+   chờ một frame rAF: cuộn nhanh là dải card trễ sau nội dung một nhịp, mắt thấy khựng —
+   và mỗi frame còn tốn một lần đọc layout ngay trên main thread, thứ làm cả trang giật
+   theo. Ở đây JS chỉ còn đo lúc layout đổi; việc mỗi khung hình trả hết cho engine.
+
+   Mốc: timeline view của .pin-strip đo quãng subject (.pin-root) đi qua scrollport, tính
+   từ lúc nó nhô vào mép dưới. Quãng bám ghim bắt đầu ở khoảng cách đúng bằng (chiều cao
+   khung nhìn --pin-top) = --pin-stick-start và dài --pin-shift — hai biến JS viết, nên
+   bản này khớp tuyệt đối với hình học sticky.
+   Browser không hiểu (Firefox bản cũ, Safari <26) bỏ qua toàn bộ khối @supports dưới,
+   hook khi đó mới gắn scroll listener: chỉ MỘT trong hai cơ chế tồn tại trên một trình
+   duyệt, không có chuyện cả hai cùng sửa transform.
+   animation-duration: auto là số còn thiếu chứ không phải chữ trang trí — để 0s (mặc định)
+   trên timeline nghĩa là không có quãng nội suy, dải card nhảy thẳng một frame. */
+@supports (animation-timeline: view()) {
+  [data-pin] .pin-root {
+    view-timeline: --pin-strip block;
+  }
+
+  [data-pin] .pin-track,
+  [data-pin] .pin-rail-fill {
+    animation-duration: auto;
+    animation-timing-function: linear;
+    animation-fill-mode: both;
+    animation-timeline: --pin-strip;
+    animation-range:
+      cover var(--pin-stick-start, 0px)
+      cover calc(var(--pin-stick-start, 0px) + var(--pin-shift, 0px));
+  }
+
+  [data-pin] .pin-track {
+    animation-name: pin-strip;
+  }
+  [data-pin] .pin-rail-fill {
+    animation-name: pin-rail-progress;
+  }
+}
+
+/* Bản JS (chưa có animation-timeline): lớp riêng cho dải card để mỗi frame chỉ là một
+   lần đổi transform trên compositor. Để trong @supports not cho đúng một cơ chế — bản
+   timeline engine tự promote, khai báo will-change thêm chỉ là một layer thường trực. */
+@supports not (animation-timeline: view()) {
+  [data-pin] .pin-track {
+    will-change: transform;
+  }
+}
+
+@keyframes pin-strip {
+  from { transform: translate3d(0, 0, 0); }
+  /* 100cqi = bề rộng khung nhìn dải card, 100% = chính chiều dài dải (track rộng
+     max-content). Hiệu hai số là quãng tràn, CSS tự tính — không lấy --pin-shift của JS
+     nhét vào keyframe: biến custom trong @keyframes phải resolve lại mỗi lần JS đổi số
+     đo, đúng chỗ các engine hành xử không giống nhau, lỡ không resolve là sau một lần
+     resize dải chạy sai vĩnh viễn. Dùng 100% cũng nghĩa là thêm/bớt card không phải
+     sửa công thức.
+     min(0px, …) chặn một hốc thật: dải hẹp hơn khung nhìn (ít card, hoặc bản dịch ngắn)
+     thì hiệu số dương và dải bị đẩy NGANG SANG PHẢI, cắt mất trái; JS bên hook cũng
+     Math.max(0, độ tràn) — hai bản phải chặn cùng một phía. */
+  to   { transform: translate3d(min(0px, calc(100cqi - 100%)), 0, 0); }
+}
+@keyframes pin-rail-progress {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+/* ============ Thanh tiến trình cuộn ============
+   Dính mép trên khung hình, cao 2px. z 60: header (z-40) phủ 72px đầu trang nên
+   đặt thấp hơn là không thấy gì; modal z-50 thành thử vạch này chạy phía trên
+   backdrop — 2px sát mép trên, không che nội dung nào.
+   Chỉ biến đổi scaleX (compositor), không width: đổi width là layout lại cả trang
+   mỗi frame. Không transition — thanh phải khớp đúng chỗ người dùng đứng. */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 60;
+  pointer-events: none;
+}
+
+.scroll-progress-bar {
+  height: 100%;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  will-change: transform;
+  background: linear-gradient(90deg, var(--grad-1) 0%, var(--grad-2) 55%, var(--grad-3) 100%);
+}
+
 /* ============ Máy cảm ứng: tắt hiệu ứng phải vẽ lại mỗi khung hình ============
    (hover: none) = điện thoại/tablet, không có con trỏ rời — mọi hiệu ứng chỉ
    chạy lúc :hover ở đây là vô nghĩa, còn animation vô hạn + blur nền toàn
@@ -1708,15 +2131,47 @@ main section[data-reveal],
   .toast-enter, .toast-leave { animation: none; }
   .animate-loading-sweep { animation: none; width: 100%; opacity: 0.35; }
   .heading-in { animation: none; }
-  /* đang thiếu trong guard: .animate-fade-in chạy cả khi reduced-motion */
   .animate-fade-in { animation: none; }
   .in-up, .in-out, .in-fade, .in-backdrop,
+  .in-down,
+  .out-fade,
+  .in-bar-up,
+  .auth-swap,
   .stagger > *,
+  [data-reveal-items] > *,
+  [data-reveal-items].is-in > *,
   [data-reveal].is-in { animation: none; }
+  /* Khối scroll-driven ở trên đã khoá bằng @media no-preference nên bản giảm chuyển động
+     không áp nó; ba dòng dưới là lưới chặn thứ hai, viết bằng ĐÚNG selector của khối đó
+     (đặc hiệu bằng nhau, quyết bằng thứ tự — khối guard nằm cuối file) vì `animation: none`
+     không được đảm bảo đặt lại animation-timeline/animation-range. Với [data-pin] thì
+     chuyện này là thật: khối @supports của dải card ghim không khoá media, JS chỉ là lớp
+     chặn thứ nhất (hook không gắn [data-pin] khi reduce) — gỡ luôn timeline ở đây. */
+  [data-reveal-items].is-in > *:not([data-pin] *) {
+    animation: none;
+    animation-timeline: auto;
+    animation-range: normal;
+  }
+  [data-pin] .pin-track,
+  [data-pin] .pin-rail-fill {
+    animation-timeline: auto;
+    animation-range: normal;
+  }
   .acc,
   .acc[data-open='true'] { transition: none; }
   .hero-word,
   .hero-word-hl { animation: none; opacity: 1; translate: none; scale: none; filter: none; }
+  .reveal-heading.is-in .reveal-word { animation: none; }
+  .reveal-heading.is-in + .reveal-desc { animation: none; }
+  /* Dải card ghim: hook đã không gắn [data-pin] khi reduced-motion. Đây là lưới chặn
+     cuối cho trường hợp JS ghi nhầm — nhả toàn bộ về layout grid gốc, để không card nào
+     bị nhốt trong hộp overflow:hidden mà người dùng không với tới. */
+  [data-pin] .pin-root { height: auto; view-timeline: none; }
+  [data-pin] .pin-stage { position: static; top: auto; min-height: 0; display: block; }
+  [data-pin] .pin-viewport { overflow: visible; }
+  [data-pin] .pin-track { display: grid; width: auto; will-change: auto; animation: none; }
+  [data-pin] .pin-rail-fill { animation: none; }
+  [data-pin] .pin-rail { display: none; }
   .btn-3d              { transition: none; }
   .card-3d           { transform: none; transition: border-color 0.25s ease-out; }
   .card-3d::before   { display: none; }

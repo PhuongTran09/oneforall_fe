@@ -9,44 +9,46 @@ const SITE = 'https://oneforall.io.vn'
 const canonicalToolPath = (slug) => `/${slug.replace(/^\/+|\/+$/g, '')}/`
 
 // ─── Cấu hình chỉnh tay ──────────────────────────────────────────────────────
-// Nội dung tĩnh của trang chủ (title/description/OG giữ nguyên từ index.html).
-const HOME = {
-  h1: 'One ForAll – Công cụ trực tuyến đa năng cho ảnh, video và tài liệu',
-  intro:
-    'One ForAll cung cấp các công cụ trực tuyến giúp bạn tải media từ những liên kết được hỗ trợ, chuyển đổi định dạng tệp và xử lý hình ảnh. Tất cả trong một nền tảng, đơn giản và thuận tiện.',
-}
+// Dict là nguồn copy duy nhất: HTML tĩnh lấy nhãn từ đây thay vì soạn lại trong
+// file này, nên bản prerender và bản hydrate không thể nói khác nhau về cùng một URL.
+const DICTS = { vi: loadDict('dict.vi.ts', 'vi'), en: loadDict('dict.en.ts', 'en') }
+
+// Title/description/OG của trang chủ giữ nguyên theo index.html; chỉ h1 + intro là đọc dict.
+const HOME = { h1: DICTS.vi.hero.title, intro: DICTS.vi.hero.description }
 const HOME_EN = {
   title: 'One ForAll - The Versatile Online Tools Platform for Every Need',
   description:
     'Use One ForAll to get media from supported links, convert file formats and process images with online tools.',
-  h1: 'The online tools platform all in one for every need',
-  intro:
-    'One ForAll offers online tools to get media from supported links, convert file formats, and process images—all in one simple, convenient platform.',
-}
-const CATEGORY_LABELS = {
-  youtube: 'Tải video & nhạc YouTube',
-  tiktok: 'Tải video & nhạc TikTok',
-  convert: 'Chuyển đổi tệp',
-  document: 'Chuyển đổi tài liệu',
-  image: 'Công cụ xử lý ảnh',
-  data: 'Chuyển đổi dữ liệu',
-  archive: 'Chuyển đổi tệp nén',
-  media: 'Âm thanh & video',
-}
-const CATEGORY_LABELS_EN = {
-  youtube: 'YouTube video and audio tools',
-  tiktok: 'TikTok video and audio tools',
-  convert: 'File conversion',
-  document: 'Document conversion',
-  image: 'Image tools',
-  data: 'Data conversion',
-  archive: 'Archive conversion',
-  media: 'Audio and video',
+  h1: DICTS.en.hero.title,
+  intro: DICTS.en.hero.description,
 }
 // URL tĩnh khác muốn đưa vào sitemap (vd. '/privacy', '/terms', '/contact').
-// '/square-spin' là trang tính năng (như '/case-opening'): không có landing page prerender,
+// '/case-opening' và '/square-spin' là trang tính năng: không có landing page prerender,
 // chỉ khai báo để crawler biết đường này tồn tại; nội dung do SPA render.
-const EXTRA_SITEMAP_PATHS = ['/privacy', '/terms', '/square-spin']
+const EXTRA_SITEMAP_PATHS = ['/privacy', '/terms', '/case-opening', '/square-spin']
+
+// Nhóm công cụ cho '/tools/<id>'. Phải khớp GROUP_MAP trong src/config/toolCategories.ts;
+// checkDirectory() dưới kia bắt buộc các nhóm phủ đúng danh sách slug đã parse, nên nếu
+// registry thêm category mà chưa thêm vào đây thì build chết thay vì âm thầm thiếu trang.
+const GROUP_BY_CATEGORY = {
+  youtube: 'downloader',
+  tiktok: 'downloader',
+  convert: 'converter',
+  media: 'converter',
+  image: 'image',
+  document: 'document',
+  data: 'data',
+  archive: 'archive',
+}
+const CATEGORY_ORDER = ['downloader', 'converter', 'image', 'document', 'data', 'archive']
+
+// 7 trang danh mục: '/tools' (null = gộp hết) và 6 nhóm. path là đường dẫn locale-relative
+// không có '/' cuối — canonical tự thêm. Nhãn đọc từ dict nên HTML tĩnh trùng từng ký tự
+// với những gì SPA render, giống cách validateLegal() so chuỗi pháp lý.
+const DIRECTORY = [
+  { path: '/tools', group: null },
+  ...CATEGORY_ORDER.map((group) => ({ path: `/tools/${group}`, group })),
+]
 
 // Trang pháp lý: nội dung lấy nguyên văn từ src/content/legal (module data thuần). Không soạn
 // chính sách trong file này — prerender chỉ render lại đúng những gì SPA đang render.
@@ -189,6 +191,28 @@ function loadLegal(file, name) {
   return new Function(`${js}\nreturn ${name}`)()
 }
 
+// Dict i18n cũng là module data thuần (chỉ có `import type`/`export type`) → đọc bằng cùng
+// trick. Trang danh mục lấy nhãn từ đây thay vì soạn lại trong file này: soạn lại là có
+// ngay bản copy khác với SPA cho cùng một URL.
+function loadDict(file, name) {
+  const src = fs.readFileSync(path.resolve(rootDir, 'src/i18n', file), 'utf8')
+  const js = src
+    .replace(/^import type .*\r?\n/gm, '')
+    .replace(/^export type .*\r?\n/gm, '')
+    .replace(/export const (\w+)(:\s*\w+)? =/g, 'const $1 =')
+  if (!js.includes(`const ${name} =`)) {
+    throw new Error(`${file}: không nhận dạng "export const ${name}" — cập nhật loadDict()`)
+  }
+  // new Function chỉ an toàn vì thứ nó compile là module data đã chốt trong repo. Chặn dấu
+  // hiệu code runtime SAU khi đã bỏ nội dung chuỗi — không chặn thì prose như
+  // "Paste the URL to process..." bị bắt làm `process.` và build chết oan.
+  const codeOnly = js.replace(/"(?:[^"\\]|\\.)*"/g, '""').replace(/'(?:[^'\\]|\\.)*'/g, "''")
+  if (/`|\brequire\s*\(|\bimport\s*\(|\beval\s*\(|\bnew\s+Function\b|\bprocess\.|\bglobalThis\b/.test(codeOnly)) {
+    throw new Error(`${file}: không phải module data thuần — loadDict() từ chối compile`)
+  }
+  return new Function(`${js}\nreturn ${name}`)()
+}
+
 function dictValue(dictFile, block, key) {
   const src = fs.readFileSync(path.resolve(rootDir, 'src/i18n', dictFile), 'utf8')
   const start = src.indexOf(`"${block}": {`)
@@ -322,7 +346,7 @@ function landingBody(tool, tools) {
 
   return `<div id="root">${CSS}
 <div class="pr prerendered-content">
-  <nav aria-label="Breadcrumb"><a href="/">Trang chủ</a> &rsaquo; <span>${esc(tool.badge)}</span></nav>
+  ${toolCrumbNav(tool, 'vi')}
   <header>
     <h1>${esc(tool.h1)}</h1>
     <p>${esc(tool.subtitle)}</p>
@@ -338,6 +362,49 @@ function landingBody(tool, tools) {
 
 function localePath(slug, lang) {
   return `${lang === 'en' ? '/en' : ''}${canonicalToolPath(slug)}`
+}
+
+/**
+ * Breadcrumb trang tool: Home → Tools → nhóm → tool. SPA thêm Home sẵn ở cả 2 nơi
+ * (Breadcrumbs + SEOHead), nên phần còn lại lấy đúng nhãn mà dict SPA đang đọc.
+ */
+function toolCrumbTrail(tool, lang) {
+  const dict = DICTS[lang]
+  const trail = [
+    { name: LEGAL_LABELS[lang].home, href: lang === 'en' ? '/en/' : '/' },
+    { name: dict.directory.crumb, href: localePath('/tools', lang) },
+  ]
+  const group = GROUP_BY_CATEGORY[tool.category]
+  if (group) {
+    const cat = dict.cat?.[group]
+    if (!cat) throw new Error(`dict thiếu cat.${group}`)
+    trail.push({ name: cat.name, href: localePath(`/tools/${group}`, lang) })
+  }
+  return trail
+}
+
+function toolCrumbNav(tool, lang) {
+  const links = toolCrumbTrail(tool, lang)
+    .map((c) => `<a href="${esc(c.href)}">${esc(c.name)}</a>`)
+    .join(' &rsaquo; ')
+  return `<nav aria-label="Breadcrumb">${links} &rsaquo; <span>${esc(tool.badge)}</span></nav>`
+}
+
+function toolCrumbSchema(tool, lang, toolUrl) {
+  const items = [
+    ...toolCrumbTrail(tool, lang).map((c) => ({ name: c.name, item: `${SITE}${c.href}` })),
+    { name: tool.badge, item: toolUrl },
+  ]
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: items.map((b, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: b.name,
+      item: b.item,
+    })),
+  }
 }
 
 function landingBodyEnglish(tool, tools) {
@@ -357,7 +424,7 @@ function landingBodyEnglish(tool, tools) {
 
   return `<div id="root">${CSS}
 <div class="pr prerendered-content">
-  <nav aria-label="Breadcrumb"><a href="/en/">Home</a> &rsaquo; <span>${esc(tool.badge)}</span></nav>
+  ${toolCrumbNav(tool, 'en')}
   <header><h1>${esc(tool.h1)}</h1><p>${esc(tool.subtitle)}</p>${(tool.introParagraphs ?? []).map((p) => `<p>${esc(p)}</p>`).join('')}</header>
   ${tool.steps.length ? `<section><h2>How to use ${esc(tool.badge)}</h2><div class="grid">${steps}</div></section>` : ''}
   ${tool.features.length ? `<section><h2>Key features</h2><div class="grid">${features}</div></section>` : ''}
@@ -367,34 +434,57 @@ function landingBodyEnglish(tool, tools) {
 </div></div>`
 }
 
-function homeBodyEnglish(tools) {
-  const groups = {}
-  for (const t of Object.values(tools)) (groups[t.category || 'media'] ??= []).push(t)
-  const sections = Object.entries(groups)
-    .map(([cat, list]) => `<section><h2>${esc(CATEGORY_LABELS_EN[cat] || cat)}</h2><ul>${list
-      .map((t) => `<li><a href="${esc(localePath(t.slug, 'en'))}">${esc(t.badge)}</a> – ${esc(t.subtitle)}</li>`)
-      .join('')}</ul></section>`)
+/**
+ * Khối danh mục trên trang chủ: đúng 6 nhóm theo thứ tự SPA, nhãn lấy từ dict mà
+ * SPA đọc. Trước đây nhóm theo category (8 nhãn soạn tay trong file này) nên HTML
+ * tĩnh và bản hydrate mô tả trang chủ khác nhau.
+ */
+function homeSections(tools, lang) {
+  const byGroup = groupTools(tools)
+  const dict = DICTS[lang]
+  return CATEGORY_ORDER.filter((group) => byGroup[group].length > 0)
+    .map((group) => {
+      const items = byGroup[group]
+        .map((t) => `<li><a href="${esc(localePath(t.slug, lang))}">${esc(t.badge)}</a> – ${esc(t.subtitle)}</li>`)
+        .join('')
+      return `<section id="group-${esc(group)}"><h2><a href="${esc(localePath(`/tools/${group}`, lang))}">${esc(dict.cat[group].name)}</a></h2><ul>${items}</ul></section>`
+    })
     .join('')
+}
+
+/** Dải "vì sao chọn" — cùng bộ copy với ValueBandSection của SPA, đọc từ dict. */
+function homeValueBand(lang) {
+  const dict = DICTS[lang]
+  const steps = ['s1', 's2', 's3', 's4']
+    .map(
+      (key, i) =>
+        `<li><strong>${esc(dict.homeBand.stepLabel.replace('{n}', String(i + 1).padStart(2, '0')))}</strong> — ${esc(
+          dict.howItWorks[`${key}Title`],
+        )}: ${esc(dict.howItWorks[`${key}Desc`])}</li>`,
+    )
+    .join('')
+  const values = ['f1', 'f2', 'f3', 'f4']
+    .map((key) => `<li><strong>${esc(dict.features[`${key}Title`])}</strong> — ${esc(dict.features[`${key}Desc`])}</li>`)
+    .join('')
+  return `<section id="how-it-works"><h2>${esc(dict.homeBand.title)}</h2><p>${esc(dict.homeBand.desc)}</p><ol>${steps}</ol><ul>${values}</ul></section>`
+}
+
+function homeBodyEnglish(tools) {
+  const sections = homeSections(tools, 'en')
+  const valueBand = homeValueBand('en')
   return `<div id="root">${CSS}
-<div class="pr prerendered-content"><header><h1>${esc(HOME_EN.h1)}</h1><p>${esc(HOME_EN.intro)}</p><p>Google Sign-In lets you authenticate and use supported account features.</p><nav aria-label="Legal and support"><a href="/en/privacy">Privacy Policy</a> · <a href="/en/terms">Terms of Use</a> · <a href="mailto:support@oneforall.io.vn">support@oneforall.io.vn</a></nav></header><section id="google-api"><h2>Google API usage and content safety commitment</h2><p>One ForAll is an online tools platform: downloading media from supported links, converting file and document formats, and processing images such as compression, resizing and background removal.</p><p>Google Sign-In is used only to verify identity and support account sign-in, with the openid, email and profile scopes. Data received through Google APIs is not used to train AI models, is not shared with third parties, and is not used for advertising.</p><p><strong>One ForAll does not use Google APIs to create, edit, generate, or distribute AI-generated Non-Consensual Intimate Imagery (AI NCII). This conduct is strictly prohibited across the platform; violating accounts are permanently locked and their data is deleted immediately.</strong></p><p>See the full rules in the <a href="/en/terms">Terms of Use</a> and <a href="/en/privacy">Privacy Policy</a>.</p></section>${sections}</div></div>`
+<div class="pr prerendered-content"><header><h1>${esc(HOME_EN.h1)}</h1><p>${esc(HOME_EN.intro)}</p><p>Google Sign-In lets you authenticate and use supported account features.</p><nav aria-label="Legal and support"><a href="/en/privacy">Privacy Policy</a> · <a href="/en/terms">Terms of Use</a> · <a href="mailto:support@oneforall.io.vn">support@oneforall.io.vn</a></nav></header>${sections}${valueBand}<section id="google-api"><h2>Google API usage and content safety commitment</h2><p>One ForAll is an online tools platform: downloading media from supported links, converting file and document formats, and processing images such as compression, resizing and background removal.</p><p>Google Sign-In is used only to verify identity and support account sign-in, with the openid, email and profile scopes. Data received through Google APIs is not used to train AI models, is not shared with third parties, and is not used for advertising.</p><p><strong>One ForAll does not use Google APIs to create, edit, generate, or distribute AI-generated Non-Consensual Intimate Imagery (AI NCII). This conduct is strictly prohibited across the platform; violating accounts are permanently locked and their data is deleted immediately.</strong></p><p>See the full rules in the <a href="/en/terms">Terms of Use</a> and <a href="/en/privacy">Privacy Policy</a>.</p></section></div></div>`
 }
 
 function homeBody(tools) {
-  const groups = {}
-  for (const t of Object.values(tools)) (groups[t.category || 'media'] ??= []).push(t)
-  const sections = Object.entries(groups)
-    .map(
-      ([cat, list]) =>
-        `<section><h2>${esc(CATEGORY_LABELS[cat] || cat)}</h2><ul>${list
-          .map((t) => `<li><a href="${esc(canonicalToolPath(t.slug))}">${esc(t.badge)}</a> – ${esc(t.subtitle)}</li>`)
-          .join('')}</ul></section>`,
-    )
-    .join('')
+  const sections = homeSections(tools, 'vi')
+  const valueBand = homeValueBand('vi')
   return `<div id="root">${CSS}
 <div class="pr prerendered-content">
   <header><h1>${esc(HOME.h1)}</h1><p>${esc(HOME.intro)}</p><p>Google Sign-In giúp bạn xác thực và sử dụng các chức năng tài khoản được hỗ trợ.</p><nav aria-label="Chính sách và hỗ trợ"><a href="/privacy">Chính sách quyền riêng tư</a> · <a href="/terms">Điều khoản sử dụng</a> · <a href="mailto:support@oneforall.io.vn">support@oneforall.io.vn</a></nav></header>
-  <section id="google-api"><h2>Mục đích sử dụng Google API và cam kết an toàn nội dung</h2><p>One ForAll là nền tảng công cụ trực tuyến: tải media từ những liên kết được hỗ trợ, chuyển đổi định dạng tệp và tài liệu, xử lý hình ảnh như nén, đổi kích thước và xóa nền.</p><p>Google Sign-In chỉ được dùng để xác minh danh tính và hỗ trợ đăng nhập tài khoản, với các quyền openid, email và profile. Dữ liệu nhận qua Google API không dùng để huấn luyện mô hình AI, không chia sẻ cho bên thứ ba và không dùng cho mục đích quảng cáo.</p><p><strong>One ForAll không sử dụng Google API để tạo, chỉnh sửa, sinh hoặc phát tán hình ảnh thân mật cá nhân không có sự đồng thuận do AI tạo ra (AI-generated Non-Consensual Intimate Imagery – AI NCII). Hành vi này bị nghiêm cấm trên toàn nền tảng; tài khoản vi phạm sẽ bị khóa vĩnh viễn và dữ liệu bị xóa ngay lập tức.</strong></p><p>Xem quy định chi tiết trong <a href="/terms">Điều khoản sử dụng</a> và <a href="/privacy">Chính sách quyền riêng tư</a>.</p></section>
   ${sections}
+  ${valueBand}
+  <section id="google-api"><h2>Mục đích sử dụng Google API và cam kết an toàn nội dung</h2><p>One ForAll là nền tảng công cụ trực tuyến: tải media từ những liên kết được hỗ trợ, chuyển đổi định dạng tệp và tài liệu, xử lý hình ảnh như nén, đổi kích thước và xóa nền.</p><p>Google Sign-In chỉ được dùng để xác minh danh tính và hỗ trợ đăng nhập tài khoản, với các quyền openid, email và profile. Dữ liệu nhận qua Google API không dùng để huấn luyện mô hình AI, không chia sẻ cho bên thứ ba và không dùng cho mục đích quảng cáo.</p><p><strong>One ForAll không sử dụng Google API để tạo, chỉnh sửa, sinh hoặc phát tán hình ảnh thân mật cá nhân không có sự đồng thuận do AI tạo ra (AI-generated Non-Consensual Intimate Imagery – AI NCII). Hành vi này bị nghiêm cấm trên toàn nền tảng; tài khoản vi phạm sẽ bị khóa vĩnh viễn và dữ liệu bị xóa ngay lập tức.</strong></p><p>Xem quy định chi tiết trong <a href="/terms">Điều khoản sử dụng</a> và <a href="/privacy">Chính sách quyền riêng tư</a>.</p></section>
 </div></div>`
 }
 
@@ -447,6 +537,166 @@ function legalHead(doc, lang, ogImage) {
 `
 }
 
+// ─── Trang danh mục '/tools' + 6 nhóm ────────────────────────────────────────
+/** Tool của từng nhóm, suy từ category đã parse — cùng GROUP_MAP với toolCategories.ts. */
+function groupTools(tools) {
+  const groups = Object.fromEntries(CATEGORY_ORDER.map((g) => [g, []]))
+  for (const tool of Object.values(tools)) {
+    const group = GROUP_BY_CATEGORY[tool.category]
+    if (!group) {
+      throw new Error(`${tool.slug}: category "${tool.category}" chưa có trong GROUP_BY_CATEGORY`)
+    }
+    groups[group].push(tool)
+  }
+  return groups
+}
+
+/** title/mô tả/h1/intros của một trang danh mục, đọc theo dict đang dùng. */
+function directoryMeta(entry, dict) {
+  if (entry.group === null) {
+    const d = dict.directory
+    return {
+      title: d.seoTitle,
+      description: d.seoDesc,
+      h1: d.h1,
+      intro: d.intro,
+      label: d.allTools,
+    }
+  }
+  const cat = dict.cat?.[entry.group]
+  if (!cat) throw new Error(`dict thiếu cat.${entry.group}`)
+  return { title: cat.seoTitle, description: cat.desc, h1: cat.h1, intro: cat.desc, label: cat.name }
+}
+
+/** URL locale-relative, có '/' cuối như host 307 về. */
+function directoryUrl(path, lang) {
+  return `${lang === 'en' ? '/en' : ''}${path}/`
+}
+
+function directoryBody(entry, dict, lang, groups) {
+  const meta = directoryMeta(entry, dict, lang)
+  const home = lang === 'en' ? '/en/' : '/'
+  const count = (n) => dict.directory.count.replace('{count}', String(n))
+  const link = (t) => `<li><a href="${esc(localePath(t.slug, lang))}">${esc(t.badge)}</a> – ${esc(t.subtitle)}</li>`
+  const list = (tools) => `<ul>${tools.map(link).join('')}</ul>`
+  const rail = CATEGORY_ORDER.map(
+    (g) => `<li><a href="${esc(directoryUrl(`/tools/${g}`, lang))}">${esc(dict.cat[g].name)}</a> – ${esc(count(groups[g].length))}</li>`,
+  ).join('')
+
+  const crumb =
+    entry.group === null
+      ? `<nav aria-label="Breadcrumb"><a href="${home}">${esc(LEGAL_LABELS[lang].home)}</a> &rsaquo; <span>${esc(dict.directory.crumb)}</span></nav>`
+      : `<nav aria-label="Breadcrumb"><a href="${home}">${esc(LEGAL_LABELS[lang].home)}</a> &rsaquo; <a href="${esc(directoryUrl('/tools', lang))}">${esc(dict.directory.crumb)}</a> &rsaquo; <span>${esc(meta.label)}</span></nav>`
+
+  const main =
+    entry.group === null
+      ? CATEGORY_ORDER.map(
+          (g) =>
+            `<section id="${g}"><h2><a href="${esc(directoryUrl(`/tools/${g}`, lang))}">${esc(dict.cat[g].name)}</a></h2><p>${esc(dict.cat[g].desc)}</p>${list(groups[g])}</section>`,
+        ).join('')
+      : `<section id="${entry.group}">${list(groups[entry.group])}</section>
+  <section><h2>${esc(dict.directory.h1)}</h2><ul>${rail}</ul></section>
+  <p><a href="${esc(directoryUrl('/tools', lang))}">${esc(dict.directory.viewAll.replace('{count}', String(Object.values(groups).reduce((n, l) => n + l.length, 0))))}</a></p>`
+
+  return `<div id="root">${CSS}
+<div class="pr prerendered-content">
+  ${crumb}
+  <header><h1>${esc(meta.h1)}</h1><p>${esc(meta.intro)}</p></header>
+  ${main}
+</div></div>`
+}
+
+function directoryHead(entry, dict, lang, ogImage) {
+  const meta = directoryMeta(entry, dict, lang)
+  const viUrl = `${SITE}${entry.path}/`
+  const enUrl = `${SITE}/en${entry.path}/`
+  const url = lang === 'en' ? enUrl : viUrl
+  const crumbs = [{ name: dict.directory.crumb, path: '/tools' }]
+  if (entry.group !== null) crumbs.push({ name: meta.label, path: entry.path })
+
+  const schemas = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebApplication',
+      name: meta.title,
+      url,
+      description: meta.description,
+      applicationCategory: 'MultimediaApplication',
+      operatingSystem: 'Any',
+      inLanguage: lang,
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'VND' },
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: LEGAL_LABELS[lang].home, item: lang === 'en' ? `${SITE}/en/` : `${SITE}/` },
+        ...crumbs.map((c, i) => ({
+          '@type': 'ListItem',
+          position: i + 2,
+          name: c.name,
+          item: `${SITE}${directoryUrl(c.path, lang)}`,
+        })),
+      ],
+    },
+  ]
+  const ids = { BreadcrumbList: 'breadcrumb-jsonld', WebApplication: 'webapp-jsonld' }
+  const ld = schemas
+    .map((s) => `<script id="${ids[s['@type']]}" type="application/ld+json">${jsonLd(s)}</script>`)
+    .join('\n    ')
+
+  return `
+    <title>${esc(meta.title)}</title>
+    <meta name="description" content="${esc(meta.description)}" />
+    <link rel="canonical" href="${esc(url)}" />
+    <meta name="robots" content="index, follow" />
+    <meta property="og:title" content="${esc(meta.title)}" />
+    <meta property="og:description" content="${esc(meta.description)}" />
+    <meta property="og:url" content="${esc(url)}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="One ForAll" />
+    <meta property="og:locale" content="${lang === 'en' ? 'en_US' : 'vi_VN'}" />
+    <link rel="alternate" hreflang="vi" href="${esc(viUrl)}" data-hreflang="vi" />
+    <link rel="alternate" hreflang="en" href="${esc(enUrl)}" data-hreflang="en" />
+    <link rel="alternate" hreflang="x-default" href="${esc(viUrl)}" data-hreflang="x-default" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="${esc(meta.title)}" />
+    <meta name="twitter:description" content="${esc(meta.description)}" />
+    ${ogImage ? `<meta name="twitter:image" content="${esc(ogImage)}" />` : ''}
+    ${ld}
+`
+}
+
+/**
+ * Trang danh mục không được trùng title/description với trang tool — Google coi 2 URL cùng
+ * bộ metadata là một trang. Đây cũng là chỗ duy nhất phát hiện nhóm rỗng hoặc slug rơi khỏi
+ * danh mục (thêm category mới vào registry mà quên GROUP_BY_CATEGORY thì build chết ở groupTools()).
+ */
+function checkDirectory(dict, tools, label) {
+  const errors = []
+  const titles = new Map(Object.values(tools).map((t) => [t.title, `tool ${t.slug}`]))
+  const descriptions = new Map(
+    Object.values(tools)
+      .filter((t) => t.metaDescription)
+      .map((t) => [t.metaDescription, `tool ${t.slug}`]),
+  )
+  for (const entry of DIRECTORY) {
+    const meta = directoryMeta(entry, dict)
+    for (const [field, seen, value] of [
+      ['title', titles, meta.title],
+      ['description', descriptions, meta.description],
+    ]) {
+      if (seen.has(value)) errors.push(`${label} ${entry.path}: ${field} trùng với ${seen.get(value)}`)
+      seen.set(value, `${label} ${entry.path}`)
+    }
+    if (!meta.h1) errors.push(`${label} ${entry.path}: thiếu h1`)
+    if (meta.description.length < 70 || meta.description.length > 165)
+      errors.push(`${label} ${entry.path}: description ${meta.description.length} ký tự (nên 70–165)`)
+    if (meta.title.length > 65) errors.push(`${label} ${entry.path}: title ${meta.title.length} ký tự (>65, dễ bị cắt)`)
+  }
+  return errors
+}
+
 function landingHead(tool, ogImage) {
   const url = `${SITE}${canonicalToolPath(tool.slug)}`
   const enUrl = `${SITE}/en${canonicalToolPath(tool.slug)}`
@@ -462,14 +712,7 @@ function landingHead(tool, ogImage) {
       inLanguage: 'vi',
       offers: { '@type': 'Offer', price: '0', priceCurrency: 'VND' },
     },
-    {
-      '@context': 'https://schema.org',
-      '@type': 'BreadcrumbList',
-      itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Trang chủ', item: `${SITE}/` },
-        { '@type': 'ListItem', position: 2, name: tool.badge, item: url },
-      ],
-    },
+    toolCrumbSchema(tool, 'vi', url),
   ]
   if (tool.faqList.length)
     schemas.unshift({
@@ -523,14 +766,7 @@ function landingHeadEnglish(tool, ogImage) {
       inLanguage: 'en',
       offers: { '@type': 'Offer', price: '0', priceCurrency: 'VND' },
     },
-    {
-      '@context': 'https://schema.org',
-      '@type': 'BreadcrumbList',
-      itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE}/en/` },
-        { '@type': 'ListItem', position: 2, name: tool.badge, item: url },
-      ],
-    },
+    toolCrumbSchema(tool, 'en', url),
   ]
   if (tool.faqList.length)
     schemas.unshift({
@@ -607,7 +843,16 @@ function setHtmlLang(html, lang) {
 }
 
 function buildSitemap(slugs) {
-  const urls = ['/', ...slugs.map(canonicalToolPath), ...EXTRA_SITEMAP_PATHS.map(canonicalToolPath)]
+  // Mọi URL prerender đều có bản /en thật (dist/en/...), nên khai cả hai locale.
+  // '/case-opening' và '/square-spin' do SPA render qua rewrite của host: vẫn khai, vì
+  // người dùng truy cập được — thiếu '/case-opening' là bug có sẵn sửa luôn ở đây.
+  const paths = [
+    '/',
+    ...slugs.map(canonicalToolPath),
+    ...DIRECTORY.map((entry) => `${entry.path}/`),
+    ...EXTRA_SITEMAP_PATHS.map(canonicalToolPath),
+  ]
+  const urls = paths.flatMap((p) => (p === '/' ? ['/', '/en/'] : [p, `/en${p}`]))
   // Không ghi changefreq/priority (Google bỏ qua) và không ghi lastmod giả.
   const body = urls.map((u) => `  <url>\n    <loc>${SITE}${u}</loc>\n  </url>`).join('\n')
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${body}\n</urlset>\n`
@@ -702,7 +947,40 @@ export function runPrerender() {
     fs.writeFileSync(path.resolve(englishOutDir, 'index.html'), englishHtml, 'utf8')
   }
 
-  // 3. Trang pháp lý. Thiếu mấy file này là mọi URL /privacy, /terms bị host rewrite về
+  // 3. Trang danh mục '/tools' + 6 nhóm. Cùng bộ nhãn dict mà SPA đọc, nên HTML tĩnh và
+  //    bản hydrate không thể nói khác nhau về cùng một URL.
+  const dicts = { vi: loadDict('dict.vi.ts', 'vi'), en: loadDict('dict.en.ts', 'en') }
+  const groups = groupTools(tools)
+  const englishGroups = groupTools(englishTools)
+  const directoryErrors = [
+    ...checkDirectory(dicts.vi, tools, 'vi'),
+    ...checkDirectory(dicts.en, englishTools, 'en'),
+    ...CATEGORY_ORDER.filter((g) => groups[g].length === 0).map((g) => `nhóm "${g}" không có tool nào`),
+  ]
+  if (directoryErrors.length) {
+    directoryErrors.forEach((e) => console.error(`[SEO] ✖ ${e}`))
+    console.error('[SEO Prerender] Dừng build vì trang danh mục có lỗi.')
+    process.exit(1)
+  }
+
+  for (const entry of DIRECTORY) {
+    for (const lang of ['vi', 'en']) {
+      const head = directoryHead(entry, dicts[lang], lang, ogImage)
+      const want = `${SITE}${directoryUrl(entry.path, lang)}`
+      if (!head.includes(`<link rel="canonical" href="${want}" />`)) {
+        throw new Error(`${directoryUrl(entry.path, lang)}: canonical không phải ${want}`)
+      }
+      let html = childBase.replace(/<title>[\s\S]*?<\/title>/i, '')
+      html = setHtmlLang(html, lang)
+      html = injectHead(html, head)
+      html = injectRoot(html, directoryBody(entry, dicts[lang], lang, lang === 'en' ? englishGroups : groups))
+      const outDir = path.resolve(distDir, directoryUrl(entry.path, lang).replace(/^\/+/, '').replace(/\/+$/, ''))
+      fs.mkdirSync(outDir, { recursive: true })
+      fs.writeFileSync(path.resolve(outDir, 'index.html'), html, 'utf8')
+    }
+  }
+
+  // 4. Trang pháp lý. Thiếu mấy file này là mọi URL /privacy, /terms bị host rewrite về
   //    index.html — curl và crawler nhận đúng trang chủ tiếng Việt.
   for (const { doc, lang, dir } of LEGAL) {
     const head = legalHead(doc, lang, ogImage)
@@ -717,17 +995,22 @@ export function runPrerender() {
     fs.writeFileSync(path.resolve(outDir, 'index.html'), html, 'utf8')
   }
 
-  // 4. 404.html
+  // 5. 404.html
   const notFound = injectHead(
     childBase.replace(/<title>[\s\S]*?<\/title>/i, '<title>404 - Trang không tồn tại | One ForAll</title>'),
     '    <meta name="robots" content="noindex, nofollow" />',
   )
   fs.writeFileSync(path.resolve(distDir, '404.html'), notFound, 'utf8')
 
-  // 5. sitemap.xml sinh từ config (nhớ xóa public/sitemap.xml cũ để khỏi nhầm nguồn)
-  fs.writeFileSync(path.resolve(distDir, 'sitemap.xml'), buildSitemap(slugs), 'utf8')
+  // 6. sitemap.xml sinh từ config (nhớ xóa public/sitemap.xml cũ để khỏi nhầm nguồn)
+  const sitemap = buildSitemap(slugs)
+  fs.writeFileSync(path.resolve(distDir, 'sitemap.xml'), sitemap, 'utf8')
+  const locCount = (sitemap.match(/<loc>/g) ?? []).length
 
-  console.log(`[SEO Prerender] Xong: 2 trang chủ + ${slugs.length} landing page/locale + ${LEGAL.length} trang pháp lý + 404.html + sitemap.xml (${slugs.length * 2 + LEGAL.length + 2} HTML route; sitemap ${slugs.length + 1 + EXTRA_SITEMAP_PATHS.length} URL)`)
+  const htmlRoutes = slugs.length * 2 + DIRECTORY.length * 2 + LEGAL.length + 2
+  console.log(
+    `[SEO Prerender] Xong: 2 trang chủ + ${slugs.length} landing/locale + ${DIRECTORY.length} danh mục/locale + ${LEGAL.length} trang pháp lý + 404.html + sitemap.xml (${htmlRoutes} HTML route; sitemap ${locCount} URL)`,
+  )
 }
 
 runPrerender()

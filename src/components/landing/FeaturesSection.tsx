@@ -11,19 +11,19 @@ export function FeaturesSection() {
       badge: 'FastAPI Async Engine',
     },
     {
-      icon: <Layers className="w-6 h-6 text-brand-2" />,
+      icon: <Layers className="w-6 h-6 text-brand" />,
       title: t('features.f2Title'),
       description: t('features.f2Desc'),
       badge: t('features.f2Badge'),
     },
     {
-      icon: <MousePointerClick className="w-6 h-6 text-emerald-600" />,
+      icon: <MousePointerClick className="w-6 h-6 text-brand" />,
       title: t('features.f3Title'),
       description: t('features.f3Desc'),
       badge: 'Modern SaaS UX',
     },
     {
-      icon: <ListChecks className="w-6 h-6 text-indigo-600" />,
+      icon: <ListChecks className="w-6 h-6 text-brand" />,
       title: t('features.f4Title'),
       description: t('features.f4Desc'),
       badge: 'Privacy First',
