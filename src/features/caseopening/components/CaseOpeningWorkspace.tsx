@@ -19,6 +19,7 @@ import {
 } from '../store/caseStore'
 import { useCaseOpening } from '../hooks/useCaseOpening'
 import { useAssetUrls, useReducedMotion } from '../hooks/useAssetUrls'
+import { useExitFade, useOpenSeq } from '../../../hooks/useExitFade'
 import { effectiveWeights } from '../utils/random'
 import { CaseStage } from './CaseStage'
 import { CaseSettingsPanel } from './CaseSettingsPanel'
@@ -40,6 +41,14 @@ export function CaseOpeningWorkspace() {
   const reducedMotion = useReducedMotion()
   const [tab, setTab] = useState<Tab>('items')
   const [editor, setEditor] = useState<{ item: CaseItem | null } | null>(null)
+  // Modal sửa vật phẩm chỉ fade ra được nếu node còn sống sau khi đóng: editorShow giữ
+  // subtree thêm 180ms, editorHeld giữ đúng item đang sửa (form không nhảy về trạng thái
+  // trống giữa lúc mờ dần), editorSeq đổi key theo nhịp MỞ để lần sau là instance mới.
+  const { show: editorShow } = useExitFade(editor !== null)
+  const editorSeq = useOpenSeq(editor !== null)
+  const [editorHeld, setEditorHeld] = useState(editor)
+  if (editor !== null && editor !== editorHeld) setEditorHeld(editor)
+  const shownEditor = editor ?? editorHeld
   const [pendingCaseDelete, setPendingCaseDelete] = useState<CaseConfig | null>(null)
   const [pendingCaseReset, setPendingCaseReset] = useState<CaseConfig | null>(null)
 
@@ -228,17 +237,19 @@ export function CaseOpeningWorkspace() {
         </div>
       </div>
 
-      {editor && (
-        <ItemEditorModal
-          key={editor.item?.id ?? 'new'}
-          caseId={activeCase.id}
-          item={editor.item}
-          rarities={activeCase.rarities}
-          caseItems={activeCase.items}
-          existingImageUrl={editor.item?.imageAssetId ? imageUrls[editor.item.imageAssetId] : undefined}
-          onClose={() => setEditor(null)}
-        />
-      )}
+      {editorShow &&
+        shownEditor && (
+          <ItemEditorModal
+            key={`${editorSeq}-${shownEditor.item?.id ?? 'new'}`}
+            isOpen={editor !== null}
+            caseId={activeCase.id}
+            item={shownEditor.item}
+            rarities={activeCase.rarities}
+            caseItems={activeCase.items}
+            existingImageUrl={shownEditor.item?.imageAssetId ? imageUrls[shownEditor.item.imageAssetId] : undefined}
+            onClose={() => setEditor(null)}
+          />
+        )}
 
       <ConfirmModal
         isOpen={pendingCaseDelete !== null}

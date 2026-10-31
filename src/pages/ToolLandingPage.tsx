@@ -3,6 +3,8 @@ import { useLocation } from 'react-router-dom'
 import { Check, ShieldCheck, Zap, ChevronDown } from 'lucide-react'
 import { SEO_TOOLS, type ToolConfig } from '../config/seoTools'
 import { detectFileFormat, resolveRoute } from '../config/conversionMatrix'
+import { toolFormatPairs } from '../config/formatSuggestions'
+import { categoryOfSlug } from '../config/toolCategories'
 import {
   getInitialParamValues,
   getParamFields,
@@ -80,12 +82,21 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
   // khi đã tắt popup. snapshot.errorMessage chỉ là "lỗi còn nhắc dở" — mount effect đọc một lần.
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
-  const breadcrumbsData = useMemo(
-    () => (tool ? [{ name: tool.badge, url: tool.slug }] : []),
-    [tool],
-  )
+  // "Home" đã có sẵn ở cả breadcrumb nhìn thấy (Breadcrumbs) lẫn JSON-LD (SEOHead),
+  // nên mảng này chỉ mang phần còn lại: Tools → nhóm → tool.
+  const breadcrumbsData = useMemo(() => {
+    if (!tool) return []
+    const category = categoryOfSlug(tool.slug)
+    const trail = [{ name: t('directory.crumb'), url: '/tools' }]
+    if (category) trail.push({ name: t(category.nameKey), url: `/${category.path}` })
+    trail.push({ name: tool.badge, url: tool.slug })
+    return trail
+  }, [tool])
 
   const toolSlug = tool?.slug
+  // Chip "thường dùng": mọi cặp đã được formatSuggestions lọc qua resolveRoute().
+  const popularConversions = useMemo(() => (tool ? toolFormatPairs(tool) : []), [tool])
+
   const resolveParamFields = useCallback(
     (sourceFormat: string | null, targetFormat: string) =>
       getParamFields({ sourceFormat, targetFormat, toolSlug }),
@@ -447,8 +458,10 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
       {/* 2. Hero Interactive Workspace */}
       <section className="cv-skip relative pt-6 pb-14 sm:pb-20 overflow-hidden">
         {/* Background Cyber Grid & Radiant Ambient Glow */}
-        <div className="absolute inset-0 bg-grid-cyber pointer-events-none" aria-hidden="true" />
-        <div className="hero-ambient-glow" aria-hidden="true" />
+        {/* Lớp nền dịch chậm hơn nội dung khi hero cuộn qua (xem scrollMotion.ts) —
+            đúng hai lớp trang sức này, không áp cho card hay đoạn text. */}
+        <div className="absolute inset-0 bg-grid-cyber pointer-events-none" aria-hidden="true" data-parallax="30" />
+        <div className="hero-ambient-glow" aria-hidden="true" data-parallax="48" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center max-w-3xl mx-auto space-y-4 mb-8 sm:mb-10">
@@ -490,6 +503,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
                     outputFormats={tool.outputFormats}
                     defaultFormat={tool.defaultFormat}
                     filterTargetsBySource={tool.backendType !== 'image_process'}
+                    popularConversions={popularConversions}
                     resolveFields={resolveParamFields}
                     initialParams={getInitialParamValues(tool.slug)}
                     initialForm={snapshot?.form ?? null}
@@ -562,7 +576,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="stagger grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" data-reveal-items>
             {tool.howItWorksSteps.map((step) => (
               <div
                 key={step.step}
@@ -595,7 +609,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="stagger grid grid-cols-1 md:grid-cols-3 gap-6" data-reveal-items>
             {tool.features.map((feat) => (
               <div
                 key={feat.title}
@@ -641,46 +655,53 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
       {/* 6. FAQ Accordion Section */}
       {tool.faqList.length > 0 && (
         <section data-reveal className="py-14 sm:py-20">
-          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-10 space-y-2">
-              <h2 className="text-xl sm:text-3xl font-bold text-ink tracking-tight">
-                {t('toolsPage.faqTitle')}
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-400">
-                {t('toolsPage.faqDesc', { badge: tool.badge })}
-              </p>
-            </div>
+          <div className="max-w-3xl lg:max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            {/* Hỏi đáp là khối dài nhất trang: từ lg, tiêu đề ghim lại để lúc cuộn qua
+                list câu hỏi vẫn biết mình đang đọc mục nào. top 96px = header 72px +
+                khoảng thở, nên thanh ghim không chui xuống menu. */}
+            <div className="lg:grid lg:grid-cols-[minmax(0,18rem)_minmax(0,1fr)] lg:gap-10 lg:items-start">
+              <div className="lg:sticky lg:top-[96px]">
+                <div className="text-center mb-10 space-y-2 lg:text-left lg:mb-0">
+                  <h2 className="text-xl sm:text-3xl font-bold text-ink tracking-tight">
+                    {t('toolsPage.faqTitle')}
+                  </h2>
+                  <p className="text-xs sm:text-sm text-slate-400">
+                    {t('toolsPage.faqDesc', { badge: tool.badge })}
+                  </p>
+                </div>
+              </div>
 
-            <div className="space-y-3">
-              {tool.faqList.map((faq, index) => {
-                const isOpen = openFaqIndex === index
-                return (
-                  <div
-                    key={faq.q}
-                    className="border border-edge bg-surface overflow-hidden transition-colors clip-corner-card"
-                  >
-                    <button
-                      type="button"
-                      onClick={() => setOpenFaqIndex(isOpen ? null : index)}
-                      className="w-full p-5 text-left font-semibold text-ink text-xs sm:text-base flex items-center justify-between gap-4 cursor-pointer hover:bg-brand/5"
+              <div className="space-y-3">
+                {tool.faqList.map((faq, index) => {
+                  const isOpen = openFaqIndex === index
+                  return (
+                    <div
+                      key={faq.q}
+                      className="border border-edge bg-surface overflow-hidden transition-colors clip-corner-card"
                     >
-                      <span>{faq.q}</span>
-                      <ChevronDown
-                        className={`w-5 h-5 text-slate-400 shrink-0 transition-transform duration-200 ${
-                          isOpen ? 'rotate-180 text-brand' : ''
-                        }`}
-                      />
-                    </button>
-                    <div className="acc" data-open={isOpen}>
-                      <div>
-                        <div className="px-5 pb-5 pt-1 text-xs sm:text-sm text-slate-300 leading-relaxed border-t border-edge bg-page">
-                          {faq.a}
+                      <button
+                        type="button"
+                        onClick={() => setOpenFaqIndex(isOpen ? null : index)}
+                        className="w-full p-5 text-left font-semibold text-ink text-xs sm:text-base flex items-center justify-between gap-4 cursor-pointer hover:bg-brand/5"
+                      >
+                        <span>{faq.q}</span>
+                        <ChevronDown
+                          className={`w-5 h-5 text-slate-400 shrink-0 transition-transform duration-200 ${
+                            isOpen ? 'rotate-180 text-brand' : ''
+                          }`}
+                        />
+                      </button>
+                      <div className="acc" data-open={isOpen}>
+                        <div>
+                          <div className="px-5 pb-5 pt-1 text-xs sm:text-sm text-slate-300 leading-relaxed border-t border-edge bg-page">
+                            {faq.a}
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                )
-              })}
+                  )
+                })}
+              </div>
             </div>
           </div>
         </section>

@@ -2,6 +2,7 @@ import { useEffect, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
 import { t } from '../../../i18n/langStore'
+import { useExitFade } from '../../../hooks/useExitFade'
 
 export interface ModalShellProps {
   isOpen: boolean
@@ -24,11 +25,16 @@ export function ModalShell({ isOpen, title, onClose, children, footer, widthClas
     return () => document.removeEventListener('keydown', onKey)
   }, [isOpen, onClose])
 
-  if (!isOpen) return null
+  // Chiều ra: node ở lại 180ms (đúng bằng .in-out) để fade-out chạy xong mới bị gỡ.
+  const { show, closing } = useExitFade(isOpen)
+
+  if (!show) return null
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm in-backdrop"
+      className={`fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm ${
+        closing ? 'out-fade' : 'in-backdrop'
+      }`}
       onClick={onClose}
     >
       <div
@@ -36,7 +42,9 @@ export function ModalShell({ isOpen, title, onClose, children, footer, widthClas
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className={`relative w-full ${widthClass} max-h-[88vh] flex flex-col p-5 sm:p-6 bg-surface border border-[rgba(255,59,48,0.35)] clip-corner-lg card-3d in-up`}
+        className={`relative w-full ${widthClass} max-h-[88vh] flex flex-col p-5 sm:p-6 bg-surface border border-[rgba(255,59,48,0.35)] clip-corner-lg card-3d ${
+          closing ? 'in-out' : 'in-up'
+        }`}
       >
         <button
           type="button"

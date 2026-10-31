@@ -1,17 +1,61 @@
 import type { Dict } from './dict.vi'
 
 export const en: Dict = {
+  "cat": {
+    "downloader": {
+      "name": "Media downloader",
+      "h1": "Download video and audio from links",
+      "desc": "Paste a YouTube or TikTok link, pick MP4 or MP3 and download it. No install and no account required.",
+      "seoTitle": "Download YouTube & TikTok Videos Online in MP4, MP3 | One ForAll"
+    },
+    "converter": {
+      "name": "File converter",
+      "h1": "Convert video, audio and image formats",
+      "desc": "Convert video, audio and image files right in the browser, with quality options where they are supported.",
+      "seoTitle": "Convert Video, Audio And Images Online | One ForAll"
+    },
+    "image": {
+      "name": "Image tools",
+      "h1": "Image editing tools",
+      "desc": "Remove backgrounds, shrink file size and resize pictures in the browser without any editing software.",
+      "seoTitle": "Remove Background, Compress & Resize Images Online | One ForAll"
+    },
+    "document": {
+      "name": "Documents",
+      "h1": "Document and PDF conversion",
+      "desc": "Convert Word, PDF, Excel and text files into the supported formats while keeping the layout intact.",
+      "seoTitle": "Convert Word, Excel And PDF Documents Online | One ForAll"
+    },
+    "data": {
+      "name": "Data",
+      "h1": "Data format conversion",
+      "desc": "Convert JSON, CSV, YAML and XML both ways, plus Excel to CSV or JSON for spreadsheet work.",
+      "seoTitle": "Convert JSON, CSV, YAML And XML Online | One ForAll"
+    },
+    "archive": {
+      "name": "Archives",
+      "h1": "Archive conversion",
+      "desc": "Switch between ZIP, TAR and GZ, or export a ZIP to 7Z, without installing compression software.",
+      "seoTitle": "Convert ZIP, TAR And GZ To 7Z Online | One ForAll"
+    }
+  },
   "auth": {
-    "finishRegister": "Complete sign-up",
+    "upsellDesc": "Every tool still works without an account. Sign in to keep your history and manage your account.",
+    "benefitsTitle": "Signing in lets you",
+    "benefit1": "Keep and re-download your processing history on any device",
+    "benefit2": "Track, cancel or delete jobs that are running",
+    "benefit3": "Get higher upload caps and no ads with the Pro plan",
+    "benefit4": "Manage your account details and payments",
+    "continueGuest": "Continue without an account",
+    "createAccount": "Create account",
+    "chooseMode": "Choose mode",
     "hasAccount": "Already have an account?",
     "login": "Log in",
     "loginNow": "Log in now",
     "loginSubtitle": "Access your online tools for converting and editing files",
     "loginSuccess": "Logged in successfully! Welcome back to One ForAll.",
     "loginTitle": "Log in to One ForAll",
-    "noAccount": "Don't have an account?",
     "password": "Password",
-    "registerNow": "Sign up now",
     "registerSubtitle": "Create an account to get started with online file tools",
     "registerSuccess": "Your account has been created. You can start using One ForAll now.",
     "registerTitle": "Create a new account",
@@ -279,7 +323,6 @@ export const en: Dict = {
     "customize": "Customize",
     "introMid": "and",
     "introPre": "We use cookies to run and improve the service. Please read",
-    "necessaryOnly": "Necessary cookies only",
     "saveChoice": "Save choices",
     "termsPre": "I agree to the",
     "welcome": "Welcome to One ForAll"
@@ -428,28 +471,11 @@ export const en: Dict = {
     "title": "Useful tools for everyday file tasks"
   },
   "footer": {
-    "audioConverter": "Audio converter",
     "caseOpening": "Random case opener",
     "squareSpin": "Lucky spin wheel",
-    "colConvert": "Convert",
-    "colImages": "Images & Media",
-    "compressImg": "Compress images",
-    "convertAll": "Versatile file converter",
-    "convertImg": "Image format converter",
     "copyright": "© {year} One ForAll. All rights reserved. The One ForAll online tools platform.",
     "desc": "All in one online tools platform: download YouTube and TikTok videos, convert document formats, process and compress images.",
-    "docConverter": "Document converter",
-    "pdfConverter": "PDF converter",
-    "removeBg": "Remove image background",
-    "resizeImg": "Resize images",
     "storageNote": "Temporary file storage • Files are removed according to the retention policy",
-    "ttDownloader": "TikTok downloader",
-    "ttToMp3": "TikTok to MP3",
-    "ttToMp4": "TikTok to MP4",
-    "videoConverter": "Video converter",
-    "ytDownloader": "YouTube downloader",
-    "ytToMp3": "YouTube to MP3",
-    "ytToMp4": "YouTube to MP4"
   },
   "googleApi": {
     "authDesc": "Google Sign-In is used only to verify identity and support account sign-in, with the openid, email and profile scopes. Data received through Google APIs is not used to train AI models, is not shared with third parties, and is not used for advertising.",
@@ -464,22 +490,12 @@ export const en: Dict = {
     "title": "Google API usage and content safety commitment"
   },
   "hero": {
+    "title": "One ForAll – One platform, every tool you need",
     "badge": "One ForAll • Multimedia Processing",
-    "description": "One ForAll offers online tools to get media from supported links, convert file formats, and process images—all in one simple, convenient platform.",
+    "description": "Download media from supported links, convert file formats and work with images and documents right in your browser. No install, and you can start without an account.",
     "exploreCta": "Explore all tools",
-    "pillFormats": "diverse formats supported",
-    "pillInstant": "Easy-to-use online tools",
-    "pillSecurity": "Temporary file storage",
     "proAccount": "Pro account",
     "quickAccess": "Quick access:",
-    "quickCompress": "Compress image",
-    "quickPdf": "Convert PDF",
-    "quickRemoveBg": "Remove image background",
-    "tagline0": "all in one for every need",
-    "tagline1": "free right in your browser",
-    "tagline2": "one paste for every format",
-    "tagline3": "fast for images, video and documents",
-    "titlePre": "The online tools platform"
   },
   "home": {
     "seoDesc": "Use One ForAll to get media from supported links, convert file formats and process images with online tools.",
@@ -536,13 +552,12 @@ export const en: Dict = {
   "nav": {
     "ariaMain": "Main navigation",
     "ariaTools": "Tools menu",
-    "convertFiles": "File conversion",
-    "imageTools": "Remove background",
+    "menuHint": "Select a group to see its tools.",
+    "groupFun": "Fun & games",
+    "toolTiktok": "Download TikTok",
+    "toolYoutube": "Download YouTube",
     "caseOpening": "Case opening",
     "squareSpin": "Square spin wheel",
-    "groupVideo": "Video downloads",
-    "groupMedia": "Images & files",
-    "groupFun": "Fun & games",
     "tools": "Tools",
     "accountMenu": "Account menu",
     "myProfile": "My Profile",
@@ -860,15 +875,6 @@ export const en: Dict = {
     "success": "Success",
     "warning": "Warning"
   },
-  "toolsGrid": {
-    "all": "All tools",
-    "convert": "File conversion",
-    "image": "Image processing",
-    "ytDownloader": "YouTube Downloader",
-    "ttDownloader": "TikTok Downloader",
-    "data": "Data conversion",
-    "archive": "Archive conversion"
-  },
   "toolFooter": {
     "upgradeTitle": "Want more features?",
     "upgradeDesc": "The Pro plan expands upload size and processing benefits under the current policy.",
@@ -988,5 +994,31 @@ export const en: Dict = {
     "videoSuccess": "Video processing has started!",
     "videoTaskInfo": "Task info",
     "videoTitle": "Video processing"
+  },
+  "directory": {
+    "allTools": "All tools",
+    "count": "{count} tools",
+    "crumb": "Tools",
+    "h1": "All tools",
+    "intro": "Browse by group or search by keyword. Every tool works without an account.",
+    "noResult": "No tool matches \"{q}\"",
+    "noResultHint": "Try a shorter keyword, or pick a group below.",
+    "popular": "Popular tools",
+    "searchAria": "Search tools",
+    "searchPlaceholder": "Search tools: download video, convert, compress…",
+    "seoDesc": "The full One ForAll tool list by group: media downloads, file conversion, image, document, data and archive tools. Free, no sign-up required.",
+    "seoTitle": "All Online Tools From One ForAll",
+    "viewAll": "See all {count} tools"
+  },
+  "formatPicker": {
+    "fromTo": "Converting: {from} → {to}",
+    "hint": "Upload a file to see the formats compatible with it.",
+    "popularTitle": "Common conversions"
+  },
+  "homeBand": {
+    "badge": "WHY ONE FORALL",
+    "desc": "Paste a link or upload a file and the system does the rest. Files are stored temporarily and deleted automatically.",
+    "stepLabel": "Step {n}",
+    "title": "Fast, private and nothing to install"
   }
 }

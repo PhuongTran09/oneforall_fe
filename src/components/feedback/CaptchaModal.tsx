@@ -6,6 +6,7 @@ import { loadTurnstile, type TurnstileApi } from '../../services/turnstile'
 import { env } from '../../utils/env'
 import { getTheme } from '../../utils/theme'
 import { t } from '../../i18n/langStore'
+import { useExitFade } from '../../hooks/useExitFade'
 
 /** Turnstile opens when the backend requires verification during session setup or after a 403. */
 export function CaptchaModal() {
@@ -55,13 +56,19 @@ export function CaptchaModal() {
     }
   }, [challengeId])
 
-  if (challengeId === null) return null
+  // Chiều ra: giữ panel 180ms cho fade-out chạy xong (widget đã bị remove() ở cleanup của
+  // effect trên, nên khung trống chỉ tồn tại đúng lúc đang biến mất).
+  const { show, closing } = useExitFade(challengeId !== null)
+
+  if (!show) return null
 
   return (
     // KHÔNG bọc widget trong backdrop-filter hay transform 3D (.card-3d): iOS WebKit đưa
     // iframe cross-origin vào lớp composite đó và mất hit-test — panel hiện mà bấm không ăn.
     <div
-      className="fixed inset-0 z-[78] flex items-center justify-center p-4 bg-black/80 in-backdrop"
+      className={`fixed inset-0 z-[78] flex items-center justify-center p-4 bg-black/80 ${
+        closing ? 'out-fade' : 'in-backdrop'
+      }`}
       onClick={closeCaptcha}
     >
       <div
@@ -69,7 +76,9 @@ export function CaptchaModal() {
         role="alertdialog"
         aria-modal="true"
         aria-label={t('captcha.title')}
-        className="relative w-full max-w-sm p-6 bg-surface border border-brand/30 clip-corner-lg in-up"
+        className={`relative w-full max-w-sm p-6 bg-surface border border-brand/30 clip-corner-lg ${
+          closing ? 'in-out' : 'in-up'
+        }`}
       >
         <button
           type="button"

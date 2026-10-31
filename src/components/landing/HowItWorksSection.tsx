@@ -1,5 +1,5 @@
 import { type CSSProperties } from 'react'
-import { UploadCloud, SlidersHorizontal, Cpu, Download, ArrowRight } from 'lucide-react'
+import { CloudUpload, SlidersHorizontal, Cpu, Download, ArrowRight } from 'lucide-react'
 import { Card } from '../common/Card'
 import { t } from '../../i18n/langStore'
 
@@ -9,25 +9,25 @@ export function HowItWorksSection() {
       step: '01',
       title: t('howItWorks.s1Title'),
       description: t('howItWorks.s1Desc'),
-      icon: <UploadCloud className="w-6 h-6 text-brand" />,
+      icon: <CloudUpload className="w-6 h-6 text-brand" />,
     },
     {
       step: '02',
       title: t('howItWorks.s2Title'),
       description: t('howItWorks.s2Desc'),
-      icon: <SlidersHorizontal className="w-6 h-6 text-brand-2" />,
+      icon: <SlidersHorizontal className="w-6 h-6 text-brand" />,
     },
     {
       step: '03',
       title: t('howItWorks.s3Title'),
       description: t('howItWorks.s3Desc'),
-      icon: <Cpu className="w-6 h-6 text-indigo-500" />,
+      icon: <Cpu className="w-6 h-6 text-brand" />,
     },
     {
       step: '04',
       title: t('howItWorks.s4Title'),
       description: t('howItWorks.s4Desc'),
-      icon: <Download className="w-6 h-6 text-emerald-600" />,
+      icon: <Download className="w-6 h-6 text-brand" />,
     },
   ]
 
@@ -63,7 +63,7 @@ export function HowItWorksSection() {
                     <span className="step-num text-xl sm:text-2xl font-black font-mono text-slate-400 group-hover:text-brand transition-colors">
                       {item.step}
                     </span>
-                    <div className="step-icon w-11 h-11 flex items-center justify-center border border-edge bg-page clip-corner-btn group-hover:scale-110 group-hover:rotate-2 group-hover:border-brand/50 group-hover:bg-brand/10 group-hover:shadow-[0_0_14px_rgba(255,59,48,0.25)] transition-all duration-300">
+                    <div className="w-11 h-11 grid place-items-center border border-edge bg-page text-brand clip-corner-btn group-hover:scale-110 group-hover:rotate-2 group-hover:border-brand/50 group-hover:bg-brand/10 group-hover:shadow-[0_0_14px_rgba(255,59,48,0.25)] transition-all duration-300">
                       {item.icon}
                     </div>
                   </div>

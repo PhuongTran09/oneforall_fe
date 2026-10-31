@@ -1,6 +1,7 @@
 import { Ban, KeyRound, ShieldCheck } from 'lucide-react'
 import { Card, CardDescription, CardHeader, CardTitle } from '../common/Card'
 import { LocaleLink } from '../../i18n/LocaleLink'
+import { SectionHeading } from '../common/SectionHeading'
 import { t } from '../../i18n/langStore'
 
 export function GoogleApiSection() {
@@ -28,17 +29,9 @@ export function GoogleApiSection() {
   return (
     <section id="google-api" data-reveal className="py-16 sm:py-24 bg-page border-t border-edge">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold bg-surface border border-[rgba(255,59,48,0.35)] text-brand badge-angular">
-            {t('googleApi.badge')}
-          </div>
-          <h2 className="text-2xl sm:text-4xl font-extrabold text-ink tracking-tight">
-            {t('googleApi.title')}
-          </h2>
-          <p className="text-slate-300 text-xs sm:text-base leading-relaxed">{t('googleApi.desc')}</p>
-        </div>
+        <SectionHeading badge={t('googleApi.badge')} title={t('googleApi.title')} desc={t('googleApi.desc')} />
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="stagger grid grid-cols-1 md:grid-cols-3 gap-6" data-reveal-items>
           {items.map((item) => (
             <Card
               key={item.title}

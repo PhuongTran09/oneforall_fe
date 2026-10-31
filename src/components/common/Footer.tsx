@@ -1,47 +1,36 @@
-import { Mail, ShieldCheck, Shuffle, Sparkles } from 'lucide-react'
+import { LayoutGrid, Mail, ShieldCheck, Shuffle, Sparkles } from 'lucide-react'
 import { openConsentModal } from '../consent/consentStorage'
 import { LocaleLink } from '../../i18n/LocaleLink'
 import { LanguageToggle } from '../../i18n/LanguageToggle'
-import { t } from '../../i18n/langStore'
+import { t, useI18n } from '../../i18n/langStore'
+import { localizeTool } from '../../i18n/toolConfig'
+import { SEO_TOOLS } from '../../config/seoTools'
+import { TOOL_CATEGORIES } from '../../config/toolCategories'
 
 export function Footer() {
   const currentYear = new Date().getFullYear()
+  const { lang } = useI18n()
 
-  const youtubeTools = [
-    { label: t('footer.ytToMp4'), to: '/youtube-to-mp4' },
-    { label: t('footer.ytToMp3'), to: '/youtube-to-mp3' },
-    { label: t('footer.ytDownloader'), to: '/youtube-downloader' },
-  ]
-
-  const tiktokTools = [
-    { label: t('footer.ttToMp4'), to: '/tiktok-to-mp4' },
-    { label: t('footer.ttToMp3'), to: '/tiktok-to-mp3' },
-    { label: t('footer.ttDownloader'), to: '/tiktok-downloader' },
-  ]
-
-  const convertTools = [
-    { label: t('footer.convertAll'), to: '/convert' },
-    { label: t('footer.pdfConverter'), to: '/pdf-converter' },
-    { label: t('footer.docConverter'), to: '/document-converter' },
-    { label: t('footer.videoConverter'), to: '/video-converter' },
-    { label: t('footer.audioConverter'), to: '/audio-converter' },
-  ]
-
-  const imageTools = [
-    { label: t('footer.removeBg'), to: '/remove-background' },
-    { label: t('footer.compressImg'), to: '/image-compressor' },
-    { label: t('footer.resizeImg'), to: '/image-resizer' },
-    { label: t('footer.convertImg'), to: '/image-converter' },
-  ]
+  // Danh mục + nhãn tool lấy hết từ registry: thêm tool vào SEO_TOOLS là nó tự
+  // xuất hiện ở footer. Bốn mảng chép tay trước đây chính là lý do thiếu 2 tool.
+  const columns = TOOL_CATEGORIES.map((cat) => ({
+    id: cat.id,
+    title: t(cat.nameKey),
+    to: `/${cat.path}`,
+    items: cat.toolSlugs.map((slug) => ({
+      to: slug,
+      label: localizeTool(SEO_TOOLS[slug], lang).badge,
+    })),
+  }))
 
   return (
     <footer className="w-full border-t border-edge bg-page mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 mb-12">
-          {/* Brand Info (col-span-2) */}
-          <div className="col-span-2 space-y-4">
+        <div className="grid gap-8 mb-12 lg:grid-cols-[minmax(0,24rem)_minmax(0,1fr)]">
+          {/* Brand Info */}
+          <div className="space-y-4">
             <LocaleLink to="/" className="flex items-center gap-2.5">
-              <div className="w-10 h-10   flex items-center justify-center">
+              <div className="w-10 h-10 grid place-items-center">
                 <img src="/oneforall.svg" alt="One ForAll Logo" className="w-full h-full object-contain" />
               </div>
               <span className="font-bold text-xl tracking-tight text-ink">
@@ -62,6 +51,13 @@ export function Footer() {
             </div>
             <div className="flex flex-col items-start gap-2">
               <LocaleLink
+                to="/tools"
+                className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium text-ink hover:text-brand transition-colors"
+              >
+                <LayoutGrid className="w-3.5 h-3.5" />
+                {t('directory.allTools')}
+              </LocaleLink>
+              <LocaleLink
                 to="/case-opening"
                 className="inline-flex items-center gap-1.5 text-xs sm:text-sm text-slate-400 hover:text-brand transition-colors"
               >
@@ -78,80 +74,30 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Column 1: YouTube Tools */}
-          <div>
-            <h4 className="text-xs font-bold text-ink uppercase tracking-wider mb-3">
-              YouTube
-            </h4>
-            <ul className="space-y-2">
-              {youtubeTools.map((item) => (
-                <li key={item.to}>
-                  <LocaleLink
-                    to={item.to}
-                    className="text-xs sm:text-sm text-slate-400 hover:text-brand transition-colors"
-                  >
-                    {item.label}
+          {/* 6 nhóm công cụ, mỗi nhóm một cột. Heading là link về trang danh mục
+              nên chân trang điều hướng được theo nhóm chứ không chỉ theo tool. */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-8">
+            {columns.map((col) => (
+              <div key={col.id}>
+                <h4 className="text-xs font-bold uppercase tracking-wider mb-3">
+                  <LocaleLink to={col.to} className="text-ink hover:text-brand transition-colors">
+                    {col.title}
                   </LocaleLink>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Column 2: TikTok Tools */}
-          <div>
-            <h4 className="text-xs font-bold text-ink uppercase tracking-wider mb-3">
-              TikTok
-            </h4>
-            <ul className="space-y-2">
-              {tiktokTools.map((item) => (
-                <li key={item.to}>
-                  <LocaleLink
-                    to={item.to}
-                    className="text-xs sm:text-sm text-slate-400 hover:text-brand transition-colors"
-                  >
-                    {item.label}
-                  </LocaleLink>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Column 3: Chuyển đổi File */}
-          <div>
-            <h4 className="text-xs font-bold text-ink uppercase tracking-wider mb-3">
-              {t('footer.colConvert')}
-            </h4>
-            <ul className="space-y-2">
-              {convertTools.map((item) => (
-                <li key={item.to}>
-                  <LocaleLink
-                    to={item.to}
-                    className="text-xs sm:text-sm text-slate-400 hover:text-brand transition-colors"
-                  >
-                    {item.label}
-                  </LocaleLink>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Column 4: Xử lý Ảnh */}
-          <div>
-            <h4 className="text-xs font-bold text-ink uppercase tracking-wider mb-3">
-              {t('footer.colImages')}
-            </h4>
-            <ul className="space-y-2">
-              {imageTools.map((item) => (
-                <li key={item.to}>
-                  <LocaleLink
-                    to={item.to}
-                    className="text-xs sm:text-sm text-slate-400 hover:text-brand transition-colors"
-                  >
-                    {item.label}
-                  </LocaleLink>
-                </li>
-              ))}
-            </ul>
+                </h4>
+                <ul className="space-y-2">
+                  {col.items.map((item) => (
+                    <li key={item.to}>
+                      <LocaleLink
+                        to={item.to}
+                        className="text-xs sm:text-sm text-slate-400 hover:text-brand transition-colors"
+                      >
+                        {item.label}
+                      </LocaleLink>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
         </div>
 

@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import { AlertTriangle, X } from 'lucide-react'
 import { Button } from '../common/Button'
 import { t } from '../../i18n/langStore'
+import { useExitFade } from '../../hooks/useExitFade'
 
 export interface ConfirmModalProps {
   isOpen: boolean
@@ -22,14 +23,19 @@ export function ConfirmModal({ isOpen, title, message, onConfirm, onClose }: Con
     return () => document.removeEventListener('keydown', onKey)
   }, [isOpen, onClose])
 
-  if (!isOpen) return null
+  // Chiều ra: node ở lại 180ms (đúng bằng .in-out) để fade-out chạy xong mới bị gỡ.
+  const { show, closing } = useExitFade(isOpen)
+
+  if (!show) return null
 
   // Portal ra body: lớp phủ `fixed` ăn theo containing block của tổ tiên gần nhất
   // có transform, mà .card-3d (JobProgress, History) luôn có `perspective(...)` —
   // ở lại trong card thì backdrop chỉ phủ đúng cái card và bị che bởi sibling.
   return createPortal(
     <div
-      className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm in-backdrop"
+      className={`fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm ${
+        closing ? 'out-fade' : 'in-backdrop'
+      }`}
       onClick={onClose}
     >
       <div
@@ -37,7 +43,9 @@ export function ConfirmModal({ isOpen, title, message, onConfirm, onClose }: Con
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className="relative w-full max-w-sm p-6 bg-surface border border-[rgba(255,59,48,0.35)] clip-corner-lg card-3d in-up"
+        className={`relative w-full max-w-sm p-6 bg-surface border border-[rgba(255,59,48,0.35)] clip-corner-lg card-3d ${
+          closing ? 'in-out' : 'in-up'
+        }`}
       >
         <button
           type="button"

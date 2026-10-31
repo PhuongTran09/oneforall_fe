@@ -81,7 +81,7 @@ export function BuyMeCoffee() {
   }
 
   return (
-    <div className="fixed bottom-4 right-4 z-40 flex flex-col items-end gap-2">
+    <div className="coffee-dock fixed bottom-4 right-4 z-40 flex flex-col items-end gap-2">
       {phase !== 'closed' && (
         /* card-3d nằm ngoài khung cuộn: vệt sáng đáy mới bám đúng mép dưới panel
            thay vì bị cắt khi nội dung tràn. */

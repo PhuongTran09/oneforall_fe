@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { X, Check, Sparkles, Mail, CreditCard, AlertTriangle } from 'lucide-react'
 import { Button } from '../common/Button'
 import { t } from '../../i18n/langStore'
+import { useExitFade } from '../../hooks/useExitFade'
 import { isAdFree, useEntitlements } from '../../services/entitlementsStore'
 import {
   buildReturnUrl,
@@ -94,16 +95,23 @@ export function ProPlanModal({ isOpen, onClose }: ProPlanModalProps) {
     }
   }
 
-  if (!isOpen) return null
+  // Chiều ra: node ở lại 180ms (đúng bằng .in-out) để fade-out chạy xong mới bị gỡ.
+  const { show, closing } = useExitFade(isOpen)
+
+  if (!show) return null
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm in-backdrop"
+      className={`fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm ${
+        closing ? 'out-fade' : 'in-backdrop'
+      }`}
       onClick={onClose}
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-md p-6 sm:p-8 bg-surface border border-[rgba(255,59,48,0.35)] clip-corner-lg card-3d in-up"
+        className={`relative w-full max-w-md p-6 sm:p-8 bg-surface border border-[rgba(255,59,48,0.35)] clip-corner-lg card-3d ${
+          closing ? 'in-out' : 'in-up'
+        }`}
         role="dialog"
         aria-modal="true"
         aria-label={t('pricing.proCta')}

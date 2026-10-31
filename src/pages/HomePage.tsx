@@ -3,9 +3,8 @@ import {
   SEOHead,
   HeroSection,
   ToolsSection,
-  FeaturesSection,
+  ValueBandSection,
   GoogleApiSection,
-  HowItWorksSection,
   PricingSection,
   FaqSection,
   AdSenseUnit,
@@ -71,12 +70,11 @@ export function HomePage() {
       />
       <HeroSection onTryFree={handleProAccount} />
       <ToolsSection />
-      <FeaturesSection />
+      <ValueBandSection />
       <GoogleApiSection />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <AdSenseUnit slot={import.meta.env.VITE_ADSENSE_SLOT_CONTENT ?? ''} />
       </div>
-      <HowItWorksSection />
       <PricingSection
         onSelectFree={handleSelectFree}
         onSelectPremium={() => context?.openPro()}

@@ -3,8 +3,11 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { MainLayout } from '../layouts/MainLayout'
 import { HomePage } from '../pages/HomePage'
 import { ToolLandingPage } from '../pages/ToolLandingPage'
+import { ToolsPage } from '../pages/ToolsPage'
+import { CategoryPage } from '../pages/CategoryPage'
 import { NotFoundPage } from '../pages/NotFoundPage'
 import { SEO_TOOLS } from '../config/seoTools'
+import { TOOL_CATEGORIES } from '../config/toolCategories'
 import { useI18n } from '../i18n/langStore'
 
 // Tách code theo route: page nào không nằm trên đường vào đầu thì chỉ tải khi
@@ -40,6 +43,13 @@ function LocaleRoutes() {
     <>
       {/* Trang chủ */}
       <Route index element={<HomePage />} />
+
+      {/* '/tools' + 6 trang danh mục. Path tường minh, không dùng ':param': '/tools/whatever'
+          sẽ là bản sao soft-404 của cùng trang; không khớp thì rơi về route '*' hiện tại. */}
+      <Route path="tools" element={<ToolsPage />} />
+      {TOOL_CATEGORIES.map((cat) => (
+        <Route key={cat.id} path={cat.path} element={<CategoryPage categoryId={cat.id} />} />
+      ))}
 
       {/* Tất cả 15 SEO Landing Pages được định tuyến độc lập */}
       {toolSlugs.map((slug) => {

@@ -1,11 +1,13 @@
 import { useState, useEffect, Suspense } from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
-import { Navbar, Footer, AuthModal, ProPlanModal, SocialBarAds, BuyMeCoffee } from '../components'
+import { Navbar, Footer, AuthModal, ProPlanModal, SocialBarAds, BuyMeCoffee, ScrollProgress } from '../components'
 import { ConsentModal } from '../components/consent/ConsentModal'
 import { LangRouteSync } from '../i18n/LangRouteSync'
 import { t, useI18n, withLocale } from '../i18n/langStore'
 import { subscribeAuthEvent, useAuth } from '../services/authStore'
+import { useOpenSeq } from '../hooks/useExitFade'
 import { initReveal } from '../utils/revealMotion'
+import { initParallax } from '../utils/scrollMotion'
 
 // Vị trí cuộn theo pathname. React Router v7 ở chế độ khai báo (BrowserRouter + <Routes>)
 // không có <ScrollRestoration> (chỉ dùng được với data router), nên app tự quản lý:
@@ -35,6 +37,9 @@ export function MainLayout() {
   // để cả subtree render lại khi lang đổi.
   useI18n()
   const [authMode, setAuthMode] = useState<'login' | 'register' | 'forgot' | null>(null)
+  // key đổi lúc MỞ chứ không lúc đóng — nếu 'closed' là một key thì React gỡ AuthModal
+  // ngay khi tắt và lớp fade ra không bao giờ chạy.
+  const authSeq = useOpenSeq(authMode !== null, authMode)
   const [proOpen, setProOpen] = useState(false)
   const { session } = useAuth()
   const { pathname } = useLocation()
@@ -95,14 +100,19 @@ export function MainLayout() {
     }
   }, [pathname])
 
-  // Scroll reveal chạy sau hiệu ứng page-enter của route mới. rAF thứ hai là để
-  // đo getBoundingClientRect() SAU khi restore() ở effect trên đã định vị cuộn
-  // (nó cũng queue một rAF), nếu không Back/Forward sẽ tính nhầm section nào
+  // Reveal + parallax dựng sau hiệu ứng page-enter của route mới. rAF thứ hai là để
+  // đo getBoundingClientRect() SAU khi restore() ở effect trên đã định vị cuộn (nó
+  // cũng queue một rAF), nếu không Back/Forward sẽ tính nhầm section/lớp nền nào
   // "đã trong khung hình".
   useEffect(() => {
     let dispose = () => {}
     const raf = requestAnimationFrame(() => {
-      dispose = initReveal()
+      const disposeReveal = initReveal()
+      const disposeParallax = initParallax()
+      dispose = () => {
+        disposeReveal()
+        disposeParallax()
+      }
     })
     return () => {
       cancelAnimationFrame(raf)
@@ -113,6 +123,7 @@ export function MainLayout() {
   return (
     <div className="min-h-screen flex flex-col bg-page text-ink selection:bg-brand selection:text-white antialiased">
       <LangRouteSync />
+      <ScrollProgress />
       <Navbar onOpenAuth={(mode) => setAuthMode(mode)} />
       <main className="flex-1 w-full">
         <div key={pathname} className="animate-page-enter">
@@ -125,9 +136,9 @@ export function MainLayout() {
       </main>
       <Footer />
 
-      {/* key theo mode: mỗi lần mở là instance mới → state form/OTP không dư leftover */}
+      {/* key theo nhịp mở: mỗi lần mở là instance mới → state form/OTP không dư leftover */}
       <AuthModal
-        key={authMode ?? 'closed'}
+        key={authSeq}
         isOpen={authMode !== null}
         initialMode={authMode ?? 'login'}
         onClose={() => setAuthMode(null)}

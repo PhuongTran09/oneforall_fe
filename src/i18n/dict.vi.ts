@@ -1,15 +1,59 @@
 export const vi = {
+  "cat": {
+    "downloader": {
+      "name": "Tải media",
+      "h1": "Tải video và audio từ liên kết",
+      "desc": "Dán liên kết YouTube hoặc TikTok, chọn MP4 hay MP3 rồi tải về. Không cần cài đặt, không cần tài khoản.",
+      "seoTitle": "Tải Video YouTube & TikTok Online Sang MP4, MP3 | One ForAll"
+    },
+    "converter": {
+      "name": "Chuyển đổi tệp",
+      "h1": "Chuyển đổi định dạng video, audio và ảnh",
+      "desc": "Đổi định dạng video, âm thanh và hình ảnh ngay trên trình duyệt, kèm tùy chọn chất lượng khi được hỗ trợ.",
+      "seoTitle": "Chuyển Đổi Video, Audio Và Ảnh Trực Tuyến | One ForAll"
+    },
+    "image": {
+      "name": "Xử lý ảnh",
+      "h1": "Công cụ xử lý ảnh",
+      "desc": "Xóa nền, nén dung lượng và đổi kích thước ảnh trực tiếp trên trình duyệt, không cần phần mềm chỉnh sửa.",
+      "seoTitle": "Xóa Nền, Nén Và Đổi Kích Thước Ảnh Online | One ForAll"
+    },
+    "document": {
+      "name": "Tài liệu",
+      "h1": "Chuyển đổi tài liệu và PDF",
+      "desc": "Chuyển Word, PDF, Excel và text sang các định dạng được hỗ trợ, giữ nguyên bố cục tài liệu.",
+      "seoTitle": "Chuyển Đổi Word, Excel Và PDF Trực Tuyến | One ForAll"
+    },
+    "data": {
+      "name": "Dữ liệu",
+      "h1": "Chuyển đổi định dạng dữ liệu",
+      "desc": "Chuyển JSON, CSV, YAML và XML qua lại, kèm Excel sang CSV hoặc JSON cho công việc bảng tính.",
+      "seoTitle": "Chuyển Đổi JSON, CSV, YAML Và XML Online | One ForAll"
+    },
+    "archive": {
+      "name": "Tệp nén",
+      "h1": "Chuyển đổi tệp nén",
+      "desc": "Đổi giữa ZIP, TAR và GZ, hoặc xuất ZIP sang 7Z, mà không cần cài phần mềm nén dung lượng.",
+      "seoTitle": "Chuyển Đổi ZIP, TAR, GZ Sang 7Z Trực Tuyến | One ForAll"
+    }
+  },
   "auth": {
-    "finishRegister": "Hoàn tất đăng ký",
+    "upsellDesc": "Bạn vẫn dùng được mọi tiện ích mà không cần tài khoản. Đăng nhập để đồng bộ lịch sử và quản lý tài khoản của mình.",
+    "benefitsTitle": "Đăng nhập để",
+    "benefit1": "Lưu và tải lại lịch sử xử lý trên mọi thiết bị",
+    "benefit2": "Theo dõi, huỷ hoặc xoá tác vụ đang chạy",
+    "benefit3": "Trần tải lên cao hơn và bỏ quảng cáo với gói Pro",
+    "benefit4": "Quản lý thông tin tài khoản và thanh toán",
+    "continueGuest": "Tiếp tục không cần đăng nhập",
+    "createAccount": "Tạo tài khoản",
+    "chooseMode": "Chọn chế độ",
     "hasAccount": "Đã có tài khoản?",
     "login": "Đăng nhập",
     "loginNow": "Đăng nhập ngay",
     "loginSubtitle": "Đăng nhập để quản lý tài khoản và sử dụng các công cụ xử lý tệp của bạn",
     "loginSuccess": "Đăng nhập thành công! Chào mừng bạn quay trở lại One ForAll.",
     "loginTitle": "Đăng nhập One ForAll",
-    "noAccount": "Chưa có tài khoản?",
     "password": "Mật khẩu",
-    "registerNow": "Đăng ký ngay",
     "registerSubtitle": "Tạo tài khoản để bắt đầu sử dụng các công cụ xử lý tệp của One ForAll",
     "registerSuccess": "Đăng ký tài khoản thành công! Bạn có thể bắt đầu sử dụng đầy đủ công cụ.",
     "registerTitle": "Tạo tài khoản mới",
@@ -277,7 +321,6 @@ export const vi = {
     "customize": "Tùy chỉnh",
     "introMid": "và",
     "introPre": "Chúng tôi sử dụng cookie để vận hành và cải thiện dịch vụ. Vui lòng xem",
-    "necessaryOnly": "Chỉ cookie cần thiết",
     "saveChoice": "Lưu lựa chọn",
     "termsPre": "Tôi đồng ý với",
     "welcome": "Chào mừng bạn đến với One ForAll"
@@ -426,28 +469,11 @@ export const vi = {
     "title": "Công cụ trực tuyến tiện lợi cho công việc hằng ngày"
   },
   "footer": {
-    "audioConverter": "Chuyển đổi âm thanh",
     "caseOpening": "Mở hòm ngẫu nhiên",
     "squareSpin": "Vòng quay may mắn",
-    "colConvert": "Chuyển đổi",
-    "colImages": "Ảnh & Media",
-    "compressImg": "Nén dung lượng ảnh",
-    "convertAll": "Chuyển đổi File đa năng",
-    "convertImg": "Chuyển đổi định dạng ảnh",
     "copyright": "© {year} One ForAll. Bản quyền thuộc về One ForAll.",
     "desc": "Bộ công cụ trực tuyến giúp tải video từ liên kết được hỗ trợ, chuyển đổi tài liệu và đa phương tiện, nén ảnh và xóa nền ảnh.",
-    "docConverter": "Chuyển đổi Tài liệu",
-    "pdfConverter": "Chuyển đổi PDF",
-    "removeBg": "Xóa nền ảnh (Remove BG)",
-    "resizeImg": "Đổi kích thước ảnh (Resize)",
     "storageNote": "Lưu trữ tạm thời • Bảo vệ quyền riêng tư",
-    "ttDownloader": "Trình tải TikTok",
-    "ttToMp3": "TikTok sang MP3",
-    "ttToMp4": "TikTok sang MP4",
-    "videoConverter": "Chuyển đổi Video",
-    "ytDownloader": "Trình tải YouTube",
-    "ytToMp3": "YouTube sang MP3",
-    "ytToMp4": "YouTube sang MP4"
   },
   "googleApi": {
     "authDesc": "Google Sign-In chỉ được dùng để xác minh danh tính và hỗ trợ đăng nhập tài khoản, với các quyền openid, email và profile. Dữ liệu nhận qua Google API không dùng để huấn luyện mô hình AI, không chia sẻ cho bên thứ ba và không dùng cho mục đích quảng cáo.",
@@ -462,22 +488,12 @@ export const vi = {
     "title": "Mục đích sử dụng Google API và cam kết an toàn nội dung"
   },
   "hero": {
+    "title": "One ForAll – Một nền tảng, mọi tiện ích",
     "badge": "One ForAll • Xử lý đa phương tiện",
-    "description": "One ForAll cung cấp các công cụ trực tuyến giúp bạn tải media từ những liên kết được hỗ trợ, chuyển đổi định dạng tệp và xử lý hình ảnh. Tất cả trong một nền tảng, đơn giản và thuận tiện.",
+    "description": "Tải media từ các liên kết được hỗ trợ, chuyển đổi định dạng tệp, xử lý ảnh và tài liệu ngay trên trình duyệt. Không cần cài đặt, dùng được ngay mà không cần tài khoản.",
     "exploreCta": "Khám phá toàn bộ công cụ",
-    "pillFormats": "Hỗ trợ đa định dạng",
-    "pillInstant": "Dễ sử dụng",
-    "pillSecurity": "An toàn & bảo mật",
     "proAccount": "Tài khoản Pro",
     "quickAccess": "Truy cập nhanh:",
-    "quickCompress": "Nén ảnh",
-    "quickPdf": "Chuyển đổi PDF",
-    "quickRemoveBg": "Xóa nền ảnh",
-    "tagline0": "tất cả trong một cho mọi nhu cầu",
-    "tagline1": "miễn phí ngay trên trình duyệt",
-    "tagline2": "một lần dán link cho mọi định dạng",
-    "tagline3": "nhanh gọn cho ảnh, video và tài liệu",
-    "titlePre": "Nền tảng công cụ trực tuyến"
   },
   "home": {
     "seoDesc": "One ForAll cung cấp công cụ trực tuyến giúp bạn tải media từ liên kết được hỗ trợ, chuyển đổi định dạng tệp và xử lý hình ảnh.",
@@ -534,13 +550,12 @@ export const vi = {
   "nav": {
     "ariaMain": "Điều hướng chính",
     "ariaTools": "Danh mục công cụ",
-    "convertFiles": "Chuyển đổi File",
-    "imageTools": "Xoá nền ảnh",
+    "menuHint": "Bấm vào một nhóm để xem danh sách công cụ.",
+    "groupFun": "Giải trí",
+    "toolTiktok": "Tải TikTok",
+    "toolYoutube": "Tải YouTube",
     "caseOpening": "Hòm quà",
     "squareSpin": "Vòng quay ô vuông",
-    "groupVideo": "Tải video",
-    "groupMedia": "Ảnh & File",
-    "groupFun": "Giải trí",
     "tools": "Công cụ",
     "accountMenu": "Menu tài khoản",
     "myProfile": "Hồ sơ của tôi",
@@ -858,15 +873,6 @@ export const vi = {
     "success": "Thành công",
     "warning": "Cảnh báo"
   },
-  "toolsGrid": {
-    "all": "Tất cả công cụ",
-    "convert": "Chuyển đổi File",
-    "image": "Xử lý Ảnh",
-    "ytDownloader": "Tải video YouTube",
-    "ttDownloader": "Tải video TikTok",
-    "data": "Chuyển đổi Dữ liệu",
-    "archive": "Chuyển đổi Tệp Nén"
-  },
   "toolFooter": {
     "upgradeTitle": "Muốn sử dụng thêm tính năng?",
     "upgradeDesc": "Gói Pro mở rộng dung lượng tải lên và các quyền lợi xử lý theo chính sách hiện hành.",
@@ -986,6 +992,32 @@ export const vi = {
     "videoSuccess": "Đã bắt đầu xử lý video!",
     "videoTaskInfo": "Thông tin tác vụ",
     "videoTitle": "Xử lý video"
+  },
+  "directory": {
+    "allTools": "Tất cả công cụ",
+    "count": "{count} công cụ",
+    "crumb": "Công cụ",
+    "h1": "Tất cả công cụ",
+    "intro": "Chọn theo nhóm hoặc tìm nhanh bằng từ khóa. Mọi công cụ đều dùng được mà không cần tài khoản.",
+    "noResult": "Không có công cụ nào khớp với \"{q}\"",
+    "noResultHint": "Thử từ khóa ngắn hơn, hoặc chọn theo nhóm bên dưới.",
+    "popular": "Công cụ phổ biến",
+    "searchAria": "Tìm công cụ",
+    "searchPlaceholder": "Tìm công cụ: tải video, chuyển đổi, nén ảnh…",
+    "seoDesc": "Danh sách toàn bộ công cụ của One ForAll theo nhóm: tải media, chuyển đổi tệp, xử lý ảnh, tài liệu, dữ liệu và tệp nén. Miễn phí, không cần đăng ký.",
+    "seoTitle": "Toàn Bộ Công Cụ Trực Tuyến Của One ForAll",
+    "viewAll": "Xem tất cả {count} công cụ"
+  },
+  "formatPicker": {
+    "fromTo": "Đang chuyển: {from} → {to}",
+    "hint": "Tải tệp lên để xem các định dạng tương thích với tệp của bạn.",
+    "popularTitle": "Chuyển đổi thường dùng"
+  },
+  "homeBand": {
+    "badge": "VÌ SAO CHỌN ONE FORALL",
+    "desc": "Bạn dán liên kết hoặc tải tệp lên, phần còn lại do hệ thống xử lý. Tệp lưu tạm và tự xoá theo chính sách.",
+    "stepLabel": "Bước {n}",
+    "title": "Nhanh, riêng tư và không cần cài đặt"
   }
 }
 

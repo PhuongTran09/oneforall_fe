@@ -1,5 +1,5 @@
 import { useState, type ChangeEvent } from 'react'
-import { UploadCloud, FileType, CheckCircle2, ArrowRight } from 'lucide-react'
+import { CloudUpload, FileType, CheckCircle2, ArrowRight } from 'lucide-react'
 import { Button } from '../../../components/common/Button'
 import { SegmentedControl } from '../../../components/common/SegmentedControl'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../../components/common/Card'
@@ -85,7 +85,7 @@ export function ConvertWorkspace() {
               onChange={handleFileChange}
             />
             <div className="w-14 h-14 bg-brand/10 border border-[rgba(255,59,48,0.25)] flex items-center justify-center text-brand-2 animate-float-gentle group-hover:scale-110 group-hover:border-brand/60 group-hover:shadow-[0_0_16px_rgba(255,59,48,0.3)] transition-all mb-3 clip-corner-card">
-              <UploadCloud className="w-7 h-7" />
+              <CloudUpload className="w-7 h-7" />
             </div>
             {selectedFile ? (
               <div className="space-y-1">

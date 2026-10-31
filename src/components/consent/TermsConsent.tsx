@@ -3,12 +3,13 @@ import { LocaleLink } from '../../i18n/LocaleLink'
 import { getLang, t } from '../../i18n/langStore'
 
 // Checkbox điều khoản tách riêng khỏi các nút cookie (spec: không gộp hai loại đồng ý).
+// Trong thanh cookie nó bỏ khung và nền: một dòng kiểm là đủ, thêm thẻ nữa là hai lớp đè lên nhau.
 export function TermsConsent() {
   const { record } = useConsent()
   const accepted = hasAcceptedTerms()
 
   return (
-    <label className="flex items-start gap-2.5 p-3 border border-edge bg-page clip-corner-card cursor-pointer select-none">
+    <label className="flex items-start gap-2.5 cursor-pointer select-none">
       <input
         type="checkbox"
         checked={accepted}
