@@ -35,7 +35,7 @@ export function DownloadResult({
   return (
     <div className="w-full max-w-3xl mx-auto p-6 sm:p-8 bg-surface/90 border border-[rgba(255,59,48,0.35)] space-y-6 in-up clip-corner-lg card-3d card-3d-dim card-hover-glow">
       {/* Header status */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-edge/60">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 pb-6 border-b border-edge/60">
         <div className="flex items-center gap-3.5">
           <div className="w-12 h-12 bg-emerald-900/20 border border-emerald-600/40 flex items-center justify-center text-emerald-400 shrink-0 clip-corner-btn">
             <CheckCircle2 className="w-6 h-6" />
@@ -49,17 +49,6 @@ export function DownloadResult({
             </p>
           </div>
         </div>
-
-        {onReset && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onReset}
-            leftIcon={<RotateCcw className="w-4 h-4" />}
-          >
-            {t('download.convertAnother')}
-          </Button>
-        )}
       </div>
 
       {/* File Details & Preview */}
@@ -89,17 +78,30 @@ export function DownloadResult({
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex items-center gap-2.5 w-full sm:w-auto">
+        {/* Action Buttons — mobile: xếp chồng, hai nút đúng bằng nhau; label "Chuyển đổi tệp
+            khác" dài hơn nên để cạnh nhau là một nút xuống 2 dòng, lệch chiều cao. */}
+        <div className="flex w-full flex-col items-stretch gap-2.5 sm:w-auto sm:flex-row sm:items-center">
           <Button
             variant="primary"
             size="md"
             onClick={handleDownload}
             leftIcon={<Download className="w-4 h-4" />}
-            className="flex-1 sm:flex-initial btn-shimmer btn-glow-pulse"
+            className="btn-shimmer btn-glow-pulse max-sm:justify-center max-sm:px-3 max-sm:py-2 max-sm:text-xs"
           >
             {t('download.downloadNow')}
           </Button>
+
+          {onReset && (
+            <Button
+              variant="outline"
+              size="md"
+              onClick={onReset}
+              leftIcon={<RotateCcw className="w-4 h-4" />}
+              className="max-sm:justify-center max-sm:px-3 max-sm:py-2 max-sm:text-xs"
+            >
+              {t('download.convertAnother')}
+            </Button>
+          )}
         </div>
       </div>
 

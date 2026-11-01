@@ -6,6 +6,7 @@ import { t } from '../../i18n/langStore'
 import { useExitFade } from '../../hooks/useExitFade'
 import {
   closeConsentModal,
+  hasAcceptedTerms,
   needsCookieDecision,
   openConsentModal,
   saveCookieChoices,
@@ -18,6 +19,8 @@ import {
 // đăng nhập nằm sau lớp tối; ở dạng thanh thì hai thứ dùng được cùng lúc.
 export function ConsentModal() {
   const { modalOpen, view } = useConsent()
+  // useConsent đã đăng ký subscribe nên tích/bỏ tích checkbox là render lại ngay.
+  const termsAccepted = hasAcceptedTerms()
   const visible = modalOpen || needsCookieDecision()
   // Chiều ra: thanh trượt xuống 180ms sau khi user chọn xong thay vì biến mất tức thì.
   const { show, closing } = useExitFade(visible)
@@ -79,8 +82,15 @@ export function ConsentModal() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:justify-end">
-                <Button variant="glow" size="sm" onClick={() => saveCookieChoices({ analytics: true, advertising: true })}>
+              <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-end">
+                {/* Không cho "Chấp nhận tất cả" tắt khi chưa tích điều khoản: người dùng bấm
+                    xong cứ tưởng đã đồng ý hết, đến lúc bấm xử lý mới bị chặn. */}
+                <Button
+                  variant="glow"
+                  size="sm"
+                  disabled={!termsAccepted}
+                  onClick={() => saveCookieChoices({ analytics: true, advertising: true })}
+                >
                   {t('consent.acceptAll')}
                 </Button>
                 {/* Chỉ còn hai nút: "Customize" lên thành nút viền thật, vì sau khi bỏ nút từ
@@ -88,6 +98,11 @@ export function ConsentModal() {
                 <Button variant="outline" size="sm" onClick={() => openConsentModal('custom')}>
                   {t('consent.customize')}
                 </Button>
+                {!termsAccepted && (
+                  <p className="text-[11px] leading-snug text-slate-400 sm:w-full sm:text-right">
+                    {t('consent.acceptNeedsTerms')}
+                  </p>
+                )}
               </div>
             </div>
           </div>

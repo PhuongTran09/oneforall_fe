@@ -1,8 +1,7 @@
-/* Máy chạy cuộn chung cho mọi hiệu ứng dựa trên tiến trình cuộn (thanh tiến trình,
-   parallax). Một listener scroll + một resize cho cả trang, gộp qua rAF: thêm hiệu
-   ứng không nghĩa là thêm listener, và mỗi khung hình chỉ đọc số đo document một
-   lần trước khi bất kỳ ai ghi style — không tự buộc trình duyệt layout lại giữa
-   frame. */
+/* Máy chạy cuộn chung cho mọi hiệu ứng dựa trên tiến trình cuộn (parallax). Một
+   listener scroll + một resize cho cả trang, gộp qua rAF: thêm hiệu ứng không nghĩa ứng không nghĩa
+   là thêm listener, và mỗi khung hình chỉ đọc số đo document một lần trước khi bất kỳ
+   ai ghi style — không tự buộc trình duyệt layout lại giữa frame. */
 
 import { getLenisInstance } from '../hooks/useSmoothScroll'
 

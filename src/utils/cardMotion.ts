@@ -17,15 +17,13 @@ export function initCardMotion(): void {
       const y = (moveEvent.clientY - rect.top) / rect.height
       el.style.setProperty('--ry', `${(x - 0.5) * MAX_TILT_DEG}deg`)
       el.style.setProperty('--rx', `${(0.5 - y) * MAX_TILT_DEG}deg`)
-      el.style.setProperty('--gx', `${x * 100}%`)
-      el.style.setProperty('--gy', `${y * 100}%`)
     }
 
     const onLeave = () => {
       el.removeEventListener('pointermove', onMove)
       el.removeEventListener('pointerleave', onLeave)
       delete el.dataset.tiltBound
-      for (const prop of ['--rx', '--ry', '--gx', '--gy']) el.style.removeProperty(prop)
+      for (const prop of ['--rx', '--ry']) el.style.removeProperty(prop)
     }
 
     el.addEventListener('pointermove', onMove)

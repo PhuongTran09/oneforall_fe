@@ -1,13 +1,11 @@
 import { type ReactNode } from 'react'
 import { useOutletContext } from 'react-router-dom'
-import { ArrowRight, Copy, HeartHandshake, Mail, Sparkles } from 'lucide-react'
+import { ArrowRight, Copy, Mail, Sparkles } from 'lucide-react'
 import { LocaleLink } from '../../i18n/LocaleLink'
 import { t } from '../../i18n/langStore'
+import { isAdFreeNow, useEntitlements } from '../../services/entitlementsStore'
 import { showToast } from '../feedback/toastStore'
 import { showErrorPopup } from '../feedback/errorPopupStore'
-
-// Link ủng hộ Momo chính thức của dự án.
-const DONATE_URL = 'https://me.momo.vn/MRI4ubs7CgtBuQfEi6T8'
 
 // Dùng lại đúng địa chỉ support mà Footer và trang Privacy đang trỏ tới.
 const CONTACT_URL =
@@ -75,6 +73,10 @@ export function ToolFooterActions() {
   // Nút "Nâng cấp Pro": layout cung cấp openPro (chưa đăng nhập → bắt đăng ký,
   // đã đăng nhập → modal gói Pro). href /#pricing vẫn là fallback khi thiếu context.
   const layout = useOutletContext<{ openPro?: () => void } | null>()
+  // isAdFreeNow đọc cả cache ofa-plan: /users/me về muộn hơn HTML, dùng isAdFree(me) không
+  // thì khách Pro vẫn thấy lời mời nâng cấp trong vài nhịp đầu.
+  const { me } = useEntitlements()
+  const showUpgrade = !isAdFreeNow(me)
   const pageUrl = typeof window !== 'undefined' ? window.location.href : ''
   const shareText = typeof document !== 'undefined' ? document.title : 'One ForAll'
   const encodedUrl = encodeURIComponent(pageUrl)
@@ -119,34 +121,22 @@ export function ToolFooterActions() {
   return (
     <div className="pt-2">
       <div className="bg-surface border border-[rgba(255,59,48,0.25)] clip-corner-card card-3d card-3d-dim divide-y divide-edge">
-          <ActionRow title={t('toolFooter.upgradeTitle')} desc={t('toolFooter.upgradeDesc')}>
-            <LocaleLink
-              to="/#pricing"
-              className={linkBtnStyles}
-              onClick={(e) => {
-                if (layout?.openPro) {
-                  e.preventDefault()
-                  layout.openPro()
-                }
-              }}
-            >
-              <Sparkles className="w-3.5 h-3.5" />
-              {t('toolFooter.upgradeCta')}
-              <ArrowRight className="w-3.5 h-3.5" />
-            </LocaleLink>
-          </ActionRow>
-
-          {DONATE_URL && (
-            <ActionRow title={t('toolFooter.donateTitle')} desc={t('toolFooter.donateDesc')}>
-              <a
-                href={DONATE_URL}
-                target="_blank"
-                rel="noopener noreferrer"
+          {showUpgrade && (
+            <ActionRow title={t('toolFooter.upgradeTitle')} desc={t('toolFooter.upgradeDesc')}>
+              <LocaleLink
+                to="/#pricing"
                 className={linkBtnStyles}
+                onClick={(e) => {
+                  if (layout?.openPro) {
+                    e.preventDefault()
+                    layout.openPro()
+                  }
+                }}
               >
-                <HeartHandshake className="w-3.5 h-3.5" />
-                {t('toolFooter.donateCta')}
-              </a>
+                <Sparkles className="w-3.5 h-3.5" />
+                {t('toolFooter.upgradeCta')}
+                <ArrowRight className="w-3.5 h-3.5" />
+              </LocaleLink>
             </ActionRow>
           )}
 

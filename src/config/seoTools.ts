@@ -39,85 +39,6 @@ export interface ToolConfig {
 }
 
 export const SEO_TOOLS: Record<string, ToolConfig> = {
-  '/youtube-to-mp4': {
-    slug: '/youtube-to-mp4',
-    category: 'youtube',
-    badge: 'YouTube sang MP4',
-    title: 'Tải Video YouTube sang MP4 Chất Lượng Cao | One ForAll',
-    metaDescription:
-      'Tải video YouTube chất lượng cao sang MP4 với One ForAll. Công cụ trực tuyến dễ sử dụng, lưu video về điện thoại và máy tính không cần cài đặt.',
-    h1: 'Tải Video YouTube sang MP4 Chất Lượng Cao',
-    subtitle:
-      'Tải video YouTube chất lượng cao sang MP4 với One ForAll. Công cụ trực tuyến dễ sử dụng, lưu video về điện thoại và máy tính không cần cài đặt.',
-    introParagraphs: [
-      'Để tải video YouTube sang MP4: sao chép liên kết video, dán vào ô bên trên tại One ForAll rồi nhấn Tải xuống. Lưu video MP4 về thiết bị nhanh chóng, thuận tiện với các tùy chọn chất lượng được hỗ trợ.',
-      'One ForAll giúp bạn tải video YouTube chất lượng cao sang MP4 và chuyển đổi các định dạng tệp trực tuyến. Dễ dàng lưu video để xem ngoại tuyến trên điện thoại iPhone, Android và máy tính. Không cần cài đặt phần mềm, thao tác đơn giản ngay trên trình duyệt.',
-    ],
-    inputType: 'url',
-    urlPlatform: 'youtube',
-    outputFormats: ['mp4', 'webm'],
-    defaultFormat: 'mp4',
-    backendType: 'media_url',
-    backendOperation: 'url_download',
-    howItWorksSteps: [
-      { step: '01', title: 'Dán liên kết YouTube', desc: 'Sao chép đường dẫn video YouTube bạn muốn lưu và dán vào ô nhập liệu bên dưới.' },
-      { step: '02', title: 'Chọn chất lượng MP4', desc: 'Hệ thống tự động phân tích và cho phép bạn lựa chọn định dạng MP4 độ nét cao.' },
-      { step: '03', title: 'Chuẩn bị video', desc: 'One ForAll xử lý liên kết và chuẩn bị tệp theo định dạng bạn đã chọn.' },
-      { step: '04', title: 'Tải về thiết bị', desc: 'Tải tệp MP4 về thiết bị để xem ngoại tuyến khi cần.' },
-    ],
-    features: [
-      { title: 'Tối ưu độ phân giải', desc: 'Chất lượng video khả dụng tùy thuộc vào nguồn và các tùy chọn được cung cấp.' },
-      { title: 'Không cần cài đặt', desc: 'Chạy trực tiếp trên trình duyệt Chrome, Safari, Edge mà không cần phần mềm phụ trợ.' },
-      { title: 'Quyền riêng tư', desc: 'Tệp được dọn dẹp theo chính sách lưu trữ của nền tảng.' },
-    ],
-    supportedFormatsDesc: 'Hỗ trợ các dạng liên kết YouTube phổ biến như video thông thường, Shorts và liên kết rút gọn; một số nội dung có thể không khả dụng.',
-    faqList: [
-      { q: 'Tôi có thể tải video YouTube ở chất lượng 1080p không?', a: 'Chất lượng 1080p có thể khả dụng nếu video gốc hỗ trợ và tùy chọn này được cung cấp. Chất lượng tải về thực tế có thể khác nhau tùy từng video.' },
-      { q: 'Tôi có cần tạo tài khoản để tải YouTube MP4 không?', a: 'Tùy công cụ và hạn mức gói sử dụng, bạn có thể dùng dịch vụ mà không cần đăng nhập. Một số tính năng hoặc hạn mức có thể yêu cầu tài khoản.' },
-      { q: 'Chính sách bản quyền khi sử dụng công cụ như thế nào?', a: 'Vui lòng chỉ tải xuống nội dung bạn sở hữu, được chủ sở hữu cho phép hoặc được phép sử dụng theo quy định áp dụng. Bạn chịu trách nhiệm đảm bảo quyền sử dụng nội dung.' },
-    ],
-    relatedSlugs: ['/youtube-to-mp3', '/youtube-downloader', '/video-converter'],
-  },
-
-  '/youtube-to-mp3': {
-    slug: '/youtube-to-mp3',
-    category: 'youtube',
-    badge: 'YouTube sang MP3',
-    title: 'Chuyển YouTube Sang MP3 Chất Lượng Cao | One ForAll',
-    metaDescription:
-      'Chuyển video YouTube sang MP3 với One ForAll. Công cụ trực tuyến dễ sử dụng, lưu nhạc về điện thoại và máy tính không cần cài đặt.',
-    h1: 'Chuyển Video YouTube Sang MP3 Chất Lượng Cao',
-    subtitle:
-      'Chuyển video YouTube sang MP3 với One ForAll. Công cụ trực tuyến dễ sử dụng, lưu nhạc về điện thoại và máy tính không cần cài đặt.',
-    introParagraphs: [
-      'Để chuyển YouTube sang MP3: sao chép liên kết video, dán vào ô bên trên tại One ForAll rồi nhấn Tải xuống. Lưu tệp MP3 về thiết bị nhanh chóng, thuận tiện với các tùy chọn chất lượng âm thanh được hỗ trợ.',
-      'One ForAll giúp bạn chuyển video YouTube sang MP3 trực tuyến và tải video TikTok, kèm các công cụ chuyển đổi file. Dễ dàng lưu âm thanh để nghe ngoại tuyến trên điện thoại iPhone, Android và máy tính. Không cần cài đặt phần mềm, thao tác đơn giản ngay trên trình duyệt.',
-    ],
-    inputType: 'url',
-    urlPlatform: 'youtube',
-    outputFormats: ['mp3', 'wav', 'm4a'],
-    defaultFormat: 'mp3',
-    backendType: 'media_url',
-    backendOperation: 'extract-audio',
-    howItWorksSteps: [
-      { step: '01', title: 'Sao chép link YouTube', desc: 'Sao chép liên kết video có âm thanh bạn muốn chuyển đổi.' },
-      { step: '02', title: 'Dán vào One ForAll', desc: 'Dán link vào ô tìm kiếm và bấm nút Tách nhạc MP3.' },
-      { step: '03', title: 'Trích xuất âm thanh', desc: 'One ForAll chuẩn bị âm thanh theo định dạng đầu ra bạn đã chọn.' },
-      { step: '04', title: 'Tải tệp âm thanh', desc: 'Lưu tệp MP3 về điện thoại hoặc máy tính để thưởng thức ngay.' },
-    ],
-    features: [
-      { title: 'Chất lượng âm thanh trung thực', desc: 'Chất lượng âm thanh đầu ra phụ thuộc vào nguồn và tùy chọn chuyển đổi khả dụng.' },
-      { title: 'Xử lý thuận tiện', desc: 'Thời gian xử lý phụ thuộc vào độ dài video, chất lượng nguồn và tình trạng hệ thống.' },
-      { title: 'Tương thích mọi thiết bị', desc: 'Tệp MP3 có thể phát trên hầu hết điện thoại, máy tính và thiết bị hỗ trợ định dạng này.' },
-    ],
-    supportedFormatsDesc: 'Định dạng đầu ra khả dụng gồm MP3, WAV và M4A. Khả năng xử lý tùy thuộc vào liên kết video.',
-    faqList: [
-      { q: 'Âm thanh MP3 có bị nén giảm chất lượng không?', a: 'Chất lượng MP3 phụ thuộc vào âm thanh nguồn và thiết lập đầu ra. Chuyển sang MP3 có thể làm thay đổi chất lượng do đặc tính nén của định dạng.' },
-      { q: 'Có thể tách âm thanh từ YouTube Shorts không?', a: 'Bạn có thể thử liên kết Shorts được công cụ hỗ trợ. Khả năng xử lý còn tùy nguồn và trạng thái hỗ trợ hiện tại.' },
-    ],
-    relatedSlugs: ['/youtube-to-mp4', '/youtube-downloader', '/audio-converter'],
-  },
-
   '/youtube-downloader': {
     slug: '/youtube-downloader',
     category: 'youtube',
@@ -154,85 +75,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
       { q: 'Video tải về được lưu ở đâu?', a: 'Trình duyệt thường lưu tệp vào thư mục Downloads mặc định, trừ khi bạn đã đổi cài đặt tải xuống.' },
       { q: 'Tại sao một số video tải chậm hơn?', a: 'Video dài hoặc có chất lượng cao có thể mất nhiều thời gian xử lý hơn. Bạn hãy chờ tiến trình hoàn tất trước khi tải tệp.' },
     ],
-    relatedSlugs: ['/youtube-to-mp4', '/youtube-to-mp3', '/video-converter', '/audio-converter'],
-  },
-
-  '/tiktok-to-mp4': {
-    slug: '/tiktok-to-mp4',
-    category: 'tiktok',
-    badge: 'TikTok sang MP4',
-    title: 'Tải Video TikTok MP4 | One ForAll',
-    metaDescription:
-      'Tải video TikTok dưới dạng MP4 để lưu về điện thoại hoặc máy tính. Tùy chọn và chất lượng khả dụng phụ thuộc vào video nguồn.',
-    h1: 'Tải Video TikTok sang MP4',
-    subtitle:
-      'Lưu video TikTok dưới dạng MP4 với các tùy chọn khả dụng, thuận tiện xem lại trên thiết bị của bạn.',
-    introParagraphs: [
-      'Để tải video TikTok sang MP4: sao chép liên kết video, dán vào ô bên trên tại One ForAll rồi nhấn Tải xuống. Lưu video MP4 về thiết bị nhanh chóng, miễn phí và không cần cài đặt ứng dụng.',
-      'One ForAll hỗ trợ tải video TikTok, chuyển đổi video YouTube sang MP4 hoặc MP3 và sử dụng các công cụ chuyển đổi file trực tuyến. Bạn có thể truy cập trên điện thoại iPhone, Android hoặc máy tính ngay từ trình duyệt. Không cần cài đặt phần mềm, thao tác đơn giản và thuận tiện.',
-    ],
-    inputType: 'url',
-    urlPlatform: 'tiktok',
-    outputFormats: ['mp4'],
-    defaultFormat: 'mp4',
-    backendType: 'media_url',
-    backendOperation: 'url_download',
-    howItWorksSteps: [
-      { step: '01', title: 'Sao chép link TikTok', desc: 'Mở ứng dụng hoặc web TikTok, bấm nút Chia sẻ và chọn Sao chép liên kết.' },
-      { step: '02', title: 'Dán vào One ForAll', desc: 'Dán URL TikTok vào ô bên dưới và bấm nút Tải video.' },
-      { step: '03', title: 'Chuẩn bị video', desc: 'One ForAll xử lý liên kết và chuẩn bị tệp video để tải xuống.' },
-      { step: '04', title: 'Lưu về máy', desc: 'Tải tệp MP4 về thiết bị của bạn.' },
-    ],
-    features: [
-      { title: 'Tệp MP4 từ liên kết TikTok', desc: 'Tạo tệp MP4 từ liên kết TikTok được công cụ hỗ trợ; khả năng truy cập và kết quả phụ thuộc nguồn.' },
-      { title: 'Chất lượng theo nguồn', desc: 'Độ phân giải đầu ra phụ thuộc video nguồn và giới hạn chất lượng của gói đang dùng.' },
-      { title: 'Hoạt động tốt trên iOS & Android', desc: 'Dễ dàng tải về thư viện máy mà không cần phần mềm thứ ba.' },
-    ],
-    supportedFormatsDesc: 'Hỗ trợ link TikTok dạng vm.tiktok.com, vt.tiktok.com và tiktok.com/@user/video/...',
-    faqList: [
-      { q: 'Làm thế nào để tải video TikTok trên iPhone?', a: 'Bạn dán link vào One ForAll trên Safari, bấm Tải về, sau đó mở tệp trong phần Tải về và chọn Lưu video vào thư viện Ảnh.' },
-      { q: 'Video tải về có watermark không?', a: 'Watermark phụ thuộc vào tệp nguồn mà TikTok cung cấp. Công cụ không có bước xóa watermark riêng; hãy kiểm tra kết quả trước khi sử dụng.' },
-    ],
-    relatedSlugs: ['/tiktok-to-mp3', '/tiktok-downloader', '/video-converter'],
-  },
-
-  '/tiktok-to-mp3': {
-    slug: '/tiktok-to-mp3',
-    category: 'tiktok',
-    badge: 'TikTok sang MP3',
-    title: 'Chuyển Âm Thanh TikTok sang MP3 | One ForAll',
-    metaDescription:
-      'Chuyển âm thanh từ video TikTok sang MP3 trực tuyến. Chất lượng đầu ra phụ thuộc vào video nguồn và các tùy chọn được hỗ trợ.',
-    h1: 'Trích Xuất Âm Thanh TikTok sang MP3',
-    subtitle:
-      'Chuyển âm thanh từ video TikTok sang MP3 để nghe hoặc sử dụng cho mục đích phù hợp với quyền của bạn.',
-    introParagraphs: [
-      'Để tải âm thanh TikTok sang MP3: sao chép liên kết video, dán vào ô bên trên tại One ForAll rồi nhấn Tải xuống. Lưu file MP3 về thiết bị nhanh chóng, miễn phí và không cần cài đặt ứng dụng.',
-      'One ForAll hỗ trợ tải video TikTok, chuyển đổi video YouTube sang MP4 hoặc MP3 và sử dụng các công cụ chuyển đổi file trực tuyến. Bạn có thể truy cập trên điện thoại iPhone, Android hoặc máy tính ngay từ trình duyệt. Không cần cài đặt phần mềm, thao tác đơn giản và thuận tiện.',
-    ],
-    inputType: 'url',
-    urlPlatform: 'tiktok',
-    outputFormats: ['mp3', 'wav', 'm4a'],
-    defaultFormat: 'mp3',
-    backendType: 'media_url',
-    backendOperation: 'extract-audio',
-    howItWorksSteps: [
-      { step: '01', title: 'Lấy link video TikTok', desc: 'Sao chép liên kết video có đoạn âm thanh bạn yêu thích.' },
-      { step: '02', title: 'Dán link vào hệ thống', desc: 'Dán đường dẫn và chọn định dạng đầu ra MP3.' },
-      { step: '03', title: 'Chuyển đổi âm thanh', desc: 'Công cụ chuẩn bị âm thanh theo định dạng đầu ra bạn đã chọn.' },
-      { step: '04', title: 'Tải về nghe thử', desc: 'Lưu tệp âm thanh về máy để làm nhạc chuông hoặc nghe offline.' },
-    ],
-    features: [
-      { title: 'Trích xuất âm thanh từ liên kết', desc: 'Tạo tệp âm thanh từ video TikTok mà công cụ có thể truy cập.' },
-      { title: 'Chất lượng theo nguồn', desc: 'Chất lượng âm thanh đầu ra phụ thuộc vào âm thanh gốc và định dạng được chọn.' },
-      { title: 'Dùng làm nhạc chuông', desc: 'Dễ dàng cài đặt làm nhạc chuông báo thức hoặc chuông cuộc gọi thoại.' },
-    ],
-    supportedFormatsDesc: 'Đầu ra hỗ trợ định dạng MP3, WAV, M4A.',
-    faqList: [
-      { q: 'Có thể chọn bitrate đầu ra nào?', a: 'Công cụ có các tùy chọn 128, 192 và 320 kbps. Chất lượng nghe được còn phụ thuộc âm thanh nguồn và định dạng đầu ra.' },
-      { q: 'Có tải được âm thanh từ video TikTok riêng tư không?', a: 'Công cụ có thể không truy cập được video riêng tư hoặc bị giới hạn.' },
-    ],
-    relatedSlugs: ['/tiktok-to-mp4', '/tiktok-downloader', '/audio-converter'],
+    relatedSlugs: ['/tiktok-downloader', '/video-converter', '/audio-converter'],
   },
 
   '/tiktok-downloader': {
@@ -271,7 +114,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
       { q: 'Video tải về có watermark không?', a: 'Watermark phụ thuộc vào tệp nguồn mà TikTok cung cấp. Công cụ không có bước xóa watermark riêng; hãy kiểm tra kết quả trước khi sử dụng.' },
       { q: 'Lượt tải có bị giới hạn không?', a: 'Giới hạn sử dụng phụ thuộc gói và quy tắc dịch vụ hiện tại; hãy xem thông tin hiển thị trên trang trước khi xử lý.' },
     ],
-    relatedSlugs: ['/tiktok-to-mp4', '/tiktok-to-mp3'],
+    relatedSlugs: ['/youtube-downloader', '/video-converter', '/audio-converter'],
   },
 
   '/convert': {
@@ -381,7 +224,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
   '/video-converter': {
     slug: '/video-converter',
     category: 'convert',
-    badge: 'Video Converter',
+    badge: 'Chuyển đổi video',
     title: 'Chuyển Đổi Định Dạng Video MP4, MOV, MKV, WebM, AVI | One ForAll',
     metaDescription:
       'Chuyển đổi video trực tuyến sang MP4, WebM, MKV hoặc AVI. Tùy chọn định dạng giúp video phù hợp hơn với thiết bị và nhu cầu sử dụng.',
@@ -410,13 +253,13 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
       { q: 'Mất bao lâu để chuyển đổi video?', a: 'Thời gian xử lý phụ thuộc vào dung lượng, độ dài video, định dạng đầu ra và tình trạng hệ thống.' },
       { q: 'Tính năng xuất JPG từ video dùng để làm gì?', a: 'Tính năng này trích một khung hình từ video và lưu thành ảnh JPG để dùng làm ảnh xem trước.' },
     ],
-    relatedSlugs: ['/audio-converter', '/youtube-to-mp4', '/tiktok-to-mp4', '/convert'],
+    relatedSlugs: ['/audio-converter', '/youtube-downloader', '/tiktok-downloader', '/convert'],
   },
 
   '/audio-converter': {
     slug: '/audio-converter',
     category: 'convert',
-    badge: 'Audio Format Converter',
+    badge: 'Chuyển đổi âm thanh',
     title: 'Chuyển Đổi Âm Thanh: MP3, WAV, AAC, FLAC, M4A | One ForAll',
     metaDescription:
       'Chuyển đổi âm thanh giữa MP3, WAV, AAC, M4A, OGG và FLAC trực tuyến. Chất lượng đầu ra phụ thuộc vào tệp nguồn và định dạng được chọn.',
@@ -444,7 +287,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
     faqList: [
       { q: 'Sự khác biệt giữa MP3 và WAV là gì?', a: 'WAV thường lưu âm thanh không nén nên tệp lớn hơn. MP3 dùng nén mất dữ liệu để giảm dung lượng, phù hợp nghe và chia sẻ hằng ngày.' },
     ],
-    relatedSlugs: ['/video-converter', '/youtube-to-mp3', '/tiktok-to-mp3', '/convert'],
+    relatedSlugs: ['/video-converter', '/youtube-downloader', '/tiktok-downloader', '/convert'],
   },
 
   '/document-converter': {

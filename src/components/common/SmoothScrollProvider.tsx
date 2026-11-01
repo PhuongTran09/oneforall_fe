@@ -22,7 +22,7 @@ const EASE_OUT_QUINT = (t: number): number => 1 - (1 - t) ** 5
  * `autoRaf: true` là mấu chốt về FPS: Lenis tự mở/đóng vòng requestAnimationFrame và chỉ
  * chạy lúc còn quán tính.Provider KHÔNG viết tay `const raf = (t) => { lenis.raf(t);
  * requestAnimationFrame(raf) }` — vòng thường trực đó tỉnh cả khi không ai cuộn, mà app
- * này đã có sẵn một rAF chung cho thanh tiến trình + parallax (utils/scrollMotion.ts).
+ * này đã có sẵn một rAF chung cho parallax (utils/scrollMotion.ts).
  *
  * Lenis ghi scrollTop của document THẬT (không transform cái gì), nên mọi thứ đang nghe
  * cuộn trong app vẫn chạy nguyên: onScrollFrame, `position: sticky`, IntersectionObserver

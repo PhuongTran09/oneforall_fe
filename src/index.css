@@ -288,7 +288,8 @@ html[data-theme='light'] {
     filter var(--t-2) var(--e-soft);
 }
 
-/* Bottom-up glow effect on card hover */
+/* Vệt hồng dọc đáy thẻ: opacity 0 ở trạng thái thường, bật lên khi hover (dưới) hoặc
+   thường trực với thẻ chủ đích phát sáng (.card-3d-glow). */
 .card-3d:not(.card-3d-dim)::before {
   content: '';
   position: absolute;
@@ -309,17 +310,18 @@ html[data-theme='light'] {
 }
 
 @media (hover: hover) {
+  /* Vệt hồng ở đáy thẻ vẫn bật khi hover: một linear-gradient cố định, opacity đổi MỘT
+     lần lúc vào/ra nên compositor giữ nguyên lớp đã raster. Cái đã bỏ là đèn radial
+     chạy theo con trỏ — lớp đó vẽ lại cả thẻ mỗi khung hình mousemove. */
   .card-3d:not(.card-3d-dim):not([data-disabled]):not([aria-disabled="true"]):hover {
     --lift: -3px;
     filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.5));
+    /* The side face follows the brand color when a card lifts. */
+    border-right-color:  rgba(255, 107, 74, 0.8);
+    border-bottom-color: rgba(255, 107, 74, 0.8);
   }
   .card-3d:not(.card-3d-dim):not([data-disabled]):not([aria-disabled="true"]):hover::before {
     opacity: 1;
-  }
-  /* The side face follows the brand color when a card lifts. */
-  .card-3d:not(.card-3d-dim):not([data-disabled]):not([aria-disabled="true"]):hover {
-    border-right-color:  rgba(255, 107, 74, 0.8);
-    border-bottom-color: rgba(255, 107, 74, 0.8);
   }
   /* Press feedback: card hạ xuống sát mặt nền và thu rất nhẹ — 0.99 đủ để tay biết
      đã bấm vào đúng thẻ, không làm chữ rung như scale 0.95. */
@@ -334,98 +336,13 @@ html[data-theme='light'] {
   opacity: 1;
 }
 
-/* ============ Lớp con trỏ: đèn nền bám chuột + viền sáng ============
-   cardMotion.ts (init từ main.tsx) đã ghi --rx/--ry (nghiêng) và --gx/--gy (điểm chạm)
-   lên mọi .card-tilt; nửa còn lại — rule ĐỌC hai cặp biến đó — là ở đây.
-   --spot KHÔNG cần @property: hai lớp sáng fade bằng opacity của chính pseudo nên
-   compositor tự nội suy được, không phải recalc cả subtree mỗi khung hình như biến
-   đăng ký (và biến đăng ký inherits:false thì pseudo không đọc được — hỏng hẳn).
-   Mặc định opacity 0 nên không JS, không hover, máy cảm ứng, bản prerender: vô hình.
+/* ============ Lớp con trỏ: nghiêng thẻ ============
+   cardMotion.ts (init từ main.tsx) ghi --rx/--ry lên mọi .card-tilt; rule ĐỌC chúng là
+   transform của .card-3d ở trên. Trước đây còn cặp --gx/--gy cho đèn bám chuột, đã gỡ. */
 
-   ::before (z-index 5) vốn là vệt glow đỏ thẳng từ đáy card: giữ nguyên chất đó nhưng
-   cho NÓ biết con trỏ ở đâu — lớp gradient thứ nhất là đèn, lớp hai vẫn là glow đỏ cũ,
-   hai lớp chung một opacity nên không bao giờ cộng dồn thành mảng cháy.
-   ::after (z-index 6) là viền sáng 1px — chữ ký của linear.app: mask full-box TRỪ
-   content-box (mask-composite: exclude) khoanh đúng dải 1px sát mép trong, nên vệt
-   sáng chỉ rực ở cạnh gần con trỏ nhất chứ không phủ cả mặt card. */
-.card-3d.card-tilt {
-  --gx: 50%;
-  --gy: 0%;
-}
-
-.card-3d.card-tilt::before {
-  inset: 0;
-  height: auto;
-  /* Hai lớp nền tự giới hạn kích thước: `background` nhiều lớp không cho mỗi lớp một
-     hình dạng riêng qua inset/height, nên dải đỏ chân card phải sống bằng
-     `bottom / 100% 56px` — đúng chiều cao 56px của ::before gốc. Để nó phủ hết thẻ thì
-     mỗi lần rê chuột cả card nhuốm đỏ, nặng hơn bản gốc rất nhiều. */
-  background:
-    radial-gradient(
-      220px circle at var(--gx) var(--gy),
-      rgba(255, 255, 255, 0.06) 0%,
-      color-mix(in srgb, var(--grad-1) 16%, transparent) 38%,
-      transparent 70%
-    ) no-repeat 0 0 / 100% 100%,
-    linear-gradient(to top, rgba(255, 59, 48, 0.14) 0%, transparent 100%) no-repeat bottom / 100% 56px;
-}
-
-.card-3d.card-tilt::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  padding: 1px;
-  z-index: 6;
-  pointer-events: none;
-  opacity: 0;
-  background: radial-gradient(
-    200px circle at var(--gx) var(--gy),
-    color-mix(in srgb, var(--grad-2) 92%, white) 0%,
-    color-mix(in srgb, var(--grad-1) 55%, transparent) 42%,
-    transparent 68%
-  );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask-composite: exclude;
-}
-
-/* Light surface nuốt màu trắng nên đèn đổi sang chính màu thương hiệu, nhẹ tay.
-   Phải kèm :not(.card-3d-dim): rule `html[data-theme='light'] .card-3d:not(.card-3d-dim)::before`
-   ở cuối file đặc hiệu bằng đúng (0,3,2) và đứng sau nên thắng, để lại mỗi dải đỏ —
-   mà dải đó khi ấy bị `inset:0; height:auto` ở trên kéo phủ cả thẻ thành một màn hồng. */
-html[data-theme='light'] .card-3d:not(.card-3d-dim).card-tilt::before {
-  background:
-    radial-gradient(
-      220px circle at var(--gx) var(--gy),
-      color-mix(in srgb, var(--grad-1) 8%, transparent) 0%,
-      color-mix(in srgb, var(--grad-1) 4%, transparent) 38%,
-      transparent 70%
-    ) no-repeat 0 0 / 100% 100%,
-    linear-gradient(to top, rgba(200, 30, 23, 0.10) 0%, transparent 100%) no-repeat bottom / 100% 56px;
-}
-
-html[data-theme='light'] .card-3d.card-tilt::after {
-  background: radial-gradient(
-    200px circle at var(--gx) var(--gy),
-    color-mix(in srgb, var(--grad-1) 90%, transparent) 0%,
-    color-mix(in srgb, var(--grad-1) 45%, transparent) 42%,
-    transparent 68%
-  );
-}
-
-/* Chuột thật mới bật đèn: pointer:fine loại cảm ứng (không có vị trí con trỏ để theo),
-   hover:hover loại popup chạm-keep-hover. focus-visible sáng y như hover — bàn phím
-   cũng phải thấy được cạnh nào đang "sống". Selector lặp lại ba :not() của rule :hover
-   ở trên vì đặc hiệu phải lớn hơn nó mới ghi đè được opacity. */
-@media (hover: hover) and (pointer: fine) {
-  .card-3d:not(.card-3d-dim):not([data-disabled]):not([aria-disabled="true"]).card-tilt:hover::before,
-  .card-3d:not(.card-3d-dim):not([data-disabled]):not([aria-disabled="true"]).card-tilt:focus-visible::before,
-  .card-3d:not(.card-3d-dim):not([data-disabled]):not([aria-disabled="true"]).card-tilt:hover::after,
-  .card-3d:not(.card-3d-dim):not([data-disabled]):not([aria-disabled="true"]).card-tilt:focus-visible::after {
-    opacity: 1;
-  }
-}
+/* Đèn nền + viền sáng bám chuột đã bỏ: hover là mỗi thẻ vẽ lại hai lớp radial-gradient
+   theo từng khung hình mousemove, hàng chục thẻ ở /tools thì thấy rõ trên máy yếu. Thẻ
+   vẫn tự báo "bấm được" bằng lift, tilt và đổi màu border. */
 
 /* Keyboard focus stays visible despite the clip-path */
 .card-3d:focus-visible {
@@ -443,6 +360,13 @@ html[data-theme='light'] .card-3d.card-tilt::after {
 /* input-3d uses a dimmer side face on upload and URL fields. */
 .input-3d {
   --extrude-face: var(--extrude-face-dim);
+}
+
+/* Ô tìm kiếm chính ở hero: viền phải/dưới do .clip-corner-btn lấy từ --extrude-face, mà
+   .input-3d khai báo biến đó ngoài layer nên utility Tailwind không thắng — phải đặt ở
+   đây và đứng SAU .input-3d. Không có dòng này thì khung chỉ đỏ hai cạnh trên/trái. */
+.search-brand {
+  --extrude-face: rgba(255, 59, 48, 0.22);
 }
 
 /* Ô tìm kiếm có nút X riêng (màu brand + aria-label + xóa được cả bàn phím), nên tắt
@@ -518,6 +442,19 @@ input[type='search']::-webkit-search-decoration {
   animation: page-enter 220ms var(--e-out) backwards;
 }
 
+/* Đổi ngôn ngữ không remount khối nội dung (MainLayout dựng key từ path đã trừ prefix
+   locale) nên page-enter không chạy — chữ mới sẽ pop ngay frame đầu nếu không có nhịp
+   mờ. 140ms chứ không 220ms của page-enter: ở đây không gì dời chỗ, chỉ có chữ khác đi,
+   dài hơn là thành chờ. Gắn lên <main> chứ không gắn lên phần tử đang mang
+   .animate-page-enter: `animation` là một property, một class khác đè nó, và lúc gỡ
+   .lang-swap là page-enter bật lại từ đầu. */
+@keyframes lang-swap {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.lang-swap { animation: lang-swap 140ms var(--e-out); }
+
 @keyframes heading-in {
   0%   { opacity: 0; translate: 0 8px; }
   100% { opacity: 1; translate: 0 0;   }
@@ -562,9 +499,9 @@ html[data-theme='light'] .hero-word-hl {
 /* Tiêu đề section dựng chữ theo đúng nhịp hero, nhưng chỉ khi nó lọt vào khung hình:
    .is-in do SectionHeading thêm một lần bằng IntersectionObserver. Không có .is-in
    (JS chưa chạy, bản prerender) thì chữ và mô tả vẫn hiện bình thường — không bao giờ
-   trống. --word-step (từ gắn trên h2) và --desc-delay (gắn trên <p>) là số học nguyên
-   SectionHeading tính từ số từ của nhãn, đã theo ngôn ngữ — xem chú thích ở file đó.
-   Fallback 80ms/1300ms dưới đây chỉ dùng khi style inline thiếu. */
+   trống. --word-step (từ gắn trên h2) là số học nguyên SectionHeading tính từ số từ của
+   nhãn, đã theo ngôn ngữ — xem chú thích ở file đó. Fallback 80ms chỉ dùng khi style
+   inline thiếu. */
 .reveal-heading .reveal-word {
   display: inline-block;
 }
@@ -574,9 +511,9 @@ html[data-theme='light'] .hero-word-hl {
   animation-delay: calc(var(--i) * var(--word-step, 80ms));
 }
 
-/* Mô tả TrƯỢT XUỐNG sau khi từ cuối của tiêu đề dựng hẳn rồi NGHỈ thêm một hơi
-   (DESC_GAP_MS trong SectionHeading.tsx). 560ms cho 12px nên nó trượt tới chứ không rơi.
-   Muốn thấy hai khối tách rõ hơn thì tăng DESC_GAP_MS, không sửa gì ở đây. */
+/* Mô tả TrƯỢT XUỐNG cùng nhịp với từ đầu tiên của tiêu đề (không chờ dựng chữ xong).
+   560ms cho 12px nên nó trượt tới chứ không rơi. Muốn tách hai khối thì thêm
+   animation-delay vào rule dưới, không sửa gì ở SectionHeading.tsx. */
 @keyframes desc-in {
   from { opacity: 0; translate: 0 -12px; }
   to   { opacity: 1; translate: 0 0; }
@@ -584,7 +521,6 @@ html[data-theme='light'] .hero-word-hl {
 
 .reveal-heading.is-in + .reveal-desc {
   animation: desc-in 560ms var(--e-out) backwards;
-  animation-delay: var(--desc-delay, 1300ms);
 }
 
 /* Demo animation only; live progress remains owned by JobProgress and SSE.
@@ -822,8 +758,19 @@ html[data-theme='light'] .toast-item {
 
 /* Chiều RA. Backdrop/popover chỉ fade opacity: dịch một khối `fixed inset-0` lên 10px là
    để lộ dải trống ở đầu trang. Panel dùng .in-out (fade + 10px xuống) cho khớp .in-up.
-   `reverse forwards` = chạy ngược keyframes vào và giữ frame cuối tới lúc React gỡ node. */
-.out-fade { animation: in-fade 160ms ease-in reverse forwards; }
+
+   PHẢI có keyframes riêng, không được viết `in-fade ... reverse`: đổi animation-name mới
+   khởi động một animation, còn đổi mỗi direction/fill trên cùng name thì engine giữ nguyên
+   animation cũ đã chạy xong (currentTime = 160) — reversed nên nó rơi thẳng về frame `from`
+   opacity 0 ngay frame đầu. Hậu quả: mọi nền modal .in-backdrop/.in-fade → .out-fade biến
+   mất cái "bụp" thay vì mờ dần, và vì .in-down (dropdown Công cụ) là name khác nên chỗ đó
+   fade đúng, che luôn bug cho các chỗ còn lại.
+   Giá trị mỗi khung hình của `out-fade` ở dưới bằng đúng `in-fade reverse` (1 - ease(t)). */
+@keyframes out-fade {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+.out-fade { animation: out-fade 160ms ease-in forwards; }
 
 /* AuthModal đổi tab: chỉ vùng form diễn, khung modal giữ nguyên vị trí. 10px nằm giữa
    hai ràng buộc — đủ để mắt theo được hướng đổi (8px trở xuống gần như chỉ là chớp),
@@ -945,10 +892,10 @@ body:has(.cookie-bar) .coffee-dock { display: none; }
   [data-reveal].is-in { --reveal-shift: 28px; animation-duration: 960ms; }
 }
 
-/* Section có SectionHeading: tiêu đề TỰ dựng từng từ (word-in 780ms) rồi mô tả TrƯỢT
-   XUỐNG — hai nhịp đó đã kể hết câu chuyện "chữ vào trước, giải thích vào sau" nên section
-   không nhún lên nữa (--reveal-shift: 0px), nếu không badge/mô tả bị hai lớp chuyển động
-   cộng dồn kéo cùng lúc. Quãng nghỉ giữa hai nhịp là DESC_GAP_MS trong SectionHeading. */
+/* Section có SectionHeading: tiêu đề TỰ dựng từng từ (word-in 780ms), mô tả TrƯỢT XUỐNG
+   ngay cùng nhịp — hai chuyển động đó đã kể hết phần đầu section nên section không nhún lên
+   nữa (--reveal-shift: 0px), nếu không badge/mô tả bị hai lớp chuyển động cộng dồn kéo
+   cùng lúc. */
 section[data-reveal]:has(.reveal-heading) { --reveal-shift: 0px; }
 
 /* ============ Card diễn theo TIẾN TRÌNH CUỘN, không theo đồng hồ ============
@@ -1272,15 +1219,10 @@ html[data-theme='light'] .hero-ambient-glow {
   100% { background-position: 200% center; }
 }
 
-/* Card Hover Glow Effect - emits bottom-focused glow */
+/* Chỉ còn nhịp chuyển: hover phát sáng đã bỏ — shadow đỏ phủ lên cả thẻ mỗi lần rê chuột
+   làm trang nặng hẳn lên trên máy yếu, trong khi border/tilt đã đủ báo "thẻ này bấm được". */
 .card-hover-glow {
   transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
-}
-.card-hover-glow:hover {
-  box-shadow: 0 14px 24px -4px rgba(255, 59, 48, 0.26);
-}
-html[data-theme='light'] .card-hover-glow:hover {
-  box-shadow: 0 12px 20px -4px rgba(200, 30, 23, 0.16);
 }
 
 /* ===== Random Case Opening: chỉ mô phỏng cơ chế mở hòm, không dùng tài sản của game nào ===== */
@@ -2224,33 +2166,9 @@ main section[id]:has(.workspace-panel) {
   to   { transform: scaleX(1); }
 }
 
-/* ============ Thanh tiến trình cuộn ============
-   Dính mép trên khung hình, cao 2px. z 60: header (z-40) phủ 72px đầu trang nên
-   đặt thấp hơn là không thấy gì; modal z-50 thành thử vạch này chạy phía trên
-   backdrop — 2px sát mép trên, không che nội dung nào.
-   Chỉ biến đổi scaleX (compositor), không width: đổi width là layout lại cả trang
-   mỗi frame. Không transition — thanh phải khớp đúng chỗ người dùng đứng. */
-.scroll-progress {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  z-index: 60;
-  pointer-events: none;
-}
-
-.scroll-progress-bar {
-  height: 100%;
-  transform: scaleX(0);
-  transform-origin: 0 50%;
-  will-change: transform;
-  background: linear-gradient(90deg, var(--grad-1) 0%, var(--grad-2) 55%, var(--grad-3) 100%);
-}
-
 /* ============ Lớp hạt (grain) phủ toàn trang ============
-   Một lớp noise tĩnh, rất mờ, đặt trên mọi nội dung nhưng DƯỚI modal (z-50),
-   ScrollProgress (z-60) và SelectMenu (z-70) để hộp thoại không bị phủ: z 45.
+   Một lớp noise tĩnh, rất mờ, đặt trên mọi nội dung nhưng DƯỚI modal (z-50) và
+   SelectMenu (z-70) để hộp thoại không bị phủ: z 45.
    body::after chứ không thêm node React: không có trong cây prerender, không phải
    mount, không repaint theo khung hình (background là ảnh data-URI nên raster một
    lần, position:fixed nên không cuộn lại).
@@ -2322,6 +2240,7 @@ main section[id]:has(.workspace-panel) {
   .out-fade,
   .in-bar-up,
   .auth-swap,
+  .lang-swap,
   .stagger > *,
   [data-reveal-items] > *,
   [data-reveal-items].is-in > *,
@@ -2360,10 +2279,6 @@ main section[id]:has(.workspace-panel) {
   .btn-3d              { transition: none; }
   .card-3d           { transform: none; transition: border-color 0.25s ease-out; }
   .card-3d::before   { display: none; }
-  /* Viền sáng bám chuột cũng là "chuyển động theo con trỏ": máy giảm chuyển động đã tắt
-    --rx/--ry trong cardMotion.ts nên đèn nền không còn đi theo ai, để nó sáng tĩnh thì
-    hai pseudo của .card-tilt vẫn là hai layer không có nghĩa gì — gỡ luôn. */
-  .card-3d.card-tilt::after { display: none; }
   .card-3d:hover     { filter: none; }
   .live-value { animation: none; }
   /* Pipeline: giữ line tĩnh + thứ tự số rõ, tắt toàn bộ chuyển động */

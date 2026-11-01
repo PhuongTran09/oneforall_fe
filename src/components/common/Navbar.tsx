@@ -12,6 +12,7 @@ import {
   ArrowRight,
   ArrowUpRight,
   ChevronDown,
+  ChevronsUp,
   Dices,
   LayoutGrid,
   LogIn,
@@ -36,10 +37,13 @@ import { localizeTool } from '../../i18n/toolConfig'
 import { SEO_TOOLS, ALL_TOOL_SLUGS } from '../../config/seoTools'
 import { TOOL_CATEGORIES } from '../../config/toolCategories'
 import { useAuth, signOut } from '../../services/authStore'
+import { isAdFree, useEntitlements } from '../../services/entitlementsStore'
 import { useExitFade, useOpenSeq } from '../../hooks/useExitFade'
 
 export interface NavbarProps {
   onOpenAuth?: (mode: 'login' | 'register') => void
+  /** Mở bảng gói Pro; layout quyết định bước trước đó (chưa đăng nhập → đăng ký). */
+  onOpenPro?: () => void
 }
 
 interface NavItem {
@@ -61,8 +65,9 @@ interface NavGroup {
 
 const ICON = 'w-4 h-4 shrink-0'
 const ICON_BOX = 'grid place-items-center w-7 h-7 shrink-0 bg-elev border border-edge text-brand clip-corner-btn'
-/** Bản 24px cho drawer mobile: hàng 13px mà hộp 28px thì mỗi dòng nở thêm ~4px. */
-const ICON_BOX_SM = 'grid place-items-center w-6 h-6 shrink-0 bg-elev border border-edge text-brand clip-corner-btn'
+/** Bản 24px cho drawer mobile, KHÔNG có hộp viền: drawer xếp theo cụm nhóm, mỗi icon có
+ *  khung riêng là thành một lưới ô — rối hơn so với mega-menu desktop đang dùng ICON_BOX. */
+const ICON_BOX_SM = 'grid place-items-center w-6 h-6 shrink-0 text-brand'
 /** Nối tab nhóm với vùng con của mega-menu desktop để aria-expanded có đích. */
 const MENU_ITEMS_ID = 'nav-menu-groups'
 /** Nối trigger với panel đã render để aria-controls không trỏ vào khoảng không. */
@@ -73,14 +78,6 @@ const TOOLS_PANEL_ID = 'nav-tools-menu'
  * đủ ngắn để không ai thấy menu "treo" sau khi tay đã rời khỏi navbar.
  */
 const CLOSE_DELAY_MS = 260
-
-/**
- * Bốn trang định dạng riêng của TikTok/YouTube vẫn là route thật (registry đủ 17 slug
- * cho /tools, sitemap, prerender) nhưng không đứng trong menu nữa: chọn MP3/MP4 là việc
- * của form bên trong trang tải, không phải của thanh điều hướng. Lọc ngay đây nên lưới
- * nhóm, kết quả tìm của menu và accordion mobile cùng hết hiện chúng — một nguồn, một chỗ.
- */
-const NAV_HIDDEN_SLUGS = new Set(['/youtube-to-mp3', '/youtube-to-mp4', '/tiktok-to-mp3', '/tiktok-to-mp4'])
 
 /** Hai trang tải chính gọi theo hành động, ngắn hơn badge registry cho khỏi tràn hàng. */
 const NAV_LABEL_KEYS: Record<string, string> = {
@@ -104,9 +101,7 @@ function navGroups(lang: 'vi' | 'en'): NavGroup[] {
       to: `/${cat.path}`,
       count: cat.toolSlugs.length,
       GroupIcon: CATEGORY_ICONS[cat.id],
-      items: cat.toolSlugs
-        .filter((slug) => !NAV_HIDDEN_SLUGS.has(slug))
-        .map((slug) => ({
+      items: cat.toolSlugs.map((slug) => ({
           to: slug,
           label: label(slug),
           icon: <ToolIcon category={SEO_TOOLS[slug].category} slug={slug} className={ICON} />,
@@ -144,7 +139,29 @@ function accountAvatar(user: NonNullable<ReturnType<typeof useAuth>['session']>[
   return typeof meta.avatar_url === 'string' ? meta.avatar_url : null
 }
 
-export function Navbar({ onOpenAuth }: NavbarProps) {
+/**
+ * CTA "Nâng cấp Pro" cạnh cụm VI/EN. onOpenPro do layout đưa: chưa đăng nhập thì nó mở
+ * form đăng ký, đã đăng nhập mở bảng gói Pro. href /#pricing vẫn chạy khi Navbar đứng
+ * ngoài layout — cùng cách fallback ToolFooterActions chọn.
+ */
+function ProUpgradeLink({ onOpenPro }: { onOpenPro?: () => void }) {
+  return (
+    <LocaleLink
+      to="/#pricing"
+      onClick={(event) => {
+        if (!onOpenPro) return
+        event.preventDefault()
+        onOpenPro()
+      }}
+      className="inline-flex h-[30px] shrink-0 items-center gap-1.5 px-2.5 text-xs font-medium whitespace-nowrap text-brand-active bg-tint border border-brand/40 clip-corner-btn hover:bg-brand/15 hover:text-brand-active hover:border-brand/70 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4545]/60"
+    >
+      <ChevronsUp className="w-4 h-4" aria-hidden="true" />
+      {t('nav.upgradePro')}
+    </LocaleLink>
+  )
+}
+
+export function Navbar({ onOpenAuth, onOpenPro }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [toolsOpen, setToolsOpen] = useState(false)
   const [navQuery, setNavQuery] = useState('')
@@ -169,6 +186,10 @@ export function Navbar({ onOpenAuth }: NavbarProps) {
   const closeTimer = useRef<number | null>(null)
   const location = useLocation()
   const { session, ready } = useAuth()
+  // Khách đã Pro thì không có gì để "nâng cấp": chỉ ẩn nút khi BE xác nhận (me !== null),
+  // chưa có me thì hiện — /users/me về muộn hơn HTML nên mặc định là hiện.
+  const { me } = useEntitlements()
+  const showProCta = me === null || !isAdFree(me)
   // useI18n() vừa lấy lang cho nhãn registry, vừa ĐĂNG KÝ re-render khi đổi ngôn ngữ:
   // t() đọc store thẳng nên thiếu subscription thì navbar giữ chữ tiếng Việt mãi sau khi
   // khách bật EN.
@@ -319,16 +340,11 @@ export function Navbar({ onOpenAuth }: NavbarProps) {
     searchRef.current?.querySelector('input')?.blur()
   }
 
-  /** Dòng tool trong drawer mobile: gọn hơn bản cũ một bậc để các nhóm + nhóm đang mở
-   *  vẫn nằm trong màn hình, không phải cuộn hai lần mới tới nút đăng nhập. */
+  /** Dòng tool, dùng chung drawer mobile và lưới mega-menu desktop: gọn hơn bản cũ một bậc
+   *  để các nhóm + nhóm đang mở vẫn nằm trong màn hình, không phải cuộn hai lần mới tới nút
+   *  đăng nhập. Nhãn để xuống dòng (leading-tight) chứ không truncate — cột mega-menu ~150px
+   *  mà tên tool như "Đổi kích thước ảnh" / "Audio Format Converter" dài hơn một hàng. */
   const itemClass = (active: boolean): string =>
-    `flex items-center gap-2 px-2 py-1.5 text-[13px] clip-corner-btn transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4545]/60 ${
-      active ? 'bg-tint text-brand-active font-semibold' : 'text-soft hover:text-ink hover:bg-brand/10'
-    }`
-
-  /** Bản của lưới mega-menu: cùng bộ với itemClass, khác chỗ cột lưới hẹp hơn drawer nên
-   *  nhãn dài cắt một hàng bằng truncate thay vì cho xuống dòng. */
-  const compactItemClass = (active: boolean): string =>
     `flex items-center gap-2 px-2 py-1.5 text-[13px] clip-corner-btn transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4545]/60 ${
       active ? 'bg-tint text-brand-active font-semibold' : 'text-soft hover:text-ink hover:bg-brand/10'
     }`
@@ -401,7 +417,7 @@ export function Navbar({ onOpenAuth }: NavbarProps) {
                         value={navQuery}
                         onChange={setNavQuery}
                         dropdown={false}
-                        placeholder={t('directory.searchPlaceholder')}
+                        placeholder={t('directory.searchShort')}
                       />
                     </div>
 
@@ -418,10 +434,10 @@ export function Navbar({ onOpenAuth }: NavbarProps) {
                               to={item.to}
                               onClick={closeTools}
                               aria-current={isCurrent(item.to) ? 'page' : undefined}
-                              className={compactItemClass(isCurrent(item.to))}
+                              className={itemClass(isCurrent(item.to))}
                             >
                               <span className={ICON_BOX}>{item.icon}</span>
-                              <span className="min-w-0 truncate">{item.label}</span>
+                              <span className="min-w-0 leading-tight">{item.label}</span>
                             </LocaleLink>
                           )),
                         )}
@@ -466,10 +482,10 @@ export function Navbar({ onOpenAuth }: NavbarProps) {
                                   to={item.to}
                                   onClick={closeTools}
                                   aria-current={isCurrent(item.to) ? 'page' : undefined}
-                                  className={compactItemClass(isCurrent(item.to))}
+                                  className={itemClass(isCurrent(item.to))}
                                 >
                                   <span className={ICON_BOX}>{item.icon}</span>
-                                  <span className="min-w-0 truncate">{item.label}</span>
+                                  <span className="min-w-0 leading-tight">{item.label}</span>
                                 </LocaleLink>
                               ))}
                             </div>
@@ -521,6 +537,8 @@ export function Navbar({ onOpenAuth }: NavbarProps) {
               <span className="hidden xl:inline-flex">
                 <LanguageToggle />
               </span>
+              {/* Dính ngay VI/EN. */}
+              {showProCta && <ProUpgradeLink onOpenPro={onOpenPro} />}
               <ThemeToggle />
               <span className="w-px h-6 bg-edge/70" aria-hidden="true" />
               {!ready ? (
@@ -633,18 +651,21 @@ export function Navbar({ onOpenAuth }: NavbarProps) {
             } max-h-[calc(100dvh-72px)] overflow-y-auto scrollbar-none`}
           >
             {/* VI/EN tự giải thích nên khỏi cần nhãn "Ngôn ngữ" + vạch phân cách: mỗi dòng
-                thừa là một dòng ăn vào chỗ của các nhóm công cụ. */}
-            <div className="flex justify-end pb-2">
+                thừa là một dòng ăn vào chỗ của các nhóm công cụ. Nút Pro đứng cùng hàng,
+                không thành dòng thứ hai. */}
+            <div className="flex items-center justify-end gap-2 pb-2">
+              {showProCta && <ProUpgradeLink onOpenPro={onOpenPro} />}
               <LanguageToggle />
             </div>
             {/* Ô tìm kiếm lọc trực tiếp trên menu: gõ vài ký tự là danh sách co lại còn
-                đúng thứ cần, không phải mở từng accordion mà mò. */}
+                đúng thứ cần, không phải mở từng accordion mà mò. Placeholder bản ngắn —
+                hàng này hẹp, "Tìm công cụ: tải video…" bị cắt giữa câu. */}
             <div className="pb-2" ref={searchRef}>
               <ToolSearchField
                 value={navQuery}
                 onChange={setNavQuery}
                 dropdown={false}
-                placeholder={t('directory.searchPlaceholder')}
+                placeholder={t('directory.searchShort')}
               />
             </div>
             <nav aria-label={t('nav.ariaMain')}>
@@ -670,14 +691,13 @@ export function Navbar({ onOpenAuth }: NavbarProps) {
                 visibleGroups.map((group) => {
                   const expanded = openGroup === group.id
                   return (
-                    <div key={group.id} className="border-b border-edge/50 last:border-b-0">
+                    <div key={group.id}>
                       <button
                         type="button"
                         onClick={() => setOpenGroup(expanded ? null : group.id)}
                         aria-expanded={expanded}
                         className="flex w-full items-center gap-2 px-1 py-2 text-left text-[13px] font-semibold text-ink clip-corner-btn hover:bg-brand/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4545]/60"
                       >
-                        <group.GroupIcon className="w-4 h-4 shrink-0 text-brand" />
                         <span className="truncate">{group.title}</span>
                         <span className="ml-auto shrink-0 font-mono text-[10px] text-slate-500">{group.items.length}</span>
                         <ChevronDown className={`w-4 h-4 shrink-0 text-soft transition-transform duration-200 ${expanded ? 'rotate-180' : ''}`} />
