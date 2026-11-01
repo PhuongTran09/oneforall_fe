@@ -11,6 +11,8 @@ export interface ToolSearchFieldProps {
   /** Hiện danh sách kết quả kiểu combobox. Tắt khi trang tự render lưới công cụ. */
   dropdown?: boolean
   size?: 'md' | 'lg'
+  /** 'brand' = viền umber đỏ cho ô tìm kiếm chính ở hero; mặc định viền edge như ô phụ. */
+  tone?: 'default' | 'brand'
   placeholder?: string
   className?: string
 }
@@ -20,6 +22,7 @@ export function ToolSearchField({
   onChange,
   dropdown = true,
   size = 'md',
+  tone = 'default',
   placeholder,
   className = '',
 }: ToolSearchFieldProps) {
@@ -95,18 +98,32 @@ export function ToolSearchField({
 
   const inputSize =
     size === 'lg'
-      ? 'h-10 sm:h-14 text-sm sm:text-base pl-9 sm:pl-12 pr-9 sm:pr-11'
+      ? 'h-10 sm:h-12 text-sm sm:text-base pl-9 sm:pl-11 pr-9 sm:pr-9'
       : 'h-9 sm:h-10 text-sm pl-8 pr-9 sm:pl-10'
+
+  /* clip-corner-btn đè border phải/dưới bằng --extrude-face — CSS không nằm trong layer nên
+     thắng utility, muốn cả khung có màu phải đổi luôn biến đó (xem .search-brand). */
+  const frame =
+    tone === 'brand'
+      ? 'search-brand border-brand/45 hover:border-brand/70 focus:border-brand shadow-[0_16px_36px_-24px_rgba(255,59,48,0.85)]'
+      : 'border-edge hover:border-[rgba(255,59,48,0.45)] focus:border-brand/70'
+  const glyphFrame =
+    tone === 'brand' ? 'search-brand border-brand/35 text-brand' : 'border-edge text-slate-400'
+  const glyphBox = 'w-6 h-6 sm:w-7 sm:h-7'
+  const glyph = size === 'lg' ? 'w-3.5 h-3.5 sm:w-4 sm:h-4' : 'w-3.5 h-3.5'
 
   return (
     <div ref={boxRef} className={`group relative w-full ${className}`}>
       {/* Icon nằm trong ô cắt góc riêng: đứng một mình giữa khoảng trắng lớn thì nó
-          chỉ là hình trang trí, nhốt vào ô thì đọc ra đây là điều khiển được. */}
+          chỉ là hình trang trí, nhốt vào ô thì đọc ra đây là điều khiển được.
+          z-10 là BẮT BUỘC: clip-path của input tạo stacking context, mà input đứng SAU
+          span trong DOM nên nền đặc của nó phủ mất icon — không có số z thì ô kính biến
+          mất trên mọi kích thước, chỉ thấy lúc zoom. */}
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute left-1.5 top-1/2 grid place-items-center w-6 h-6 sm:w-7 sm:h-7 -translate-y-1/2 bg-page border border-edge text-slate-400 clip-corner-btn transition-colors duration-200 group-focus-within:border-[rgba(255,59,48,0.55)] group-focus-within:text-brand"
+        className={`pointer-events-none absolute left-1.5 top-1/2 z-10 grid place-items-center ${glyphBox} -translate-y-1/2 bg-page border ${glyphFrame} clip-corner-btn transition-colors duration-200 group-focus-within:border-[rgba(255,59,48,0.55)] group-focus-within:text-brand`}
       >
-        <Search className="w-3.5 h-3.5" />
+        <Search className={glyph} />
       </span>
       <input
         ref={inputRef}
@@ -147,7 +164,7 @@ export function ToolSearchField({
         aria-autocomplete="list"
         aria-label={t('directory.searchAria')}
         placeholder={placeholder ?? t('directory.searchPlaceholder')}
-        className={`w-full bg-surface border border-edge hover:border-[rgba(255,59,48,0.45)] focus:border-brand/70 text-ink caret-brand placeholder:text-slate-500 clip-corner-btn input-3d outline-none transition-colors duration-200 ${inputSize}`}
+        className={`w-full bg-surface border ${frame} text-ink caret-brand placeholder:text-slate-500 clip-corner-btn input-3d outline-none transition-colors duration-200 ${inputSize}`}
       />
       {hasQuery && (
         <button

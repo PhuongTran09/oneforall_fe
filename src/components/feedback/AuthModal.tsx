@@ -211,14 +211,6 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
   // Thành công qua toast; mọi Lỗi qua popup xác nhận (ErrorPopupViewport) — không render lỗi inline.
   const showError = (msg: string) => showErrorPopup({ message: msg })
 
-  const reset = () => {
-    setStep('form')
-    setCode('')
-    setAccountMissing(false)
-    setCodeTypeUncertain(false)
-    setBusy(false)
-  }
-
   const handleError = (err: unknown) => {
     setBusy(false)
     showError(describeAuthError(err))
@@ -412,11 +404,6 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
     tablistRef.current?.querySelectorAll('button')[next]?.focus()
   }
 
-  const close = () => {
-    reset()
-    onClose()
-  }
-
   const title =
     step === 'forgot' || step === 'forgot-sent'
       ? t('auth.forgotTitle')
@@ -442,7 +429,7 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
       className={`auth-backdrop fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm ${
         closing ? 'out-fade' : 'in-backdrop'
       }`}
-      onClick={close}
+      onClick={onClose}
     >
       {/* Từ 640px là split-screen: cột trái bán giá trị của tài khoản, cột phải là form.
           Mobile bỏ hẳn cột trái — một panel duy nhất, gọn, không phải cuộn hai lần.
@@ -461,7 +448,7 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
         {/* Icon trần, không nền không bóng: thêm khung là thêm một mảng nổi đè lên form. */}
         <button
           type="button"
-          onClick={close}
+          onClick={onClose}
           className="absolute top-3 right-3 z-10 p-2 text-slate-400 transition-colors hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4545]/60"
           aria-label={t('common.close')}
         >
@@ -957,7 +944,7 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
             <div className="mt-4 text-center">
               <button
                 type="button"
-                onClick={close}
+                onClick={onClose}
                 className="text-xs font-medium text-slate-400 underline-offset-2 hover:text-ink hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4545]/60"
               >
                 {t('auth.continueGuest')}

@@ -1,5 +1,5 @@
 import { lazy } from 'react'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { MainLayout } from '../layouts/MainLayout'
 import { SmoothScrollProvider } from '../components/common/SmoothScrollProvider'
 import { HomePage } from '../pages/HomePage'
@@ -9,7 +9,7 @@ import { CategoryPage } from '../pages/CategoryPage'
 import { NotFoundPage } from '../pages/NotFoundPage'
 import { SEO_TOOLS } from '../config/seoTools'
 import { TOOL_CATEGORIES } from '../config/toolCategories'
-import { useI18n } from '../i18n/langStore'
+import { useI18n, withLocale } from '../i18n/langStore'
 
 // Tách code theo route: page nào không nằm trên đường vào đầu thì chỉ tải khi
 // người dùng thực sự tới. Trang chủ và landing SEO để nguyên — crawler và người
@@ -34,6 +34,17 @@ const PrivacyPage = lazy(() =>
   import('../pages/legal/PrivacyPage').then((m) => ({ default: m.PrivacyPage })),
 )
 
+// Bốn trang định dạng riêng của YouTube/TikTok đã gộp vào trang tải của từng nền tảng.
+// URL cũ vẫn nằm trong Google và trong những link đã gửi đi, nên giữ đường chuyển thay vì
+// để 404; to là absolute nên locale phải gắn lúc render, không gắn trong element — nếu
+// khai báo phần tử một lần ở module thì nó đóng băng locale của lần render đầu tiên.
+const LEGACY_TOOL_PATHS: Record<string, string> = {
+  'youtube-to-mp4': '/youtube-downloader',
+  'youtube-to-mp3': '/youtube-downloader',
+  'tiktok-to-mp4': '/tiktok-downloader',
+  'tiktok-to-mp3': '/tiktok-downloader',
+}
+
 // Bộ route dùng chung cho cả 2 locale: VI ở "/" và EN ở "/en" (ToolLandingPage tự
 // resolve text EN theo lang từ URL). Phải gọi như function ({LocaleRoutes()}) vì
 // <Routes> chỉ flatten <Route>/<Fragment>, không render component con.
@@ -52,7 +63,7 @@ function LocaleRoutes() {
         <Route key={cat.id} path={cat.path} element={<CategoryPage categoryId={cat.id} />} />
       ))}
 
-      {/* Tất cả 15 SEO Landing Pages được định tuyến độc lập */}
+      {/* Tất cả trang SEO landing được định tuyến độc lập (danh sách trong SEO_TOOLS) */}
       {toolSlugs.map((slug) => {
         const cleanPath = slug.replace(/^\//, '')
         return (
@@ -63,6 +74,11 @@ function LocaleRoutes() {
           />
         )
       })}
+
+      {/* URL của các trang định dạng cũ → trang tải hiện hành. */}
+      {Object.entries(LEGACY_TOOL_PATHS).map(([from, to]) => (
+        <Route key={from} path={from} element={<Navigate to={withLocale(to)} replace />} />
+      ))}
 
       {/* Các alias tiện lợi */}
       <Route

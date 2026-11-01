@@ -430,10 +430,11 @@ export function FileUploader({
           )}
 
           <div className="flex justify-end">
+            {/* Không có spinner trong nút: bảng JobProgress phía dưới đã nói tiến trình, nút
+                chỉ cần disabled để biết là không bấm được nữa. */}
             <Button
               variant="primary"
               size="md"
-              isLoading={isLoading}
               disabled={
                 disabled || isLoading || availableFormats.length === 0 || invalidParam !== null
               }

@@ -14,11 +14,9 @@ import {
   Images,
   MonitorPlay,
   Music,
-  Music2,
   Ratio,
   Scissors,
   Shrink,
-  Video,
 } from 'lucide-react'
 import type { ToolConfig } from '../../config/seoTools'
 import type { CategoryId } from '../../config/toolCategories'
@@ -47,10 +45,7 @@ const CATEGORY_ICONS_BY_CATEGORY: Record<ToolConfig['category'], IconComponent> 
  * tự rơi về icon nhóm, nên menu không bao giờ thiếu mục.
  */
 const TOOL_ICONS: Record<string, IconComponent> = {
-  '/youtube-to-mp3': Music,
   '/youtube-downloader': Download,
-  '/tiktok-to-mp4': Video,
-  '/tiktok-to-mp3': Music2,
   '/tiktok-downloader': Clapperboard,
   '/video-converter': Film,
   '/audio-converter': Music,

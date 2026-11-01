@@ -16,7 +16,7 @@ export interface HeroSectionProps {
  * Pill tắt, nhãn lấy thẳng từ registry: slug nào cũng là trang đã triển khai, đổi
  * ngôn ngữ là đổi nhãn, thêm/bớt tool trong SEO_TOOLS không phải sửa ở đây.
  */
-const QUICK_SLUGS = ['/youtube-to-mp4', '/convert', '/image-compressor', '/pdf-converter']
+const QUICK_SLUGS = ['/youtube-downloader', '/convert', '/remove-background', '/pdf-converter']
 
 /**
  * Vế sau gạch ngang chạy gradient, vế trước giữ màu chữ thường — cùng nhãn
@@ -81,33 +81,37 @@ export function HeroSection({ onTryFree }: HeroSectionProps) {
             {t('hero.description')}
           </p>
 
-          {/* Tìm công cụ: gõ 2-3 ký tự là ra thẳng trang tool, không phải cuộn. */}
+          {/* Tìm công cụ: gõ 2-3 ký tự là ra thẳng trang tool, không phải cuộn. Placeholder
+              ngắn — bản dài "Tìm công cụ: tải video…" chiếm hết chỗ của ô trên mobile. */}
           <div className="max-w-xl mx-auto pt-1">
-            <ToolSearchField value={query} onChange={setQuery} size="lg" />
+            <ToolSearchField value={query} onChange={setQuery} size="lg" tone="brand" placeholder={t('directory.searchShort')} />
           </div>
 
-          {/* Quick Action Tools Pills */}
-          <div className="flex flex-wrap items-center justify-center gap-2">
+          {/* Truy cập nhanh: chỉ là chữ gạch chân, không hộp — hàng này là phụ, để ô
+              vuông nữa là tranh nhìn với đúng cái ô tìm kiếm ngay phía trên. */}
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5">
             <span className="text-xs font-semibold text-slate-400 mr-1">{t('hero.quickAccess')}</span>
             {quickTools.map((tool) => (
               <LocaleLink
                 key={tool.to}
                 to={tool.to}
-                className="inline-flex items-center px-3 py-1.5 text-xs font-bold bg-surface/90 hover:bg-surface border border-edge/80 hover:border-brand/60 text-slate-200 hover:text-brand clip-corner-btn transition-colors duration-200"
+                className="text-xs font-semibold text-slate-200 underline decoration-slate-500/70 decoration-2 underline-offset-4 hover:text-brand hover:decoration-brand/70 transition-colors duration-200"
               >
                 {tool.label}
               </LocaleLink>
             ))}
           </div>
 
-          {/* CTAs */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 pt-2">
-            <a href="#tools" className="w-full sm:w-auto">
+          {/* CTAs: size="sm" là cỡ trên điện thoại để hai nút chung một hàng, variant sm:
+              mới trả về cỡ lg của bản desktop. Không đè bằng class cùng cấp vì Button đã
+              sinh sẵn text/px/py — chỉ variant sm: mới chắc thắng theo thứ tự CSS. */}
+          <div className="flex flex-row items-center justify-center gap-2 sm:gap-3.5 pt-2">
+            <a href="#tools">
               <Button
                 variant="primary"
-                size="lg"
-                rightIcon={<ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />}
-                className="w-full sm:w-auto btn-shimmer btn-glow-pulse group"
+                size="sm"
+                rightIcon={<ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />}
+                className="sm:text-base sm:px-6 sm:py-3.5 sm:gap-2.5 btn-shimmer btn-glow-pulse group"
               >
                 {t('hero.exploreCta')}
               </Button>
@@ -115,10 +119,10 @@ export function HeroSection({ onTryFree }: HeroSectionProps) {
             {onTryFree && (
               <Button
                 variant="secondary"
-                size="lg"
+                size="sm"
                 onClick={onTryFree}
-                leftIcon={<Layers className="w-4 h-4 text-brand" />}
-                className="w-full sm:w-auto hover:border-brand/60 transition-colors"
+                leftIcon={<Layers className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-brand" />}
+                className="sm:text-base sm:px-6 sm:py-3.5 sm:gap-2.5 hover:border-brand/60 transition-colors"
               >
                 {t('hero.proAccount')}
               </Button>

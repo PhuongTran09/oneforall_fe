@@ -15,7 +15,7 @@ export interface SEOHeadProps {
   faqList?: { q: string; a: string }[]
   breadcrumbs?: { name: string; url: string }[]
   noindex?: boolean
-  /** URL tương đối của 2 bản dịch (vd. { vi: '/youtube-to-mp4', en: '/en/youtube-to-mp4' }) → emit hreflang. */
+  /** URL tương đối của 2 bản dịch (vd. { vi: '/youtube-downloader', en: '/en/youtube-downloader' }) → emit hreflang. */
   alternates?: { vi: string; en: string }
 }
 

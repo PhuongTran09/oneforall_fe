@@ -309,6 +309,7 @@ export const vi = {
   },
   "consent": {
     "acceptAll": "Chấp nhận tất cả",
+    "acceptNeedsTerms": "Tích chọn đồng ý Điều khoản sử dụng để mở khoá nút này.",
     "acceptedOn": "Đã chấp nhận ngày {date}",
     "alwaysOn": "Luôn bật",
     "back": "Quay lại",
@@ -563,7 +564,8 @@ export const vi = {
     "tools": "Công cụ",
     "accountMenu": "Menu tài khoản",
     "myProfile": "Hồ sơ của tôi",
-    "history": "Lịch sử xử lý"
+    "history": "Lịch sử xử lý",
+    "upgradePro": "Nâng cấp Pro"
   },
   "profile": {
     "title": "Hồ sơ của tôi",
@@ -650,8 +652,8 @@ export const vi = {
     "seoDesc": "Trang bạn tìm kiếm không tồn tại hoặc đã được thay đổi. Khám phá các công cụ trực tuyến miễn phí của One ForAll.",
     "seoTitle": "404 - Trang không tồn tại | One ForAll",
     "title": "Trang không tồn tại",
-    "tool1": "YouTube sang MP4",
-    "tool2": "TikTok sang MP4",
+    "tool1": "Tải YouTube",
+    "tool2": "Tải TikTok",
     "tool3": "Xóa nền ảnh",
     "tool4": "Chuyển đổi PDF",
     "tool5": "Nén dung lượng ảnh"
@@ -881,9 +883,6 @@ export const vi = {
     "upgradeTitle": "Muốn sử dụng thêm tính năng?",
     "upgradeDesc": "Gói Pro mở rộng dung lượng tải lên và các quyền lợi xử lý theo chính sách hiện hành.",
     "upgradeCta": "Nâng cấp Pro",
-    "donateTitle": "Ủng hộ chúng tôi",
-    "donateDesc": "Nếu One ForAll giúp bạn tiết kiệm thời gian, hãy ủng hộ đội phát triển.",
-    "donateCta": "Ủng hộ",
     "shareTitle": "Chia sẻ là lan tỏa",
     "shareDesc": "Giới thiệu công cụ này tới bạn bè và cộng đồng của bạn.",
     "shareFacebook": "Chia sẻ lên Facebook",
@@ -916,6 +915,7 @@ export const vi = {
     "securityAutoDelete": "Tệp được lưu trữ tạm thời và xóa theo chính sách lưu trữ của hệ thống",
     "securityFree": "Giao diện trực quan, dễ sử dụng,",
     "securitySsl": "Bảo vệ dữ liệu trong quá trình truyền tải",
+    "termsRequired": "Bạn chưa tích chọn đồng ý Điều khoản sử dụng — hãy tích ô ở thanh phía dưới trang rồi bấm xử lý lại.",
     "trackFailed": "Không theo dõi được tác vụ. Vui lòng thử lại.",
     "unsupportedConversion": "Chưa hỗ trợ chuyển đổi từ {source} sang .{target}.",
     "videoFailed": "Xử lý video thất bại. Vui lòng kiểm tra lại đường dẫn.",
@@ -1008,6 +1008,7 @@ export const vi = {
     "popular": "Công cụ phổ biến",
     "searchAria": "Tìm công cụ",
     "searchPlaceholder": "Tìm công cụ: tải video, chuyển đổi, nén ảnh…",
+    "searchShort": "Tìm công cụ",
     "seoDesc": "Danh sách toàn bộ công cụ của One ForAll theo nhóm: tải media, chuyển đổi tệp, xử lý ảnh, tài liệu, dữ liệu và tệp nén. Miễn phí, không cần đăng ký.",
     "seoTitle": "Toàn Bộ Công Cụ Trực Tuyến Của One ForAll",
     "viewAll": "Xem tất cả {count} công cụ"

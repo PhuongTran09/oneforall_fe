@@ -1,9 +1,9 @@
-import { useState, useEffect, Suspense } from 'react'
-import { Outlet, useLocation, useNavigate } from 'react-router-dom'
-import { Navbar, Footer, AuthModal, ProPlanModal, SocialBarAds, BuyMeCoffee, ScrollProgress } from '../components'
+import { useState, useEffect, useRef, Suspense } from 'react'
+import { Outlet, useLocation, useNavigate, useNavigationType } from 'react-router-dom'
+import { Navbar, Footer, AuthModal, ProPlanModal, SocialBarAds, BuyMeCoffee } from '../components'
 import { ConsentModal } from '../components/consent/ConsentModal'
 import { LangRouteSync } from '../i18n/LangRouteSync'
-import { t, useI18n, withLocale } from '../i18n/langStore'
+import { stripLocale, t, useI18n, withLocale } from '../i18n/langStore'
 import { subscribeAuthEvent, useAuth } from '../services/authStore'
 import { useOpenSeq } from '../hooks/useExitFade'
 import { getLenisInstance } from '../hooks/useSmoothScroll'
@@ -98,18 +98,74 @@ function RouteFallback() {
   )
 }
 
+// Nhịp mờ của khối nội dung lúc đổi ngôn ngữ. PHẢI trùng duration của .lang-swap trong
+// index.css — lệnh gỡ class chạy bằng timeout nên lệch số là class ở lại lâu hơn animation.
+const LANG_SWAP_MS = 140
+
+// Lời mời đăng ký chỉ bật MỘT lần trên một máy: ghi cờ ngay lúc mở, nếu ghi lúc đóng thì
+// mỗi lần reload trang đầu tiên là modal lại nhảy ra.
+const AUTH_PROMPT_KEY = 'ofa-auth-prompt'
+
 export function MainLayout() {
   // Navbar/Footer/page con gọi t() trực tiếp (không hook) → layout phải subscribe
   // để cả subtree render lại khi lang đổi.
-  useI18n()
+  const { lang } = useI18n()
   const [authMode, setAuthMode] = useState<'login' | 'register' | 'forgot' | null>(null)
+  const [proOpen, setProOpen] = useState(false)
+  const { session, ready } = useAuth()
+  // Khách lần đầu đặt chân tới (máy này chưa từng thấy lời mời, chưa có phiên) → mở sẵn form
+  // đăng ký. Là giá trị DẪN XUẤT chứ không phải setState trong effect: `ready` bật lên sau khi
+  // Supabase khôi phục phiên nên khách đã đăng nhập không bị modal chặn; chờ xong vẫn đóng được
+  // bằng đúng nút đóng của AuthModal.
+  const [firstVisit, setFirstVisit] = useState(() => {
+    try {
+      return localStorage.getItem(AUTH_PROMPT_KEY) === null
+    } catch {
+      return false // storage bị chặn → không đoán được lần đầu, thà không bật còn hơn mỗi reload là một lần
+    }
+  })
+  const showFirstVisitAuth = firstVisit && ready && !session
+  useEffect(() => {
+    if (!showFirstVisitAuth) return
+    try {
+      localStorage.setItem(AUTH_PROMPT_KEY, '1')
+    } catch {
+      // Không ghi được cờ thì lần reload sau modal bật lại — chấp nhận được, không chặn app.
+    }
+  }, [showFirstVisitAuth])
   // key đổi lúc MỞ chứ không lúc đóng — nếu 'closed' là một key thì React gỡ AuthModal
   // ngay khi tắt và lớp fade ra không bao giờ chạy.
-  const authSeq = useOpenSeq(authMode !== null, authMode)
-  const [proOpen, setProOpen] = useState(false)
-  const { session } = useAuth()
+  const authSeq = useOpenSeq(
+    authMode !== null || showFirstVisitAuth,
+    authMode ?? (showFirstVisitAuth ? 'register' : null),
+  )
   const { pathname } = useLocation()
   const navigate = useNavigate()
+  const navAction = useNavigationType()
+  // /tools ↔ /en/tools là MỘT trang: key dựng từ path đã trừ prefix locale, nên bấm VI/EN
+  // không remount khối nội dung — không replay page-enter, không dựng lại reveal, chữ chỉ
+  // đổi tại chỗ. Đường khác nhau thì key vẫn khác như trước.
+  const pageKey = stripLocale(pathname).path
+  const contentRef = useRef<HTMLElement>(null)
+  const prevLangRef = useRef(lang)
+  const lastScrollPathRef = useRef<string | null>(null)
+
+  // Chữ đổi là một cú đổi nội dung, không phải một lần vào trang → page-enter không chạy,
+  // nên cần nhịp mờ ngắn để chữ mới không pop ngay frame đầu. Gỡ class bằng timeout đúng
+  // bằng duration chứ không nghe animationend: reduced-motion đặt animation: none nên sự
+  // kiện đó không bao giờ bắn, class ở lại và lần đổi sau không khởi động lại được.
+  useEffect(() => {
+    if (prevLangRef.current === lang) return
+    prevLangRef.current = lang
+    const el = contentRef.current
+    if (!el) return
+    el.classList.add('lang-swap')
+    const id = window.setTimeout(() => el.classList.remove('lang-swap'), LANG_SWAP_MS)
+    return () => {
+      window.clearTimeout(id)
+      el.classList.remove('lang-swap')
+    }
+  }, [lang])
 
   // CTA gói Pro: chưa đăng nhập → bắt đăng ký/đăng nhập; đã đăng nhập → hiện bảng gói Pro.
   const openPro = () => {
@@ -124,6 +180,7 @@ export function MainLayout() {
       subscribeAuthEvent((event) => {
         if (event !== 'PASSWORD_RECOVERY') return
         setAuthMode(null)
+        setFirstVisit(false)
         const target = withLocale('/auth/reset-password')
         // Đang ở chính trang reset (hash được tiêu thụ tại chỗ) → không navigate,
         // tránh history replace xóa hash/token trước khi supabase-js xử lý xong.
@@ -135,6 +192,17 @@ export function MainLayout() {
 
   useEffect(() => {
     const key = ensureHistoryKey()
+    // Lượt đổi ngôn ngữ: pathname khác mỗi prefix, push tạo history entry mới nên map
+    // trống ở key đó — mặc định là kéo về 0 giữa lúc người dùng đang đọc. Giữ nguyên số
+    // hiện tại và ghi nó xuống key mới để Back về entry này vẫn đúng chỗ. POP thì không áp
+    // dụng: entry cũ đã có chỗ đọc riêng, phải restore số đó.
+    const lastPath = lastScrollPathRef.current
+    lastScrollPathRef.current = pathname
+    const localeOnly =
+      lastPath !== null &&
+      lastPath !== pathname &&
+      navAction !== 'POP' &&
+      stripLocale(lastPath).path === stripLocale(pathname).path
     const saved = key === undefined ? undefined : scrollByKey.get(key)
     // Qua Lenis chứ không window.scrollTo: `immediate` mới đặt lại cả targetScroll lẫn
     // animatedScroll về đích. Native scroll tức thì không xoá cục quán tính đang bay của
@@ -153,7 +221,9 @@ export function MainLayout() {
     // frame layout ổn định, tránh scroll vào chiều cao cũ khi trang còn render.
     // Vị trí 0 thì không có gì phải chờ, đặt luôn.
     let raf = 0
-    if (saved === undefined || typeof requestAnimationFrame !== 'function') {
+    if (localeOnly) {
+      if (key !== undefined) scrollByKey.set(key, window.scrollY)
+    } else if (saved === undefined || typeof requestAnimationFrame !== 'function') {
       restore()
     } else {
       raf = requestAnimationFrame(restore)
@@ -167,7 +237,7 @@ export function MainLayout() {
       if (raf) cancelAnimationFrame(raf)
       window.removeEventListener('scroll', onScroll)
     }
-  }, [pathname])
+  }, [pathname, navAction])
 
   // Reveal + parallax dựng sau hiệu ứng page-enter của route mới. rAF thứ hai là để
   // đo getBoundingClientRect() SAU khi restore() ở effect trên đã định vị cuộn (nó
@@ -192,10 +262,9 @@ export function MainLayout() {
   return (
     <div className="min-h-screen flex flex-col bg-page text-ink selection:bg-brand selection:text-white antialiased">
       <LangRouteSync />
-      <ScrollProgress />
-      <Navbar onOpenAuth={(mode) => setAuthMode(mode)} />
-      <main className="flex-1 w-full">
-        <div key={pathname} className="animate-page-enter">
+      <Navbar onOpenAuth={(mode) => setAuthMode(mode)} onOpenPro={openPro} />
+      <main ref={contentRef} className="flex-1 w-full">
+        <div key={pageKey} className="animate-page-enter">
           {/* Bọc Outlet chứ không bọc cả <Routes>: chờ chunk của route thì
               Navbar/Footer/modal vẫn đứng nguyên, không chớp cả khung hình. */}
           <Suspense fallback={<RouteFallback />}>
@@ -208,9 +277,12 @@ export function MainLayout() {
       {/* key theo nhịp mở: mỗi lần mở là instance mới → state form/OTP không dư leftover */}
       <AuthModal
         key={authSeq}
-        isOpen={authMode !== null}
-        initialMode={authMode ?? 'login'}
-        onClose={() => setAuthMode(null)}
+        isOpen={authMode !== null || showFirstVisitAuth}
+        initialMode={authMode ?? 'register'}
+        onClose={() => {
+          setAuthMode(null)
+          setFirstVisit(false)
+        }}
       />
 
       <ProPlanModal isOpen={proOpen} onClose={() => setProOpen(false)} />

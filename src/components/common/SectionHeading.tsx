@@ -42,18 +42,14 @@ function useWordsInView<T extends HTMLElement>() {
 /**
  * Nhịp dựng chữ tính bằng số học nguyên ở đây, không bằng min()/max()/chia trong CSS:
  * `calc(560ms / max(1, …))` hợp lệ theo spec nhưng engine nào không chia được cho min/max
- * thì `--word-step` thành vô hiệu, cả hai `animation-delay` rơi về 0 — mô tả tuột xuống
- * giữa lúc tiêu đề mới chạy phân nửa. CSS chỉ còn phép nhân `var(--i) * var(--word-step)`.
- * WORD_MS phải trùng duration của word-in trong index.css.
+ * thì `--word-step` thành vô hiệu. CSS chỉ còn phép nhân `var(--i) * var(--word-step)`.
  */
-const WORD_MS = 780
-const DESC_GAP_MS = 520
 const STEP_MAX_MS = 80
 const STEP_SPAN_MS = 560
 
+/** Mô tả chạy luôn cùng nhịp với từ đầu tiên, không chờ tiêu đề dựng xong. */
 function revealRhythm(count: number) {
-  const step = Math.round(Math.min(STEP_MAX_MS, STEP_SPAN_MS / Math.max(1, count - 1)))
-  return { step, descDelay: (count - 1) * step + WORD_MS + DESC_GAP_MS }
+  return { step: Math.round(Math.min(STEP_MAX_MS, STEP_SPAN_MS / Math.max(1, count - 1))) }
 }
 
 /**
@@ -63,7 +59,7 @@ function revealRhythm(count: number) {
 export function SectionHeading({ badge, title, desc, className = '' }: SectionHeadingProps) {
   const headingRef = useWordsInView<HTMLHeadingElement>()
   const words = title.split(' ')
-  const { step, descDelay } = revealRhythm(words.length)
+  const { step } = revealRhythm(words.length)
 
   return (
     <div className={`text-center max-w-2xl mx-auto mb-10 sm:mb-14 space-y-3 ${className}`}>
@@ -72,8 +68,7 @@ export function SectionHeading({ badge, title, desc, className = '' }: SectionHe
           {badge}
         </div>
       )}
-      {/* --word-step đặt trên h2: mọi <span class="reveal-word"> là con của nó.
-          --desc-delay đặt thẳng lên <p> vì chỉ một mình nó dùng. */}
+      {/* --word-step đặt trên h2: mọi <span class="reveal-word"> là con của nó. */}
       <h2
         ref={headingRef}
         className="reveal-heading text-2xl sm:text-3xl font-extrabold text-ink tracking-tight"
@@ -88,12 +83,7 @@ export function SectionHeading({ badge, title, desc, className = '' }: SectionHe
         ))}
       </h2>
       {desc && (
-        <p
-          className="reveal-desc text-slate-300 text-xs sm:text-base leading-relaxed"
-          style={{ '--desc-delay': `${descDelay}ms` } as CSSProperties}
-        >
-          {desc}
-        </p>
+        <p className="reveal-desc text-slate-300 text-xs sm:text-base leading-relaxed">{desc}</p>
       )}
     </div>
   )

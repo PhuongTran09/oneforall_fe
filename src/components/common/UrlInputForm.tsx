@@ -307,11 +307,12 @@ export function UrlInputForm({
         </div>
 
         <div className="flex items-center gap-2 pt-2 sm:pt-0 sm:pl-2 border-t sm:border-t-0 sm:border-l border-edge/60">
+          {/* Cùng quy tắc với nút gửi của FileUploader: không spinner, JobProgress đã lo tiến
+              trình, nút chỉ cần disabled. */}
           <Button
             type="submit"
             variant="primary"
             size="md"
-            isLoading={isLoading}
             disabled={disabled || !canStart}
             title={canStart ? undefined : (fetched?.message ?? t('urlInput.waitingPreview'))}
             rightIcon={<ArrowRight className="w-4 h-4" />}

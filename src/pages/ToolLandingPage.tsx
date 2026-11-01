@@ -294,12 +294,18 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
     openSmartlinkTab(adsGate)
   }
 
+  // Điều khoản là cổng bắt buộc trước khi tạo job. Bar cookie dính đáy màn hình, trễ một nhịp
+  // animate-fade-in và không chặn thao tác nào — thiếu toast thì người dùng bấm nút mà thấy
+  // như trang đơ, nên mỗi lần bị chặn phải nói rõ đang thiếu gì.
+  const requireTerms = () => {
+    if (hasAcceptedTerms()) return true
+    openConsentModal('main')
+    showToast({ type: 'warning', message: t('toolsPage.termsRequired') })
+    return false
+  }
+
   const handleUrlSubmit = async (url: string, format: string, quality: string, slides?: number[]) => {
-    // Chức năng xử lý (không phải trang công khai) chỉ chạy sau khi người dùng đồng ý điều khoản.
-    if (!hasAcceptedTerms()) {
-      openConsentModal('main')
-      return
-    }
+    if (!requireTerms()) return
     // Form đã pass validate trước khi gọi đây, nên đây đúng là ý định xử lý của người dùng.
     openSponsoredTabs(tool.slug)
     const controller = beginTracking()
@@ -350,11 +356,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
     format: string,
     options: ParamOptions = {},
   ) => {
-    // Ngắt trước khi tạo job: chưa đồng ý điều khoản thì mở modal, không gửi request.
-    if (!hasAcceptedTerms()) {
-      openConsentModal('main')
-      return
-    }
+    if (!requireTerms()) return
     const controller = beginTracking()
     setIsLoading(true)
     setErrorMessage(null)
@@ -556,7 +558,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
                   onReset={handleReset}
                 />
 
-                {/* Khu vực tiện ích: nâng cấp / ủng hộ / chia sẻ / copy / liên hệ */}
+                {/* Khu vực tiện ích: nâng cấp / chia sẻ / copy / liên hệ */}
                 <ToolFooterActions />
               </div>
             )}

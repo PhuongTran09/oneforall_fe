@@ -7,8 +7,8 @@ import { t } from '../i18n/langStore'
 
 export function NotFoundPage() {
   const popularTools = [
-    { label: t('notFound.tool1'), to: '/youtube-to-mp4' },
-    { label: t('notFound.tool2'), to: '/tiktok-to-mp4' },
+    { label: t('notFound.tool1'), to: '/youtube-downloader' },
+    { label: t('notFound.tool2'), to: '/tiktok-downloader' },
     { label: t('notFound.tool3'), to: '/remove-background' },
     { label: t('notFound.tool4'), to: '/pdf-converter' },
     { label: t('notFound.tool5'), to: '/image-compressor' },

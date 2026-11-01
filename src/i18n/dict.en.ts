@@ -311,6 +311,7 @@ export const en: Dict = {
   },
   "consent": {
     "acceptAll": "Accept all",
+    "acceptNeedsTerms": "Tick the Terms of Service checkbox to unlock this button.",
     "acceptedOn": "Accepted on {date}",
     "alwaysOn": "Always on",
     "back": "Back",
@@ -565,7 +566,8 @@ export const en: Dict = {
     "tools": "Tools",
     "accountMenu": "Account menu",
     "myProfile": "My Profile",
-    "history": "Processing History"
+    "history": "Processing History",
+    "upgradePro": "Upgrade to Pro"
   },
   "profile": {
     "title": "My Profile",
@@ -652,8 +654,8 @@ export const en: Dict = {
     "seoDesc": "The page you looked for doesn't exist or has changed. Explore One ForAll's free online tools.",
     "seoTitle": "404 - Page not found | One ForAll",
     "title": "Page not found",
-    "tool1": "YouTube to MP4",
-    "tool2": "TikTok to MP4",
+    "tool1": "Download YouTube",
+    "tool2": "Download TikTok",
     "tool3": "Remove image background",
     "tool4": "PDF conversion",
     "tool5": "Compress image size"
@@ -883,9 +885,6 @@ export const en: Dict = {
     "upgradeTitle": "Want more features?",
     "upgradeDesc": "The Pro plan expands upload size and processing benefits under the current policy.",
     "upgradeCta": "Upgrade to Pro",
-    "donateTitle": "Support us",
-    "donateDesc": "If One ForAll saves your time, consider supporting the team.",
-    "donateCta": "Donate",
     "shareTitle": "Sharing spreads",
     "shareDesc": "Introduce this tool to your friends and community.",
     "shareFacebook": "Share on Facebook",
@@ -918,6 +917,7 @@ export const en: Dict = {
     "securityAutoDelete": "Files are removed according to the service’s retention policy",
     "securityFree": "Simple tools with clear instructions",
     "securitySsl": "Protected data transfer over HTTPS",
+    "termsRequired": "You haven't ticked the Terms of Service checkbox — tick it in the bar below the page, then press process again.",
     "trackFailed": "Failed to track the task. Please try again.",
     "unsupportedConversion": "Conversion from {source} to .{target} is not supported yet.",
     "videoFailed": "Video processing failed. Please check the link again.",
@@ -1010,6 +1010,7 @@ export const en: Dict = {
     "popular": "Popular tools",
     "searchAria": "Search tools",
     "searchPlaceholder": "Search tools: download video, convert, compress…",
+    "searchShort": "Search tools",
     "seoDesc": "The full One ForAll tool list by group: media downloads, file conversion, image, document, data and archive tools. Free, no sign-up required.",
     "seoTitle": "All Online Tools From One ForAll",
     "viewAll": "See all {count} tools"
