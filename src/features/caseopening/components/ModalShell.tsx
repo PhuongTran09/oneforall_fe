@@ -57,7 +57,7 @@ export function ModalShell({ isOpen, title, onClose, children, footer, widthClas
 
         <h3 className="text-base font-bold text-ink leading-snug pr-8 mb-4">{title}</h3>
 
-        <div className="flex-1 min-h-0 overflow-y-auto pr-1 space-y-4">{children}</div>
+        <div data-lenis-prevent className="flex-1 min-h-0 overflow-y-auto pr-1 space-y-4">{children}</div>
 
         {footer && <div className="pt-4 mt-4 border-t border-edge flex flex-col sm:flex-row gap-2.5">{footer}</div>}
       </div>

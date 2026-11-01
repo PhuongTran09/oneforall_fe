@@ -62,7 +62,7 @@ export function PublicLiveStats() {
       className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6"
     >
       {/* 1. Active Visitors Card */}
-      <div className="relative overflow-hidden p-6 sm:p-7 bg-surface/90 border border-[rgba(255,59,48,0.25)] hover:border-[rgba(255,59,48,0.6)] clip-corner-card card-3d card-hover-glow group transition-all duration-300">
+      <div className="relative overflow-hidden p-6 sm:p-7 bg-surface/90 border border-[rgba(255,59,48,0.25)] hover:border-[rgba(255,59,48,0.6)] clip-corner-card card-3d card-tilt card-hover-glow group transition-all duration-300">
         {/* Header Row */}
         <div className="relative z-10 flex items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
@@ -124,7 +124,7 @@ export function PublicLiveStats() {
       </div>
 
       {/* 2. Completed Jobs Card */}
-      <div className="relative overflow-hidden p-6 sm:p-7 bg-surface/90 border border-edge/80 hover:border-emerald-500/60 clip-corner-card card-3d card-hover-glow group transition-all duration-300">
+      <div className="relative overflow-hidden p-6 sm:p-7 bg-surface/90 border border-edge/80 hover:border-emerald-500/60 clip-corner-card card-3d card-tilt card-hover-glow group transition-all duration-300">
         {/* Header Row */}
         <div className="relative z-10 flex items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">

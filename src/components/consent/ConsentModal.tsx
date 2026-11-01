@@ -45,7 +45,7 @@ export function ConsentModal() {
             <p className="mt-1 mb-3 text-xs leading-relaxed text-slate-400">
               {t('consent.cookieSettingsDesc')}
             </p>
-            <div className="max-h-[55vh] overflow-y-auto scrollbar-none pr-1">
+            <div data-lenis-prevent className="max-h-[55vh] overflow-y-auto scrollbar-none pr-1">
               <CookiePreferences />
             </div>
             <button

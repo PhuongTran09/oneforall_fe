@@ -34,6 +34,7 @@ export function SegmentedControl({ options, value, onChange, ariaLabel, labelFor
       role="radiogroup"
       aria-label={ariaLabel}
       onKeyDown={handleKeyDown}
+      data-lenis-prevent
       className={`flex max-w-full items-center gap-[3px] overflow-x-auto scrollbar-none border border-edge bg-surface p-[3px] clip-corner-btn ${
         compact ? 'h-[30px]' : 'h-10'
       }`}

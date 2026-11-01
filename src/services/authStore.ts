@@ -141,21 +141,23 @@ export async function resendSignupOtp(email: string): Promise<void> {
   if (error) throw error
 }
 
-/** Xác minh OTP đăng ký — type bắt buộc là 'signup', không dùng chung với login/recovery. */
-export async function verifySignupOtp(email: string, token: string): Promise<void> {
-  const { error } = await getSupabase().auth.verifyOtp({ email, token, type: 'signup' })
-  if (error) throw error
-}
-
 /** Đăng nhập bằng email + mật khẩu. */
 export async function signInWithPassword(email: string, password: string): Promise<void> {
   const { error } = await getSupabase().auth.signInWithPassword({ email, password })
   if (error) throw error
 }
 
-/** Gửi mã OTP đăng nhập qua email (signInWithOtp → verify type 'email'). */
+/**
+ * Gửi mã OTP đăng nhập qua email (signInWithOtp → verify type 'email').
+ * shouldCreateUser: false — đăng nhập bằng mã chỉ dành cho email ĐÃ có tài khoản;
+ * để mặc định true thì GoTrue tạo user mới và gửi email xác minh signup, biến lối
+ * đăng nhập thành đường vòng của đăng ký (và bỏ ngoài tầm kiểm soát của form Đăng ký).
+ */
 export async function sendLoginOtp(email: string): Promise<void> {
-  const { error } = await getSupabase().auth.signInWithOtp({ email })
+  const { error } = await getSupabase().auth.signInWithOtp({
+    email,
+    options: { shouldCreateUser: false },
+  })
   if (error) throw error
 }
 

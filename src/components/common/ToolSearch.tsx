@@ -173,7 +173,7 @@ export function ToolSearchField({
               <p className="text-xs text-slate-500">{t('directory.noResultHint')}</p>
             </div>
           ) : (
-            <ul id={listId} role="listbox" aria-label={t('directory.searchAria')} className="overflow-y-auto scrollbar-none py-1">
+            <ul data-lenis-prevent id={listId} role="listbox" aria-label={t('directory.searchAria')} className="overflow-y-auto scrollbar-none py-1">
               {results.map((entry, i) => (
                 <li key={entry.slug} role="option" aria-selected={i === active}>
                   <button

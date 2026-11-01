@@ -4,6 +4,8 @@
    lần trước khi bất kỳ ai ghi style — không tự buộc trình duyệt layout lại giữa
    frame. */
 
+import { getLenisInstance } from '../hooks/useSmoothScroll'
+
 export interface ScrollFrame {
   /** Số px đã cuộn. */
   y: number
@@ -65,6 +67,28 @@ export function onScrollFrame(draw: Subscriber): () => void {
     if (pending) cancelAnimationFrame(pending)
     pending = 0
   }
+}
+
+/* Header sticky chiếm 73px đầu trang (--pin-top trong index.css), nên mọi cú nhảy tới
+   section phải trừ lại chừng đó; không thì tiêu đề section nằm chìm dưới navbar. Dùng
+   chung cho scrollToSection() và cho Lenis `anchors` (cú bấm link #... cũng phải đáp
+   đúng chỗ như bấm nút). */
+export const HEADER_OFFSET = -73
+
+/**
+ * Cuộn tới section theo id. Có Lenis thì đi qua Lenis để cú nhảy dùng đúng một quán
+ * tính với cuộn bánh xe; không có (reduced-motion, chưa mount) thì rơi về
+ * scrollIntoView y như trước — nhưng bản đó không có offset nên vẫn đáp sát mép trên.
+ */
+export function scrollToSection(id: string): void {
+  const el = document.getElementById(id)
+  if (!el) return
+  const lenis = getLenisInstance()
+  if (lenis) {
+    lenis.scrollTo(el, { offset: HEADER_OFFSET })
+    return
+  }
+  el.scrollIntoView({ behavior: 'smooth' })
 }
 
 interface ParallaxItem {

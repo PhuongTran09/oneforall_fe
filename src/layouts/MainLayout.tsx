@@ -6,20 +6,86 @@ import { LangRouteSync } from '../i18n/LangRouteSync'
 import { t, useI18n, withLocale } from '../i18n/langStore'
 import { subscribeAuthEvent, useAuth } from '../services/authStore'
 import { useOpenSeq } from '../hooks/useExitFade'
+import { getLenisInstance } from '../hooks/useSmoothScroll'
 import { initReveal } from '../utils/revealMotion'
 import { initParallax } from '../utils/scrollMotion'
 
-// Vị trí cuộn theo pathname. React Router v7 ở chế độ khai báo (BrowserRouter + <Routes>)
-// không có <ScrollRestoration> (chỉ dùng được với data router), nên app tự quản lý:
-// bấm link sang trang mới thì luôn lên đầu, chỉ Back/Forward mới khôi phục chỗ cũ —
-// người dùng sang công cụ khác là để đọc từ đầu, còn Back là để quay lại đúng chỗ đang
-// đọc. Không dùng localStorage — vị trí cuộn chỉ có nghĩa trong phiên hiện tại.
-const scrollByPath = new Map<string, number>()
+// Vị trí cuộn theo history-entry key (window.history.state.key — React Router gán cho
+// mỗi entry một id duy nhất; <ScrollRestoration> chính chủ cũng khoá đúng bằng id này).
+// App tự quản vì router chế độ khai báo (BrowserRouter + <Routes>) không có component đó.
+// Key chứ không phải pathname: một pathname hiện ra nhiều lần trong lịch sử với chỗ đọc
+// khác nhau, và effect có thể chạy lại mà pathname không đổi (StrictMode double-invoke,
+// layout remount khi đổi locale). Không có cờ "một lần dùng" nào cả — cờ kiểu đó chính
+// là nguồn bug cũ: lượt effect đầu tiêu thụ mất giá trị, lượt sau đọc được undefined và
+// tự cuộn về 0 đè lên chỗ người dùng đang đọc.
+// sessionStorage (không phải localStorage): vị trí cuộn chỉ có nghĩa trong phiên này, và
+// nhờ nó F5 giữa trang vẫn về đúng chỗ cũ — app đã tắt scrollRestoration native nên không
+// còn ai khác làm việc đó.
+const SS_SCROLL_KEY = 'ofa-scroll-v1'
+const SS_MAX_ENTRIES = 50
 
-// popstate là sự kiện gốc, router chỉ thông báo lại sau khi React render xong, nên
-// đánh dấu ở đây rồi cho effect theo pathname đọc. Listener đăng sau router cũng không
-// sao: cả hai chạy hết trong cùng lượt dispatch, trước khi React flush effect.
-let isPop = false
+const isBrowser = typeof window !== 'undefined' && typeof window.history !== 'undefined'
+
+function readSessionScroll(): Map<string, number> {
+  const map = new Map<string, number>()
+  if (!isBrowser) return map
+  try {
+    const raw = window.sessionStorage.getItem(SS_SCROLL_KEY)
+    if (!raw) return map
+    for (const [key, y] of Object.entries(JSON.parse(raw) as Record<string, unknown>)) {
+      if (typeof y === 'number' && Number.isFinite(y)) map.set(key, y)
+    }
+  } catch {
+    // sessionStorage blocked (che chế private của Safari) hay JSON hỏng — cứ bỏ trống,
+    // mất vị trí cuộn không đáng một lần crash.
+  }
+  return map
+}
+
+const scrollByKey = readSessionScroll()
+
+// Entry ĐẦU TIÊN của lịch sử (trang mở thẳng bằng URL/F5) do trình duyệt tạo thì
+// history.state là null — React Router không push nên không gán key. Không có key thì
+// không ghi được chỗ đọc, Back/F5 về entry đó luôn đáp 0. <ScrollRestoration> chính chủ
+// xử bằng cách tự bổ một key random qua replaceState; làm y vậy, giữ nguyên mọi field
+// khác của state để không đụng phần router đang đọc.
+function ensureHistoryKey(): string | undefined {
+  if (!isBrowser) return undefined
+  const state = window.history.state as { key?: string } | null
+  if (typeof state?.key === 'string') return state.key
+  const key = Math.random().toString(32).slice(2)
+  try {
+    window.history.replaceState({ ...(state ?? {}), key }, '')
+  } catch {
+    return undefined
+  }
+  return key
+}
+
+// Native 'auto' để Chrome tự khôi phục, nhưng nó chạy TRỄ hơn effect của app vài chục ms
+// và dùng trí nhớ riêng (đo theo chiều cao trang lúc capture, khác chiều cao sau khi route
+// mới render xong), nên số cuối cùng bao giờ cũng lệch. App đã kiểm soát vị trí thì phải
+// nhận nốt phần còn lại: 'manual' tắt hẳn việc trình duyệt can thiệp.
+if (isBrowser) window.history.scrollRestoration = 'manual'
+
+// Ghi một lượt khi trang sắp đóng — listener 'scroll' chỉ cập nhật map trong bộ nhớ.
+if (isBrowser) {
+  window.addEventListener('pagehide', () => {
+    try {
+      // Map giữ thứ tự chèn; cắt N phần tử CUỐI là các history entry mới nhất.
+      const keep = [...scrollByKey].slice(-SS_MAX_ENTRIES)
+      const obj: Record<string, number> = {}
+      for (const [key, y] of keep) obj[key] = y
+      window.sessionStorage.setItem(SS_SCROLL_KEY, JSON.stringify(obj))
+    } catch {
+      // hết quota — bỏ qua, cùng lý do như trên
+    }
+  })
+}
+
+// Bấm link sang trang mới thì luôn lên đầu, chỉ Back/Forward mới khôi phục chỗ cũ: push
+// tạo key mới nên map trống ở key đó (saved === undefined → về 0), pop trở lại key cũ
+// đã được ghi. Vì vậy không cần nghe popstate.
 
 // Chỗ chờ khi chunk của route chưa về. cao bằng khoảng một khối nội dung đầu
 // trang để footer không nhảy lên rồi tụt xuống lúc page thật render.
@@ -68,21 +134,24 @@ export function MainLayout() {
   )
 
   useEffect(() => {
-    const markPop = () => {
-      isPop = true
+    const key = ensureHistoryKey()
+    const saved = key === undefined ? undefined : scrollByKey.get(key)
+    // Qua Lenis chứ không window.scrollTo: `immediate` mới đặt lại cả targetScroll lẫn
+    // animatedScroll về đích. Native scroll tức thì không xoá cục quán tính đang bay của
+    // trang cũ, nên frame kế tiếp Lenis lại kéo trang mới đi tiếp — đúng cái giật mà
+    // stopInertiaOnNavigate không bắt kịp khi pathname đổi trước effect này.
+    const restore = () => {
+      const lenis = getLenisInstance()
+      if (lenis) {
+        lenis.scrollTo(saved ?? 0, { immediate: true })
+        return
+      }
+      window.scrollTo({ top: saved ?? 0, left: 0, behavior: 'instant' })
     }
-    window.addEventListener('popstate', markPop)
-    return () => window.removeEventListener('popstate', markPop)
-  }, [])
-
-  useEffect(() => {
-    const pop = isPop
-    isPop = false
-    const saved = pop ? scrollByPath.get(pathname) : undefined
-    const restore = () => window.scrollTo({ top: saved ?? 0, left: 0, behavior: 'instant' })
 
     // Khôi phục sau khi DOM của route mới đã commit (effect chạy sau commit) và một
     // frame layout ổn định, tránh scroll vào chiều cao cũ khi trang còn render.
+    // Vị trí 0 thì không có gì phải chờ, đặt luôn.
     let raf = 0
     if (saved === undefined || typeof requestAnimationFrame !== 'function') {
       restore()
@@ -91,7 +160,7 @@ export function MainLayout() {
     }
 
     const onScroll = () => {
-      scrollByPath.set(pathname, window.scrollY)
+      if (key !== undefined) scrollByKey.set(key, window.scrollY)
     }
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => {

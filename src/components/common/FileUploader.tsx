@@ -370,7 +370,7 @@ export function FileUploader({
           </div>
         ) : (
           <div className="space-y-3">
-            <div className="w-16 h-16 mx-auto bg-brand/10 border border-brand/30 flex items-center justify-center text-brand animate-float-gentle group-hover:scale-110 group-hover:border-brand/60 group-hover:shadow-[0_0_18px_rgba(255,59,48,0.35)] transition-all duration-300 clip-corner-btn">
+            <div className="w-16 h-16 mx-auto bg-brand/10 border border-brand/30 flex items-center justify-center text-brand group-hover:scale-110 group-hover:border-brand/60 group-hover:shadow-[0_0_18px_rgba(255,59,48,0.35)] transition-all duration-300 clip-corner-btn">
               <CloudUpload className="w-8 h-8" />
             </div>
             <div className="space-y-1">

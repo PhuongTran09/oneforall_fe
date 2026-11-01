@@ -17,13 +17,13 @@ import {
   signInWithPassword,
   signUp,
   resendSignupOtp,
-  verifySignupOtp,
   sendLoginOtp,
   verifyLoginOtp,
   requestPasswordReset,
   useAuth,
 } from '../../services/authStore'
-import { describeAuthError, isEmailNotConfirmedError, isOtpExpiredError } from '../../utils/authError'
+import { describeAuthError, isAccountNotFoundError } from '../../utils/authError'
+import { getAccountStatus } from '../../services/api/accountStatusApi'
 import { useExitFade } from '../../hooks/useExitFade'
 
 export interface AuthModalProps {
@@ -32,7 +32,7 @@ export interface AuthModalProps {
   initialMode?: 'login' | 'register' | 'forgot'
 }
 
-type Step = 'form' | 'login-otp' | 'verify-email' | 'forgot' | 'forgot-sent'
+type Step = 'form' | 'login-otp' | 'verify-email' | 'verify-required' | 'forgot' | 'forgot-sent'
 type Tab = 'login' | 'register'
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -79,7 +79,9 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
   const [showPassword, setShowPassword] = useState(false)
   const [code, setCode] = useState('')
   const [busy, setBusy] = useState(false)
-  const [needVerify, setNeedVerify] = useState(false)
+  const [accountMissing, setAccountMissing] = useState(false)
+  // Precheck không chạy được (BE lỗi/mạng) → chưa chắc email tới là mã hay link xác minh.
+  const [codeTypeUncertain, setCodeTypeUncertain] = useState(false)
   const [cooldown, setCooldown] = useState(0)
 
   // Đóng modal khi phiên chuyển từ chưa đăng nhập → đã đăng nhập
@@ -212,14 +214,20 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
   const reset = () => {
     setStep('form')
     setCode('')
-    setNeedVerify(false)
+    setAccountMissing(false)
+    setCodeTypeUncertain(false)
     setBusy(false)
   }
 
   const handleError = (err: unknown) => {
     setBusy(false)
     showError(describeAuthError(err))
-    if (isEmailNotConfirmedError(err)) setNeedVerify(true)
+  }
+
+  // Gợi ý "chưa có tài khoản" gắn với đúng chuỗi email vừa bị từ chối → sửa email là xóa gợi ý.
+  const handleEmailChange = (value: string) => {
+    setEmail(value)
+    setAccountMissing(false)
   }
 
   const handleGoogle = () => {
@@ -229,7 +237,6 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
 
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault()
-    setNeedVerify(false)
     if (!EMAIL_RE.test(email)) {
       showError(t('auth.emailInvalid'))
       return
@@ -274,19 +281,45 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
     }
   }
 
+  /**
+   * Ba nhánh theo precheck của BE (/v1/auth/account-status):
+   * - chưa có tài khoản → báo rõ + mời Đăng ký (GoTrue với shouldCreateUser: false cũng từ
+   *   chối, nhưng chặn ở đây không đốt một email và không để user chờ mail).
+   * - có tài khoản nhưng chưa xác minh → KHÔNG gọi /otp: GoTrue sẽ gửi link xác minh signup
+   *   chứ không gửi mã, và FE không dò được loại email đã gửi. Dắt user sang lane xác minh.
+   * - đã xác minh → mã 6 số, và đây là ca duy nhất chắc chắn email tới là OTP.
+   * Precheck trả null (BE/route phụ lỗi) thì đi theo đường cũ: cứ gửi, hint dưới màn nhập mã
+   * sẽ lo phần còn lại.
+   */
   const handleSendLoginOtp = async () => {
     if (!EMAIL_RE.test(email)) {
       showError(t('auth.emailInvalid'))
       return
     }
     setBusy(true)
+    const status = await getAccountStatus(email)
+    if (status && !status.exists) {
+      setAccountMissing(true)
+      setBusy(false)
+      showError(t('auth.accountNotFound'))
+      return
+    }
+    if (status && !status.confirmed) {
+      // Không startCooldown: chưa có email nào được gửi, user phải bấm được ngay.
+      setStep('verify-required')
+      setBusy(false)
+      return
+    }
+    setCodeTypeUncertain(status === null)
     try {
       await sendLoginOtp(email)
       setCode('')
+      setAccountMissing(false)
       setStep('login-otp')
       startCooldown()
       setBusy(false)
     } catch (err) {
+      setAccountMissing(isAccountNotFoundError(err))
       handleError(err)
     }
   }
@@ -300,18 +333,25 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
       // Effect phiên đóng modal + toast sau verify thành công.
       setBusy(false)
     } catch (err) {
-      // Tài khoản CHƯA xác minh mà bấm "đăng nhập bằng mã" → Supabase có thể gửi
-      // lại email xác minh signup (mã type 'signup'). Thử lại đúng type một lần
-      // trước khi báo lỗi, tránh kẹt otp_expired giả.
-      if (isOtpExpiredError(err)) {
-        try {
-          await verifySignupOtp(email, code)
-          setBusy(false)
-          return
-        } catch {
-          /* fallthrough — giữ lỗi gốc */
-        }
-      }
+      handleError(err)
+    }
+  }
+
+  /**
+   * Màn nhập mã không phân biệt được email vừa gửi là mã ĐĂNG NHẬP hay link XÁC MINH
+   * đăng ký — magic_link.go đối xử với tài khoản chưa confirm như user mới nhưng vẫn
+   * trả 200, và supabase-js bỏ body response của /otp nên FE không dò được. Để user tự
+   * chuyển sang lane đăng ký: gửi lại email xác minh rồi về step verify-email.
+   */
+  const handleFinishSignup = async () => {
+    setBusy(true)
+    try {
+      await resendSignupOtp(email)
+      setCode('')
+      setStep('verify-email')
+      startCooldown()
+      setBusy(false)
+    } catch (err) {
       handleError(err)
     }
   }
@@ -323,20 +363,6 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
       if (step === 'verify-email') await resendSignupOtp(email)
       else if (step === 'login-otp') await sendLoginOtp(email)
       else if (step === 'forgot-sent') await requestPasswordReset(email)
-      startCooldown()
-      setBusy(false)
-    } catch (err) {
-      handleError(err)
-    }
-  }
-
-  // Gửi lại email xác minh khi đăng nhập bị chặn vì email chưa confirm.
-  const handleResendVerification = async () => {
-    setBusy(true)
-    try {
-      await resendSignupOtp(email)
-      setNeedVerify(false)
-      setStep('verify-email')
       startCooldown()
       setBusy(false)
     } catch (err) {
@@ -369,7 +395,7 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
 
   const switchTab = (next: Tab) => {
     setTab(next)
-    setNeedVerify(false)
+    setAccountMissing(false)
   }
 
   // Tablist theo APG: mũi tên + Home/End đổi chế độ, focus đi theo nút được chọn.
@@ -472,7 +498,7 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
 
         {/* Đỉnh chừa sẵn 44px cho nút đóng: cột phải không có header ở desktop, bám sát
             mép thì hàng đầu của form nằm ngay dưới nút X. */}
-        <div className="flex-1 min-w-0 min-h-0 overflow-y-auto scrollbar-none p-5 sm:px-6 sm:pb-6 sm:pt-11">
+        <div data-lenis-prevent className="flex-1 min-w-0 min-h-0 overflow-y-auto scrollbar-none p-5 sm:px-6 sm:pb-6 sm:pt-11">
           <div className="sm:hidden mb-4 text-center">
             <div className="mx-auto w-8 h-8">
               <img src="/oneforall.svg" alt="One ForAll Logo" className="w-full h-full object-contain" />
@@ -563,7 +589,7 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
                           required
                           autoComplete="email"
                           value={email}
-                          onChange={(e) => setEmail(e.target.value)}
+                          onChange={(e) => handleEmailChange(e.target.value)}
                           placeholder="name@example.com"
                           className={inputClass}
                         />
@@ -608,21 +634,6 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
                       </div>
                     </div>
 
-                    {needVerify && (
-                      <div className="p-3 bg-brand-2/10 border border-brand-2/30 text-brand-3 text-xs clip-corner-card space-y-2">
-                        <p>{t('auth.emailNotConfirmedHint')}</p>
-                        <button
-                          type="button"
-                          onClick={handleResendVerification}
-                          disabled={busy}
-                          className="inline-flex items-center gap-1.5 text-brand-2 hover:text-brand font-medium hover:underline disabled:opacity-50"
-                        >
-                          {busy && <Loader2 className="w-3 h-3 animate-spin" />}
-                          {t('auth.resendVerification')}
-                        </button>
-                      </div>
-                    )}
-
                     <Button
                       type="submit"
                       variant="glow"
@@ -645,6 +656,18 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
                     >
                       {t('auth.loginWithCode')}
                     </button>
+
+                    {/* Mã chỉ gửi được cho email đã có tài khoản → mời đăng ký tại chỗ,
+                        email vừa gõ vẫn còn nguyên vì hai tab chung một trường. */}
+                    {accountMissing && (
+                      <button
+                        type="button"
+                        onClick={() => switchTab('register')}
+                        className="w-full text-center text-xs text-brand-2 hover:text-brand font-medium hover:underline"
+                      >
+                        {t('auth.registerInstead')}
+                      </button>
+                    )}
                   </form>
                 )}
 
@@ -833,6 +856,35 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
                 </button>
               </div>
             </div>
+          ) : step === 'verify-required' ? (
+            <div className="space-y-4">
+              {/* precheck báo chưa xác minh → email tới sẽ là link kích hoạt, không phải mã:
+                  lời nhắn phải nói ĐÚNG thứ user sẽ thấy trong hộp thư, đừng hứa 6 số. */}
+              <div className="p-3 bg-amber-500/10 border border-amber-500/30 text-amber-400 flex items-start gap-2.5 text-xs clip-corner-card">
+                <Mail className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                <span>{t('auth.verifyRequiredDesc', { email })}</span>
+              </div>
+
+              <div className="flex items-center justify-center gap-4 text-xs text-slate-400 pt-1">
+                <button
+                  type="button"
+                  onClick={handleFinishSignup}
+                  disabled={cooldown > 0 || busy}
+                  className="inline-flex items-center gap-1.5 text-brand-2 hover:text-brand font-medium hover:underline disabled:opacity-50 disabled:no-underline"
+                >
+                  {busy && <Loader2 className="w-3 h-3 animate-spin" />}
+                  {cooldown > 0 ? t('auth.resendIn', { seconds: cooldown }) : t('auth.resendEmail')}
+                </button>
+                <span aria-hidden="true">•</span>
+                <button
+                  type="button"
+                  onClick={goBackToForm}
+                  className="text-slate-400 hover:text-ink font-medium hover:underline"
+                >
+                  {t('auth.changeEmail')}
+                </button>
+              </div>
+            </div>
           ) : step === 'login-otp' ? (
             <form onSubmit={handleVerify} className="space-y-3">
               <div className="p-3 bg-emerald-500/10 border border-emerald-600/30 text-emerald-300 flex items-start gap-2.5 text-xs clip-corner-card">
@@ -879,6 +931,23 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
                   {t('auth.changeEmail')}
                 </button>
               </div>
+
+              {/* Chỉ hiện khi precheck không tra được: đã đi qua /account-status thì tài khoản
+                  chưa xác minh bị chặn ở step verify-required, mã tới đây chắc chắn là OTP.
+                  Nút "Xác minh" chỉ bật khi đủ 6 số nên đường còn lại cũng phải có lối ra. */}
+              {codeTypeUncertain && (
+                <p className="pt-1 text-center text-xs leading-relaxed text-slate-500">
+                  {t('auth.noCodeHint')}{' '}
+                  <button
+                    type="button"
+                    onClick={handleFinishSignup}
+                    disabled={busy}
+                    className="text-brand-2 hover:text-brand font-medium hover:underline disabled:opacity-50"
+                  >
+                    {t('auth.resendEmail')}
+                  </button>
+                </p>
+              )}
             </form>
           ) : null}
 

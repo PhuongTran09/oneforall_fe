@@ -36,7 +36,7 @@ export function GoogleApiSection() {
             <Card
               key={item.title}
               hoverEffect={false}
-              className={item.highlight ? 'bg-brand/10 border-[rgba(255,59,48,0.45)]' : ''}
+              className={`card-tilt ${item.highlight ? 'bg-brand/10 border-[rgba(255,59,48,0.45)]' : ''}`}
             >
               <CardHeader className="flex flex-col items-start gap-4">
                 <div className="w-12 h-12 flex items-center justify-center shrink-0 bg-page border border-edge clip-corner-btn">

@@ -47,6 +47,7 @@ import {
   updateToolSnapshot,
   type ToolFormState,
 } from '../utils/toolStateStore'
+import { getLenisInstance } from '../hooks/useSmoothScroll'
 
 export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfig }) {
   const location = useLocation()
@@ -255,7 +256,17 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
     setIsLoading(false)
     // Đưa về đầu để rơi đúng khu tải tệp: khối kết quả vừa gỡ nên nếu đứng yên,
     // người dùng sẽ ở lưng chừng trang. rAF để cuộn sau khi DOM đã thu gọn.
-    requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: 'smooth' }))
+    requestAnimationFrame(() => {
+      // Native smooth trong lúc Lenis đang quyền là hai bộ giành nhau scrollTop:
+      // Lenis đọc scroll event thật rồi nội suy tiếp từ đó, cú về đầu bị khựng giữa
+      // đường. Có Lenis thì nhờ nó, không có thì giữ nguyên bản cũ.
+      const lenis = getLenisInstance()
+      if (lenis) {
+        lenis.scrollTo(0)
+        return
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    })
   }
 
   // Hủy job qua Bearer hoặc cookie phiên; SSE/poll vẫn nhận trạng thái cuối.
@@ -580,7 +591,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
             {tool.howItWorksSteps.map((step) => (
               <div
                 key={step.step}
-                className="relative p-6 bg-surface border border-[rgba(255,59,48,0.22)] transition-all space-y-3 card-3d clip-corner-card"
+                className="relative p-6 bg-surface border border-[rgba(255,59,48,0.22)] transition-all space-y-3 card-3d card-tilt clip-corner-card"
               >
                 <div className="w-10 h-10 flex items-center justify-center font-mono font-bold text-sm text-brand">
                   {step.step}
@@ -613,7 +624,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
             {tool.features.map((feat) => (
               <div
                 key={feat.title}
-                className="p-6 bg-surface border border-[rgba(255,59,48,0.22)] space-y-3 card-3d clip-corner-card"
+                className="p-6 bg-surface border border-[rgba(255,59,48,0.22)] space-y-3 card-3d card-tilt clip-corner-card"
               >
                 <div className="w-10 h-10 bg-brand/10 border border-brand/30 flex items-center justify-center text-brand clip-corner-btn">
                   <Check className="w-5 h-5" />

@@ -49,6 +49,12 @@ export { SocialBarAds } from './common/SocialBarAds'
 export { ToolFooterActions } from './common/ToolFooterActions'
 export { BuyMeCoffee } from './common/BuyMeCoffee'
 export { ScrollProgress } from './common/ScrollProgress'
+export { SmoothScrollProvider } from './common/SmoothScrollProvider'
+export type { SmoothScrollProviderProps } from './common/SmoothScrollProvider'
+export { SplitWorkspace } from './common/SplitWorkspace'
+export type { SplitWorkspaceProps } from './common/SplitWorkspace'
+export { TaskStatusWidget } from './common/TaskStatusWidget'
+export type { TaskStatusWidgetProps } from './common/TaskStatusWidget'
 
 // Feedback components
 export { AuthModal } from './feedback/AuthModal'
