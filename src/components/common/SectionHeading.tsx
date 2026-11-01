@@ -1,4 +1,5 @@
 import { Fragment, useEffect, useRef, type CSSProperties } from 'react'
+import { REVEAL_ROOT_MARGIN } from '../../utils/revealMotion'
 
 export interface SectionHeadingProps {
   badge?: string
@@ -29,7 +30,7 @@ function useWordsInView<T extends HTMLElement>() {
           io.unobserve(el)
         }
       },
-      { root: null, rootMargin: '0px 0px -10% 0px', threshold: 0 },
+      { root: null, rootMargin: REVEAL_ROOT_MARGIN, threshold: 0 },
     )
     io.observe(el)
     return () => io.disconnect()

@@ -78,7 +78,7 @@ export function ImageWorkspace() {
               className="hidden"
               onChange={handleFileChange}
             />
-            <div className="w-14 h-14 bg-brand/10 border border-[rgba(255,59,48,0.25)] flex items-center justify-center text-brand animate-float-gentle group-hover:scale-110 group-hover:border-brand/60 group-hover:shadow-[0_0_16px_rgba(255,59,48,0.3)] transition-all mb-3 clip-corner-card">
+            <div className="w-14 h-14 bg-brand/10 border border-[rgba(255,59,48,0.25)] flex items-center justify-center text-brand group-hover:scale-110 group-hover:border-brand/60 group-hover:shadow-[0_0_16px_rgba(255,59,48,0.3)] transition-all mb-3 clip-corner-card">
               <CloudUpload className="w-7 h-7" />
             </div>
             {selectedFile ? (

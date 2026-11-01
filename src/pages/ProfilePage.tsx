@@ -237,25 +237,38 @@ export function ProfilePage() {
         </dl>
       </div>
 
-      {/* Thống kê — số lớn brand gradient như KPI dashboard */}
-      <div className="grid grid-cols-2 gap-4 mt-4">
-        <div className="bg-surface border border-edge clip-corner-card p-5 sm:p-6 text-center">
-          <div
-            key={`s-${stats?.total_completed ?? 'load'}`}
-            className="text-3xl sm:text-4xl font-bold text-brand-gradient tabular-nums live-value live-value-glow"
-          >
-            {stats ? stats.total_completed : '—'}
+      {/* Thống kê + lối ra lịch sử — MỘT thẻ: trước đây hai KPI nằm trong thẻ riêng còn
+          nút "Xem lịch sử" là nút lơ lửng ngoài mọi card, mobile phải cuộn hai lần. */}
+      <div className="bg-surface border border-edge clip-corner-card p-5 sm:p-6 mt-4">
+        <div className="grid grid-cols-2 gap-4 text-center">
+          <div>
+            <div
+              key={`s-${stats?.total_completed ?? 'load'}`}
+              className="text-3xl sm:text-4xl font-bold text-brand-gradient tabular-nums live-value live-value-glow"
+            >
+              {stats ? stats.total_completed : '—'}
+            </div>
+            <div className="text-sm text-soft mt-1">{t('profile.totalCompleted')}</div>
           </div>
-          <div className="text-sm text-soft mt-1">{t('profile.totalCompleted')}</div>
+          <div>
+            <div
+              key={`f-${stats?.files_available ?? 'load'}`}
+              className="text-3xl sm:text-4xl font-bold text-brand-gradient tabular-nums live-value live-value-glow"
+            >
+              {stats ? stats.files_available : '—'}
+            </div>
+            <div className="text-sm text-soft mt-1">{t('profile.filesAvailable')}</div>
+          </div>
         </div>
-        <div className="bg-surface border border-edge clip-corner-card p-5 sm:p-6 text-center">
-          <div
-            key={`f-${stats?.files_available ?? 'load'}`}
-            className="text-3xl sm:text-4xl font-bold text-brand-gradient tabular-nums live-value live-value-glow"
+
+        <div className="mt-5 pt-4 border-t border-edge/60">
+          <LocaleLink
+            to="/history"
+            className="flex w-full items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium bg-page border border-[rgba(255,59,48,0.35)] clip-corner-btn text-brand-2 hover:bg-brand/10 transition-colors"
           >
-            {stats ? stats.files_available : '—'}
-          </div>
-          <div className="text-sm text-soft mt-1">{t('profile.filesAvailable')}</div>
+            <HistoryIcon className="w-4 h-4" />
+            {t('profile.viewHistory')}
+          </LocaleLink>
         </div>
       </div>
 
@@ -289,14 +302,6 @@ export function ProfilePage() {
           )}
         </div>
       )}
-
-      <LocaleLink
-        to="/history"
-        className="inline-flex items-center gap-2 mt-6 px-4 py-2.5 text-sm font-medium bg-surface border border-[rgba(255,59,48,0.35)] clip-corner-btn text-brand-2 hover:bg-brand/10 transition-colors"
-      >
-        <HistoryIcon className="w-4 h-4" />
-        {t('profile.viewHistory')}
-      </LocaleLink>
     </div>
   )
 }

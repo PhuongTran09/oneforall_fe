@@ -1,6 +1,7 @@
 import { lazy } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { MainLayout } from '../layouts/MainLayout'
+import { SmoothScrollProvider } from '../components/common/SmoothScrollProvider'
 import { HomePage } from '../pages/HomePage'
 import { ToolLandingPage } from '../pages/ToolLandingPage'
 import { ToolsPage } from '../pages/ToolsPage'
@@ -104,14 +105,19 @@ export function AppRoutes() {
   useI18n()
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<MainLayout />}>
-          {LocaleRoutes()}
-        </Route>
-        <Route path="/en" element={<MainLayout />}>
-          {LocaleRoutes()}
-        </Route>
-      </Routes>
+      {/* Một instance Lenis cho cả hai cây locale: đặt TRONG BrowserRouter vì
+          `anchors` cần đọc URL hiện hành, đặt NGOÀI <Routes> để đổi route không phải
+          huỷ-tạo lại cuộn (provider không phụ thuộc route nào). */}
+      <SmoothScrollProvider>
+        <Routes>
+          <Route path="/" element={<MainLayout />}>
+            {LocaleRoutes()}
+          </Route>
+          <Route path="/en" element={<MainLayout />}>
+            {LocaleRoutes()}
+          </Route>
+        </Routes>
+      </SmoothScrollProvider>
     </BrowserRouter>
   )
 }

@@ -50,6 +50,7 @@ export function CategoryNav() {
     <div className="relative">
       <div
         ref={railRef}
+        data-lenis-prevent
         className="flex items-center gap-2 overflow-x-auto scroll-smooth motion-reduce:scroll-auto scrollbar-none py-1 px-1 -mx-1 pb-3 justify-start md:justify-center"
       >
         {chips.map(({ path, labelKey, icon: ChipIcon }) => {

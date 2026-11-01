@@ -35,7 +35,7 @@ export function SpinHistoryPanel({ history }: SpinHistoryPanelProps) {
       {history.length === 0 ? (
         <p className="text-xs text-soft">{t('spin.historyEmpty')}</p>
       ) : (
-        <ul className="space-y-1.5 max-h-64 overflow-y-auto pr-1">
+        <ul data-lenis-prevent className="space-y-1.5 max-h-64 overflow-y-auto pr-1">
           {history.map((record) => (
             <li
               key={record.id}

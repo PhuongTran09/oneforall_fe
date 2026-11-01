@@ -88,7 +88,7 @@ export function BuyMeCoffee() {
         <div
           className={`${phase === 'closing' ? 'in-out' : 'in-up'} w-[min(21rem,calc(100vw-2rem))] bg-surface border border-[rgba(255,59,48,0.35)] clip-corner-card card-3d card-3d-glow`}
         >
-          <div className="max-h-[min(36rem,calc(100vh-6rem))] overflow-y-auto p-4 space-y-3">
+          <div data-lenis-prevent className="max-h-[min(36rem,calc(100vh-6rem))] overflow-y-auto p-4 space-y-3">
             <div className="flex items-start gap-2">
               <div className="min-w-0 flex-1">
                 <h3 className="text-sm font-bold text-ink flex items-center gap-1.5">

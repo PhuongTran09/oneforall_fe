@@ -120,7 +120,7 @@ export function NameListPanel({ slot, label, entries, busy, copyTo, onMutate, on
       {entries.length === 0 ? (
         <p className="p-4 text-center text-xs text-slate-400 border border-dashed border-edge clip-corner-card">{t('spin.list.empty')}</p>
       ) : (
-        <ul className="space-y-1.5 max-h-72 overflow-y-auto pr-1">
+        <ul data-lenis-prevent className="space-y-1.5 max-h-72 overflow-y-auto pr-1">
           {entries.map((entry, index) => (
             <li key={entry.id} className="space-y-2">
               <div className="flex items-center gap-2">

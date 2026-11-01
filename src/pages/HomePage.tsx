@@ -11,6 +11,7 @@ import {
 } from '../components'
 import { t, useI18n } from '../i18n/langStore'
 import { useAuth } from '../services/authStore'
+import { scrollToSection } from '../utils/scrollMotion'
 
 interface LayoutContext {
   openAuth: (mode: 'login' | 'register') => void
@@ -29,10 +30,7 @@ export function HomePage() {
   }
 
   const handleSelectFree = () => {
-    const toolsElement = document.getElementById('tools')
-    if (toolsElement) {
-      toolsElement.scrollIntoView({ behavior: 'smooth' })
-    }
+    scrollToSection('tools')
   }
 
   // CTA "Tài khoản Pro" ở hero: chưa đăng nhập thì chưa có gì để mua → mở modal auth;
@@ -46,10 +44,7 @@ export function HomePage() {
   }
 
   const handleSelectPremium = () => {
-    const pricingElement = document.getElementById('pricing')
-    if (pricingElement) {
-      pricingElement.scrollIntoView({ behavior: 'smooth' })
-    }
+    scrollToSection('pricing')
   }
 
   const homeFaqs = [

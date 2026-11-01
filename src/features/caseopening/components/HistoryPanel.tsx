@@ -36,7 +36,7 @@ export function HistoryPanel({ history, imageUrls }: HistoryPanelProps) {
         </Button>
       </div>
 
-      <ul className="space-y-2 max-h-80 overflow-y-auto pr-1">
+      <ul data-lenis-prevent className="space-y-2 max-h-80 overflow-y-auto pr-1">
         {history.map((record) => {
           const chip = chipInk(record.color)
           return (

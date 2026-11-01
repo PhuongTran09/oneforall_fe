@@ -31,7 +31,7 @@ interface Box {
 }
 
 /**
- * Listbox tự绘制 thay cho <select>: popup hệ điều hành không theo được nền tối của
+ * Listbox tự vẽ thay cho <select>: popup hệ điều hành không theo được nền tối của
  * trang, và <select> gốc cũng không mở được bên trong modal đang scroll.
  */
 export function SelectMenu({ options, value, onChange, id, ariaLabel, disabled = false, className = '' }: SelectMenuProps) {
@@ -149,6 +149,7 @@ export function SelectMenu({ options, value, onChange, id, ariaLabel, disabled =
             aria-labelledby={ariaLabel ? undefined : triggerId}
             aria-label={ariaLabel}
             style={menuStyle}
+            data-lenis-prevent
             className={`z-[70] max-h-60 overflow-y-auto bg-surface border border-edge p-1 shadow-[0_16px_40px_rgba(0,0,0,0.5)] clip-corner-btn ${
               closing ? 'out-fade' : 'in-fade'
             }`}

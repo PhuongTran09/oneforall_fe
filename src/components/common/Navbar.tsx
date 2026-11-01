@@ -410,7 +410,7 @@ export function Navbar({ onOpenAuth }: NavbarProps) {
                     ) : hits ? (
                       /* Đang gõ: bỏ tab, trải thẳng kết quả ra lưới. Tìm 'mp3' thì phải thấy
                          hết mấy link liên quan ngay, không phải trỏ từng nhóm xem nhóm nào còn sót. */
-                      <div className="grid grid-cols-2 gap-x-3 gap-y-1 p-3 max-h-[60vh] overflow-y-auto scrollbar-none lg:grid-cols-3 xl:grid-cols-4">
+                      <div data-lenis-prevent className="grid grid-cols-2 gap-x-3 gap-y-1 p-3 max-h-[60vh] overflow-y-auto scrollbar-none lg:grid-cols-3 xl:grid-cols-4">
                         {visibleGroups.flatMap((group) =>
                           group.items.map((item) => (
                             <LocaleLink
@@ -627,6 +627,7 @@ export function Navbar({ onOpenAuth }: NavbarProps) {
             (mở một nhóm/lần) — 17 link trải hết sẽ dài hơn màn hình điện thoại. */}
         {mobileShow && (
           <div
+            data-lenis-prevent
             className={`lg:hidden border-b border-edge bg-page px-4 pt-2.5 pb-5 ${
               mobileClosing ? 'in-out' : 'in-up'
             } max-h-[calc(100dvh-72px)] overflow-y-auto scrollbar-none`}
