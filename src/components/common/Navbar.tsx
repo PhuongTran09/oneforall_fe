@@ -79,9 +79,10 @@ const TOOLS_PANEL_ID = 'nav-tools-menu'
  */
 const CLOSE_DELAY_MS = 260
 
-/** Hai trang tải chính gọi theo hành động, ngắn hơn badge registry cho khỏi tràn hàng. */
+/** Ba trang tải chính gọi theo hành động, ngắn hơn badge registry cho khỏi tràn hàng. */
 const NAV_LABEL_KEYS: Record<string, string> = {
   '/tiktok-downloader': 'nav.toolTiktok',
+  '/twitter-downloader': 'nav.toolTwitter',
   '/youtube-downloader': 'nav.toolYoutube',
 }
 

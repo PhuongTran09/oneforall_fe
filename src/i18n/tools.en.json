@@ -115,6 +115,64 @@
       }
     ]
   },
+  "/twitter-downloader": {
+    "title": "Download X (Twitter) Videos as MP4 or MP3 Online | One ForAll",
+    "metaDescription": "Paste an X (Twitter) post link into One ForAll, preview the post details, choose MP4 or MP3, and download it from the browser with no app.",
+    "h1": "Download X (Twitter) Videos as MP4 and MP3",
+    "subtitle": "Preview the X post, pick MP4 or MP3, then download it on your phone or computer.",
+    "badge": "X (Twitter) downloader",
+    "supportedFormatsDesc": "Supports MP4 video and MP3 audio output for public posts that contain a video.",
+    "introParagraphs": [
+      "To download a video from X (Twitter): copy the post link with Share > Copy Link, paste it into the box above, and tap Start download. One ForAll shows the post title and details first, so you choose MP4 or MP3 after seeing what the link contains.",
+      "Only public posts that contain a video can be previewed and downloaded. Photo-only posts, private posts, deleted posts and Spaces cannot be processed, and the tool has no step to bypass access restrictions. Processing time depends on the video length and system status."
+    ],
+    "howItWorksSteps": [
+      {
+        "step": "01",
+        "title": "Copy the post link",
+        "desc": "Use Share on the X post and choose Copy Link."
+      },
+      {
+        "step": "02",
+        "title": "Paste to preview",
+        "desc": "One ForAll reads the post and shows its title, thumbnail and author."
+      },
+      {
+        "step": "03",
+        "title": "Choose MP4 or MP3",
+        "desc": "Pick MP4 for video, or MP3 if you only need the audio."
+      },
+      {
+        "step": "04",
+        "title": "Download your file",
+        "desc": "Tap Download to save the file to your device."
+      }
+    ],
+    "features": [
+      {
+        "title": "Preview before download",
+        "desc": "Post details appear before you choose a format, so nothing downloads blind."
+      },
+      {
+        "title": "Video and audio",
+        "desc": "Take the MP4 video or convert the audio track to MP3 when the post allows it."
+      },
+      {
+        "title": "Cross-device access",
+        "desc": "Open the tool in a browser on a phone, tablet, or computer."
+      }
+    ],
+    "faqList": [
+      {
+        "q": "Why can this link not be previewed?",
+        "a": "This page reads public posts that contain a video. Photo-only posts, private posts, deleted posts, or posts the platform blocks from our server cannot be previewed. One ForAll does not bypass access restrictions on private content."
+      },
+      {
+        "q": "What is the maximum resolution?",
+        "a": "Quality depends on the highest level X publishes for that video. The 1080p, 720p and 480p choices are caps; if the video has no such level, the file still downloads at the best available quality."
+      }
+    ]
+  },
   "/convert": {
     "title": "Online File Converter | One ForAll",
     "metaDescription": "Convert documents, images, video and audio online. Available output formats depend on the uploaded file and your plan.",

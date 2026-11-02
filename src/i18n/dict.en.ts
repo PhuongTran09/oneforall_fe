@@ -5,8 +5,8 @@ export const en: Dict = {
     "downloader": {
       "name": "Media downloader",
       "h1": "Download video and audio from links",
-      "desc": "Paste a YouTube or TikTok link, pick MP4 or MP3 and download it. No install and no account required.",
-      "seoTitle": "Download YouTube & TikTok Videos Online in MP4, MP3 | One ForAll"
+      "desc": "Paste a YouTube, TikTok or X link, pick MP4 or MP3 and download it. No install and no account required.",
+      "seoTitle": "Download YouTube, TikTok & X Videos to MP4, MP3 | One ForAll"
     },
     "converter": {
       "name": "File converter",
@@ -414,7 +414,7 @@ export const en: Dict = {
     "linkNoPreview": "This link cannot be previewed (private video, removed, or age-restricted).",
     "linkPlaylistUnsupported": "This link is a playlist — paste a link to one video at a time.",
     "linkPreviewBusy": "The link preview service is busy. Please try again in a few minutes.",
-    "linkSiteUnsupported": "Only YouTube or TikTok links can be previewed.",
+    "linkSiteUnsupported": "Only YouTube, TikTok or X links can be previewed.",
     "network": "Couldn't send the request — check this device's network connection.",
     "noFile": "No file was uploaded. Choose a file or paste an image onto the page.",
     "noMediaInput": "No input yet. Upload a video/audio file or paste a link.",
@@ -560,6 +560,7 @@ export const en: Dict = {
     "menuHint": "Select a group to see its tools.",
     "groupFun": "Fun & games",
     "toolTiktok": "Download TikTok",
+    "toolTwitter": "Download X (Twitter)",
     "toolYoutube": "Download YouTube",
     "caseOpening": "Case opening",
     "squareSpin": "Square spin wheel",
@@ -956,6 +957,7 @@ export const en: Dict = {
     "pasteFromClipboard": "Paste from clipboard",
     "placeholderGeneric": "Paste the URL to process...",
     "placeholderTiktok": "Paste a TikTok video link here (e.g. https://www.tiktok.com/@user/video/...)",
+    "placeholderTwitter": "Paste an X (Twitter) post link here (e.g. https://x.com/user/status/...)",
     "placeholderYoutube": "Paste a YouTube video link here (e.g. https://www.youtube.com/watch?v=...)",
     "previewFailed": "This link cannot be previewed — use Retry to check it again.",
     "quality": "Quality:",
@@ -965,6 +967,7 @@ export const en: Dict = {
     "slidesAll": "Select all",
     "startDownload": "Start download",
     "tiktokOnly": "Please enter a valid TikTok video link (tiktok.com).",
+    "twitterOnly": "Please enter a valid X post link (x.com, twitter.com or t.co).",
     "viewsLabel": "views",
     "waitingPreview": "Checking the link, please wait…",
     "youtubeOnly": "Please enter a valid YouTube link (youtube.com or youtu.be)."

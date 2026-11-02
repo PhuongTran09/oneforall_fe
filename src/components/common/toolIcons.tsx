@@ -2,6 +2,7 @@ import type { ComponentType } from 'react'
 import {
   Archive,
   ArrowLeftRight,
+  AtSign,
   Braces,
   Clapperboard,
   Database,
@@ -25,12 +26,13 @@ export type IconComponent = ComponentType<{ className?: string }>
 
 /**
  * Nhóm nào cũng một nét: toàn bộ là lucide outline, stroke=currentColor, viewBox 24.
- * Brand SVG (fill đặc) từng khiến 4 tool tải media trông khác hẳn 13 tool còn lại, và
+ * Brand SVG (fill đặc) từng khiến các tool tải media trông khác hẳn phần còn lại, và
  * nó ăn theo màu nền chứ không theo trạng thái hover của thẻ.
  */
 const CATEGORY_ICONS_BY_CATEGORY: Record<ToolConfig['category'], IconComponent> = {
   youtube: MonitorPlay,
   tiktok: Clapperboard,
+  twitter: AtSign,
   convert: ArrowLeftRight,
   media: Music,
   image: ImageIcon,
@@ -47,6 +49,7 @@ const CATEGORY_ICONS_BY_CATEGORY: Record<ToolConfig['category'], IconComponent> 
 const TOOL_ICONS: Record<string, IconComponent> = {
   '/youtube-downloader': Download,
   '/tiktok-downloader': Clapperboard,
+  '/twitter-downloader': AtSign,
   '/video-converter': Film,
   '/audio-converter': Music,
   '/image-converter': Images,
