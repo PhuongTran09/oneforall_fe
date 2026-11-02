@@ -13,11 +13,13 @@ import {
   Film,
   Image as ImageIcon,
   Images,
+  MessagesSquare,
   MonitorPlay,
   Music,
   Ratio,
   Scissors,
   Shrink,
+  ThumbsUp,
 } from 'lucide-react'
 import type { ToolConfig } from '../../config/seoTools'
 import type { CategoryId } from '../../config/toolCategories'
@@ -33,6 +35,8 @@ const CATEGORY_ICONS_BY_CATEGORY: Record<ToolConfig['category'], IconComponent> 
   youtube: MonitorPlay,
   tiktok: Clapperboard,
   twitter: AtSign,
+  facebook: ThumbsUp,
+  threads: MessagesSquare,
   convert: ArrowLeftRight,
   media: Music,
   image: ImageIcon,
@@ -50,6 +54,8 @@ const TOOL_ICONS: Record<string, IconComponent> = {
   '/youtube-downloader': Download,
   '/tiktok-downloader': Clapperboard,
   '/twitter-downloader': AtSign,
+  '/facebook-downloader': ThumbsUp,
+  '/threads-downloader': MessagesSquare,
   '/video-converter': Film,
   '/audio-converter': Music,
   '/image-converter': Images,

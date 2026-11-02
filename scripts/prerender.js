@@ -34,6 +34,8 @@ const GROUP_BY_CATEGORY = {
   youtube: 'downloader',
   tiktok: 'downloader',
   twitter: 'downloader',
+  facebook: 'downloader',
+  threads: 'downloader',
   convert: 'converter',
   media: 'converter',
   image: 'image',
