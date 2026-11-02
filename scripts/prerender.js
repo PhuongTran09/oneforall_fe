@@ -33,6 +33,7 @@ const EXTRA_SITEMAP_PATHS = ['/privacy', '/terms', '/case-opening', '/square-spi
 const GROUP_BY_CATEGORY = {
   youtube: 'downloader',
   tiktok: 'downloader',
+  twitter: 'downloader',
   convert: 'converter',
   media: 'converter',
   image: 'image',
