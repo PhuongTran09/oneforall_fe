@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { Link2, Clipboard, X, ArrowRight, AlertCircle, RefreshCw, Video, Play } from 'lucide-react'
+import { Link2, Clipboard, X, ArrowRight, AlertCircle, RefreshCw, Video, Play, MonitorPlay } from 'lucide-react'
 import { Button } from './Button'
 import { SegmentedControl } from './SegmentedControl'
 import { t, getLang } from '../../i18n/langStore'
@@ -188,6 +188,16 @@ export function UrlInputForm({
   // truy cập vừa hỏng — kể cả khi một response `url-info` nào đó còn trả lại nó (FE không được dùng
   // lại token cũ sau một response mới, đó là nửa FE của lỗi "Retry vô vọng").
   const [deadToken, setDeadToken] = useState<string | null>(null)
+  // Khung nhúng chính chủ (X/Facebook) TỰ nạp khi card sẵn sàng — người dùng không phải bấm bước nào.
+  // Đổi lại, mỗi lượt dán link là trình duyệt của họ kéo nội dung từ CDN của nền tảng và nhận cookie
+  // của họ; `embedNote` nói rõ điều đó. Cờ này chỉ để báo "đang tải", gắn theo KEY URL nên dán link
+  // khác là trạng thái tự về đầu (không có effect dọn state — rule react-hooks/set-state-in-effect).
+  const [embedLoadedFor, setEmbedLoadedFor] = useState<string | null>(null)
+  // Tỷ lệ khung hình của VIDEO, đọc từ ảnh bìa mà nền tảng trả về (gắn theo KEY URL để dán link khác
+  // là tính lại). `url-info` không có field kích thước video nào, còn plugin FB thì co giãn nội dung
+  // theo BỀ RỘNG khung — nên muốn khung nhúng đúng tỷ lệ (không cắt video, không thừa dải đen) chỉ
+  // còn cách lấy tỉ lệ từ ảnh bìa: FB trả đúng khung hình video, đo `cstp=mx320x568` cho video 9:16.
+  const [embedRatio, setEmbedRatio] = useState<{ url: string; value: number } | null>(null)
 
   const urlValid = isValidForPlatform(url, platform)
   const trimmedUrl = url.trim()
@@ -219,6 +229,14 @@ export function UrlInputForm({
       ? (playableItems.find((item) => item.index === playing.index) ?? null)
       : null
   const readyData = preview.status === 'ready' ? preview.data : null
+  // Nhúng chỉ có khi BE trả `embed_url` (X/Facebook). FE không tự ghép URL từ link người dùng dán:
+  // nền tảng do server quyết, và pattern permalink đã kiểm là thứ nằm phía sau field này.
+  const embedUrl = readyData?.embed_url ?? null
+  // Host thật của khung, hiện ở dải nhãn để người dùng biết mình đang xem trang của ai.
+  const embedHost = embedUrl ? embedUrl.slice(embedUrl.indexOf('//') + 2).split('/')[0] : ''
+  // Chưa đọc được ảnh bìa (link không có thumbnail) thì dùng 9:16 — tỉ lệ đo được của cả reel FB lẫn
+  // video X ở đây; thà dự đoán đúng đa số còn hơn để khung vuông cắt đôi video dọc.
+  const embedAspect = embedRatio && embedRatio.url === trimmedUrl ? String(embedRatio.value) : '0.5625'
   const mediaCount = platform === 'threads' ? preview.data?.media_count : undefined
   const multiItems = threadItems != null && threadItems.length > 1
   const unsupportedMessage = (() => {
@@ -377,6 +395,8 @@ export function UrlInputForm({
     setPlaying(null)
     setPlayFailed(false)
     setDeadToken(null)
+    setEmbedLoadedFor(null)
+    setEmbedRatio(null)
     // Xóa luôn kết quả fetch: dán lại đúng link đó phải chờ kiểm tra lại từ đầu.
     setPreviewFetched(null)
   }
@@ -535,6 +555,10 @@ export function UrlInputForm({
               src={preview.data.thumbnail}
               alt=""
               referrerPolicy="no-referrer"
+              onLoad={(e) => {
+                const { naturalWidth: w, naturalHeight: h } = e.currentTarget
+                if (w > 0 && h > 0) setEmbedRatio({ url: trimmedUrl, value: w / h })
+              }}
               className="w-16 h-16 object-cover border border-edge shrink-0 clip-corner-btn"
             />
           ) : (
@@ -664,6 +688,43 @@ export function UrlInputForm({
             <X className="w-3.5 h-3.5" aria-hidden="true" />
             {t('urlInput.hideVideo')}
           </button>
+        </div>
+      )}
+
+      {/* Bản nhúng chính chủ cho X/Facebook — hai nền tảng mà relay byte bó tay (X không cho khách một
+          tệp muxed nào). Byte video đi từ CDN của nền tảng, không qua OneForAll, nên đây là một cái
+          khung nhìn chứ không phải một bản tải: khung dựng NGAY khi card sẵn sàng, không autoplay, và
+          "Thử lại" không làm nó reload (embed_url là metadata, không phải token).
+          Khung RỘNG 320px (trần 338 = 320 + 16 padding + 2 viền) và CAO theo tỷ lệ video thật, nên
+          video nằm gọn trong khung: plugin FB co giãn nội dung theo BỀ RỘNG (đo: 557px rộng ⇒ 990px
+          cao = đúng 16/9 ⇒ khung 560×760 cắt mất 230px cuối video), còn 320×568 thì vừa khít. */}
+      {embedUrl && (
+        <div className="in-fade mx-auto w-full max-w-[338px] space-y-1.5">
+          <div className="clip-corner-card border border-[rgba(255,59,48,0.30)] bg-surface p-2">
+            <div className="flex items-center gap-1.5 px-1 pb-2 text-xs">
+              <MonitorPlay className="w-3.5 h-3.5 text-brand shrink-0" aria-hidden="true" />
+              <span className="font-medium text-slate-300 truncate">{t('urlInput.embedTitle')}</span>
+              <span className="ml-auto shrink-0 font-mono text-[11px] text-slate-500">
+                {embedLoadedFor === trimmedUrl ? embedHost : t('urlInput.embedLoading')}
+              </span>
+            </div>
+            <iframe
+              title={t('urlInput.embedTitle')}
+              src={embedUrl}
+              // sandbox cần cả `allow-scripts` lẫn `allow-same-origin`: player của X/FB chạy script
+              // và tự đặt cookie trên origin của chính nó, thiếu một trong hai là khung trắng.
+              // Bỏ là mất luôn lớp tách khung này khỏi DOM của trang ta. Không cấp forms/top-navigation.
+              sandbox="allow-scripts allow-same-origin allow-popups allow-presentation"
+              allow="fullscreen; encrypted-media; picture-in-picture"
+              loading="lazy"
+              onLoad={() => setEmbedLoadedFor(trimmedUrl)}
+              // Rộng do bao ngoài quyết, cao = rộng × (1/tỷ lệ video) — đúng tỷ lệ nên không cắt
+              // video và không thừa dải đen. 0.5625 = 9:16 khi chưa đọc được ảnh bìa.
+              style={{ aspectRatio: embedAspect }}
+              className="block w-full rounded-lg bg-black"
+            />
+          </div>
+          <p className="px-1 text-xs leading-relaxed text-slate-400">{t('urlInput.embedNote')}</p>
         </div>
       )}
 

@@ -564,7 +564,7 @@ export const vi = {
     "menuHint": "Bấm vào một nhóm để xem danh sách công cụ.",
     "groupFun": "Giải trí",
     "toolFacebook": "Tải Facebook",
-    "toolThreads": "Tải ảnh Threads",
+    "toolThreads": "Tải ởThreads",
     "toolTiktok": "Tải TikTok",
     "toolTwitter": "Tải X (Twitter)",
     "toolYoutube": "Tải YouTube",
@@ -954,6 +954,9 @@ export const vi = {
   },
   "urlInput": {
     "aria": "Ô nhập đường dẫn",
+    "embedLoading": "đang tải bản nhúng…",
+    "embedNote": "Khung này do chính X hoặc Facebook hiển thị — trình duyệt của bạn kéo nội dung từ máy chủ của họ, không có byte nào đi qua máy chủ của chúng ta. Nếu nền tảng không cho phát trong khung, nút play ở đó sẽ mở bài gốc. Tải xuống vẫn dùng nút Bắt đầu tải.",
+    "embedTitle": "Bản nhúng video của bài viết",
     "empty": "Vui lòng nhập hoặc dán đường dẫn video.",
     "facebookOnly": "Vui lòng nhập liên kết hợp lệ từ Facebook (facebook.com hoặc fb.watch).",
     "hideVideo": "Ẩn video",

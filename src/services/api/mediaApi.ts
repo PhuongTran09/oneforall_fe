@@ -57,6 +57,14 @@ export interface UrlInfo {
   /** Code bài viết Threads (đọc từ permalink đã kiểm) — để người dùng đối chiếu link. null với nền
    * tảng khác và khi BE không đọc được bài. */
   post_code?: string | null
+  /**
+   * URL TRANG NHÚNG chính chủ của bài (X `platform.twitter.com/embed/Tweet.html`, Facebook
+   * `plugins/video.php`) — do BE dựng lại từ permalink đã khớp pattern. Không phải URL media, không
+   * token, không chữ ký:FE chỉ việc đưa nó vào `src` của iframe, byte video đi từ CDN của nền tảng
+   * chứ không qua API. null = nền tảng chưa được nghiệm thu có embed (Threads/TikTok/YouTube) hoặc
+   * URL không phải permalink hợp lệ — FE không tự ghép URL nhúng từ link người dùng dán.
+   */
+  embed_url?: string | null
   /** Ảnh của bài ảnh TikTok, theo đúng thứ tự trượt; null với mọi link khác. URL CDN ký kèm */
   slides?: string[] | null
 }

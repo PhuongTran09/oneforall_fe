@@ -956,6 +956,9 @@ export const en: Dict = {
   },
   "urlInput": {
     "aria": "URL input",
+    "embedLoading": "loading the embed…",
+    "embedNote": "This frame is rendered by X or Facebook themselves — your browser pulls it from their servers, no bytes pass through ours. If the platform won't play inside the frame, its play button opens the original post. Downloading still uses the Start download button.",
+    "embedTitle": "Embedded video of the post",
     "empty": "Please enter or paste a video link.",
     "facebookOnly": "Please enter a valid Facebook link (facebook.com or fb.watch).",
     "hideVideo": "Hide video",
