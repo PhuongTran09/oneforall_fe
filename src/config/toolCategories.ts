@@ -22,6 +22,8 @@ const GROUP_MAP: Record<ToolConfig['category'], CategoryId> = {
   youtube: 'downloader',
   tiktok: 'downloader',
   twitter: 'downloader',
+  facebook: 'downloader',
+  threads: 'downloader',
   convert: 'converter',
   media: 'converter',
   image: 'image',

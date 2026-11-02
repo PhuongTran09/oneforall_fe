@@ -41,6 +41,11 @@ for (const f of files) {
   for (const m of text.matchAll(/\bt\(\s*`([^`]*)`/g)) {
     if (m[1].includes('${')) dynamic.push(`${rel}: t(\`${m[1]}\`)`)
   }
+  // Key nằm trong Record (PLATFORM_ERROR_KEYS, NAV_LABEL_KEYS...) — được truyền vào t() gián tiếp nên [1] không thấy.
+  const roots = new Set([...viKeys.keys()].map((k) => k.split('.')[0]))
+  for (const m of text.matchAll(/'([a-zA-Z]\w*(?:\.\w+){1,3})'/g)) {
+    if (roots.has(m[1].split('.')[0]) && !used.has(m[1])) used.set(m[1], [...(used.get(m[1]) ?? []), `${rel} (indirect)`])
+  }
 }
 
 const placeholders = (s: string) => new Set([...s.matchAll(/\{(\w+)\}/g)].map((m) => m[1]))
@@ -81,7 +86,7 @@ for (const d of dynamic) console.log(`   ${d}`)
 console.log(`\n[7] chuỗi nghi vấn (double space / thiếu space / control char):`)
 for (const [k, v] of [...viKeys, ...[...enKeys].map((x): [string, string] => [`en:${x[0]}`, x[1]])]) {
   const hits: string[] = []
-  if (/  /.test(v)) hits.push('double-space')
+  if (/ {2}/.test(v)) hits.push('double-space')
   if (/[a-zà-ỹ][A-ZÀ-Ỹ]/.test(v)) hits.push('missing-space')
   if (/\t|\n/.test(v)) hits.push('control-char')
   if (hits.length) console.log(`   ${k}: ${hits.join(',')} :: ${JSON.stringify(v.slice(0, 90))}`)

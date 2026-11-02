@@ -49,6 +49,11 @@ import {
 } from '../utils/toolStateStore'
 import { getLenisInstance } from '../hooks/useSmoothScroll'
 
+// Ảnh xem trước trong DownloadResult hiển thị theo ĐỊNH DẠNG kết quả, không theo nhóm tool:
+// '/threads-downloader' (jpg) và '/image-converter' (webp/png/jpg) cũng xuất ảnh dù không thuộc
+// nhóm image. PDF/SVG để ngoài — <img> không render được (hoặc render nội dung người dùng tải lên).
+const RASTER_PREVIEW_FORMATS = new Set(['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif', 'bmp', 'ico'])
+
 export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfig }) {
   const location = useLocation()
   const adsGate = useAdsDecision()
@@ -554,7 +559,9 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
                   downloadUrl={downloadUrl}
                   fileName={resultFileName}
                   format={resultFormat}
-                  previewUrl={tool.category === 'image' ? downloadUrl : null}
+                  previewUrl={
+                    RASTER_PREVIEW_FORMATS.has(resultFormat.toLowerCase()) ? downloadUrl : null
+                  }
                   onReset={handleReset}
                 />
 

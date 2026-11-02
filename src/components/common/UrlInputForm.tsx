@@ -1,10 +1,11 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { Link2, Clipboard, X, ArrowRight, AlertCircle, RefreshCw } from 'lucide-react'
+import { Link2, Clipboard, X, ArrowRight, AlertCircle, RefreshCw, Video, Play } from 'lucide-react'
 import { Button } from './Button'
 import { SegmentedControl } from './SegmentedControl'
 import { t, getLang } from '../../i18n/langStore'
 import { showToast } from '../feedback/toastStore'
-import { describeError } from '../../utils/apiError'
+import { describeError, readErrorMeta } from '../../utils/apiError'
+import { ApiClientError } from '../../services/api/types'
 import { mediaApi, type UrlInfo } from '../../services/api/mediaApi'
 import type { UrlPlatform } from '../../config/seoTools'
 
@@ -17,15 +18,29 @@ export interface UrlInputFormProps {
   disabled?: boolean
 }
 
+// Một ô trong lưới chọn: Threads liệt kê cả ảnh lẫn video, TikTok chỉ ảnh. `thumb` null nghĩa là nền
+// tảng KHÔNG công bố ảnh bìa cho mục đó (đo 02/11: bài 3 video chỉ có 1 <img> cho 3 <source>) — ô
+// video vì vậy là tile số thứ tự, không phải ảnh bịa từ thumbnail của bài.
+type PickerItem = { index: number; kind: 'photo' | 'video'; thumb: string | null }
+// Mục phát được, đã chắc có token: giữ nguyên item của UrlInfo thì `preview_token` vẫn là
+// `string | null | undefined` và src của <video> phải viết `?? ''` — một URL hỏng ký tự ẩn.
+type PlayableItem = { index: number; token: string }
+
 const AUDIO_FORMATS = new Set(['mp3', 'wav', 'm4a', 'aac'])
-// ZIP là nguyên bộ ảnh gốc, GIF là ảnh động dựng từ đúng ảnh đó — không có chất lượng để chọn.
-const NO_QUALITY_FORMATS = new Set(['zip', 'gif'])
+// ZIP là nguyên bộ ảnh gốc, GIF là ảnh động dựng từ đúng ảnh đó, JPG của Threads là ảnh gốc
+// đúng kích thước nguồn — cả ba không có mức chất lượng để chọn.
+const NO_QUALITY_FORMATS = new Set(['zip', 'gif', 'jpg'])
 // Ba đầu ra này dựng từ từng ảnh; MP3 của bài ảnh là nhạc nền nên không có gì để chọn.
 const SLIDE_FORMATS = new Set(['zip', 'mp4', 'gif'])
 // Chỉ bài ảnh TikTok mới có; được nối thêm vào danh sách format của tool khi BE trả slides.
 const PHOTO_ONLY_FORMATS = ['zip', 'gif']
 const VIDEO_QUALITIES = ['best', '1080p', '720p', '480p']
 const AUDIO_QUALITIES = ['128', '192', '320']
+// Tier video chỉ hiện với nền tảng công bố chiều cao thật. Facebook đo 02/11: format trả về chỉ
+// sd/hd với height=None, nên mọi selector [height<=N] của backend không khớp và backend rơi về
+// best — chip "1080p" ở đây là lời hứa rỗng. Audio bitrate vẫn được dùng thật cho mọi nền tảng
+// (backend normalize_audio_quality) nên chỉ tắt tier VIDEO, không tắt cả dải.
+const VIDEO_QUALITY_PLATFORMS: readonly UrlPlatform[] = ['youtube', 'tiktok', 'twitter']
 
 const qualityOptionsFor = (format: string) =>
   AUDIO_FORMATS.has(format.toLowerCase()) ? AUDIO_QUALITIES : VIDEO_QUALITIES
@@ -39,18 +54,46 @@ const PLATFORM_HOSTS: Record<UrlPlatform, readonly string[]> = {
   youtube: ['youtube.com', 'youtu.be'],
   tiktok: ['tiktok.com'],
   twitter: ['x.com', 'twitter.com', 't.co'],
+  // fb.watch là shortlink của app Share — BE giải theo từng bước nhảy rồi kiểm đích.
+  facebook: ['facebook.com', 'fb.watch'],
+  threads: ['threads.com', 'threads.net'],
 }
 const PLATFORM_ERROR_KEYS: Record<UrlPlatform, string> = {
   youtube: 'urlInput.youtubeOnly',
   tiktok: 'urlInput.tiktokOnly',
   twitter: 'urlInput.twitterOnly',
+  facebook: 'urlInput.facebookOnly',
+  threads: 'urlInput.threadsOnly',
 }
 
 const PLATFORM_PLACEHOLDERS: Record<UrlPlatform, string> = {
   youtube: 'urlInput.placeholderYoutube',
   tiktok: 'urlInput.placeholderTiktok',
   twitter: 'urlInput.placeholderTwitter',
+  facebook: 'urlInput.placeholderFacebook',
+  threads: 'urlInput.placeholderThreads',
 }
+
+// Lý do một bài Threads hiện được preview mà không tải được, theo kind backend công bố. Bảng
+// KHÔNG còn member 'carousel': bài nhiều ảnh tải được bằng ZIP (chọn từng mục). Kind lạ vẫn rơi về
+// 'unknown' — không bao giờ để t() nhận một key không tồn tại, vì key thiếu sẽ hiện nguyên văn ra UI.
+const THREADS_UNSUPPORTED_KEYS: Record<string, string> = {
+  text: 'urlInput.threadsUnsupported.text',
+}
+const THREADS_UNSUPPORTED_FALLBACK = 'urlInput.threadsUnsupported.unknown'
+// Format một bài Threads thực sự xuất được, theo kind nền tảng tự công bố. Mỗi video chỉ có ĐÚNG MỘT
+// bản MP4 (đo 02/11: 1280x720 h264) — không có tier 1080p/720p nào, nên MP3 là lựa chọn duy nhất có
+// tham số (bitrate). kind lạ/thiếu => không lọc, để backend quyết (fail-open).
+const THREADS_KIND_FORMATS: Record<string, readonly string[]> = {
+  photo: ['jpg'],
+  video: ['mp4', 'mp3', 'zip'],
+  carousel: ['zip'],
+}
+
+// Hai mã này là PHÁN QUYẾT của nền tảng về chính bài viết (đã bị xóa / giới hạn người xem), không
+// phải sự cố khi đọc: bấm Thử lại chỉ tốn thêm một lượt. Những lỗi preview khác (mạng, bận, cache)
+// vẫn giữ nút vì lần sau có thể đọc được.
+const TERMINAL_PREVIEW_CODES = new Set(['LINK_POST_REMOVED', 'LINK_POST_RESTRICTED'])
 
 const hostnameOf = (value: string): string => {
   try {
@@ -126,11 +169,25 @@ export function UrlInputForm({
     data: UrlInfo | null
     /** Lý do fail đã localize (playlist, quá trần gói, riêng tư…) — hiện ngay ở card lỗi. */
     message?: string
+    /** MÃ lỗi BE: thứ quyết định nút Thử lại có nghĩa gì không, không phải wording của câu. */
+    code?: string
+    /** Code bài Threads đọc được từ chuỗi redirect — người dùng cầm nó đi đối chiếu được. */
+    postCode?: string | null
   } | null>(null)
   // Bump khi bấm Thử lại — đưa vào deps để effect preview chạy lại cùng một URL.
   const [previewAttempt, setPreviewAttempt] = useState(0)
   // Ảnh được chọn của bài ảnh TikTok; null = cả bộ (mặc định, và là những gì job cũ gửi).
   const [pickedSlides, setPickedSlides] = useState<number[] | null>(null)
+  // Mục đang phát. `key` là URL đã fetch nên sửa/dán lại link là player tự biến mất — không cần
+  // effect dọn state (rule react-hooks/set-state-in-effect).
+  const [playing, setPlaying] = useState<{ key: string; index: number } | null>(null)
+  // <video> chỉ báo "có lỗi" chứ không báo 410 hay 502: nói thật một câu rồi đưa về lượt fetch
+  // preview để lấy token mới, không đoán nguyên nhân.
+  const [playFailed, setPlayFailed] = useState(false)
+  // Chuỗi token ĐÃ chết một lần. Giữ nó để không bao giờ dựng lại thẻ `<video>` bằng đúng khả năng
+  // truy cập vừa hỏng — kể cả khi một response `url-info` nào đó còn trả lại nó (FE không được dùng
+  // lại token cũ sau một response mới, đó là nửa FE của lỗi "Retry vô vọng").
+  const [deadToken, setDeadToken] = useState<string | null>(null)
 
   const urlValid = isValidForPlatform(url, platform)
   const trimmedUrl = url.trim()
@@ -141,10 +198,52 @@ export function UrlInputForm({
       ? { status: fetched.status, data: fetched.data }
       : { status: 'loading', data: null }
 
-  // Nút "Bắt đầu tải" chỉ bật khi BE đọc được link: API vừa chặn playlist và video vượt trần gói
-  // TRƯỚC khi ghi job, nên một link chưa kiểm tra (hoặc fail) mà vẫn gửi thì chỉ nhận thêm một
-  // lỗi.
-  const canStart = urlValid && fetched?.status === 'ready'
+  // Preview nói thật bài này là gì; nếu kind cho thấy nó không tải được thì tắt nút NGAY trên
+  // card, thay để người dùng bấm rồi mới nhận 400. FAIL-OPEN có chủ đích: kind/thông tin mục thiếu
+  // (BE chưa deploy, cache preview cũ) => coi như chưa biết gì, để backend quyết.
+  const mediaKind = platform === 'threads' ? preview.data?.media_kind : undefined
+  // Danh mục mục của bài Threads: null = BE chưa liệt kê được (khác với mảng có 1 mục). Số MỤC quyết
+  // định format nào còn nghĩa (ZIP cần >=2, MP4 cần đúng một mục video); `media_count` vẫn giữ vai trò
+  // riêng của nó — nói cho biết bài còn video nào hay không.
+  const threadItems = platform === 'threads' ? (preview.data?.media_items ?? null) : null
+  // Mục phát được = nền tảng liệt kê là video VÀ BE cấp cho khả năng phát (PREVIEW_ENABLED trên BE).
+  // Không có token thì không vẽ chỗ bấm play: FE không tự bịa đường CDN, không hứa một file sẽ chết
+  // sau vài ngày vì chữ ký `oe`.
+  const playableItems: PlayableItem[] = threadItems
+    ? threadItems.flatMap((item) =>
+        item.kind === 'video' && item.preview_token ? [{ index: item.index, token: item.preview_token }] : [],
+      )
+    : []
+  const playingItem =
+    playing && playing.key === trimmedUrl
+      ? (playableItems.find((item) => item.index === playing.index) ?? null)
+      : null
+  const readyData = preview.status === 'ready' ? preview.data : null
+  const mediaCount = platform === 'threads' ? preview.data?.media_count : undefined
+  const multiItems = threadItems != null && threadItems.length > 1
+  const unsupportedMessage = (() => {
+    if (!mediaKind) return null
+    if (mediaKind === 'video') {
+      // Số video nền tảng TỰ công bố: 0 = bài thật sự không còn video nào (đã sửa/xóa) => còn null =
+      // CHƯA biết, không được chặn. Nhiều video thì tải được (chọn một, hoặc ZIP) nên count>1 không còn
+      // là lời từ chối.
+      return mediaCount === 0 ? t('urlInput.threadsUnsupported.videoGone') : null
+    }
+    if (mediaKind === 'photo') return null
+    if (mediaKind === 'carousel') {
+      // Bài carousel mà không liệt kê được mục nào thì không có gì để chọn — nói "không liệt kê được"
+      // chứ không nói "bài không có ảnh" (một trong hai nguyên nhân có thể là hỏng mạng).
+      return multiItems ? null : t('urlInput.threadsUnsupported.itemsUnreadable')
+    }
+    return t(THREADS_UNSUPPORTED_KEYS[mediaKind] ?? THREADS_UNSUPPORTED_FALLBACK)
+  })()
+
+  // Link sai host thì FE loại từ trước khi gọi BE, nên tooltip không được nói "đang kiểm tra
+  // liên kết" nữa — không có gì đang được kiểm tra. Cùng hai dòng copy mà validateUrl hiện khi
+  // bấm Enter, chỉ là sớm hơn một nhịp.
+  const hostNote = !urlValid && trimmedUrl
+    ? (hostnameOf(trimmedUrl) && platform ? t(PLATFORM_ERROR_KEYS[platform]) : t('urlInput.invalid'))
+    : null
 
   // Bài ảnh = khi BE đọc được ảnh thật, không phải khi URL có /photo/: Share của app ra
   // link vt./vm. (BE mở redirect rồi vẫn đủ ảnh) còn link /share/photo/ thì BE lại không có ảnh
@@ -152,18 +251,46 @@ export function UrlInputForm({
   const slideUrls = preview.data?.slides ?? []
   const isPhotoPost = slideUrls.length > 0
   // Bài ảnh có thêm ZIP/GIF mà link video không có.
-  const visibleFormats = isPhotoPost
+  const slideFormats = isPhotoPost
     ? [...formats, ...PHOTO_ONLY_FORMATS.filter((format) => !formats.includes(format))]
     : formats
+  // Threads: kind nền tảng công bố quyết định format nào thật sự tồn tại cho bài này. Lọc rather
+  // than thêm vào — không hiện JPG cho bài video (job sẽ 400) và không hiện MP4 cho bài ảnh.
+  // ZIP chỉ hiện khi bài thực sự có >=2 mục để gói: một mục thì đầu ra là JPG/MP4 của chính nó.
+  const kindFormats = (() => {
+    if (platform !== 'threads' || !mediaKind) return undefined
+    const listed = THREADS_KIND_FORMATS[mediaKind]
+    return listed && listed.filter((format) => format !== 'zip' || multiItems)
+  })()
+  const visibleFormats = kindFormats
+    ? slideFormats.filter((format) => kindFormats.includes(format))
+    : slideFormats
   // Derive thay vì setState trong effect: người dùng sửa link ảnh thành link video thì
-  // selectedFormat vẫn mang 'zip', radios không còn cái nào được chọn và handleSubmit sẽ
-  // gửi zip cho video thường (BE trả 400).
-  const activeFormat = visibleFormats.includes(selectedFormat) ? selectedFormat : defaultFormat
+  // selectedFormat vẫn mang 'zip', radios không còn cái nào được chọn và handleSubmit sẽ gửi zip
+  // cho video thường (BE trả 400). Phải lấy định dạng ĐẦU TIÊN còn hiển thị được, không phải
+  // defaultFormat của trang: bài video Threads không còn 'jpg' trong danh sách nên defaultFormat
+  // sẽ là một giá trị không tồn tại trên UI — và vẫn được gửi đi.
+  const activeFormat = visibleFormats.includes(selectedFormat)
+    ? selectedFormat
+    : (visibleFormats[0] ?? defaultFormat)
 
   // 1 ảnh thì chẳng có gì để chọn; ZIP/MP4 của bài ảnh mới dựng output từ từng ảnh.
   const showSlidePicker = SLIDE_FORMATS.has(activeFormat.toLowerCase()) && slideUrls.length > 1
-  const selectedSlides = pickedSlides ?? slideUrls.map((_, index) => index + 1)
-  const allSlidesSelected = selectedSlides.length === slideUrls.length
+  // Nguồn của lưới chọn: Threads = danh mục nền tảng liệt kê (ảnh + video xen kẽ, đúng thứ tự bài),
+  // TikTok = ảnh slideshow. Chung một nguồn vì field wire của cả hai là `slides` (1-based) — không
+  // thêm state, không thêm field.
+  const pickerItems: PickerItem[] = threadItems
+    ? threadItems.map((item) => ({ index: item.index, kind: item.kind, thumb: item.thumb }))
+    : slideUrls.map((src, index) => ({ index: index + 1, kind: 'photo' as const, thumb: src }))
+  // Threads: bài nhiều mục thì LUÔN cần chọn (ZIP chọn bộ, MP4 chọn một video). TikTok: chỉ khi đầu
+  // ra thực sự dựng từ từng ảnh.
+  const showItemPicker = threadItems != null ? multiItems : showSlidePicker
+  const selectedSlides = pickedSlides ?? pickerItems.map((item) => item.index)
+  const allSlidesSelected = selectedSlides.length === pickerItems.length
+  // Nhãn lưới: Threads gói cả ảnh lẫn video nên nói "ảnh" là sai với nửa danh sách.
+  const pickerLabel = threadItems != null ? t('urlInput.threadsItemPicker') : t('urlInput.slides')
+  const pickedKind = (index: number): string | undefined =>
+    pickerItems.find((item) => item.index === index)?.kind
 
   const toggleSlide = (slide: number) => {
     const next = selectedSlides.includes(slide)
@@ -173,6 +300,21 @@ export function UrlInputForm({
     if (next.length === 0) return
     setPickedSlides(next)
   }
+
+  // Chọn bao nhiêu mục quyết định format còn nghĩa hay không: một file MP4/MP3 chỉ dựng từ ĐÚNG MỘT
+  // video, nên chọn 2 ô (hoặc chọn một ô ẢNH) thì nút phải tắt kèm lý do — BE sẽ 400 y như vậy, chỉ
+  // là muộn hơn một job.
+  const selectionHint =
+    threadItems == null || unsupportedMessage || !['mp4', 'mp3'].includes(activeFormat.toLowerCase())
+      ? null
+      : selectedSlides.length === 1 && pickedKind(selectedSlides[0]) === 'video'
+        ? null
+        : t('urlInput.threadsPickOneVideo')
+
+  // Nút "Bắt đầu tải" chỉ bật khi BE đọc được link VÀ phần chọn đang hợp lệ với format đang chọn:
+  // API vừa chặn playlist và video vượt trần gói TRƯỚC khi ghi job, nên một link chưa kiểm tra (hoặc
+  // fail) mà vẫn gửi thì chỉ nhận thêm một lỗi.
+  const canStart = urlValid && fetched?.status === 'ready' && !unsupportedMessage && !selectionHint
 
   // Dán link xong debounce 700ms rồi mới fetch preview — tránh gọi oEmbed mỗi lần gõ.
   // /media/url-info là endpoint public nên khách chưa đăng nhập vẫn thấy preview;
@@ -187,9 +329,21 @@ export function UrlInputForm({
         setPreviewFetched({ key, status: 'ready', data })
       } catch (err) {
         // Chính ta abort vì URL đã đổi: đây không phải lỗi, đừng báo "không xem trước được".
-        if (!controller.signal.aborted) {
-          setPreviewFetched({ key, status: 'error', data: null, message: describeError(err).message })
-        }
+        if (controller.signal.aborted) return
+        const meta = err instanceof ApiClientError ? readErrorMeta(err) : {}
+        const postCode = typeof meta.params?.post_code === 'string' ? meta.params.post_code : null
+        setPreviewFetched({
+          key,
+          status: 'error',
+          data: null,
+          message: describeError(err, undefined, {
+            keySuffix: platform === 'threads' ? 'Threads' : undefined,
+          }).message,
+          // Giữ MÃ chứ không chỉ giữ câu: hai trạng thái "đã bị xóa / bị giới hạn" nhìn y hệt lỗi
+          // đọc-trang-thường nếu chỉ còn lại chuỗi đã localize.
+          code: meta.code,
+          postCode,
+        })
       }
     }, 700)
     return () => {
@@ -198,9 +352,14 @@ export function UrlInputForm({
     }
   }, [url, platform, previewAttempt])
 
-  const qualityOptions = NO_QUALITY_FORMATS.has(activeFormat.toLowerCase())
-    ? []
-    : qualityOptionsFor(activeFormat)
+  // chất lượng ẩn khi: format chưa tier nào (zip/gif/jpg), hoặc backend không dùng tier video
+  // cho nền tảng này. Tool không khai nền tảng (platform undefined) giữ nguyên như cũ.
+  const isAudioFormat = AUDIO_FORMATS.has(activeFormat.toLowerCase())
+  const offersVideoTiers = !platform || VIDEO_QUALITY_PLATFORMS.includes(platform)
+  const qualityOptions =
+    NO_QUALITY_FORMATS.has(activeFormat.toLowerCase()) || (!isAudioFormat && !offersVideoTiers)
+      ? []
+      : qualityOptionsFor(activeFormat)
 
   const handleFormatChange = (format: string) => {
     setSelectedFormat(format)
@@ -215,8 +374,21 @@ export function UrlInputForm({
     setUrl('')
     setValidationError(null)
     setPickedSlides(null)
+    setPlaying(null)
+    setPlayFailed(false)
+    setDeadToken(null)
     // Xóa luôn kết quả fetch: dán lại đúng link đó phải chờ kiểm tra lại từ đầu.
     setPreviewFetched(null)
+  }
+
+  // Nút Thử lại (card lỗi và card video hỏng) đi chung một cửa: token preview chỉ lấy lại được bằng
+  // một lượt url-info mới. Giữ nguyên `playing` (chỉ bỏ kết quả fetch) để data mới về là player mount
+  // lại bằng token mới — một cú bấm, không autoplay, và không tự lặp vì `deadToken` vẫn chặn chuỗi cũ.
+  const refetchPreview = () => {
+    // Về null để khung skeleton hiện lại thay vì giữ nguyên dòng lỗi.
+    setPreviewFetched(null)
+    setPlayFailed(false)
+    setPreviewAttempt((attempt) => attempt + 1)
   }
 
   const handlePaste = async () => {
@@ -260,12 +432,13 @@ export function UrlInputForm({
     e.preventDefault()
     if (!validateUrl(url)) return
     if (!canStart) {
-      // Enter bỏ qua được nút disabled — nói rõ link đang chờ kiểm tra hay đã bị từ chối.
-      setValidationError(fetched?.message ?? t('urlInput.waitingPreview'))
+      // Enter bỏ qua được nút disabled — nói rõ link đang chờ kiểm tra, đã bị từ chối, đang là bài
+      // chưa tải được, hay là phần chọn mục chưa khớp với format đang chọn.
+      setValidationError(unsupportedMessage ?? selectionHint ?? fetched?.message ?? t('urlInput.waitingPreview'))
       return
     }
     // Chọn cả bộ thì không gửi `slides`: thiếu key đã là "tất cả" với job cũ và với BE.
-    const slides = showSlidePicker && !allSlidesSelected ? selectedSlides : undefined
+    const slides = showItemPicker && !allSlidesSelected ? selectedSlides : undefined
     onSubmit(url.trim(), activeFormat, selectedQuality, slides)
   }
 
@@ -328,7 +501,15 @@ export function UrlInputForm({
             variant="primary"
             size="md"
             disabled={disabled || !canStart}
-            title={canStart ? undefined : (fetched?.message ?? t('urlInput.waitingPreview'))}
+            title={
+              canStart
+                ? undefined
+                : (hostNote ??
+                  unsupportedMessage ??
+                  selectionHint ??
+                  fetched?.message ??
+                  t('urlInput.waitingPreview'))
+            }
             rightIcon={<ArrowRight className="w-4 h-4" />}
             className="w-full sm:w-auto px-6 py-2.5 btn-shimmer shadow-[0_0_18px_rgba(255,59,48,0.25)]"
           >
@@ -366,27 +547,123 @@ export function UrlInputForm({
             <p className="text-xs text-slate-400 font-mono truncate">
               {previewMetaLine(preview.data)}
             </p>
+            {/* Vẫn hiện đủ ảnh bìa + title + tác giả (số liệu thật), chỉ nói thêm vì sao nút tắt. */}
+            {unsupportedMessage && (
+              <p className="mt-1 text-xs text-amber-300">{unsupportedMessage}</p>
+            )}
           </div>
         </div>
       )}
       {preview.status === 'error' && (
         <div className="in-fade flex items-center gap-3 p-2 bg-surface border border-edge clip-corner-card">
-          <p className="flex-1 min-w-0 text-xs text-slate-400">
-            {fetched?.message ?? t('urlInput.previewFailed')}
-          </p>
-          <Button
+          <div className="flex-1 min-w-0">
+            <p className="text-xs text-slate-400">
+              {fetched?.message ?? t('urlInput.previewFailed')}
+            </p>
+            {/* Mã bài viết do BE trích từ chuỗi redirect. Hiện ra để người dùng đối chiếu được
+                "bài nào bị", thay vì chỉ nghe một câu từ chối — nhưng ĐÚNG MỘT mã, không phải
+                handle, không phải URL nền tảng trả kèm token chia sẻ. */}
+            {fetched?.postCode && (
+              <p className="mt-1 text-xs text-slate-500 font-mono break-all">
+                {t('urlInput.postCode', { n: fetched.postCode })}
+              </p>
+            )}
+          </div>
+          {/* Phán quyết của nền tảng thì Retry chỉ tốn thêm một lượt — ẩn nút, không hứa hão với
+              một bài đã xóa. Lỗi đọc-trang (mạng/bận) vẫn còn nút. */}
+          {!TERMINAL_PREVIEW_CODES.has(fetched?.code ?? '') && (
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              onClick={refetchPreview}
+              leftIcon={<RefreshCw className="w-3.5 h-3.5" aria-hidden="true" />}
+            >
+              {t('urlInput.retry')}
+            </Button>
+          )}
+        </div>
+      )}
+
+      {/* Player Threads. Chỉ những mục BE cấp preview_token mới có chỗ bấm play; MP4 nguồn đi qua
+          endpoint /media/preview bằng token, FE không bao giờ nhận URL CDN có chữ ký. */}
+      {readyData && playableItems.length > 0 && (
+        <div className="in-fade flex flex-wrap items-center gap-1.5">
+          {playableItems.map((item) => {
+            const active = playingItem?.index === item.index
+            return (
+              <button
+                key={item.index}
+                type="button"
+                aria-pressed={active}
+                onClick={() => {
+                  setPlayFailed(false)
+                  setPlaying(active ? null : { key: trimmedUrl, index: item.index })
+                }}
+                className={`flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium border transition-colors cursor-pointer clip-corner-btn ${
+                  active
+                    ? 'border-brand text-brand bg-brand/10'
+                    : 'border-edge text-slate-300 hover:text-brand hover:bg-elev bg-elev'
+                }`}
+              >
+                <Play className="w-3.5 h-3.5" aria-hidden="true" />
+                {t('urlInput.playVideo', { n: item.index })}
+              </button>
+            )
+          })}
+        </div>
+      )}
+      {playingItem && (
+        <div className="in-fade space-y-1.5">
+          {/* KHÔNG dựng lại thẻ bằng đúng token vừa chết. Nếu một lượt fetch nào đó còn trả về chuỗi cũ
+              thì người dùng ở lại lời lỗi thật, thay vì nhận một player hỏng lần hai. */}
+          {playingItem.token !== deadToken && (
+            <video
+              controls
+              // preload="none": mở trang không tự kéo vài chục MB; chỉ tải khi người dùng bấm play.
+              // referrerPolicy không tồn tại trên <video> (DOM chỉ hỗ trợ ảnh/khung Script/Link) —
+              // yêu cầu này đi sang server của chính mình nên Referer ở đây chẳng liên quan gì tới
+              // CDN; header gửi lên nguồn là do backend quyết.
+              preload="none"
+              playsInline
+              poster={readyData?.thumbnail ?? undefined}
+              src={mediaApi.getPreviewUrl(playingItem.token)}
+              onError={() => {
+                setDeadToken(playingItem.token)
+                setPlayFailed(true)
+              }}
+              className="w-full aspect-video max-h-[60vh] bg-black rounded-lg border border-edge"
+            />
+          )}
+          {/* <video> chỉ báo "có lỗi", không báo 410/502: nói thật một câu rồi xin lại token,
+              không đoán nguyên nhân. Điều kiện thứ hai là trường hợp người dùng bấm lại chính mục vừa
+              chết — thẻ bị chặn dựng, nên lời lỗi phải hiện mà không cần chờ `playFailed`. */}
+          {(playFailed || playingItem.token === deadToken) && (
+            <div className="flex items-center gap-3">
+              <p className="flex-1 min-w-0 text-xs text-slate-400">{t('urlInput.previewPlayFailed')}</p>
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                onClick={refetchPreview}
+                leftIcon={<RefreshCw className="w-3.5 h-3.5" aria-hidden="true" />}
+              >
+                {t('urlInput.retry')}
+              </Button>
+            </div>
+          )}
+          <button
             type="button"
-            variant="secondary"
-            size="sm"
             onClick={() => {
-              // Về null để khung skeleton hiện lại thay vì giữ nguyên dòng lỗi.
-              setPreviewFetched(null)
-              setPreviewAttempt((a) => a + 1)
+              setPlaying(null)
+              setPlayFailed(false)
+              setDeadToken(null)
             }}
-            leftIcon={<RefreshCw className="w-3.5 h-3.5" aria-hidden="true" />}
+            className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-slate-200 transition-colors cursor-pointer"
           >
-            {t('urlInput.retry')}
-          </Button>
+            <X className="w-3.5 h-3.5" aria-hidden="true" />
+            {t('urlInput.hideVideo')}
+          </button>
         </div>
       )}
 
@@ -419,14 +696,15 @@ export function UrlInputForm({
         </div>
       )}
 
-      {/* Bộ chọn ảnh của bài ảnh TikTok: bỏ bớt ảnh khỏi ZIP/MP4 thay vì tải cả bộ */}
-      {showSlidePicker && (
+      {/* Lưới chọn mục: Threads chọn từng ảnh/từng video của một bài (ZIP gói đúng những ô đã chọn,
+          MP4/MP3 lấy đúng một video), TikTok chọn từng slide của bài ảnh. */}
+      {showItemPicker && (
         <div className="in-fade">
           <div className="flex items-center justify-between gap-2 mb-1.5 text-xs">
-            <span className="text-slate-400 font-medium whitespace-nowrap">{t('urlInput.slides')}</span>
+            <span className="text-slate-400 font-medium whitespace-nowrap">{pickerLabel}</span>
             <div className="flex items-center gap-2">
               <span className="text-slate-400 font-mono">
-                {selectedSlides.length}/{slideUrls.length}
+                {selectedSlides.length}/{pickerItems.length}
               </span>
               {!allSlidesSelected && (
                 <button
@@ -441,40 +719,51 @@ export function UrlInputForm({
           </div>
           <div
             role="group"
-            aria-label={t('urlInput.slides')}
+            aria-label={pickerLabel}
             className="grid grid-cols-4 sm:grid-cols-6 gap-1.5"
           >
-            {slideUrls.map((src, index) => {
-              const slide = index + 1
-              const picked = selectedSlides.includes(slide)
+            {pickerItems.map((item) => {
+              const picked = selectedSlides.includes(item.index)
               return (
                 <button
-                  key={src}
+                  key={`${item.kind}-${item.index}`}
                   type="button"
                   aria-pressed={picked}
-                  aria-label={`${t('urlInput.slides')} ${slide}`}
-                  onClick={() => toggleSlide(slide)}
+                  aria-label={`${pickerLabel} ${item.index}`}
+                  onClick={() => toggleSlide(item.index)}
                   className={`relative aspect-[3/4] overflow-hidden border transition-all cursor-pointer clip-corner-btn ${
                     picked
                       ? 'border-brand ring-2 ring-brand/40'
                       : 'border-edge opacity-40 hover:opacity-80'
                   }`}
                 >
-                  <img
-                    src={src}
-                    alt=""
-                    loading="lazy"
-                    decoding="async"
-                    referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover pointer-events-none"
-                  />
+                  {item.thumb ? (
+                    <img
+                      src={item.thumb}
+                      alt=""
+                      loading="lazy"
+                      decoding="async"
+                      referrerPolicy="no-referrer"
+                      className="w-full h-full object-cover pointer-events-none"
+                    />
+                  ) : (
+                    // Nền tảng không công bố ảnh bìa cho mục video nào (đo 02/11) — ô số là bằng chứng
+                    // duy nhất, lấy thumbnail của bài gắn cho cả 3 ô là nói dối.
+                    <span className="flex w-full h-full flex-col items-center justify-center gap-1 bg-elev text-slate-300">
+                      <Video className="w-5 h-5" aria-hidden="true" />
+                      <span className="text-[10px] font-mono">
+                        {t('urlInput.threadsVideoTile', { n: item.index })}
+                      </span>
+                    </span>
+                  )}
                   <span className="absolute bottom-0.5 left-1 text-[10px] font-mono text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]">
-                    {slide}
+                    {item.index}
                   </span>
                 </button>
               )
             })}
           </div>
+          {selectionHint && <p className="mt-1.5 text-xs text-amber-300">{selectionHint}</p>}
         </div>
       )}
 
