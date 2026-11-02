@@ -21,6 +21,7 @@ export interface CategoryDef {
 const GROUP_MAP: Record<ToolConfig['category'], CategoryId> = {
   youtube: 'downloader',
   tiktok: 'downloader',
+  twitter: 'downloader',
   convert: 'converter',
   media: 'converter',
   image: 'image',

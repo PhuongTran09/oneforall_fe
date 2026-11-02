@@ -26,3 +26,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Script điều tra một lần. tsconfig chỉ include src nên không vào build; giữ lại để
+# tái hiện probe nhưng không thành nguồn của app.
+scratch/

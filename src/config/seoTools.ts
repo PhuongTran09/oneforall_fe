@@ -14,9 +14,12 @@ export interface ToolFeature {
   desc: string
 }
 
+/** Nền tảng mà một trang dạng link nhận — cũng là khoá bảng chặn host của UrlInputForm. */
+export type UrlPlatform = 'youtube' | 'tiktok' | 'twitter'
+
 export interface ToolConfig {
   slug: string
-  category: 'youtube' | 'tiktok' | 'convert' | 'image' | 'media' | 'document' | 'data' | 'archive'
+  category: 'youtube' | 'tiktok' | 'twitter' | 'convert' | 'image' | 'media' | 'document' | 'data' | 'archive'
   badge: string
   title: string
   metaDescription: string
@@ -25,7 +28,7 @@ export interface ToolConfig {
   /** Text SEO dưới ô nhập; EN bắt buộc có nếu VI có. */
   introParagraphs?: string[]
   inputType: 'url' | 'file'
-  urlPlatform?: 'youtube' | 'tiktok'
+  urlPlatform?: UrlPlatform
   acceptedFileTypes?: string
   outputFormats: string[]
   defaultFormat: string
@@ -75,7 +78,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
       { q: 'Video tải về được lưu ở đâu?', a: 'Trình duyệt thường lưu tệp vào thư mục Downloads mặc định, trừ khi bạn đã đổi cài đặt tải xuống.' },
       { q: 'Tại sao một số video tải chậm hơn?', a: 'Video dài hoặc có chất lượng cao có thể mất nhiều thời gian xử lý hơn. Bạn hãy chờ tiến trình hoàn tất trước khi tải tệp.' },
     ],
-    relatedSlugs: ['/tiktok-downloader', '/video-converter', '/audio-converter'],
+    relatedSlugs: ['/tiktok-downloader', '/twitter-downloader', '/video-converter', '/audio-converter'],
   },
 
   '/tiktok-downloader': {
@@ -114,7 +117,46 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
       { q: 'Video tải về có watermark không?', a: 'Watermark phụ thuộc vào tệp nguồn mà TikTok cung cấp. Công cụ không có bước xóa watermark riêng; hãy kiểm tra kết quả trước khi sử dụng.' },
       { q: 'Lượt tải có bị giới hạn không?', a: 'Giới hạn sử dụng phụ thuộc gói và quy tắc dịch vụ hiện tại; hãy xem thông tin hiển thị trên trang trước khi xử lý.' },
     ],
-    relatedSlugs: ['/youtube-downloader', '/video-converter', '/audio-converter'],
+    relatedSlugs: ['/youtube-downloader', '/twitter-downloader', '/video-converter', '/audio-converter'],
+  },
+
+  '/twitter-downloader': {
+    slug: '/twitter-downloader',
+    category: 'twitter',
+    badge: 'Công cụ tải X',
+    title: 'Tải Video X (Twitter) Sang MP4 & MP3 Trực Tuyến | One ForAll',
+    metaDescription:
+      'Dán liên kết bài viết X (Twitter) vào One ForAll để xem trước thông tin, chọn MP4 hoặc MP3 rồi tải về bằng trình duyệt, không cần cài ứng dụng.',
+    h1: 'Tải Video X (Twitter) Sang MP4 Và MP3',
+    subtitle:
+      'Xem trước thông tin bài viết X, chọn định dạng MP4 hoặc MP3 rồi tải về trên điện thoại và máy tính.',
+    introParagraphs: [
+      'Để tải video từ X (Twitter): sao chép liên kết bài viết, bấm Chia sẻ > Sao chép liên kết, dán vào ô bên trên rồi bấm Bắt đầu tải. One ForAll hiển thị tiêu đề và thông tin bài viết trước, bạn chọn MP4 hoặc MP3 sau khi đã thấy nội dung.',
+      'Chỉ bài viết công khai có video xem trước và tải được. Bài chỉ có ảnh, bài riêng tư, đã xoá hoặc Space không tải được; công cụ không có bước vượt quyền truy cập. Thời gian xử lý phụ thuộc độ dài video và tình trạng hệ thống.',
+    ],
+    inputType: 'url',
+    urlPlatform: 'twitter',
+    outputFormats: ['mp4', 'mp3'],
+    defaultFormat: 'mp4',
+    backendType: 'media_url',
+    backendOperation: 'url_download',
+    howItWorksSteps: [
+      { step: '01', title: 'Lấy liên kết bài viết', desc: 'Bấm Chia sẻ trên bài viết X rồi chọn Sao chép liên kết.' },
+      { step: '02', title: 'Dán link để xem trước', desc: 'One ForAll đọc bài viết và hiện tiêu đề, ảnh đại diện, tác giả.' },
+      { step: '03', title: 'Chọn MP4 hoặc MP3', desc: 'MP4 nếu muốn xem video, MP3 nếu chỉ cần phần âm thanh.' },
+      { step: '04', title: 'Tải tệp về', desc: 'Bấm Tải xuống để lưu tệp vào thiết bị của bạn.' },
+    ],
+    features: [
+      { title: 'Xem trước rồi mới tải', desc: 'Thông tin bài viết hiện trước khi chọn định dạng, không tải mù.' },
+      { title: 'Video và âm thanh', desc: 'Lấy MP4 hoặc chuyển phần âm thanh sang MP3 khi bài viết có thể tải.' },
+      { title: 'Dùng trên nhiều thiết bị', desc: 'Mở bằng trình duyệt trên điện thoại, máy tính bảng hoặc máy tính.' },
+    ],
+    supportedFormatsDesc: 'Hỗ trợ định dạng video MP4 và định dạng âm thanh MP3 cho bài viết công khai có video.',
+    faqList: [
+      { q: 'Vì sao không xem trước được liên kết này?', a: 'Trang này chỉ đọc được bài viết công khai có video. Bài chỉ đăng ảnh, bài riêng tư, đã bị xoá, hoặc nền tảng đang chặn truy cập từ máy chủ đều không xem trước được. One ForAll không vượt quyền truy cập nội dung riêng tư.' },
+      { q: 'Độ phân giải tối đa là bao nhiêu?', a: 'Chất lượng phụ thuộc mức cao nhất mà X công bố cho video đó. Các mức 1080p, 720p, 480p là trần bạn chọn; nếu video không có mức đó, tệp vẫn tải ở mức cao nhất khả dụng.' },
+    ],
+    relatedSlugs: ['/youtube-downloader', '/tiktok-downloader', '/video-converter', '/audio-converter'],
   },
 
   '/convert': {

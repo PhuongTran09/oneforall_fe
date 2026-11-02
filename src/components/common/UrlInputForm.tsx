@@ -6,9 +6,10 @@ import { t, getLang } from '../../i18n/langStore'
 import { showToast } from '../feedback/toastStore'
 import { describeError } from '../../utils/apiError'
 import { mediaApi, type UrlInfo } from '../../services/api/mediaApi'
+import type { UrlPlatform } from '../../config/seoTools'
 
 export interface UrlInputFormProps {
-  platform?: 'youtube' | 'tiktok'
+  platform?: UrlPlatform
   formats: string[]
   defaultFormat: string
   onSubmit: (url: string, format: string, quality: string, slides?: number[]) => void
@@ -31,18 +32,42 @@ const qualityOptionsFor = (format: string) =>
 const defaultQualityFor = (format: string) =>
   AUDIO_FORMATS.has(format.toLowerCase()) ? '192' : 'best'
 
-// Bản pure của validateUrl bên dưới (không set error) — dùng cho effect preview.
-const isValidForPlatform = (value: string, platform?: 'youtube' | 'tiktok'): boolean => {
-  const trimmed = value.trim()
-  if (!trimmed) return false
+// Chặn theo hostname, khớp TỪNG NHÃN — cùng quy tắc với _platform_for của backend.
+// '.includes("x.com")' nhận cả not-x.com và 'https://youtube.com.attacker.tld'; hostname
+// đã bỏ scheme/userinfo/port nên 'http://t.co@127.0.0.1/' cũng không khớp 't.co'.
+const PLATFORM_HOSTS: Record<UrlPlatform, readonly string[]> = {
+  youtube: ['youtube.com', 'youtu.be'],
+  tiktok: ['tiktok.com'],
+  twitter: ['x.com', 'twitter.com', 't.co'],
+}
+const PLATFORM_ERROR_KEYS: Record<UrlPlatform, string> = {
+  youtube: 'urlInput.youtubeOnly',
+  tiktok: 'urlInput.tiktokOnly',
+  twitter: 'urlInput.twitterOnly',
+}
+
+const PLATFORM_PLACEHOLDERS: Record<UrlPlatform, string> = {
+  youtube: 'urlInput.placeholderYoutube',
+  tiktok: 'urlInput.placeholderTiktok',
+  twitter: 'urlInput.placeholderTwitter',
+}
+
+const hostnameOf = (value: string): string => {
   try {
-    new URL(trimmed)
+    return new URL(value).hostname.toLowerCase()
   } catch {
-    return false
+    return ''
   }
-  if (platform === 'youtube') return trimmed.includes('youtube.com') || trimmed.includes('youtu.be')
-  if (platform === 'tiktok') return trimmed.includes('tiktok.com')
-  return true
+}
+
+const matchesPlatform = (host: string, platform: UrlPlatform): boolean =>
+  PLATFORM_HOSTS[platform].some((domain) => host === domain || host.endsWith(`.${domain}`))
+
+// Bản pure của validateUrl bên dưới (không set error) — dùng cho effect preview.
+const isValidForPlatform = (value: string, platform?: UrlPlatform): boolean => {
+  const host = hostnameOf(value.trim())
+  if (!host) return false
+  return platform ? matchesPlatform(host, platform) : true
 }
 
 const formatDuration = (seconds: number): string => {
@@ -121,13 +146,13 @@ export function UrlInputForm({
   // lỗi.
   const canStart = urlValid && fetched?.status === 'ready'
 
-  // Bài ảnh TikTok = khi BE đọc được ảnh thật, không phải khi URL có /photo/: Share của app ra
+  // Bài ảnh = khi BE đọc được ảnh thật, không phải khi URL có /photo/: Share của app ra
   // link vt./vm. (BE mở redirect rồi vẫn đủ ảnh) còn link /share/photo/ thì BE lại không có ảnh
   // — suy từ URL vừa giấu picker với link mobile, vừa hứa chip ZIP ở nơi job sẽ chết 502.
-  const slideUrls = platform === 'tiktok' ? preview.data?.slides ?? [] : []
-  const isTiktokPhoto = slideUrls.length > 0
-  // Bài ảnh TikTok có thêm ZIP/GIF mà link video không có.
-  const visibleFormats = isTiktokPhoto
+  const slideUrls = preview.data?.slides ?? []
+  const isPhotoPost = slideUrls.length > 0
+  // Bài ảnh có thêm ZIP/GIF mà link video không có.
+  const visibleFormats = isPhotoPost
     ? [...formats, ...PHOTO_ONLY_FORMATS.filter((format) => !formats.includes(format))]
     : formats
   // Derive thay vì setState trong effect: người dùng sửa link ảnh thành link video thì
@@ -216,23 +241,15 @@ export function UrlInputForm({
       return false
     }
 
-    try {
-      new URL(trimmed)
-    } catch {
+    const host = hostnameOf(trimmed)
+    if (!host) {
       setValidationError(t('urlInput.invalid'))
       return false
     }
 
-    if (platform === 'youtube') {
-      if (!trimmed.includes('youtube.com') && !trimmed.includes('youtu.be')) {
-        setValidationError(t('urlInput.youtubeOnly'))
-        return false
-      }
-    } else if (platform === 'tiktok') {
-      if (!trimmed.includes('tiktok.com')) {
-        setValidationError(t('urlInput.tiktokOnly'))
-        return false
-      }
+    if (platform && !matchesPlatform(host, platform)) {
+      setValidationError(t(PLATFORM_ERROR_KEYS[platform]))
+      return false
     }
 
     setValidationError(null)
@@ -252,12 +269,9 @@ export function UrlInputForm({
     onSubmit(url.trim(), activeFormat, selectedQuality, slides)
   }
 
-  const placeholderText =
-    platform === 'youtube'
-      ? t('urlInput.placeholderYoutube')
-      : platform === 'tiktok'
-      ? t('urlInput.placeholderTiktok')
-      : t('urlInput.placeholderGeneric')
+  const placeholderText = platform
+    ? t(PLATFORM_PLACEHOLDERS[platform])
+    : t('urlInput.placeholderGeneric')
 
   return (
     <form onSubmit={handleSubmit} className="w-full max-w-3xl mx-auto space-y-4">

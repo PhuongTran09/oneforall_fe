@@ -3,8 +3,8 @@ export const vi = {
     "downloader": {
       "name": "Tải media",
       "h1": "Tải video và audio từ liên kết",
-      "desc": "Dán liên kết YouTube hoặc TikTok, chọn MP4 hay MP3 rồi tải về. Không cần cài đặt, không cần tài khoản.",
-      "seoTitle": "Tải Video YouTube & TikTok Online Sang MP4, MP3 | One ForAll"
+      "desc": "Dán liên kết YouTube, TikTok hoặc X, chọn MP4 hay MP3 rồi tải về. Không cần cài đặt, không cần tài khoản.",
+      "seoTitle": "Tải Video YouTube, TikTok & X Online Sang MP4, MP3 | One ForAll"
     },
     "converter": {
       "name": "Chuyển đổi tệp",
@@ -412,7 +412,7 @@ export const vi = {
     "linkNoPreview": "Không xem trước được liên kết này (video riêng tư, đã bị xóa hoặc chặn theo độ tuổi).",
     "linkPlaylistUnsupported": "Đây là playlist — mỗi lần chỉ dán liên kết của một video.",
     "linkPreviewBusy": "Dịch vụ xem trước liên kết đang bận, thử lại sau ít phút.",
-    "linkSiteUnsupported": "Công cụ chỉ xem trước được liên kết YouTube hoặc TikTok.",
+    "linkSiteUnsupported": "Công cụ chỉ xem trước được liên kết YouTube, TikTok hoặc X.",
     "network": "Không gửi được yêu cầu — kiểm tra kết nối mạng của thiết bị.",
     "noFile": "Chưa có tệp nào được gửi lên. Hãy chọn tệp hoặc dán ảnh vào trang.",
     "noMediaInput": "Chưa có đầu vào. Hãy tải lên tệp video/audio hoặc dán liên kết.",
@@ -558,6 +558,7 @@ export const vi = {
     "menuHint": "Bấm vào một nhóm để xem danh sách công cụ.",
     "groupFun": "Giải trí",
     "toolTiktok": "Tải TikTok",
+    "toolTwitter": "Tải X (Twitter)",
     "toolYoutube": "Tải YouTube",
     "caseOpening": "Hòm quà",
     "squareSpin": "Vòng quay ô vuông",
@@ -954,6 +955,7 @@ export const vi = {
     "pasteFromClipboard": "Dán từ bộ nhớ tạm",
     "placeholderGeneric": "Dán đường dẫn URL cần xử lý...",
     "placeholderTiktok": "Dán liên kết video TikTok tại đây (ví dụ: https://www.tiktok.com/@user/video/...)",
+    "placeholderTwitter": "Dán liên kết bài viết X (Twitter) tại đây (ví dụ: https://x.com/user/status/...)",
     "placeholderYoutube": "Dán liên kết video YouTube tại đây (ví dụ: https://www.youtube.com/watch?v=...)",
     "previewFailed": "Không xem trước được liên kết này — hãy bấm Thử lại.",
     "quality": "Chất lượng:",
@@ -963,6 +965,7 @@ export const vi = {
     "slidesAll": "Chọn tất cả",
     "startDownload": "Bắt đầu tải",
     "tiktokOnly": "Vui lòng nhập liên kết video hợp lệ từ TikTok (tiktok.com).",
+    "twitterOnly": "Vui lòng nhập liên kết bài viết hợp lệ từ X (x.com, twitter.com hoặc t.co).",
     "viewsLabel": "lượt xem",
     "waitingPreview": "Đang kiểm tra liên kết, vui lòng đợi…",
     "youtubeOnly": "Vui lòng nhập liên kết hợp lệ từ YouTube (youtube.com hoặc youtu.be)."
