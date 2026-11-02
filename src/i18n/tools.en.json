@@ -173,6 +173,130 @@
       }
     ]
   },
+  "/facebook-downloader": {
+    "title": "Download Facebook Videos as MP4 or MP3 Online | One ForAll",
+    "metaDescription": "Paste a public Facebook post link into One ForAll, preview the post, choose MP4 or MP3, and download it from your browser with no app and no login.",
+    "h1": "Download Facebook Videos as MP4 and MP3",
+    "subtitle": "Preview the Facebook post, pick MP4 or MP3, then download it on your phone or computer.",
+    "badge": "Facebook downloader",
+    "supportedFormatsDesc": "Supports MP4 video and MP3 audio for public posts that contain a video. Video quality is the highest level Facebook publishes for that post.",
+    "introParagraphs": [
+      "To download a video from Facebook: open the post, tap Share > Copy Link, paste it into the box above and tap Start download. One ForAll shows the title, thumbnail and author first, so you choose MP4 or MP3 after seeing what the link contains.",
+      "Only public posts that contain a video can be downloaded. Private posts, closed groups, deleted posts and short links that Facebook redirects to its homepage cannot be previewed. The tool never asks for your Facebook password, never collects browser cookies and has no step to bypass access restrictions. Facebook publishes only SD and HD for video, so there is no 1080p or 720p choice; the file always takes the highest level the post offers."
+    ],
+    "howItWorksSteps": [
+      {
+        "step": "01",
+        "title": "Copy the post link",
+        "desc": "Use Share on the Facebook post and choose Copy Link."
+      },
+      {
+        "step": "02",
+        "title": "Paste to preview",
+        "desc": "One ForAll reads the post and shows its title, thumbnail and author."
+      },
+      {
+        "step": "03",
+        "title": "Choose MP4 or MP3",
+        "desc": "Pick MP4 for video, or MP3 if you only need the audio."
+      },
+      {
+        "step": "04",
+        "title": "Download your file",
+        "desc": "Tap Download to save the file to your device."
+      }
+    ],
+    "features": [
+      {
+        "title": "Preview before download",
+        "desc": "Post details appear before you choose a format, so nothing downloads blind."
+      },
+      {
+        "title": "Video and audio",
+        "desc": "Take the MP4 video or convert the audio track to MP3 when the post allows it."
+      },
+      {
+        "title": "Your account stays out of it",
+        "desc": "No password prompt, no browser cookies, no reaching into private posts."
+      }
+    ],
+    "faqList": [
+      {
+        "q": "Why can this link not be previewed?",
+        "a": "This page reads public posts that contain a video. Private posts, closed groups, deleted posts, and short links that Facebook sends back to its homepage cannot be previewed. One ForAll does not bypass access restrictions on private content."
+      },
+      {
+        "q": "Why is there no 1080p or 720p choice?",
+        "a": "Facebook publishes only two levels for video, SD and HD, and leaves the frame height blank for them, so picking a specific level would do nothing. One ForAll takes the highest level the platform serves instead of promising a quality that does not exist."
+      }
+    ]
+  },
+  "/threads-downloader": {
+    "title": "Download Threads Images And Video To Your Device | One ForAll",
+    "metaDescription": "Paste a Threads post link, preview it, pick the photos and videos you want, and get a JPEG, MP4/MP3 or a single ZIP for posts with several items.",
+    "h1": "Download Threads Post Images Or Video To Your Device",
+    "subtitle": "Preview a Threads post, download the JPEG at the size the platform publishes for a one-image post, the MP4/MP3 of one video you pick, or a ZIP bundling several photos and videos of the same post.",
+    "badge": "Threads image and video downloader",
+    "supportedFormatsDesc": "Outputs JPEG for posts that contain exactly one image, MP4/MP3 for exactly one video you select, and ZIP for posts with two or more items. Text-only posts are not supported.",
+    "introParagraphs": [
+      "To download from Threads: open the post, tap Share > Copy Link and paste it into the box above. One ForAll shows the post title, image and author first; when the post has several items it also shows a picker so you can tick each photo and each video.",
+      "The file you get is the version Threads itself publishes: the JPEG keeps the size the platform declares, the MP4 is the single version the embed page advertises to visitors (measured: 720x1280 portrait, H.264), and MP3 is the audio of that video at the bitrate you choose. A post with two or more items - several photos, several videos, or photos mixed with video - is packed into ONE ZIP containing exactly the items you ticked: photos keep every original byte, videos keep their published MP4. A text-only post has nothing to download, and the tool says so on the preview card instead of inventing a file that does not exist."
+    ],
+    "howItWorksSteps": [
+      {
+        "step": "01",
+        "title": "Copy the post link",
+        "desc": "Use Share on the Threads post and choose Copy Link."
+      },
+      {
+        "step": "02",
+        "title": "Paste to preview",
+        "desc": "One ForAll reads the post and shows its title, image and author."
+      },
+      {
+        "step": "03",
+        "title": "Pick photos and videos",
+        "desc": "A post with several items shows a picker: tick each photo and each video you need, or leave them all ticked."
+      },
+      {
+        "step": "04",
+        "title": "Get the file",
+        "desc": "Tap Download to save the JPEG, MP4, MP3 or ZIP file to your device."
+      }
+    ],
+    "features": [
+      {
+        "title": "Pick items inside a post",
+        "desc": "A one-image post gives you its JPEG, one selected video gives you MP4/MP3, and a multi-item post is bundled into a ZIP of exactly the tiles you ticked."
+      },
+      {
+        "title": "Know before you tap",
+        "desc": "Text-only posts, and posts whose item list cannot be read, are flagged on the preview card."
+      },
+      {
+        "title": "No login needed",
+        "desc": "Only reads what the public page already serves; no cookies, no password."
+      }
+    ],
+    "faqList": [
+      {
+        "q": "How do I download a post with several photos or videos?",
+        "a": "One ForAll lists every item of the post on the preview card; tick the photos and videos you want and you get ONE ZIP containing exactly those items. For a single video on its own, choose MP4/MP3 with exactly one video tile - one file can only be built from one video."
+      },
+      {
+        "q": "Why do the video tiles have no thumbnail?",
+        "a": "Threads does not publish a cover image per video in a post (measured: a three-video post carries one image for the whole post), so video tiles show their position instead of reusing the post cover for all three."
+      },
+      {
+        "q": "Which version of the video do I get?",
+        "a": "Exactly the MP4 that Threads itself publishes to visitors on the post's embed page (measured: 720x1280 portrait, H.264/AAC). One ForAll does not upscale it, does not fake a 1080p or 4K tier, and shows no video quality selector because the platform publishes only one version."
+      },
+      {
+        "q": "Is the downloaded image altered in any way?",
+        "a": "One ForAll does not crop, upscale or filter: the file keeps the size the post declares. When the platform serves a WebP for a single-image post, the tool converts it to JPEG at the same size before handing it over; inside a ZIP the photos keep their original format untouched. If the received file does not match the declared size, the tool aborts and reports an error instead of handing you a different file."
+      }
+    ]
+  },
   "/convert": {
     "title": "Online File Converter | One ForAll",
     "metaDescription": "Convert documents, images, video and audio online. Available output formats depend on the uploaded file and your plan.",

@@ -89,10 +89,20 @@ export const ERROR_CODE_KEYS: Record<string, string> = {
   FILE_DELETE_FAILED: 'deleteFailed',
   STREAM_DISABLED: 'streamDisabled',
 
+  // /media/preview: ba mã riêng của luồng phát video qua server. PREVIEW_DISABLED là 404 khi
+  // tắt tính năng — người dùng không bấm vào nó, FE cũng không vẽ nút play.
+  PREVIEW_DISABLED: 'previewDisabled',
+  PREVIEW_LINK_EXPIRED: 'previewExpired',
+  PREVIEW_SOURCE_REFUSED: 'previewRefused',
+
   LINK_PLATFORM_UNSUPPORTED: 'linkSiteUnsupported',
   LINK_PLAYLIST_UNSUPPORTED: 'linkPlaylistUnsupported',
   LINK_PREVIEW_UNAVAILABLE: 'linkNoPreview',
   LINK_PREVIEW_BUSY: 'linkPreviewBusy',
+  // Hai mã này là PHÁN QUYẾT của nền tảng về chính bài viết (đã xóa / chỉ một số người xem được),
+  // không phải "ta đọc không được" — vì vậy mỗi mã một câu, và FE tắt nút Thử lại cho chúng.
+  LINK_POST_REMOVED: 'postRemoved',
+  LINK_POST_RESTRICTED: 'postRestricted',
   LINK_CONTENT_REFUSED: 'linkContentRefused',
   LINK_DOWNLOAD_FAILED: 'linkDownloadFailed',
   URL_REQUIRED: 'noMediaInput',
@@ -168,14 +178,25 @@ function safeParams(raw: unknown): Record<string, string | number> | undefined {
   return Object.keys(out).length ? out : undefined
 }
 
-/** Câu theo locale cho một mã lỗi; null khi mã chưa map, từ điển chưa có entry hoặc params */
-function codedMessage(code?: string, params?: Record<string, unknown>): string | null {
+/** Câu theo locale cho một mã lỗi; null khi mã chưa map, từ điển chưa có entry hoặc params
+ *
+ * `keySuffix` chọn bản viết riêng cho một nền tảng (vd `errors.linkNoPreviewThreads`) vì câu chung
+ * liệt kê nguyên nhân của video, còn bài Threads thì suy nguyên là "không còn công khai". Nền tảng
+ * chưa có key riêng rơi về chuỗi cũ từng ký tự.
+ */
+function codedMessage(
+  code?: string,
+  params?: Record<string, unknown>,
+  keySuffix?: string,
+): string | null {
   if (!code) return null
   const key = ERROR_CODE_KEYS[code]
   if (!key) return null
-  const full = `errors.${key}`
-  if (!hasKey(full)) return null
-  const text = t(full, safeParams(params))
+  const base = `errors.${key}`
+  const full = keySuffix ? `errors.${key}${keySuffix}` : base
+  const chosen = hasKey(full) ? full : base
+  if (!hasKey(chosen)) return null
+  const text = t(chosen, safeParams(params))
   return /\{\w+\}/.test(text) ? null : text
 }
 
@@ -314,6 +335,7 @@ function beOrStatus(message: string, statusKey: string, coded?: string | null): 
 export function describeError(
   err: unknown,
   fallback?: string,
+  opts?: { keySuffix?: string },
 ): { type: ErrorToastType; message: string } {
   // Người dùng chủ động hủy luồng theo dõi — không phải lỗi, caller thường đã lọc;
   // giữ ở đây để không bao giờ biến thành toast lỗi.
@@ -324,7 +346,7 @@ export function describeError(
   if (err instanceof ApiClientError) {
     const detail = structuredDetail(err)
     const meta = readErrorMeta(err)
-    const coded = codedMessage(meta.code, meta.params)
+    const coded = codedMessage(meta.code, meta.params, opts?.keySuffix)
 
     // 413 có hai hình trên cùng một status: ``too_large()`` của endpoint (detail object, trần
     // theo GÓI và theo loại tệp vừa sniff) và middleware chặn theo Content-Length (detail là

@@ -15,11 +15,22 @@ export interface ToolFeature {
 }
 
 /** Nền tảng mà một trang dạng link nhận — cũng là khoá bảng chặn host của UrlInputForm. */
-export type UrlPlatform = 'youtube' | 'tiktok' | 'twitter'
+export type UrlPlatform = 'youtube' | 'tiktok' | 'twitter' | 'facebook' | 'threads'
 
 export interface ToolConfig {
   slug: string
-  category: 'youtube' | 'tiktok' | 'twitter' | 'convert' | 'image' | 'media' | 'document' | 'data' | 'archive'
+  category:
+    | 'youtube'
+    | 'tiktok'
+    | 'twitter'
+    | 'facebook'
+    | 'threads'
+    | 'convert'
+    | 'image'
+    | 'media'
+    | 'document'
+    | 'data'
+    | 'archive'
   badge: string
   title: string
   metaDescription: string
@@ -78,7 +89,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
       { q: 'Video tải về được lưu ở đâu?', a: 'Trình duyệt thường lưu tệp vào thư mục Downloads mặc định, trừ khi bạn đã đổi cài đặt tải xuống.' },
       { q: 'Tại sao một số video tải chậm hơn?', a: 'Video dài hoặc có chất lượng cao có thể mất nhiều thời gian xử lý hơn. Bạn hãy chờ tiến trình hoàn tất trước khi tải tệp.' },
     ],
-    relatedSlugs: ['/tiktok-downloader', '/twitter-downloader', '/video-converter', '/audio-converter'],
+    relatedSlugs: ['/tiktok-downloader', '/twitter-downloader', '/facebook-downloader', '/threads-downloader', '/video-converter', '/audio-converter'],
   },
 
   '/tiktok-downloader': {
@@ -117,7 +128,7 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
       { q: 'Video tải về có watermark không?', a: 'Watermark phụ thuộc vào tệp nguồn mà TikTok cung cấp. Công cụ không có bước xóa watermark riêng; hãy kiểm tra kết quả trước khi sử dụng.' },
       { q: 'Lượt tải có bị giới hạn không?', a: 'Giới hạn sử dụng phụ thuộc gói và quy tắc dịch vụ hiện tại; hãy xem thông tin hiển thị trên trang trước khi xử lý.' },
     ],
-    relatedSlugs: ['/youtube-downloader', '/twitter-downloader', '/video-converter', '/audio-converter'],
+    relatedSlugs: ['/youtube-downloader', '/twitter-downloader', '/facebook-downloader', '/threads-downloader', '/video-converter', '/audio-converter'],
   },
 
   '/twitter-downloader': {
@@ -156,7 +167,87 @@ export const SEO_TOOLS: Record<string, ToolConfig> = {
       { q: 'Vì sao không xem trước được liên kết này?', a: 'Trang này chỉ đọc được bài viết công khai có video. Bài chỉ đăng ảnh, bài riêng tư, đã bị xoá, hoặc nền tảng đang chặn truy cập từ máy chủ đều không xem trước được. One ForAll không vượt quyền truy cập nội dung riêng tư.' },
       { q: 'Độ phân giải tối đa là bao nhiêu?', a: 'Chất lượng phụ thuộc mức cao nhất mà X công bố cho video đó. Các mức 1080p, 720p, 480p là trần bạn chọn; nếu video không có mức đó, tệp vẫn tải ở mức cao nhất khả dụng.' },
     ],
-    relatedSlugs: ['/youtube-downloader', '/tiktok-downloader', '/video-converter', '/audio-converter'],
+    relatedSlugs: ['/youtube-downloader', '/tiktok-downloader', '/facebook-downloader', '/threads-downloader', '/video-converter', '/audio-converter'],
+  },
+
+  '/facebook-downloader': {
+    slug: '/facebook-downloader',
+    category: 'facebook',
+    badge: 'Công cụ tải Facebook',
+    title: 'Tải Video Facebook Sang MP4 & MP3 Trực Tuyến | One ForAll',
+    metaDescription:
+      'Dán liên kết bài viết Facebook vào One ForAll để xem trước thông tin, chọn MP4 hoặc MP3 rồi tải về bằng trình duyệt, không cần cài ứng dụng.',
+    h1: 'Tải Video Facebook Sang MP4 Và MP3',
+    subtitle:
+      'Xem trước thông tin bài viết Facebook, chọn định dạng MP4 hoặc MP3 rồi tải về trên điện thoại và máy tính.',
+    introParagraphs: [
+      'Để tải video từ Facebook: mở bài viết, bấm Chia sẻ > Sao chép liên kết, dán vào ô bên trên rồi bấm Bắt đầu tải. One ForAll hiển thị tiêu đề, ảnh đại diện và tác giả trước, bạn chọn MP4 hoặc MP3 sau khi đã thấy nội dung.',
+      'Chỉ bài viết công khai có video tải được. Bài riêng tư, nhóm kín, đã xoá, hoặc liên kết rút gọn mà Facebook đưa về trang chủ đều không xem trước được; công cụ không yêu cầu mật khẩu Facebook, không tự lấy cookie trình duyệt và không vượt quyền truy cập. Video Facebook chỉ có hai mức SD và HD nên không có chọn 1080p hay 720p — tệp luôn lấy ở mức cao nhất bài viết công bố.',
+    ],
+    inputType: 'url',
+    urlPlatform: 'facebook',
+    outputFormats: ['mp4', 'mp3'],
+    defaultFormat: 'mp4',
+    backendType: 'media_url',
+    backendOperation: 'url_download',
+    howItWorksSteps: [
+      { step: '01', title: 'Lấy liên kết bài viết', desc: 'Bấm Chia sẻ trên bài viết Facebook rồi chọn Sao chép liên kết.' },
+      { step: '02', title: 'Dán link để xem trước', desc: 'One ForAll đọc bài viết và hiện tiêu đề, ảnh đại diện, tác giả.' },
+      { step: '03', title: 'Chọn MP4 hoặc MP3', desc: 'MP4 nếu muốn xem video, MP3 nếu chỉ cần phần âm thanh.' },
+      { step: '04', title: 'Tải tệp về', desc: 'Bấm Tải xuống để lưu tệp vào thiết bị của bạn.' },
+    ],
+    features: [
+      { title: 'Xem trước rồi mới tải', desc: 'Thông tin bài viết hiện trước khi chọn định dạng, không tải mù.' },
+      { title: 'Video và âm thanh', desc: 'Lấy MP4 hoặc chuyển phần âm thanh sang MP3 khi bài viết tải được.' },
+      { title: 'Không đụng tài khoản của bạn', desc: 'Không hỏi mật khẩu, không lấy cookie trình duyệt, không vượt bài riêng tư.' },
+    ],
+    supportedFormatsDesc: 'Hỗ trợ video MP4 và âm thanh MP3 cho bài viết công khai có video. Mức video là mức cao nhất Facebook công bố cho bài viết đó.',
+    faqList: [
+      { q: 'Vì sao không xem trước được liên kết này?', a: 'Trang này chỉ đọc được bài viết công khai có video. Bài riêng tư, nhóm kín, đã bị xoá, hoặc liên kết rút gọn mà Facebook đưa về trang chủ đều không xem trước được. One ForAll không vượt quyền truy cập nội dung riêng tư.' },
+      { q: 'Vì sao không có mức 1080p hay 720p?', a: 'Facebook chỉ công bố hai mức SD và HD cho video, kèm theo chiều cao khung hình để trống, nên chọn một mức cụ thể sẽ không có tác dụng. One ForAll lấy mức cao nhất nền tảng phục vụ thay vì hứa một mức không tồn tại.' },
+    ],
+    relatedSlugs: ['/youtube-downloader', '/tiktok-downloader', '/twitter-downloader', '/threads-downloader', '/video-converter'],
+  },
+
+  '/threads-downloader': {
+    slug: '/threads-downloader',
+    category: 'threads',
+    badge: 'Công cụ tải ảnh và video Threads',
+    title: 'Tải Ảnh Và Video Bài Viết Threads Về Máy | One ForAll',
+    metaDescription:
+      'Dán liên kết bài viết Threads để xem trước nội dung, chọn từng ảnh từng video cần tải, rồi nhận JPEG, MP4/MP3 hoặc một file ZIP cho bài nhiều mục.',
+    h1: 'Tải Ảnh Hoặc Video Bài Viết Threads Về Máy',
+    subtitle:
+      'Xem trước bài viết Threads, tải JPEG của bài một ảnh, MP4/MP3 của một video bạn chọn, hoặc ZIP gói nhiều ảnh và video của cùng một bài.',
+    introParagraphs: [
+      'Để tải từ Threads: mở bài viết, bấm Chia sẻ > Sao chép liên kết, dán vào ô bên trên. One ForAll hiện tiêu đề, ảnh và tác giả của bài viết trước; bài có nhiều mục thì hiện thêm bộ chọn để bạn tick từng ảnh, từng video.',
+      'File nhận về là bản Threads tự công bố: JPEG giữ nguyên kích thước nền tảng khai cho bài một ảnh, MP4 là bản duy nhất trang nhúng công bố cho khách (đo: 720×1280 dọc, H.264), MP3 là nhạc của chính video đó với bitrate bạn chọn. Bài có từ hai mục trở lên — nhiều ảnh, nhiều video, hoặc ảnh lẫn video — được gói vào MỘT file ZIP chứa đúng những mục bạn tick: ảnh giữ nguyên từng byte, video giữ nguyên bản MP4. Bài chỉ có chữ thì không có gì để tải, và công cụ nói điều đó ngay trên card xem trước thay vì dựng một tệp không tồn tại.',
+    ],
+    inputType: 'url',
+    urlPlatform: 'threads',
+    outputFormats: ['jpg', 'mp4', 'mp3', 'zip'],
+    defaultFormat: 'jpg',
+    backendType: 'media_url',
+    backendOperation: 'url_download',
+    howItWorksSteps: [
+      { step: '01', title: 'Lấy liên kết bài viết', desc: 'Bấm Chia sẻ trên bài viết Threads rồi chọn Sao chép liên kết.' },
+      { step: '02', title: 'Dán link để xem trước', desc: 'One ForAll đọc bài viết và hiện tiêu đề, ảnh, tác giả.' },
+      { step: '03', title: 'Chọn ảnh, chọn video', desc: 'Bài nhiều mục hiện bộ chọn: tick từng ảnh và từng video bạn cần, hoặc giữ nguyên để lấy cả bộ.' },
+      { step: '04', title: 'Nhận tệp về máy', desc: 'Bấm Tải xuống để lưu JPEG, MP4, MP3 hoặc file ZIP về thiết bị của bạn.' },
+    ],
+    features: [
+      { title: 'Chọn từng mục trong bài', desc: 'Bài một ảnh ra JPEG, một video ra MP4/MP3; bài nhiều ảnh nhiều video gói vào ZIP theo đúng ô bạn tick.' },
+      { title: 'Biết trước khi bấm tải', desc: 'Bài chỉ có chữ, hoặc danh sách mục của bài không đọc được, báo ngay trên card xem trước.' },
+      { title: 'Không cần đăng nhập', desc: 'Chỉ đọc những gì trang công khai phục vụ, không lấy cookie hay mật khẩu.' },
+    ],
+    supportedFormatsDesc: 'Xuất JPEG cho bài một ảnh, MP4/MP3 cho đúng một video bạn chọn, và ZIP cho bài có từ hai mục. Bài chỉ có chữ chưa hỗ trợ tải.',
+    faqList: [
+      { q: 'Bài nhiều ảnh, nhiều video tải thế nào?', a: 'One ForAll liệt kê từng mục của bài trên card xem trước; bạn tick ảnh và video cần tải rồi nhận MỘT file ZIP chứa đúng những mục đó. Muốn một video riêng lẻ thì chọn MP4/MP3 với đúng một ô video — một file chỉ dựng được từ một video.' },
+      { q: 'Vì sao ô video không có ảnh xem trước?', a: 'Threads không công bố ảnh bìa riêng cho từng video của bài (đo: bài ba video chỉ có một ảnh cho cả bài), nên ô video hiện số thứ tự thay vì lấy ảnh bìa của bài gắn cho cả ba ô.' },
+      { q: 'Video tải về là bản nào?', a: 'Đúng bản MP4 mà Threads tự công bố cho khách lạ trên trang nhúng của bài (đo: 720×1280 dọc, H.264/AAC). One ForAll không upscale, không giả mức 1080p hay 4K, và không có dải chất lượng video để chọn vì nền tảng chỉ công bố một bản.' },
+      { q: 'Ảnh tải về có bị chỉnh sửa gì không?', a: 'One ForAll không cắt, không phóng to, không thêm bộ lọc: ảnh về máy giữ đúng kích thước bài viết công bố. Khi nền tảng phục vụ ảnh WebP cho bài một ảnh, công cụ đổi sang JPEG ở cùng kích thước rồi mới giao; trong file ZIP thì ảnh được giữ nguyên định dạng gốc. Nếu tệp nhận được không khớp kích thước bài khai, công cụ từ chối và báo lỗi thay vì giao một tệp khác.' },
+    ],
+    relatedSlugs: ['/tiktok-downloader', '/facebook-downloader', '/youtube-downloader', '/image-converter'],
   },
 
   '/convert': {
