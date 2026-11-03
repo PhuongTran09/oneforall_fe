@@ -1,0 +1,7 @@
+# Tài nguyên đã hash nội dung trong tên tệp: giữ 1 năm, trình duyệt không revalidate.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Manifest cho tác nhân AI: spec ARD yêu cầu đọc được từ ngoài origin.
+/.well-known/*
+  Access-Control-Allow-Origin: *
