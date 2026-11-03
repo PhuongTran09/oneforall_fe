@@ -28,9 +28,12 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     const baseStyles =
       'inline-flex items-center justify-center font-medium transition-all duration-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0f] focus-visible:ring-[#FF3B30] disabled:opacity-50 disabled:cursor-not-allowed select-none'
 
+
+
+
     const variantStyles = {
       primary:
-        'bg-brand-gradient text-white hover:brightness-110 border-0 btn-3d clip-corner-btn',
+        'bg-brand-gradient text-on-brand border-0 btn-3d clip-corner-btn',
       secondary:
         'bg-surface text-slate-200 border border-[rgba(255,59,48,0.35)] hover:bg-brand/5 hover:border-[rgba(255,59,48,0.6)] clip-corner-btn',
       outline:
@@ -38,7 +41,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       ghost:
         'bg-transparent text-slate-300 hover:bg-brand/10 hover:text-ink border-transparent clip-corner-btn',
       glow:
-        'bg-brand-gradient text-white hover:brightness-110 font-semibold btn-3d clip-corner-btn',
+        'bg-brand-gradient text-on-brand font-semibold btn-3d clip-corner-btn',
     }
 
     const sizeStyles = {

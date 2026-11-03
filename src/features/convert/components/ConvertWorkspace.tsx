@@ -104,7 +104,7 @@ export function ConvertWorkspace() {
             )}
           </label>
 
-          {/* Format selector row */}
+
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 p-4 bg-page border border-[rgba(255,59,48,0.22)] clip-corner-lg">
             <div className="flex items-center gap-3 flex-wrap">
               <span className="text-xs font-medium text-slate-200">{t('ws.targetFormat')}</span>

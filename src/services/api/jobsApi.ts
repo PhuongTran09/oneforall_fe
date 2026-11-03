@@ -3,21 +3,21 @@ import { ApiClientError, type JobHistoryPage, type JobPublicResponse, type JobSt
 import { getAccessToken } from '../authStore'
 import { t } from '../../i18n/langStore'
 
-// Trạng thái mà backend thực sự trả về (JobStatus trong oneforall_be/app/models/job.py):
-// queued | processing | completed | failed | cancelled | expired.
+
+
 const TERMINAL_STATUSES: readonly JobStatus[] = ['completed', 'failed', 'cancelled', 'expired']
 
 const FAST_POLL_MS = 500
 const SLOW_POLL_MS = 1000
-const MAX_WAIT_MS = 180_000 // khớp thời hạn 3 phút của kết quả job phía backend
+const MAX_WAIT_MS = 180_000
 const MAX_CONSECUTIVE_ERRORS = 3
 const RETRY_BACKOFF_MS = 1000
 const RETRY_BACKOFF_CAP_MS = 5000
-// Dịch tại throw-site để ăn theo ngôn ngữ hiện tại (const module-level sẽ bị "đóng băng")
+
 const timeoutMessage = () => t('errors.jobTimeout')
 
-// Backend gửi `event: ping` mỗi JOB_EVENT_HEARTBEAT_S (15s). Im lặng gấp ba nhịp nghĩa là
-// không còn ai viết vào stream nữa — cắt và quay về polling, còn hơn treo tới hết 180s.
+
+
 const SERVER_HEARTBEAT_MS = 15_000
 const STREAM_SILENCE_MS = SERVER_HEARTBEAT_MS * 3
 
@@ -27,7 +27,7 @@ export interface PollJobOptions {
   timeoutMs?: number
 }
 
-/** Hủy vòng polling là bình thường (unmount, đổi job, poll lại cùng job) — không phải lỗi. */
+
 export class JobPollCancelled extends Error {
   constructor() {
     super('Job polling cancelled')
@@ -40,8 +40,8 @@ function isTerminalJob(status: JobStatus): boolean {
 }
 
 function pollDelayFor(job: JobPublicResponse): number {
-  // progress 99 do worker ghi ngay trước khi đẩy kết quả lên storage: giai đoạn cuối
-  // ngắn nhất nên cần lấy mẫu dày, còn encode thì 1s một lần là đủ mượt.
+
+
   if (job.status === 'processing' && job.progress >= 99) return FAST_POLL_MS
   if (job.status === 'processing') return SLOW_POLL_MS
   return FAST_POLL_MS
@@ -51,7 +51,7 @@ function retryDelayFor(consecutiveErrors: number): number {
   return Math.min(RETRY_BACKOFF_MS * 2 ** (consecutiveErrors - 1), RETRY_BACKOFF_CAP_MS)
 }
 
-// 404/401/403 là thất bại vĩnh viễn; các lỗi còn lại (mạng, 5xx, 408/429) là tạm thời.
+
 function isRetryableError(error: unknown): boolean {
   if (error instanceof ApiClientError) {
     return error.status >= 500 || error.status === 429 || error.status === 408
@@ -60,14 +60,11 @@ function isRetryableError(error: unknown): boolean {
 }
 
 function stateKey(job: JobPublicResponse): string {
-  // error_code đi vào key giống fingerprint phía backend: hai lần fail cùng chuỗi message
-  // nhưng khác mã là hai trạng thái khác nhau, UI phải vẽ lại.
+
+
   return `${job.status}|${job.progress}|${job.error ?? ''}|${job.error_code ?? ''}|${job.expires_at ?? ''}`
 }
 
-// Một luồng theo dõi duy nhất cho mỗi jobId — stream hay poll đều ghi vào đây, nên loop
-// cũ bị hủy khi cùng job được theo dõi lại. Tách hai map riêng là bug: một poll cũ và một
-// stream mới sẽ cùng theo dõi một job.
 const activeTrackers = new Map<string, AbortController>()
 
 export interface SseFrame {
@@ -75,11 +72,6 @@ export interface SseFrame {
   data: string
 }
 
-/**
- * Tách các frame đã nguyên vẹn khỏi buffer, trả phần còn lại để nối tiếp chunk sau.
- * Server luôn đóng frame bằng `\n\n` (xem format_event_frame ở backend); `id:`/`retry:`
- * và dòng comment bị bỏ qua vì client này không tự reconnect.
- */
 export function parseSseFrames(buffer: string): { frames: SseFrame[]; rest: string } {
   const frames: SseFrame[] = []
   let rest = buffer
@@ -109,19 +101,12 @@ export function parseSseFrames(buffer: string): { frames: SseFrame[]; rest: stri
   return { frames, rest }
 }
 
-/**
- * Mở một stream SSE bằng fetch trực tiếp, không qua apiClient: timeout 30s nội bộ của
- * apiClient sẽ giết stream giữa chừng. Resolve khi server tự đóng, ném khi mạng hỏng,
- * response không ok, hoặc im lặng quá STREAM_SILENCE_MS.
- */
 async function openJobEventStream(
   jobId: string,
   options: { signal?: AbortSignal; onFrame: (frame: SseFrame) => void },
 ): Promise<void> {
   const url = resolveUrl(`/v1/jobs/${jobId}/events`)
 
-  // Controller riêng: watchdog im lặng được phép giết fetch mà không giết cả luồng theo
-  // dõi (trackJob còn cần chuyển sang polling sau đó).
   const fetchController = new AbortController()
   const relayAbort = () => fetchController.abort()
   options.signal?.addEventListener('abort', relayAbort, { once: true })
@@ -140,7 +125,6 @@ async function openJobEventStream(
         Accept: 'text/event-stream',
         ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
       },
-      // 'include' để khách ẩn danh gửi cookie phiên qua JobAuthDep; không đưa token vào URL.
       credentials: 'include',
       cache: 'no-store',
       signal: fetchController.signal,
@@ -154,8 +138,6 @@ async function openJobEventStream(
     }
 
     const reader = response.body.getReader()
-    // { stream: true } là bắt buộc: payload tiếng Việt nhiều byte và một chunk có thể
-    // cắt giữa codepoint, thiếu cờ đó thì error thành U+FFFD ngay trên UI.
     const decoder = new TextDecoder('utf-8')
     let buffer = ''
 
@@ -179,10 +161,6 @@ async function openJobEventStream(
 }
 
 export const jobsApi = {
-  /**
-   * Trang lịch sử job của user đang đăng nhập (Bearer tự gắn qua apiClient).
-   * Lọc theo token ở backend — frontend không gửi user_id (§7).
-   */
   async listJobs(
     params: { status?: string; type?: string; q?: string; page?: number; page_size?: number } = {},
     signal?: AbortSignal,
@@ -198,22 +176,14 @@ export const jobsApi = {
     await apiClient.delete<void>(`/v1/jobs/${jobId}`)
   },
 
-  /** Hủy job qua Bearer hoặc cookie phiên ẩn danh, không đưa credential vào URL. */
   async cancelJob(jobId: string): Promise<void> {
     await apiClient.post(`/v1/jobs/${jobId}/cancel`)
   },
 
-  /**
-   * Lấy trạng thái Job hiện tại từ FastAPI backend
-   */
   async getJobStatus(jobId: string, signal?: AbortSignal): Promise<JobPublicResponse> {
     return apiClient.get<JobPublicResponse>(`/v1/jobs/${jobId}`, { signal })
   },
 
-  /**
-   * Theo dõi job bằng setTimeout đệ quy (không chồng request), chỉ báo về UI khi trạng
-   * thái đổi, retry có kiểm soát, dừng ngay khi job chạm trạng thái cuối.
-   */
   pollJob(jobId: string, options: PollJobOptions = {}): Promise<JobPublicResponse> {
     activeTrackers.get(jobId)?.abort()
 
@@ -290,22 +260,10 @@ export const jobsApi = {
         return
       }
 
-      // Request đầu tiên ngay lập tức: job vừa tạo xong không phải chờ một nhịp polling.
       timer = setTimeout(() => void tick(), 0)
     })
   },
 
-  /**
-   * Theo dõi job qua stream SSE trước, polling làm đường lùi.
-   *
-   * Một job chỉ còn MỘT request `.../events` thay vì hàng trăm request `jobs/{id}`; server
-   * đẩy trạng thái mỗi lần worker ghi DB nên thanh tiến độ đổi ngay, không chờ tới nhịp
-   * lấy mẫu kế tiếp. Mọi thất bại của stream — mạng đứt, 503 khi backend tắt flag,
-   * Redis chết (`stream-end/transport`), im lặng quá watchdog, frame hỏng — đều rơi về
-   * `pollJob` với đúng phần thời gian còn lại của deadline chung, và stream KHÔNG BAO GIỜ
-   * được mở lại: auto-reconnect đứng cạnh `--reload` hoặc một cái chớp của CDN sẽ sinh ra
-   * đúng cái bão request mà tính năng này xóa bỏ.
-   */
   trackJob(jobId: string, options: PollJobOptions = {}): Promise<JobPublicResponse> {
     activeTrackers.get(jobId)?.abort()
 
@@ -315,8 +273,6 @@ export const jobsApi = {
     const relayAbort = () => controller.abort()
     options.signal?.addEventListener('abort', relayAbort)
 
-    // Một đồng hồ duy nhất tính ra ngoài cả hai pha: nếu stream và poll mỗi bên có hạn
-    // riêng thì một stream im lặng cho phép tổng thời gian chờ vượt quá MAX_WAIT_MS.
     const deadline = Date.now() + (options.timeoutMs ?? MAX_WAIT_MS)
 
     return new Promise<JobPublicResponse>((resolve, reject) => {
@@ -333,7 +289,6 @@ export const jobsApi = {
       const settle = (outcome: () => void) => {
         clearTimeout(deadlineTimer)
         options.signal?.removeEventListener('abort', relayAbort)
-        // Khi đã chuyển sang pollJob thì map thuộc về controller của pollJob, không xóa nhầm.
         if (activeTrackers.get(jobId) === controller) {
           activeTrackers.delete(jobId)
         }
@@ -363,7 +318,6 @@ export const jobsApi = {
 
         if (frame.event === 'stream-end') {
           const reason = (payload as { reason?: string }).reason
-          // terminal: backend đã phát trạng thái cuối, không cần đọc DB thêm lần nào nữa.
           if (reason === 'terminal' && lastJob) terminalJob = lastJob
         }
       }
@@ -388,15 +342,12 @@ export const jobsApi = {
           return
         }
         if (controller.signal.aborted) {
-          // Caller hủy (unmount, đổi job) hoặc một tracker mới đã tiếp quản job này.
           settle(() => reject(new JobPollCancelled()))
           return
         }
 
         let polled: JobPublicResponse
         try {
-          // pollJob đọc ngay ở tick đầu tiên, nên đó chính là lần đọc dự phòng — không cần
-          // gọi getJobStatus() trước rồi mới poll.
           polled = await jobsApi.pollJob(jobId, {
             signal: options.signal,
             onJob: options.onJob,

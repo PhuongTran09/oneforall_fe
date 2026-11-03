@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-/** Tuỳ chọn "giảm chuyển động" của hệ điều hành — đổi theo lúc đang xem. */
+
 export function useReducedMotion(): boolean {
   const [reduced, setReduced] = useState(
     () => typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches,

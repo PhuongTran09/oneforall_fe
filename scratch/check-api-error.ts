@@ -1,7 +1,7 @@
-// Self-check cho mapper lỗi FE (không đụng app, không cần test runner):
-//   npx esbuild scratch/check-api-error.ts --bundle --platform=node --format=esm \
-//     --outfile=scratch/check.mjs --define:import.meta.env='{"DEV":false}' && node scratch/check.mjs
-// Stub DOM ở mức tối thiểu để module langStore import được.
+
+
+
+
 ;(globalThis as any).document = { documentElement: { lang: 'vi' } }
 ;(globalThis as any).localStorage = { store: {} as any, getItem(k: string) { return this.store[k] ?? null }, setItem(k: string, v: string) { this.store[k] = v } }
 
@@ -24,7 +24,6 @@ function check(name: string, actual: unknown, want: RegExp | string | ((v: strin
 const err = (status: number, detail: unknown, message: string) =>
   new ApiClientError(status, 'X', message, { detail })
 
-// 1. 413 có max_bytes + category (payload thật của app/utils/upload_limits.py)
 const tooLarge = err(413, { code: 'upload_too_large', category: 'image', max_bytes: 10485760, message: 'File vượt quá giới hạn tải lên cho loại image.' }, 'X')
 syncLangFromPath('/en/image')
 check('EN 413 image 10MB', describeError(tooLarge).message, /over the 10 MB limit for image/)
@@ -32,13 +31,11 @@ check('EN 413 không lộ chữ Việt', describeError(tooLarge).message, (v: st
 syncLangFromPath('/image')
 check('VI 413 image 10MB', describeError(tooLarge).message, /trần 10 MB dành cho ảnh/)
 
-// 2. MB lẻ + KB
 syncLangFromPath('/en/x')
 check('EN 413 2.5MB', describeError(err(413, { code: 'upload_too_large', category: 'document', max_bytes: 2621440 }, 'X')).message, /2.5 MB limit for document/)
 check('EN 413 category lạ -> "file"', describeError(err(413, { code: 'upload_too_large', category: 'archive', max_bytes: 51200 }, 'X')).message, /50 KB limit for file/)
 check('EN 413 thiếu max_bytes', describeError(err(413, { code: 'upload_too_large' }, 'X')).message, /larger than your plan/)
 
-// 413 hình thứ hai: middleware chặn theo Content-Length (detail chuỗi, số nằm ở cấp response)
 const mw = (lang: string) => {
   syncLangFromPath(lang)
   const m = describeError(
@@ -55,12 +52,10 @@ const mw = (lang: string) => {
 check('EN 413 middleware theo trần hệ thống', mw('/en/x'), /exceeds the 501 MB ceiling for a single request/)
 check('VI 413 middleware theo trần hệ thống', mw('/x'), /vượt trần 501 MB cho một yêu cầu/)
 
-// 3. 429 rate_limited có retry_after
 check('EN 429 retry 15s', describeError(err(429, { code: 'rate_limited', message: 'Too many requests, please slow down.', retry_after: 15 }, 'Too many requests, please slow down.')).message, /Wait 15 seconds/)
 check('EN 503 limiter chết', describeError(err(503, { code: 'rate_limiter_unavailable', message: 'Rate limiting is temporarily unavailable, please try again.' }, 'Rate limiting is temporarily unavailable, please try again.')).message, /Cannot reach the server/)
 check('EN 403 captcha_required', describeError(err(403, { code: 'captcha_required' }, 'X')).message, /not a robot/)
 
-// 4. Bảng dịch message tiếng Việt của BE sang EN (kèm số)
 const vi400 = err(400, 'Định dạng chuyển đổi từ \'png\' sang \'pdf\' hiện chưa được hỗ trợ.', 'Định dạng chuyển đổi từ \'png\' sang \'pdf\' hiện chưa được hỗ trợ.')
 check('EN translate conversion', describeError(vi400).message, /Converting png to pdf is not supported/)
 const viActive = err(429, 'Bạn đang có 3 job chờ hoặc đang xử lý. Hãy đợi job hiện tại hoàn tất.', 'Bạn đang có 3 job chờ hoặc đang xử lý. Hãy đợi job hiện tại hoàn tất.')
@@ -69,18 +64,15 @@ const vi503 = err(503, 'Hệ thống đang quá tải, hàng đợi video đang 
 check('EN translate videoQueueFull', describeError(vi503).message, /video queue is full/)
 check('VI 503 giữ nguyên text BE', (() => { syncLangFromPath('/video'); const m = describeError(vi503).message; syncLangFromPath('/en/video'); return m })(), /hàng đợi video đang có nhiều chờ/)
 
-// 5. job.error từ worker đi qua cùng cửa (HistoryPage/JobProgress)
 check('EN sanitize worker timeout', sanitizeUserMessage('Vượt thời gian xử lý cho phép — job bị dừng để giải phóng worker.', 'FB'), /timed out/)
 check('EN sanitize traceback bị chặn', sanitizeUserMessage('Traceback (most recent call last): File "app/worker/x.py"', 'FB'), 'FB')
 check('VI sanitize traceback bị chặn', (() => { syncLangFromPath('/x'); const m = sanitizeUserMessage('Traceback: file "a.py"', 'FB'); syncLangFromPath('/en/x'); return m })(), 'FB')
 
-// 6. Lỗi không phải API: AbortError + network
 check('EN AbortError', describeError(new DOMException('The user aborted a request.', 'AbortError')).message, /took too long and was stopped/)
 check('EN network', describeError(new TypeError('fetch failed')).message, /check this device/)
 check('EN fallback caller', describeError(new Error('xyz'), 'caller fallback').message, 'caller fallback')
 check('isSafeUserMessage chặn HTML', isSafeUserMessage('File vượt trần <b>10</b> MB cho ảnh.'), false)
 
-// 7. Các họ message BE mới map (job.error từ worker/service) + mấy chỗ từng map sai
 const jobErrs: Array<[string, RegExp]> = [
   ['File SVG không hợp lệ hoặc không parse được.', /corrupted or in the wrong format/],
   ['File PDF bị mã hóa, không đọc được.', /password-protected/],
@@ -105,8 +97,6 @@ for (const [text, want] of jobErrs) {
   check(`EN map: ${text.slice(0, 44)}`, sanitizeUserMessage(text, '__MISS__'), want)
 }
 
-// 8. code/params ở CẤP RESPONSE (thế hệ payload mới) — UI không còn phụ thuộc câu chữ tiếng
-//    Việt của BE, và message tiếng Anh nội bộ của worker vẫn dịch được.
 const apiErr = (code: number, body: Record<string, unknown>) =>
   new ApiClientError(code, 'X', String(body.detail ?? 'X'), body)
 const inLang = (path: string, fn: () => string) => {
@@ -145,7 +135,6 @@ check(
   (v: string) => !v.includes('script') && !/\{\w+\}/.test(v),
 )
 
-// 9. job.error (SSE delta + History) — cùng một cửa cho hai nguồn.
 const { describeJobError } = await import('../src/utils/apiError.ts')
 check('job EN theo code', describeJobError({ error: 'ffmpeg exited 1', error_code: 'SLIDESHOW_FAILED' }, 'FB'), /slideshow could not be built/)
 check('job EN theo code + params {type}', describeJobError({ error: null, error_code: 'JOB_TYPE_UNAVAILABLE', error_params: { type: 'convert_file' } }, 'FB'), /no processor for the 'convert_file' job/)
@@ -158,8 +147,6 @@ check(
   /Không xử lý được ảnh/,
 )
 
-// 10. Độ phủ từ điển: mọi mã trong ERROR_CODE_KEYS phải có errors.<key> ở CẢ HAI dict, và mọi
-//     mã BE khai báo trong app/core/error_codes.py phải được map (BE nằm ở repo kế bên).
 const { ERROR_CODE_KEYS } = await import('../src/utils/apiError.ts')
 const { vi: dictVi } = await import('../src/i18n/dict.vi.ts')
 const { en: dictEn } = await import('../src/i18n/dict.en.ts')
@@ -194,7 +181,6 @@ if (!existsSync(bePath)) {
   if (orphan.length) console.log(`note  key FE map mà BE không (còn) khai báo: ${orphan.join(', ')}`)
 }
 
-// 11. describeAuthError: cùng bộ cửa chặn chuỗi kỹ thuật, dù nguồn Supabase viết tiếng Anh.
 const { describeAuthError } = await import('../src/utils/authError.ts')
 const { t } = await import('../src/i18n/langStore.ts')
 const generic = t('auth.genericError')

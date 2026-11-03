@@ -25,7 +25,7 @@ const DEFAULT_DURATION: Record<ToastType, number> = {
 
 const MAX_VISIBLE = 4
 const LEAVE_MS = 180
-// Toast trùng (cùng type+message) trong cửa sổ này sẽ bị gộp làm một.
+
 const DEDUPE_MS = 4000
 
 let nextId = 1
@@ -59,7 +59,7 @@ function getSnapshot() {
 export function dismissToast(id: number) {
   if (!timers.has(id)) return
   clearTimeout(timers.get(id))
-  // Chạy animation biến mất rồi mới gỡ khỏi DOM.
+
   timers.set(
     id,
     setTimeout(() => removeToast(id), LEAVE_MS),
@@ -72,7 +72,6 @@ export function showToast(input: ToastInput): void {
   if (!input.message) return
   const key = `${input.type}|${input.message}`
   const now = Date.now()
-  // Đang hiển thị cùng type+message hoặc mới đóng trong 4s → gộp, không nhảy đôi.
   if (toasts.some((t) => `${t.type}|${t.message}` === key)) return
   if (now - (lastShownAt.get(key) ?? 0) < DEDUPE_MS) return
   lastShownAt.set(key, now)
@@ -81,7 +80,6 @@ export function showToast(input: ToastInput): void {
   const entry: ToastEntry = { id: nextId++, type: input.type, message: input.message, durationMs, leaving: false }
   toasts = [...toasts, entry]
 
-  // Giữ tối đa MAX_VISIBLE toast "sống": gỡ ngay toast cũ nhất khi vượt.
   const live = toasts.filter((t) => !t.leaving)
   if (live.length > MAX_VISIBLE) {
     for (const t of live.slice(0, live.length - MAX_VISIBLE)) removeToast(t.id)
@@ -94,7 +92,6 @@ export function showToast(input: ToastInput): void {
   emit()
 }
 
-// Dọn hết timer khi cả app unmount (StrictMode/dev teardown) — không để sót timeout trôi nổi.
 export function clearAllToasts() {
   timers.forEach((t) => clearTimeout(t))
   timers.clear()

@@ -8,10 +8,10 @@ export interface SectionHeadingProps {
   className?: string
 }
 
-/**
- * Trả ref để gắn class 'is-in' đúng một lần khi tiêu đề lọt vào khung hình — cùng
- * nhịp rootMargin với initReveal(), và không đụng state nên không render lại.
- */
+
+
+
+
 function useWordsInView<T extends HTMLElement>() {
   const ref = useRef<T>(null)
 
@@ -39,23 +39,23 @@ function useWordsInView<T extends HTMLElement>() {
   return ref
 }
 
-/**
- * Nhịp dựng chữ tính bằng số học nguyên ở đây, không bằng min()/max()/chia trong CSS:
- * `calc(560ms / max(1, …))` hợp lệ theo spec nhưng engine nào không chia được cho min/max
- * thì `--word-step` thành vô hiệu. CSS chỉ còn phép nhân `var(--i) * var(--word-step)`.
- */
+
+
+
+
+
 const STEP_MAX_MS = 80
 const STEP_SPAN_MS = 560
 
-/** Mô tả chạy luôn cùng nhịp với từ đầu tiên, không chờ tiêu đề dựng xong. */
+
 function revealRhythm(count: number) {
   return { step: Math.round(Math.min(STEP_MAX_MS, STEP_SPAN_MS / Math.max(1, count - 1))) }
 }
 
-/**
- * Header chung cho mọi section trang chủ — trước đây 6 section chép lại cùng một khối
- * (badge + h2 + mô tả + mb-14), mỗi lần đổi kiểu là phải sửa 6 nơi.
- */
+
+
+
+
 export function SectionHeading({ badge, title, desc, className = '' }: SectionHeadingProps) {
   const headingRef = useWordsInView<HTMLHeadingElement>()
   const words = title.split(' ')
@@ -68,7 +68,7 @@ export function SectionHeading({ badge, title, desc, className = '' }: SectionHe
           {badge}
         </div>
       )}
-      {/* --word-step đặt trên h2: mọi <span class="reveal-word"> là con của nó. */}
+
       <h2
         ref={headingRef}
         className="reveal-heading text-2xl sm:text-3xl font-extrabold text-ink tracking-tight"

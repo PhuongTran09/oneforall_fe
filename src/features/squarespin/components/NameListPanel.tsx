@@ -11,16 +11,16 @@ import type { SpinEntry, WheelSlot } from '../types'
 
 export interface NameListPanelProps {
   slot: WheelSlot
-  /** Nhãn wheel, vd "Wheel 1". */
+
   label: string
   entries: SpinEntry[]
-  /** Đang quay thì không cho sửa — kết quả đã chốt sẽ lệch ô. */
+
   busy: boolean
-  /** Button "copy sang wheel kia" — chỉ hiện ở Double Spin. */
+
   copyTo?: WheelSlot
-  /** Danh sách wheel này vừa đổi: caller bỏ kết quả đang hiển thị. */
+
   onMutate?: () => void
-  /** Copy đè danh sách wheel kia: caller bỏ kết quả của wheel nhận. */
+
   onCopy?: () => void
 }
 
@@ -29,7 +29,7 @@ export function NameListPanel({ slot, label, entries, busy, copyTo, onMutate, on
   const [bulkOpen, setBulkOpen] = useState(false)
   const [bulk, setBulk] = useState('')
   const [pendingClear, setPendingClear] = useState(false)
-  /** id của tên đang mở bảng màu, null khi đóng — state UI thuần, không xuống store. */
+
   const [colorFor, setColorFor] = useState<string | null>(null)
 
   const duplicateCount = entries.length - new Set(entries.map((e) => e.name)).size

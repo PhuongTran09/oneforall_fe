@@ -48,7 +48,7 @@ export function AdSenseUnit({ slot, className = '' }: AdSenseUnitProps) {
   return (
     <div className={`w-full py-6 ${className}`}>
       <p className="text-[10px] uppercase tracking-wider text-slate-500 mb-2">{t('common.adLabel')}</p>
-      {/* Chỗ trống tối thiểu để quảng cáo chưa tải không làm nhảy layout */}
+
       <div className="min-h-[90px] sm:min-h-[250px] clip-corner-card border border-edge bg-surface">
         <ins
           className="adsbygoogle"

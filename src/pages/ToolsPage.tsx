@@ -34,7 +34,7 @@ export function ToolsPage() {
     return slugs.map((slug) => SEO_TOOLS[slug])
   }, [index, query])
 
-  // Canonical giữ sạch '?q=' — tham số chỉ là trạng thái hiển thị, không phải URL để index.
+
   const setQuery = (next: string) => {
     const trimmed = next.trim()
     setSearchParams(trimmed ? { q: trimmed } : {}, { replace: true })
@@ -108,7 +108,7 @@ export function ToolsPage() {
                       </h2>
                       <LocaleLink
                         to={`/${cat.path}`}
-                        className="shrink-0 inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-brand hover:underline"
+                        className="shrink-0 inline-flex min-h-6 items-center gap-1.5 text-xs sm:text-sm font-semibold text-brand hover:underline"
                       >
                         {t('directory.viewAll', { count: cat.toolSlugs.length })}
                         <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />

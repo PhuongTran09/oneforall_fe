@@ -1,16 +1,16 @@
-/* Máy chạy cuộn chung cho mọi hiệu ứng dựa trên tiến trình cuộn (parallax). Một
-   listener scroll + một resize cho cả trang, gộp qua rAF: thêm hiệu ứng không nghĩa ứng không nghĩa
-   là thêm listener, và mỗi khung hình chỉ đọc số đo document một lần trước khi bất kỳ
-   ai ghi style — không tự buộc trình duyệt layout lại giữa frame. */
+
+
+
+
 
 import { getLenisInstance } from '../hooks/useSmoothScroll'
 
 export interface ScrollFrame {
-  /** Số px đã cuộn. */
+
   y: number
-  /** Số px cuộn hết mức có thể; 0 khi trang không tràn màn hình. */
+
   max: number
-  /** Chiều cao khung nhìn. */
+
   viewport: number
 }
 
@@ -28,8 +28,8 @@ function readFrame(): ScrollFrame {
   return {
     y: window.scrollY,
     viewport,
-    // scrollHeight của documentElement mới là chiều dài thật của cả trang; body
-    // có thể ngắn hơn khi trang có phần tử định vị tuyệt đối.
+
+
     max: Math.max(0, document.documentElement.scrollHeight - viewport),
   }
 }
@@ -45,10 +45,10 @@ function schedule(): void {
   pending = requestAnimationFrame(emit)
 }
 
-/**
- * Vẽ theo tiến trình cuộn. Callback chạy ngay một lượt để khung hình đầu đã đúng
- * (chưa cuộn thì progress 0), rồi mới tới các lượt cuộn sau. Trả hàm huỷ đăng.
- */
+
+
+
+
 export function onScrollFrame(draw: Subscriber): () => void {
   if (typeof window === 'undefined' || typeof requestAnimationFrame !== 'function') return NOOP
   if (subscribers.size === 0) {
@@ -68,17 +68,17 @@ export function onScrollFrame(draw: Subscriber): () => void {
   }
 }
 
-/* Header sticky chiếm 73px đầu trang (--pin-top trong index.css), nên mọi cú nhảy tới
-   section phải trừ lại chừng đó; không thì tiêu đề section nằm chìm dưới navbar. Dùng
-   chung cho scrollToSection() và cho Lenis `anchors` (cú bấm link #... cũng phải đáp
-   đúng chỗ như bấm nút). */
+
+
+
+
 export const HEADER_OFFSET = -73
 
-/**
- * Cuộn tới section theo id. Có Lenis thì đi qua Lenis để cú nhảy dùng đúng một quán
- * tính với cuộn bánh xe; không có (reduced-motion, chưa mount) thì rơi về
- * scrollIntoView y như trước — nhưng bản đó không có offset nên vẫn đáp sát mép trên.
- */
+
+
+
+
+
 export function scrollToSection(id: string): void {
   const el = document.getElementById(id)
   if (!el) return
@@ -92,25 +92,25 @@ export function scrollToSection(id: string): void {
 
 interface ParallaxItem {
   el: HTMLElement
-  /** Số px dịch tối đa khi section cuộn qua hết. */
+
   shift: number
-  /** Vị trí/chiều cao trong không gian document, đo lúc section vào khung nhìn. */
+
   top: number
   height: number
 }
 
-/**
- * Parallax nhẹ cho các lớp nền trang sức (lưới + quầng sáng sau hero). Chỉ lớp nền,
- * không áp cho card/chữ: dịch cả nội dung thì người đọc bị trôi dòng.
- *
- * Dịch chuyển tính theo section chứ không theo viewport và bắt đầu từ 0, nên khung
- * hình đầu tiên (chưa cuộn) hiển thị đúng nguyên bản thiết kế. Ghi vào thuộc tính
- * `translate` độc lập chứ không ghi `transform`: mấy lớp này đã có transform riêng
- * (glow dịch 50% để canh giữa), ghi đè là mất chỗ đứng.
- *
- * Tóm lại là tắt trên máy cảm ứng (touch không có hover, vẽ thêm một lớp composite
- * mỗi frame là đắt hơn cái nó mang lại) và tắt theo prefers-reduced-motion.
- */
+
+
+
+
+
+
+
+
+
+
+
+
 export function initParallax(): () => void {
   if (typeof window === 'undefined') return NOOP
   if (typeof IntersectionObserver === 'undefined') return NOOP
@@ -139,7 +139,7 @@ export function initParallax(): () => void {
   const active = new Set<ParallaxItem>()
   const draw = (frame: ScrollFrame): void => {
     for (const item of active) {
-      // 0 khi đầu section còn ngang đầu trang, 1 khi section đã cuộn qua hết.
+
       const progress = clamp((frame.y - item.top) / item.height, 0, 1)
       item.el.style.translate = `0 ${(progress * item.shift).toFixed(1)}px`
     }
@@ -151,8 +151,6 @@ export function initParallax(): () => void {
         const item = items.find((candidate) => candidate.el === entry.target)
         if (!item) continue
         if (entry.isIntersecting) {
-          // Đo lại mỗi lần vào khung nhìn: section phía trên có thể vừa đổi chiều cao
-          // (số liệu live, ảnh về muộn), số đo cũ sẽ làm hiệu ứng lệch pha.
           measure(item)
           active.add(item)
         } else {

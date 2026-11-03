@@ -14,7 +14,7 @@ export interface ToolSearchEntry {
   haystack: string
 }
 
-/** Bỏ dấu tiếng Việt để "chuyen doi" vẫn tìm ra "Chuyển đổi". */
+
 function fold(text: string): string {
   return text
     .normalize('NFD')
@@ -48,7 +48,7 @@ function buildIndex(lang: Lang): ToolSearchEntry[] {
   })
 }
 
-/** Điểm càng cao càng đúng ý người gõ: khớp nhãn ngắn > khớp tên > khớp mô tả. */
+
 function scoreEntry(entry: ToolSearchEntry, query: string): number {
   const q = fold(query)
   if (!q) return 0

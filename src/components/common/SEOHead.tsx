@@ -15,7 +15,7 @@ export interface SEOHeadProps {
   faqList?: { q: string; a: string }[]
   breadcrumbs?: { name: string; url: string }[]
   noindex?: boolean
-  /** URL tương đối của 2 bản dịch (vd. { vi: '/youtube-downloader', en: '/en/youtube-downloader' }) → emit hreflang. */
+
   alternates?: { vi: string; en: string }
 }
 
@@ -33,10 +33,10 @@ export function SEOHead({
     const lang = canonicalUrl.includes('://oneforall.io.vn/en/') || canonicalUrl.endsWith('/en') ? 'en' : 'vi'
     document.documentElement.lang = lang
 
-    // 1. Cập nhật Title
+
     document.title = title
 
-    // 2. Cập nhật Meta Description
+
     let metaDesc = document.querySelector('meta[name="description"]')
     if (!metaDesc) {
       metaDesc = document.createElement('meta')
@@ -45,7 +45,7 @@ export function SEOHead({
     }
     metaDesc.setAttribute('content', description)
 
-    // 3. Cập nhật Canonical
+
     let canonical = document.querySelector('link[rel="canonical"]')
     if (!canonical) {
       canonical = document.createElement('link')
@@ -54,7 +54,7 @@ export function SEOHead({
     }
     canonical.setAttribute('href', canonicalUrl)
 
-    // 3b. Hreflang alternates (VI = default, không prefix)
+
     document.querySelectorAll('link[data-hreflang]').forEach((el) => el.remove())
     if (alternates) {
       const entries: { hreflang: string; href: string }[] = [
@@ -72,7 +72,6 @@ export function SEOHead({
       }
     }
 
-    // 4. Cập nhật Robots
     let metaRobots = document.querySelector('meta[name="robots"]')
     if (!metaRobots) {
       metaRobots = document.createElement('meta')
@@ -81,7 +80,6 @@ export function SEOHead({
     }
     metaRobots.setAttribute('content', noindex ? 'noindex, nofollow' : 'index, follow')
 
-    // 5. Cập nhật Open Graph & Twitter Tags
     const ogTags: Record<string, string> = {
       'og:title': title,
       'og:description': description,
@@ -110,10 +108,8 @@ export function SEOHead({
       el.setAttribute('content', value)
     }
 
-    // 6. JSON-LD Structured Data (FAQPage & Breadcrumbs)
     const jsonLdElements: HTMLElement[] = []
 
-    // Dọn dẹp bất kỳ script JSON-LD nào đã có sẵn trong DOM (từ prerender HTML hoặc từ trang trước)
     const existingFaq = document.getElementById('faq-jsonld')
     if (existingFaq) existingFaq.remove()
 
@@ -199,7 +195,7 @@ export function SEOHead({
     }
 
     return () => {
-      // Dọn dẹp script JSON-LD khi unmount
+
       jsonLdElements.forEach((el) => el.remove())
     }
   }, [title, description, canonicalUrl, ogType, faqList, breadcrumbs, noindex, alternates])

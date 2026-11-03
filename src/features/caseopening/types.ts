@@ -10,7 +10,7 @@ export interface Rarity {
   id: RarityId
   name: string
   color: string
-  /** Hệ số nhân của cấp độ, áp lên trọng số từng vật phẩm cùng cấp. */
+
   weight: number
 }
 
@@ -20,7 +20,7 @@ export interface CaseItem {
   description: string
   color: string
   rarityId: RarityId
-  /** Trọng số tương đối. 0 = không bao giờ trúng. */
+
   weight: number
   imageAssetId?: AssetId
 }
@@ -31,9 +31,9 @@ export interface CaseConfig {
   accentColor: string
   backgroundColor: string
   effect: EffectKind
-  /** Thời lượng roulette (ms). */
+
   spinMs: number
-  /** Số ô vật phẩm render trên strip mỗi lượt quay. */
+
   stripCells: number
   rarities: Rarity[]
   items: CaseItem[]
@@ -42,7 +42,7 @@ export interface CaseConfig {
 
 export interface CaseSettings {
   soundEnabled: boolean
-  /** 0..1 */
+
   volume: number
 }
 

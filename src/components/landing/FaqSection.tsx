@@ -7,7 +7,7 @@ import { t } from '../../i18n/langStore'
 export function FaqSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(0)
 
-  const faqs = [0, 1, 2, 3, 4, 5].map((i) => ({
+  const faqs = Array.from({ length: 10 }, (_, i) => ({
     q: t(`homeFaq.q${i}`),
     a: t(`homeFaq.a${i}`),
   }))
@@ -19,9 +19,9 @@ export function FaqSection() {
   return (
     <section id="faq" data-reveal className="py-16 sm:py-24 bg-page border-t border-edge">
       <div className="max-w-4xl lg:max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Sáu câu hỏi dài hơn một màn hình: từ lg ghim tiêu đề sang cột trái để lúc
-            cuộn xuống câu 5-6 vẫn thấy mình đang ở mục Hỏi đáp. Cột này không dính
-            header (top 96px = 72px header + khoảng thở). */}
+
+
+
         <div className="lg:grid lg:grid-cols-[minmax(0,18rem)_minmax(0,1fr)] lg:gap-10 lg:items-start">
           <div className="lg:sticky lg:top-[96px]">
             <SectionHeading
@@ -46,7 +46,7 @@ export function FaqSection() {
                   <button
                     type="button"
                     onClick={() => toggle(index)}
-                    className="w-full p-5 sm:p-6 text-left flex items-center justify-between gap-4 cursor-pointer focus:outline-none"
+                    className="w-full p-5 sm:p-6 text-left flex items-center justify-between gap-4 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#FF4545]/60"
                     aria-expanded={isOpen}
                   >
                     <div className="flex items-center gap-3">

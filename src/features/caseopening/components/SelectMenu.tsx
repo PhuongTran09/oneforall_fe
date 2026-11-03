@@ -12,14 +12,14 @@ export interface SelectMenuProps {
   options: SelectOption[]
   value: string
   onChange: (next: string) => void
-  /** Nối với <label htmlFor>; thiếu thì tự sinh. */
+
   id?: string
   ariaLabel?: string
   disabled?: boolean
   className?: string
 }
 
-/** Chiều cao tối đa của danh sách (max-h-60) — dùng để quyết định mở lên hay xuống. */
+
 const MENU_MAX = 240
 const GAP = 4
 
@@ -30,10 +30,10 @@ interface Box {
   side: 'top' | 'bottom'
 }
 
-/**
- * Listbox tự vẽ thay cho <select>: popup hệ điều hành không theo được nền tối của
- * trang, và <select> gốc cũng không mở được bên trong modal đang scroll.
- */
+
+
+
+
 export function SelectMenu({ options, value, onChange, id, ariaLabel, disabled = false, className = '' }: SelectMenuProps) {
   const genId = useId()
   const triggerId = id ?? `select-${genId}`
@@ -43,7 +43,6 @@ export function SelectMenu({ options, value, onChange, id, ariaLabel, disabled =
   const [open, setOpen] = useState(false)
   const [active, setActive] = useState(0)
   const [box, setBox] = useState<Box | null>(null)
-  // List fade ra khi đóng (Escape/click ngoài/chọn xong) — `box` vẫn còn nên vị trí không nhảy.
   const { show, closing } = useExitFade(open)
 
   const selectedIndex = Math.max(
@@ -66,7 +65,6 @@ export function SelectMenu({ options, value, onChange, id, ariaLabel, disabled =
       if (trigger.current?.contains(target) || list.current?.contains(target)) return
       setOpen(false)
     }
-    // vị trí tính một lần lúc mở, nên cuộn hoặc đổi kích thước là đóng lại
     const onClose = () => setOpen(false)
     document.addEventListener('pointerdown', onPointerDown, true)
     window.addEventListener('scroll', onClose, true)

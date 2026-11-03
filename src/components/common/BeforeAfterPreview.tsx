@@ -30,8 +30,8 @@ export function BeforeAfterPreview({
     setSliderPosition(percentage)
   }
 
-  // Pointer events + setPointerCapture: kéo tuột ra ngoài khung vẫn tiếp tục,
-  // và không còn phải dừng drag ở onMouseLeave.
+
+
   const handlePointerDown = (e: PointerEvent<HTMLDivElement>) => {
     e.currentTarget.setPointerCapture(e.pointerId)
     setIsDragging(true)
@@ -46,13 +46,13 @@ export function BeforeAfterPreview({
 
   return (
     <div className="w-full max-w-3xl mx-auto space-y-3">
-      {/* Tab toggle */}
+
       <div className="flex items-center justify-between px-1">
         <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-200">
           <Sparkles className="w-4 h-4 text-brand" />
           <span>{t('compare.title')}</span>
         </div>
-        {/* Tab switcher — keep compact rounded inner buttons, outer is clipped */}
+
         <div className="flex items-center gap-1 bg-brand/10 p-0.5 border border-edge clip-corner-btn text-xs font-medium text-slate-200">
           <button
             type="button"
@@ -88,7 +88,7 @@ export function BeforeAfterPreview({
           onPointerCancel={handlePointerUp}
           className="relative w-full h-[320px] sm:h-[400px] overflow-hidden select-none touch-none cursor-ew-resize border border-edge clip-corner-lg bg-[linear-gradient(45deg,var(--bg-elevated)_25%,transparent_25%),linear-gradient(-45deg,var(--bg-elevated)_25%,transparent_25%),linear-gradient(45deg,transparent_75%,var(--bg-elevated)_75%),linear-gradient(-45deg,transparent_75%,var(--bg-elevated)_75%)] bg-[size:20px_20px] bg-[position:0_0,0_10px,10px_-10px,-10px_0]"
         >
-          {/* Background: Processed Image */}
+
           <div className="absolute inset-0 flex items-center justify-center p-4">
             <img
               src={processedUrl}
@@ -98,9 +98,9 @@ export function BeforeAfterPreview({
             />
           </div>
 
-          {/* Foreground: Original Image. Cùng box với lớp nền và cắt bằng
-              clip-path — nếu đặt width:p% thì ảnh bên trong bị căn giữa trong
-              box hẹp hơn và lệch khỏi ảnh đã xử lý khi kéo. */}
+
+
+
           <div
             className="absolute inset-0 flex items-center justify-center p-4 bg-page/40"
             style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}
@@ -112,31 +112,30 @@ export function BeforeAfterPreview({
             />
           </div>
 
-          {/* Vertical divider line */}
+
           <div
             className="absolute top-0 bottom-0 w-1 bg-brand pointer-events-none z-10"
             style={{ left: `${sliderPosition}%` }}
           >
-            {/* Drag handle — square with clip */}
+
             <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-8 bg-surface border border-[rgba(255,59,48,0.55)] flex items-center justify-center text-slate-200 clip-corner-btn">
               <div className="flex gap-0.5 items-center">
-                {/* These tiny pips are fine as rounded — they're decorative and tiny */}
+
                 <span className="w-0.5 h-3 bg-slate-400 rounded-full" />
                 <span className="w-0.5 h-3 bg-slate-400 rounded-full" />
               </div>
             </div>
           </div>
 
-          {/* Labels */}
+
           <span className="absolute top-3 left-3 z-20 px-2.5 py-1 text-[11px] font-semibold bg-surface text-ink border border-edge clip-corner-btn">
             {originalText}
           </span>
-          <span className="absolute top-3 right-3 z-20 px-2.5 py-1 text-[11px] font-semibold bg-brand text-white clip-corner-btn">
+          <span className="absolute top-3 right-3 z-20 px-2.5 py-1 text-[11px] font-semibold bg-brand text-on-brand clip-corner-btn">
             {processedText}
           </span>
         </div>
       ) : (
-        /* Side by side */
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div className="border border-edge bg-surface p-3 space-y-2 clip-corner-card">
             <span className="text-xs font-semibold text-slate-200 flex items-center gap-1">

@@ -2,14 +2,14 @@ import { ApiClientError, type ErrorParams } from '../services/api/types'
 import { JobPollCancelled } from '../services/api/jobsApi'
 import { getLang, hasKey, t } from '../i18n/langStore'
 
-// Mapper lỗi duy nhất dùng chung toàn FE: đổi mọi lỗi (API, mạng, timeout, backend message
-// tiếng Anh/nội bộ) thành thông báo an toàn theo ngôn ngữ UI. Log đầy đủ vẫn nằm ở backend;
-// FE chỉ hiển thị.
+
+
+
 
 export type ErrorToastType = 'success' | 'error' | 'warning' | 'info'
 
-// Message user-facing của backend viết tiếng Việt có dấu; nội bộ/traceback thì tiếng Anh
-// hoặc chứa ký tự kỹ thuật → chỉ hiện message nào "an toàn" theo cả hai tiêu chí.
+
+
 export function isSafeUserMessage(text: unknown): text is string {
   if (typeof text !== 'string') return false
   const s = text.trim()
@@ -17,12 +17,12 @@ export function isSafeUserMessage(text: unknown): text is string {
   if (/[\n\r<>{}]|traceback|file "|secret|password|bearer|BEGIN |redis|postgres|sqlite|supabase|jwt|http|\/var\/|\.py/i.test(s)) {
     return false
   }
-  // Có dấu tiếng Việt (= message backend soạn cho người dùng), không phải English debug text.
+
   return s !== s.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
 }
 
-// Detail dạng object của BE (upload_limits.too_large, core/rate_limit, anon_captcha):
-// client.ts chỉ lấy được payload gốc ở `details`, còn `message` thì rơi về statusText.
+
+
 interface StructuredDetail {
   code?: string
   category?: string
@@ -37,9 +37,9 @@ function structuredDetail(err: ApiClientError): StructuredDetail | null {
     : null
 }
 
-// Mã lỗi BE (D:\PROJECT\oneforall_be\app\core\error_codes.py) -> key từ điển errors.*.
-// Mã là ĐỊNH DANH: đổi wording thì chỉ sửa dict, không đụng table này, không đụng mapper.
-// Một mã có thể trỏ tới cùng một key với mã khác khi câu hiển thị trùng nhau.
+
+
+
 export const ERROR_CODE_KEYS: Record<string, string> = {
 
   FILE_REQUIRED: 'noFile',
@@ -62,6 +62,7 @@ export const ERROR_CODE_KEYS: Record<string, string> = {
   IMAGE_PIXEL_LIMIT: 'imageTooLarge',
   LINK_VIDEO_OVER_PLAN_LIMIT: 'videoSourceTooLarge',
   PLAN_CONCURRENCY_LIMIT: 'planConcurrencyLimit',
+  IP_ACTIVE_JOB_LIMIT: 'ipActiveJobLimit',
   PLAN_HOURLY_LIMIT: 'hourlyJobLimit',
   GUEST_CAPACITY_FULL: 'activeJobLimit',
   GPU_QUEUE_FULL: 'guestCapacityFull',
@@ -89,8 +90,8 @@ export const ERROR_CODE_KEYS: Record<string, string> = {
   FILE_DELETE_FAILED: 'deleteFailed',
   STREAM_DISABLED: 'streamDisabled',
 
-  // /media/preview: ba mã riêng của luồng phát video qua server. PREVIEW_DISABLED là 404 khi
-  // tắt tính năng — người dùng không bấm vào nó, FE cũng không vẽ nút play.
+
+
   PREVIEW_DISABLED: 'previewDisabled',
   PREVIEW_LINK_EXPIRED: 'previewExpired',
   PREVIEW_SOURCE_REFUSED: 'previewRefused',
@@ -99,8 +100,8 @@ export const ERROR_CODE_KEYS: Record<string, string> = {
   LINK_PLAYLIST_UNSUPPORTED: 'linkPlaylistUnsupported',
   LINK_PREVIEW_UNAVAILABLE: 'linkNoPreview',
   LINK_PREVIEW_BUSY: 'linkPreviewBusy',
-  // Hai mã này là PHÁN QUYẾT của nền tảng về chính bài viết (đã xóa / chỉ một số người xem được),
-  // không phải "ta đọc không được" — vì vậy mỗi mã một câu, và FE tắt nút Thử lại cho chúng.
+
+
   LINK_POST_REMOVED: 'postRemoved',
   LINK_POST_RESTRICTED: 'postRestricted',
   LINK_CONTENT_REFUSED: 'linkContentRefused',
@@ -140,7 +141,7 @@ export const ERROR_CODE_KEYS: Record<string, string> = {
   captcha_unavailable: 'unavailable',
 }
 
-/** Read error code and params from current and legacy response shapes. */
+
 export function readErrorMeta(err: ApiClientError): { code?: string; params?: Record<string, unknown> } {
   const body = err.details as { code?: unknown; params?: unknown; detail?: unknown } | undefined
   if (typeof body?.code === 'string') {
@@ -161,8 +162,8 @@ export function readErrorMeta(err: ApiClientError): { code?: string; params?: Re
   return {}
 }
 
-// BE đã chốt params ở chiều ghi (app/utils/paths.py::clean_error_params); vẫn chặn lại chiều
-// đọc vì row cũ và payload không phải từ BE. Cùng trần với BE để hai bên không lệch nhau.
+
+
 const MAX_PARAM_KEYS = 12
 const MAX_PARAM_LEN = 160
 
@@ -178,12 +179,12 @@ function safeParams(raw: unknown): Record<string, string | number> | undefined {
   return Object.keys(out).length ? out : undefined
 }
 
-/** Câu theo locale cho một mã lỗi; null khi mã chưa map, từ điển chưa có entry hoặc params
- *
- * `keySuffix` chọn bản viết riêng cho một nền tảng (vd `errors.linkNoPreviewThreads`) vì câu chung
- * liệt kê nguyên nhân của video, còn bài Threads thì suy nguyên là "không còn công khai". Nền tảng
- * chưa có key riêng rơi về chuỗi cũ từng ký tự.
- */
+
+
+
+
+
+
 function codedMessage(
   code?: string,
   params?: Record<string, unknown>,
@@ -201,7 +202,6 @@ function codedMessage(
 }
 
 const UPLOAD_KINDS = new Set(['image', 'document', 'audio', 'video', 'background_removal'])
-/** Số do BE quy định (trần PLAN_POLICIES tính bằng byte) hiển thị gọn: 209715200 -> "200 MB". */
 export function humanSize(bytes: number): string {
   const gb = bytes / 1073741824
   if (gb >= 1) return `${Math.round(gb * 10) / 10} GB`
@@ -211,18 +211,11 @@ export function humanSize(bytes: number): string {
   return `${Math.max(1, Math.round(bytes / 1024))} KB`
 }
 
-// BE soạn message tiếng Việt kèm số thật (trần dung lượng, giây chờ, giới hạn job) cho cả
-// HTTP detail lẫn `job.error` mà worker/service ghi xuống. UI tiếng Anh không được phép hiện
-// chữ Việt, nên khớp cụm từ ổn định của BE rồi đổi sang key từ điển; số lấy bằng nhóm bắt
-// được trong message gốc để EN vẫn có con số.
-// shortcut: khớp chuỗi — BE đổi wording thì message chỉ rơi về text theo status/fallback của
-// caller (bớt cụ thể, không sai nghiệp vụ); nâng cấp khi BE gắn `code` cho mọi message.
 const BE_TEXT_KEYS: Array<{
   re: RegExp
   key: string
   params?: (m: RegExpExecArray) => Record<string, string | number>
 }> = [
-  // --- Input phía user ---
   {
     re: /^Định dạng chuyển đổi từ '([^']+)' sang '([^']+)'/,
     key: 'conversionUnsupported',
@@ -238,7 +231,6 @@ const BE_TEXT_KEYS: Array<{
   { re: /dịch vụ xem trước đang bận/i, key: 'linkPreviewBusy' },
   { re: /không xem trước được/i, key: 'linkNoPreview' },
 
-  // --- Hạn mức và tải hệ thống ---
   { re: /hàng đợi video đang có nhiều chờ/i, key: 'videoQueueFull' },
   { re: /lỗi hàng đợi xử lý/i, key: 'queueDown' },
   { re: /đang có ([\d,]+) job chờ/i, key: 'activeJobLimit', params: (m) => ({ n: m[1] }) },
@@ -254,7 +246,6 @@ const BE_TEXT_KEYS: Array<{
   { re: /phiên đăng nhập/i, key: 'sessionCheckFailed' },
   { re: /phiên ẩn danh/i, key: 'sessionUnavailable' },
 
-  // --- Kết quả và vòng đời job ---
   { re: /hết hạn \((\d+) phút\)/i, key: 'resultExpired', params: (m) => ({ n: m[1] }) },
   { re: /job chưa hoàn thành/i, key: 'jobNotReady' },
   { re: /download token không hợp lệ/i, key: 'downloadTokenExpired' },
@@ -268,7 +259,6 @@ const BE_TEXT_KEYS: Array<{
   { re: /vượt thời gian xử lý/i, key: 'jobTimeout' },
   { re: /không lưu được kết quả/i, key: 'storageWriteFailed' },
 
-  // --- Lỗi từ service/worker (chủ yếu xuất hiện ở job.error) ---
   { re: /thiếu thư viện/i, key: 'serverSetup' },
   { re: /máy chủ thiếu bộ nhớ/i, key: 'outOfMemory' },
   { re: /dung lượng đĩa không đủ/i, key: 'diskFull' },
@@ -307,7 +297,6 @@ const BE_TEXT_KEYS: Array<{
     params: (m) => ({ limit: `${m[1]} MB` }),
   },
 
-  // --- Thanh toán (SePay: cấu hình tắt là lỗi phía hệ thống, không phải lỗi người dùng) ---
   { re: /sepay/i, key: 'paymentUnavailable' },
   { re: /(không tìm thấy gói|không cần thanh toán|đã có gói)/i, key: 'planNotPurchasable' },
 ]
@@ -317,16 +306,12 @@ function translateBeText(text: unknown): string | null {
   for (const { re, key, params } of BE_TEXT_KEYS) {
     const m = re.exec(text)
     if (!m) continue
-    // Key thiếu trong dict của ngôn ngữ đang dùng: trả null để caller dùng text theo status,
-    // tuyệt đối không in thô "errors.xyz" cho người dùng thấy.
     if (!hasKey(`errors.${key}`)) return null
     return t(`errors.${key}`, params?.(m))
   }
   return null
 }
 
-// Thang ưu tiên khi dịch một lỗi: text BE đã là tiếng Việt (chứa số thật) -> dùng nguyên văn;
-// ngược lại lấy theo MÃ lỗi (ổn định), rồi tới bảng khớp chuỗi (di sản), cuối là text theo status.
 function beOrStatus(message: string, statusKey: string, coded?: string | null): string {
   if (getLang() === 'vi' && isSafeUserMessage(message)) return message
   return coded ?? translateBeText(message) ?? t(`errors.${statusKey}`)
@@ -337,8 +322,6 @@ export function describeError(
   fallback?: string,
   opts?: { keySuffix?: string },
 ): { type: ErrorToastType; message: string } {
-  // Người dùng chủ động hủy luồng theo dõi — không phải lỗi, caller thường đã lọc;
-  // giữ ở đây để không bao giờ biến thành toast lỗi.
   if (err instanceof JobPollCancelled) {
     return { type: 'info', message: t('errors.cancelled') }
   }
@@ -348,18 +331,12 @@ export function describeError(
     const meta = readErrorMeta(err)
     const coded = codedMessage(meta.code, meta.params, opts?.keySuffix)
 
-    // 413 có hai hình trên cùng một status: ``too_large()`` của endpoint (detail object, trần
-    // theo GÓI và theo loại tệp vừa sniff) và middleware chặn theo Content-Length (detail là
-    // chuỗi, số nằm ở ``max_request_bytes`` = trần tuyệt đối của hệ thống). Cả hai đều phải
-    // cho user thấy CON SỐ, nếu không câu "vượt giới hạn dung lượng" vô dụng như cũ.
     if (err.status === 413) {
       const planCap = detail?.max_bytes
       const systemCeiling = (err.details as { max_request_bytes?: number } | undefined)
         ?.max_request_bytes
       const bytes = planCap ?? systemCeiling
       if (typeof bytes !== 'number') {
-        // Link vượt trần gói bị preflight chặn bằng 413 + mã LINK_VIDEO_OVER_PLAN_LIMIT: không có
-        // max_bytes ở đây nên nếu bỏ qua `coded` thì câu báo lỗi rơi về errors.413 chung chung.
         return { type: 'warning', message: coded ?? t('errors.413') }
       }
       const kind = detail?.category && UPLOAD_KINDS.has(detail.category) ? detail.category : 'other'
@@ -372,8 +349,6 @@ export function describeError(
       }
     }
 
-    // Vài mã BE chỉ có tiếng Anh ("Too many requests, please slow down.") nên không thể hiện
-    // nguyên văn cho UI tiếng Việt: dựng câu localize từ payload, dùng cho cả hai ngôn ngữ.
     if (detail) {
       switch (detail.code) {
         case 'rate_limited':
@@ -394,7 +369,6 @@ export function describeError(
       }
     }
 
-    // 401/403: KHÔNG dùng detail từ backend (chứa cơ chế token/JWT). Status là đủ.
     switch (true) {
       case err.status === 401:
         return { type: 'error', message: t('errors.401') }
@@ -405,26 +379,19 @@ export function describeError(
       case err.status === 410:
         return { type: 'warning', message: beOrStatus(err.message, '410', coded) }
       case err.status === 422:
-        // Pydantic "field: msg" tiếng Anh không lọt qua isSafeUserMessage -> về hướng dẫn chung.
         return { type: 'warning', message: beOrStatus(err.message, '422', coded) }
       case err.status === 429:
         return { type: 'warning', message: beOrStatus(err.message, '429', coded) }
       case err.status >= 500:
-        // BE còn sống và vừa tự báo lỗi của chính nó (vd 503 quá tải hàng đợi video) thì phải
-        // hiện cái đó; "hạ tầng đang bảo trì" là sai nguyên nhân. Proxy chết trả HTML nên
-        // err.message không có dấu và rơi xuống nhánh dưới.
         if (isSafeUserMessage(err.message)) {
           return { type: 'error', message: beOrStatus(err.message, 'generic', coded) }
         }
-        // Message nội bộ tiếng Anh ("yt-dlp downloaded nothing") nhưng BE đã gắn mã:
-        // câu theo mã vẫn tốt hơn "hạ tầng đang bảo trì" chung chung.
         if (coded) return { type: 'error', message: coded }
         if (err.status === 502 || err.status === 503 || err.status === 504) {
           return { type: 'error', message: t('errors.unavailable') }
         }
         return { type: 'error', message: t('errors.generic') }
       default:
-        // 400 và các status còn lại: backend tự soạn detail tiếng Việt cho người dùng.
         return { type: 'error', message: beOrStatus(err.message, '400', coded) }
     }
   }
@@ -447,15 +414,12 @@ export function describeError(
   return { type: 'error', message: fallback ?? t('errors.generic') }
 }
 
-// Cho chuỗi lỗi không phải Exception (job.error từ worker, message khôi phục snapshot).
 export function sanitizeUserMessage(text: string | null | undefined, fallback: string): string {
   if (typeof text !== 'string') return fallback
   if (getLang() === 'vi') return isSafeUserMessage(text) ? text : fallback
   return translateBeText(text) ?? fallback
 }
 
-/** Message thất bại của một job (JobPublicResponse/JobHistoryItem): theo MÃ lỗi trước, rồi tới
- *  text an toàn, cuối là fallback của caller. SSE delta và History đi qua cùng một cửa. */
 export function describeJobError(
   job: { error?: string | null; error_code?: string | null; error_params?: ErrorParams | null } | null | undefined,
   fallback: string,

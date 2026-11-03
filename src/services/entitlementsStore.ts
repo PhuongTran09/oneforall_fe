@@ -3,7 +3,7 @@ import { usersApi } from './api/usersApi'
 import type { PlanPolicy, UserMe } from './api/types'
 import { getAccessToken, subscribeAuthEvent } from './authStore'
 
-/** Plan and limits come from GET /users/me; unknown users use Free limits until confirmed. */
+
 
 interface EntitlementState {
   me: UserMe | null
@@ -27,27 +27,27 @@ function subscribe(l: () => void) {
 
 let inFlight: Promise<void> | null = null
 
-// Cache plan cho snippet index.html (AdSense Auto ads nạp trước khi app boot):
-// chỉ là bản copy một chiều từ /users/me — nguồn sự thật vẫn là BE.
+
+
 function writePlanCache(plan: string | null) {
   try {
     if (plan) localStorage.setItem('ofa-plan', plan)
     else localStorage.removeItem('ofa-plan')
   } catch {
-    // storage blocked → auto-ads không nạp (fail-closed phía privacy)
+    // Cache gói chỉ để hiển thị sớm trước khi server trả về; không ghi được thì bỏ
   }
 }
 
-// Supabase phát lại INITIAL_SESSION/SIGNED_IN mỗi lần tab lấy lại focus hoặc phiên được
-// khôi phục, và ProfilePage cũng đọc từ store này — không chặn thì GET /users/me chạy lại
-// liên tục dù dữ liệu không đổi. TTL chỉ áp khi cùng user; đổi user là fetch ngay.
+
+
+
 const REFRESH_TTL_MS = 60_000
 let lastFetchAt = 0
 let lastFetchUserId: string | null = null
 
 export function refreshEntitlements(force = false): Promise<void> {
   if (inFlight) return inFlight
-  // Không có access token (chưa đăng nhập) → /users/me chỉ về 401; SIGNED_OUT đã clear state.
+
   if (getAccessToken() === null) return Promise.resolve()
   if (!force && state.me && lastFetchUserId === state.me.id && Date.now() - lastFetchAt < REFRESH_TTL_MS) {
     return Promise.resolve()
@@ -60,7 +60,7 @@ export function refreshEntitlements(force = false): Promise<void> {
       writePlanCache(me?.plan ?? null)
       setState({ me, loading: false })
     } catch {
-      // Lỗi mạng/token: giữ trạng thái cũ, lần fetch sau (auth event/reload) sửa lại.
+
       lastFetchAt = 0
       setState({ ...state, loading: false })
     } finally {
@@ -70,7 +70,7 @@ export function refreshEntitlements(force = false): Promise<void> {
   return inFlight
 }
 
-// Đăng nhập/đăng xuất/thay đổi user → refresh hoặc clear ngay, không đợi reload.
+
 subscribeAuthEvent((event, session) => {
   if (event === 'SIGNED_OUT') {
     writePlanCache(null)
@@ -81,9 +81,9 @@ subscribeAuthEvent((event, session) => {
   }
   if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION' || event === 'USER_UPDATED') {
     const userId = session?.user?.id ?? null
-    // Session của user khác với bản đang cache → bắt buộc bỏ TTL, nếu không trang sẽ hiển
-    // thị plan/quyền lợi của người dùng trước đó. Chưa đăng nhập (userId null) thì
-    // refreshEntitlements tự chặn, không gọi /users/me vô ích.
+
+
+
     void refreshEntitlements(userId !== null && userId !== lastFetchUserId)
   }
 })
@@ -96,12 +96,12 @@ export function getPlanPolicy(me: UserMe | null): PlanPolicy | null {
   return me?.plan_policy ?? null
 }
 
-/** True khi BE xác nhận user Pro (plan premium hoặc policy.ads=false). */
+
 export function isAdFree(me: UserMe | null): boolean {
   return me?.plan === 'premium' || me?.plan_policy?.ads === false
 }
 
-/** Pro theo cả bản cache của plan. /users/me về muộn hơn HTML, nên lúc chưa có `me` */
+
 export function isAdFreeNow(me: UserMe | null): boolean {
   if (me) return isAdFree(me)
   try {

@@ -10,8 +10,8 @@ export interface LegalLayoutProps {
 }
 
 export function LegalLayout({ doc, siteUrl }: LegalLayoutProps) {
-  // Host phục vụ trang tĩnh dạng thư mục kèm 307 (/privacy -> /privacy/), nên URL cuối luôn có
-  // dấu /; canonical và hreflang phải khai đúng URL đó, cùng quy ước với landing page.
+
+
   const viRoute = `${doc.route.replace(/^\/en/, '')}/`
   const enRoute = `/en${viRoute}`
 

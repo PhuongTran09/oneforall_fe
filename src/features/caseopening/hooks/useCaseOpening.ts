@@ -11,13 +11,13 @@ import { recordOpen } from '../store/caseStore'
 export type OpenPhase = 'idle' | 'shaking' | 'spinning' | 'revealed'
 
 const SHAKE_MS = 620
-/** Để cú "cạch" lúc băng phanh kịp nghe rõ trước tiếng công bố phần thưởng. */
+
 const FANFARE_LAG_MS = 160
 
 export interface CaseOpening {
   phase: OpenPhase
   busy: boolean
-  /** Lượt chạy hiện tại là xem trước: cùng sequence, không ghi lịch sử. */
+
   preview: boolean
   strip: StripCell[]
   winner: CaseItem | null
@@ -31,11 +31,11 @@ export interface CaseOpening {
   reset: () => void
 }
 
-/**
- * Máy trạng thái mở hòm: bấm nút → quay số ĐÃ xác định kết quả → dựng strip quanh ô
- * trúng thưởng → roulette chạy → kết thúc tại đúng ô đó. Animation không có quyền
- * đổi kết quả, và mỗi lượt chỉ có duy nhất một kết quả.
- */
+
+
+
+
+
 export function useCaseOpening(activeCase: CaseConfig, settings: CaseSettings, reducedMotion: boolean): CaseOpening {
   const [phase, setPhase] = useState<OpenPhase>('idle')
   const [strip, setStrip] = useState<StripCell[]>([])
@@ -135,7 +135,7 @@ export function useCaseOpening(activeCase: CaseConfig, settings: CaseSettings, r
     finalize(winnerIndex)
   }, [finalize, phase, winnerIndex])
 
-  // Tiếng quay nhận lịch thật từ roulette: `loop` chỉ còn nghĩa với tệp người dùng tải lên.
+
   const onSpinScheduled = useCallback(
     (plan: SpinPlan) => {
       void audioEngine.play(SLOT_SPIN, activeCase.sounds.spin, { spinPlan: plan, loop: true, restart: true })
@@ -154,7 +154,7 @@ export function useCaseOpening(activeCase: CaseConfig, settings: CaseSettings, r
     setPhase('idle')
   }, [clearTimers])
 
-  // Kết quả đã công bố thuộc về hòm đang hiển thị; đổi/ xoá item giữa hai lượt làm nó hết nghĩa.
+
   const stale = phase === 'revealed' && winnerCaseId !== activeCase.id
   const visiblePhase: OpenPhase = stale ? 'idle' : phase
   const winner = !stale && winnerIndex >= 0 ? (activeCase.items[winnerIndex] ?? null) : null

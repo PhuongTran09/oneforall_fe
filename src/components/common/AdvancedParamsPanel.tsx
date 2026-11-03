@@ -18,7 +18,7 @@ function isFilled(field: ParamField, value: string | boolean | undefined): boole
   return typeof value === 'string' && value.trim() !== ''
 }
 
-/** Collapsible block holding the options the backend reads for the current conversion. */
+
 export function AdvancedParamsPanel({
   fields,
   values,

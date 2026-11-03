@@ -3,6 +3,7 @@ import { X, Check, Sparkles, Mail, CreditCard, AlertTriangle } from 'lucide-reac
 import { Button } from '../common/Button'
 import { t } from '../../i18n/langStore'
 import { useExitFade } from '../../hooks/useExitFade'
+import { useDialogFocus } from '../../hooks/useDialogFocus'
 import { isAdFree, useEntitlements } from '../../services/entitlementsStore'
 import {
   buildReturnUrl,
@@ -13,7 +14,7 @@ import {
 import { submitAutoCheckout } from '../../utils/checkoutForm'
 import { describeError } from '../../utils/apiError'
 
-// Cùng địa chỉ support mà Footer/ToolFooterActions dùng.
+
 const CONTACT_URL =
   'https://mail.google.com/mail/?view=cm&fs=1&to=support@oneforall.io.vn&su=Nang%20cap%20goi%20Pro%20One ForAll'
 
@@ -31,36 +32,37 @@ export interface ProPlanModalProps {
   onClose: () => void
 }
 
-// Bảng gói Pro hiển thị cho user ĐÃ đăng nhập khi bấm CTA nâng cấp / badge gói.
+
 export function ProPlanModal({ isOpen, onClose }: ProPlanModalProps) {
   const { me } = useEntitlements()
-  // Đang dùng gói thì BE từ chối tạo đơn (409) — modal báo thẳng thay vì để người dùng bấm.
+
   const active = isAdFree(me)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  // `busy` là state nên hai cú click cùng tick đều thấy closure cũ; ref mới chặn được
-  // hành vi double-click tạo hai đơn SePay với hai order_code.
+
+
   const busyRef = useRef(false)
+
+  const panelRef = useRef<HTMLDivElement>(null)
+
+
+
+  useDialogFocus({ panelRef, open: isOpen, onEscape: onClose })
 
   useEffect(() => {
     if (!isOpen) return
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose()
-    }
-    // Back từ trang thanh toán SePay: tab sống lại từ bfcache nên modal vẫn còn và nút
-    // vẫn ở trạng thái "đang chuyển hướng" — phải mở lại quyền bấm.
+
+
     const onPageShow = (event: PageTransitionEvent) => {
       if (!event.persisted) return
       busyRef.current = false
       setBusy(false)
     }
-    document.addEventListener('keydown', onKey)
     window.addEventListener('pageshow', onPageShow)
     return () => {
-      document.removeEventListener('keydown', onKey)
       window.removeEventListener('pageshow', onPageShow)
     }
-  }, [isOpen, onClose])
+  }, [isOpen])
 
   const fail = (message: string) => {
     busyRef.current = false
@@ -76,26 +78,26 @@ export function ProPlanModal({ isOpen, onClose }: ProPlanModalProps) {
     try {
       const res = await paymentsApi.create({
         plan_id: PREMIUM_PLAN_ID,
-        // Ba URL nằm trong chuỗi ký HMAC → dựng từ cùng một hàm với trang nhận kết quả.
+
         return_url: buildReturnUrl(''),
         cancel_url: buildReturnUrl('cancel'),
         error_url: buildReturnUrl('error'),
       })
       const fields = res.checkout_fields ?? {}
       if (!res.checkout_url || Object.keys(fields).length === 0) {
-        // BE đồng ý tạo đơn nhưng không trả form đã ký: không có gì để POST, giữ người dùng ở lại.
+
         fail(t('pay.unavailable'))
         return
       }
       checkoutMarker.save({ paymentId: res.payment_id, orderCode: res.order_code })
       submitAutoCheckout(res.checkout_url, fields)
-      // Thành công là rời trang này → giữ nguyên trạng thái busy, không reset.
+
     } catch (err) {
       fail(describeError(err).message)
     }
   }
 
-  // Chiều ra: node ở lại 180ms (đúng bằng .in-out) để fade-out chạy xong mới bị gỡ.
+
   const { show, closing } = useExitFade(isOpen)
 
   if (!show) return null
@@ -109,12 +111,14 @@ export function ProPlanModal({ isOpen, onClose }: ProPlanModalProps) {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className={`relative w-full max-w-md p-6 sm:p-8 bg-surface border border-[rgba(255,59,48,0.35)] clip-corner-lg card-3d ${
+        ref={panelRef}
+        className={`relative w-full max-w-md p-6 sm:p-8 bg-surface border border-[rgba(255,59,48,0.35)] clip-corner-lg card-3d outline-none ${
           closing ? 'in-out' : 'in-up'
         }`}
         role="dialog"
         aria-modal="true"
         aria-label={t('pricing.proCta')}
+        tabIndex={-1}
       >
         <button
           type="button"

@@ -9,14 +9,14 @@ export interface ConvertFileOptions {
   lossless?: boolean
   colormode?: string
   mode?: string
-  /** Extra keys are forwarded as-is; src/config/conversionParams.ts lists what each operation reads. */
+
   [key: string]: string | number | boolean | undefined
 }
 
 export const convertApi = {
-  /**
-   * Tạo job chuyển đổi file (multipart/form-data) tới FastAPI backend /api/v1/convert-file
-   */
+
+
+
   async convertFile(
     file: File,
     toFormat: string,

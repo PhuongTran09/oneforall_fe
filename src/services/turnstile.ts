@@ -1,4 +1,4 @@
-/** Nạp script Cloudflare Turnstile — MỘT điểm chèn <script> cho cả app (cùng kiểu với */
+
 
 export interface TurnstileWidgetOptions {
   sitekey: string
@@ -22,8 +22,8 @@ export interface TurnstileApi {
 
 const SCRIPT_URL = 'https://challenges.cloudflare.com/turnstile/v0/api.js'
 const ONLOAD_GLOBAL = '__oneforallTurnstileOnLoad'
-// Cloudflare không tài liệu hoá thời gian tải script; 15s là mức một cú retry của người
-// dùng còn chấp nhận chờ, dài hơn thì panel nên báo lỗi thay vì treo vô hạn.
+
+
 const LOAD_TIMEOUT_MS = 15_000
 
 let loading: Promise<TurnstileApi> | null = null

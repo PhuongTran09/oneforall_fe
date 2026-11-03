@@ -33,8 +33,8 @@ export function HomePage() {
     scrollToSection('tools')
   }
 
-  // CTA "Tài khoản Pro" ở hero: chưa đăng nhập thì chưa có gì để mua → mở modal auth;
-  // đã đăng nhập thì cuộn xuống bảng gói Free/Pro trên chính trang này.
+
+
   const handleProAccount = () => {
     if (!session) {
       handleOpenAuth('register')
@@ -47,12 +47,10 @@ export function HomePage() {
     scrollToSection('pricing')
   }
 
-  const homeFaqs = [
-    { q: t('homeFaq.q0'), a: t('homeFaq.a0') },
-    { q: t('homeFaq.q1'), a: t('homeFaq.a1') },
-    { q: t('homeFaq.q3'), a: t('homeFaq.a3') },
-    { q: t('homeFaq.q5'), a: t('homeFaq.a5') },
-  ]
+  const homeFaqs = Array.from({ length: 10 }, (_, i) => ({
+    q: t(`homeFaq.q${i}`),
+    a: t(`homeFaq.a${i}`),
+  }))
 
   return (
     <div className="w-full">

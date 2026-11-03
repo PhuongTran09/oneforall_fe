@@ -1,9 +1,10 @@
-import { useEffect } from 'react'
+import { useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { AlertTriangle, X } from 'lucide-react'
 import { Button } from '../common/Button'
 import { t } from '../../i18n/langStore'
 import { useExitFade } from '../../hooks/useExitFade'
+import { useDialogFocus } from '../../hooks/useDialogFocus'
 
 export interface ConfirmModalProps {
   isOpen: boolean
@@ -13,24 +14,23 @@ export interface ConfirmModalProps {
   onClose: () => void
 }
 
-// Popup xác nhận trước hành động thay đổi trạng thái (xóa / hủy / đăng xuất),
-// thay window.confirm — cùng ngôn ngữ thiết kế với các modal khác của site.
-export function ConfirmModal({ isOpen, title, message, onConfirm, onClose }: ConfirmModalProps) {
-  useEffect(() => {
-    if (!isOpen) return
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
-    document.addEventListener('keydown', onKey)
-    return () => document.removeEventListener('keydown', onKey)
-  }, [isOpen, onClose])
 
-  // Chiều ra: node ở lại 180ms (đúng bằng .in-out) để fade-out chạy xong mới bị gỡ.
+
+export function ConfirmModal({ isOpen, title, message, onConfirm, onClose }: ConfirmModalProps) {
+
+
+
+  const panelRef = useRef<HTMLDivElement>(null)
+  useDialogFocus({ panelRef, open: isOpen, onEscape: onClose })
+
+
   const { show, closing } = useExitFade(isOpen)
 
   if (!show) return null
 
-  // Portal ra body: lớp phủ `fixed` ăn theo containing block của tổ tiên gần nhất
-  // có transform, mà .card-3d (JobProgress, History) luôn có `perspective(...)` —
-  // ở lại trong card thì backdrop chỉ phủ đúng cái card và bị che bởi sibling.
+
+
+
   return createPortal(
     <div
       className={`fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm ${
@@ -40,10 +40,12 @@ export function ConfirmModal({ isOpen, title, message, onConfirm, onClose }: Con
     >
       <div
         onClick={(e) => e.stopPropagation()}
+        ref={panelRef}
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className={`relative w-full max-w-sm p-6 bg-surface border border-[rgba(255,59,48,0.35)] clip-corner-lg card-3d ${
+        tabIndex={-1}
+        className={`relative w-full max-w-sm p-6 bg-surface border border-[rgba(255,59,48,0.35)] clip-corner-lg card-3d outline-none ${
           closing ? 'in-out' : 'in-up'
         }`}
       >

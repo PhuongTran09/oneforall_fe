@@ -15,7 +15,7 @@ const DB_NAME = 'ofa-case-opening'
 const DB_VERSION = 1
 const STORE = 'assets'
 
-// Ảnh/am thanh là Blob nên nằm ở IndexedDB; localStorage chỉ giữ metadata (asset id).
+
 let dbPromise: Promise<IDBDatabase | null> | null = null
 
 function openDb(): Promise<IDBDatabase | null> {
@@ -65,7 +65,7 @@ export function isAssetStoreAvailable(): Promise<boolean> {
   return openDb().then((db) => db !== null)
 }
 
-/** false = không ghi được (IDB bị chặn/cháy dung lượng) → caller báo người dùng. */
+
 export async function saveAsset(record: AssetRecord): Promise<boolean> {
   const res = await run('readwrite', (store) => store.put(record) as IDBRequest<IDBValidKey>)
   return res !== null
@@ -87,7 +87,7 @@ interface CacheEntry {
 
 const urlCache = new Map<string, CacheEntry>()
 
-/** Đọc Blob từ IDB và trả về object URL đã cache. Mỗi lần gọi phải `releaseAssetUrl` tương ứng. */
+
 export function retainAssetUrl(id: string): Promise<string | null> {
   if (isBuiltinSound(id)) return Promise.resolve(resolveBuiltinUrl(id))
 
@@ -102,7 +102,7 @@ export function retainAssetUrl(id: string): Promise<string | null> {
     .then((record) => {
       if (!record) return null
       const url = URL.createObjectURL(record.blob)
-      // Bị release trong lúc đang đọc thì thu hồi ngay, không để URL mồ côi.
+
       if (urlCache.get(id) !== entry) {
         URL.revokeObjectURL(url)
         return null

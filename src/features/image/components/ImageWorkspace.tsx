@@ -15,8 +15,8 @@ export function ImageWorkspace() {
   const [isLoading, setIsLoading] = useState(false)
   const [message, setMessage] = useState<{ text: string; isError: boolean } | null>(null)
 
-  // Trần ảnh hiển thị ở hint lấy từ PLAN_POLICIES qua /users/me — BE không expose caps cho
-  // ẩn danh nên không có số thì im lặng, thay vì hardcode "10MB Free" sẽ nói dối user Pro.
+
+
   const imageCap = useEntitlements().me?.plan_policy?.max_upload_bytes.image
   const imageHint =
     imageCap === undefined

@@ -1,6 +1,6 @@
-// Audit i18n + đường lỗi FE. Chạy:
-//   npx esbuild scratch/audit-i18n.ts --bundle --platform=node --format=cjs --outfile=scratch/audit.cjs \
-//     --define:import.meta.env='{"DEV":false}' && node scratch/audit.cjs
+
+
+
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs'
 import { join, relative } from 'node:path'
 import { vi } from '../src/i18n/dict.vi'
@@ -41,7 +41,7 @@ for (const f of files) {
   for (const m of text.matchAll(/\bt\(\s*`([^`]*)`/g)) {
     if (m[1].includes('${')) dynamic.push(`${rel}: t(\`${m[1]}\`)`)
   }
-  // Key nằm trong Record (PLATFORM_ERROR_KEYS, NAV_LABEL_KEYS...) — được truyền vào t() gián tiếp nên [1] không thấy.
+
   const roots = new Set([...viKeys.keys()].map((k) => k.split('.')[0]))
   for (const m of text.matchAll(/'([a-zA-Z]\w*(?:\.\w+){1,3})'/g)) {
     if (roots.has(m[1].split('.')[0]) && !used.has(m[1])) used.set(m[1], [...(used.get(m[1]) ?? []), `${rel} (indirect)`])
@@ -82,7 +82,6 @@ for (const k of unused) console.log(`   ${k}`)
 console.log(`\n[6] chỗ gọi t() động (key ghép lúc chạy):`)
 for (const d of dynamic) console.log(`   ${d}`)
 
-// [7] Text thừa: khoảng trắng kép, thiếu dấu cách trước câu tiếp, ký tự điều khiển.
 console.log(`\n[7] chuỗi nghi vấn (double space / thiếu space / control char):`)
 for (const [k, v] of [...viKeys, ...[...enKeys].map((x): [string, string] => [`en:${x[0]}`, x[1]])]) {
   const hits: string[] = []
@@ -92,7 +91,6 @@ for (const [k, v] of [...viKeys, ...[...enKeys].map((x): [string, string] => [`e
   if (hits.length) console.log(`   ${k}: ${hits.join(',')} :: ${JSON.stringify(v.slice(0, 90))}`)
 }
 
-// [8] Job type/queue label coverage: BE trả type nào, dict có tương ứng không.
 const beTypes = ['convert_file', 'image_process', 'video_process', 'media_process', 'background_removal']
 const historyBlock = (vi as { history?: Record<string, unknown> }).history
 console.log(`\n[8] job type BE vs dict.history keys: ${Object.keys(historyBlock ?? {}).slice(0, 20).join(', ')}`)

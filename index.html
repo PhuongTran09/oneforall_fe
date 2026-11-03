@@ -16,17 +16,16 @@
         } catch (e) {
           root.dataset.theme = 'dark'
         }
-        // main.tsx gỡ #prerender-shell sau commit đầu. Nếu module JS không chạy nổi (CDN chắn,
-        // build hỏng, máy khách chặn script) shell vẫn còn trên màn — phải chuyển về CUỘN được,
-        // không được nằm làm overlay chặn cả khung hình như #boot-loader cũ.
         setTimeout(function () {
+          var bar = document.getElementById('boot-bar')
+          if (bar) bar.remove()
           var shell = document.getElementById('prerender-shell')
           if (shell) shell.setAttribute('data-stuck', '1')
         }, 10000)
       })()
     </script>
 
-    <!-- SEO: Website identity -->
+
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -37,14 +36,14 @@
     }
     </script>
 
-    <!-- Favicon -->
+
     <link
       rel="icon"
       type="image/svg+xml"
       href="/oneforall.svg"
     />
 
-    <!-- Canonical URL -->
+
     <link
       rel="canonical"
       href="https://oneforall.io.vn/"
@@ -60,7 +59,7 @@
 
     <meta name="theme-color" content="#0a0a0f" />
 
-    <!-- Open Graph -->
+
     <meta property="og:type" content="website" />
 
     <meta
@@ -107,6 +106,11 @@
   </head>
 
   <body>
+
+
+
+    <div id="boot-bar" aria-hidden="true"></div>
+
     <div id="root"></div>
 
     <script

@@ -65,7 +65,7 @@ export function CaseStage({
   const rarityColor = reveal ? (reveal.rarity?.color ?? reveal.item.color) : activeCase.accentColor
 
   const boxRef = useRef<HTMLDivElement>(null)
-  // Nghiêng theo con trỏ bằng CSS biến trực tiếp: không có re-render cho mỗi frame.
+
   const tiltBox = useCallback(
     (e: ReactPointerEvent<HTMLDivElement>) => {
       const el = boxRef.current

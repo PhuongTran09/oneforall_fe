@@ -4,7 +4,7 @@ import { stripLocale, t, useI18n, withLocale, type Lang } from './langStore'
 
 const OPTIONS = ['VI', 'EN']
 
-/** Đổi ngôn ngữ = điều hướng sang URL tương ứng (/path ↔ /en/path); LangRouteSync tự sync store. */
+
 export function LanguageToggle() {
   const { lang } = useI18n()
   const location = useLocation()

@@ -12,8 +12,8 @@ export interface JobAccepted {
   download_token?: string | null
 }
 
-// job.error_params (schemas/job.py::ErrorParams): BE đã chốt key là định danh, value là số hữu
-// hạn hoặc chuỗi ngắn. FE guard lại một tầng nữa vì row cũ và payload không phải từ BE.
+
+
 export type ErrorParams = Record<string, string | number>
 
 export interface JobPublicResponse {
@@ -37,7 +37,7 @@ export interface PresignedUrlResponse {
   expires_in?: number
 }
 
-// Lịch sử xử lý — khớp schemas/job.py::JobHistoryItem (KHÔNG có output_key/input_key).
+
 export interface JobHistoryItem {
   id: string
   type: string
@@ -68,13 +68,13 @@ export interface JobStats {
   files_available: number
 }
 
-// Khớp oneforall_be/app/schemas/stats.py — khu live stats công khai ở trang chủ.
-// Mỗi số là number | null: null = backend KHÔNG đo được (Redis/DB lỗi), 0 = đo được
-// và đúng bằng 0. UI phải phân biệt hai loại, cấm hiện số mẫu.
+
+
+
 export interface PublicStats {
-  /** Số sid heartbeat còn trong cửa sổ 5 phút gần nhất. */
+
   active_visitors: number | null
-  /** Tổng số job đã xử lý thành công từ trước tới nay. */
+
   completed_jobs: number | null
 }
 
@@ -93,18 +93,18 @@ export interface UserMe {
   full_name: string | null
   is_active: boolean
   is_superuser: boolean
-  /** Gói dịch vụ — backend chưa trả thì FE fallback user_metadata rồi 'free'. */
+
   plan?: string | null
-  /** Giới hạn gói do BE (PLAN_POLICIES) sinh ra — nguồn duy nhất, không hardcode. */
+
   plan_policy?: PlanPolicy | null
   created_at: string
   updated_at: string
 }
 
-// Khớp app/schemas/payment.py — checkout SePay hosted (POST /v1/payments/sepay).
+
 export interface CreatePaymentRequest {
   plan_id: string
-  /** SePay POST trả về đây sau khi thanh toán; BE ký HMAC vào URL này nên phải dựng trước. */
+
   return_url: string
   cancel_url: string
   error_url?: string
@@ -114,11 +114,11 @@ export interface CreatePaymentResponse {
   payment_id: string
   order_code: number
   checkout_url?: string | null
-  /** Bộ field đã ký, phải gửi nguyên bộ qua POST form tới checkout_url — thêm/bớt/sửa là hỏng signature. */
+
   checkout_fields: Record<string, string>
 }
 
-/** models/payment.py::PaymentStatus — SePay chỉ ghi `paid` (qua IPN); `cancelled`/`expired` là đường legacy. */
+
 export type PaymentStatus = 'pending' | 'paid' | 'cancelled' | 'expired'
 
 export interface PaymentHistoryItem {
@@ -138,9 +138,9 @@ export interface PaymentHistoryResponse {
 
 export interface RequestOptions extends Omit<RequestInit, 'body'> {
   params?: Record<string, string | number | boolean | undefined | null>
-  /** 'proactive' = xin token Turnstile TRƯỚC khi gửi (BE đã báo `captcha_required`). */
+
   captcha?: 'proactive'
-  /** Trần thời gian cho riêng request này — mặc định là mức của call JSON ngắn. */
+
   timeoutMs?: number
 }
 
@@ -150,7 +150,7 @@ export interface ApiErrorDetail {
   type?: string
 }
 
-/** Payload lỗi FastAPI. `app_exception_handler` đặt `code`/`params` ở CẤP response, đi cạnh */
+
 export interface FastApiErrorResponse {
   detail?: string | ApiErrorDetail[] | Record<string, unknown>
   message?: string

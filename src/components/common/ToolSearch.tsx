@@ -8,10 +8,10 @@ import { useExitFade } from '../../hooks/useExitFade'
 export interface ToolSearchFieldProps {
   value: string
   onChange: (next: string) => void
-  /** Hiện danh sách kết quả kiểu combobox. Tắt khi trang tự render lưới công cụ. */
+
   dropdown?: boolean
   size?: 'md' | 'lg'
-  /** 'brand' = viền umber đỏ cho ô tìm kiếm chính ở hero; mặc định viền edge như ô phụ. */
+
   tone?: 'default' | 'brand'
   placeholder?: string
   className?: string
@@ -36,8 +36,8 @@ export function ToolSearchField({
   const listRef = useRef<HTMLDivElement>(null)
   const listId = 'tool-search-listbox'
   const hasQuery = value.trim().length > 0
-  // Danh sách fade cả hai chiều: đóng bằng Esc/click ra ngoài hay xoá hết chữ đều là một
-  // nhịp mờ dần, không phải biến mất giữa lúc mắt đang dõi theo.
+
+
   const { show: listShown, closing: listClosing } = useExitFade(Boolean(dropdown) && open && hasQuery)
 
   useEffect(() => {
@@ -49,11 +49,11 @@ export function ToolSearchField({
     return () => document.removeEventListener('mousedown', onDocClick)
   }, [open])
 
-  /* Danh sách mặc định nở xuống, nhưng bàn phím ảo chiếm quá nửa màn hình điện thoại thì
-     phần dưới còn lại không đủ — đo chỗ trống thật rồi lật nó lên trên. Chỉ đổi class qua
-     ref: kết quả thay đổi từng keystroke, render lại cả combobox chỉ vì một cái class là thừa.
-     useLayoutEffect để lật xong trước khi vẽ — để useEffect thì danh sách nháy một khung
-     hình ở tư thế nở xuống. */
+
+
+
+
+
   useLayoutEffect(() => {
     if (!open || !hasQuery) return
     const place = () => {
@@ -80,7 +80,6 @@ export function ToolSearchField({
   const go = (slug: string) => {
     setOpen(false)
     onChange('')
-    // Input còn focus là bàn phím ở lại trang mới, che mất nội dung vừa chuyển tới.
     inputRef.current?.blur()
     navigate(withLocale(slug))
   }
@@ -101,8 +100,6 @@ export function ToolSearchField({
       ? 'h-10 sm:h-12 text-sm sm:text-base pl-9 sm:pl-11 pr-9 sm:pr-9'
       : 'h-9 sm:h-10 text-sm pl-8 pr-9 sm:pl-10'
 
-  /* clip-corner-btn đè border phải/dưới bằng --extrude-face — CSS không nằm trong layer nên
-     thắng utility, muốn cả khung có màu phải đổi luôn biến đó (xem .search-brand). */
   const frame =
     tone === 'brand'
       ? 'search-brand border-brand/45 hover:border-brand/70 focus:border-brand shadow-[0_16px_36px_-24px_rgba(255,59,48,0.85)]'
@@ -114,11 +111,11 @@ export function ToolSearchField({
 
   return (
     <div ref={boxRef} className={`group relative w-full ${className}`}>
-      {/* Icon nằm trong ô cắt góc riêng: đứng một mình giữa khoảng trắng lớn thì nó
-          chỉ là hình trang trí, nhốt vào ô thì đọc ra đây là điều khiển được.
-          z-10 là BẮT BUỘC: clip-path của input tạo stacking context, mà input đứng SAU
-          span trong DOM nên nền đặc của nó phủ mất icon — không có số z thì ô kính biến
-          mất trên mọi kích thước, chỉ thấy lúc zoom. */}
+
+
+
+
+
       <span
         aria-hidden="true"
         className={`pointer-events-none absolute left-1.5 top-1/2 z-10 grid place-items-center ${glyphBox} -translate-y-1/2 bg-page border ${glyphFrame} clip-corner-btn transition-colors duration-200 group-focus-within:border-[rgba(255,59,48,0.55)] group-focus-within:text-brand`}
@@ -131,7 +128,6 @@ export function ToolSearchField({
         value={value}
         onChange={(event) => {
           onChange(event.target.value)
-          // Đổi từ khóa là danh sách đổi thứ tự — con trỏ bàn phím phải về đầu.
           setActive(0)
           if (dropdown) setOpen(true)
         }}
@@ -195,7 +191,6 @@ export function ToolSearchField({
                 <li key={entry.slug} role="option" aria-selected={i === active}>
                   <button
                     type="button"
-                    // mousedown giữ focus trên input, nếu không hiệu ứng blur sẽ đóng danh sách trước khi click kịp chạy
                     onMouseDown={(event) => event.preventDefault()}
                     onMouseEnter={() => setActive(i)}
                     onClick={() => go(entry.slug)}

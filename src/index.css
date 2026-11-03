@@ -1,17 +1,17 @@
 @import "tailwindcss";
 
-/* Set md to 740px so 744px iPad mini portrait uses the tablet layout. */
+
 @theme {
   --breakpoint-md: 740px;
 
-  /* Surface and text utilities use runtime tokens, so theme overrides apply globally. */
+
   --color-page: var(--bg-base);
   --color-surface: var(--bg-surface);
   --color-elev: var(--bg-elevated);
   --color-edge: var(--border-subtle);
   --color-ink: var(--text-ink);
 
-  /* Light-theme text colors use stronger tokens without changing dark mode. */
+
   --color-soft: var(--text-soft);
   --color-tint: var(--bg-tint);
   --color-brand: var(--text-brand);
@@ -20,7 +20,7 @@
   --color-brand-active: var(--text-brand-active);
 }
 
-/* Light theme overrides runtime tokens and Tailwind slate scales. */
+
 html[data-theme='light'] {
   color-scheme: light;
 
@@ -28,14 +28,14 @@ html[data-theme='light'] {
   --bg-surface: #ffffff;
   --bg-elevated: #e9ebf4;
   --border-subtle: #d8dbe8;
-  /* In light mode, subtle dark borders show depth without looking decorative. */
+
   --extrude-face: rgba(42,47,61,.14);
   --extrude-face-dim: rgba(42,47,61,.09);
   --text-primary: #2a2f3d;
   --text-muted: #5b6472;
   --text-ink: #171a24;
 
-  /* Cùng họ màu nhưng hạ độ sáng để đạt >=4.5:1 trên nền trắng/hồng-nhạt. */
+
   --text-soft: #4c5567;
   --bg-tint: #fbe7e4;
   --text-brand: #c81e17;
@@ -43,10 +43,19 @@ html[data-theme='light'] {
   --text-brand-3: #9a3412;
   --text-brand-active: #b91c1c;
 
-  /* Darken brand gradient stops so white text stays readable in light mode. */
+
+
+
+
+
+
+
   --grad-1: #cf2216;
-  --grad-2: #d8431c;
-  --grad-3: #c8571d;
+  --grad-2: #d4421c;
+  --grad-3: #c2541c;
+  /* Light giữ mực trắng trên nền brand: --grad-* đã hãm xuống #cf2216/#d4421c/#c2541c nên
+     trắng đạt 4.57:1 ở mọi stop, 4.98:1 khi hover:brightness-95. */
+  --on-brand: #ffffff;
 
   --color-slate-100: #202637;
   --color-slate-200: #2b3346;
@@ -56,7 +65,7 @@ html[data-theme='light'] {
   --color-slate-600: #3f4757;
 
   --color-emerald-300: #047857;
-  --color-emerald-400: #059669;
+  --color-emerald-400: #047857;
   --color-emerald-500: #047857;
   --color-emerald-600: #047857;
   --color-amber-400: #b45309;
@@ -76,23 +85,30 @@ html[data-theme='light'] {
   :root {
     color-scheme: dark;
 
-    /* Surfaces */
+
     --bg-base:            #0a0a0f;
     --bg-surface:         #14141b;
     --bg-elevated:        #1a1a24;
 
-    /* Text */
+
     --text-primary:       #e8e9ed;
     --text-muted:         #9ca3af;
     --text-ink:           #ffffff;
 
-    /* Brand palette */
+
+
+
+
+
+    --color-slate-500:    #7c8ba4;
+
+
     --brand-red:          #ff3b30;
     --brand-coral:        #ff6b4a;
     --brand-orange:       #ff8a65;
     --brand-pink:         #ff5c7c;
 
-    /* Brand màu dùng trên surface — bản tối giữ nguyên hex cũ */
+
     --text-soft:          #a1a1aa;
     --bg-tint:            #2a1115;
     --text-brand:         #ff3b30;
@@ -100,34 +116,39 @@ html[data-theme='light'] {
     --text-brand-3:       #ffb59f;
     --text-brand-active:  #ff4545;
 
-    /* Điểm dừng gradient chủ đạo */
+
     --grad-1:             #ff3b30;
     --grad-2:             #ff6b4a;
     --grad-3:             #ff8a65;
+    /* Mực trên nền brand ở dark: trắng chỉ đạt 2.31:1 (stop sáng nhất #ff8a65 gần như
+       trắng so với chữ). Đổi MỰC chứ không đổi MẶT — làm mặt đậm tới mức trắng đạt 4.5 thì
+       stop phải xuống ~#de3500, lệch sắc thương hiệu và làm cụt luôn mực .text-brand-gradient
+       của H1 hero (dùng chung triplet). #1b0f0d: 5.28:1 nghỉ, 4.81:1 ở hover:brightness-95. */
+    --on-brand:           #1b0f0d;
 
-    /* Border tokens */
-    --border-subtle:      #2a2a35;          /* resting card/input border  */
-    --border-brand:       rgba(255,59,48,.35); /* default brand border       */
-    --border-brand-vivid: #ff3b30;          /* primary button / focus      */
-    --extrude-face:       rgba(0,0,0,.45);      /* 3-D side face (dark)         */
-    --extrude-face-dim:   rgba(0,0,0,.30);      /* softer face on dim cards     */
 
-    /* Corner clip sizes */
-    --clip-btn:   6px;   /* buttons                    */
-    --clip-card:  8px;   /* cards                      */
-    --clip-lg:    10px;  /* large containers / modals  */
+    --border-subtle:      #2a2a35;
+    --border-brand:       rgba(255,59,48,.35);
+    --border-brand-vivid: #ff3b30;
+    --extrude-face:       rgba(0,0,0,.45);
+    --extrude-face-dim:   rgba(0,0,0,.30);
 
-    /* Extrusion depth */
+
+    --clip-btn:   6px;
+    --clip-card:  8px;
+    --clip-lg:    10px;
+
+
     --extrude-btn:  3px;
     --extrude-card: 4px;
 
-    /* ============ Nhịp chuyển động dùng chung ============
-       Một bộ easing + một bậc thời gian cho cả app. Muốn đổi "cảm giác" của toàn
-       trang thì sửa 5 dòng này, không phải quét lại hai chục keyframe:
-       --e-out  expo-out — dựng nội dung lên (vọt nhanh, đáp rất mềm), dùng cho mọi reveal
-       --e-soft hai đầu chậm — hover/đổi trạng thái, không bao giờ "pop"
-       --e-back nún nhẹ cuối nhịp — chỉ cho thứ bật lên rồi đứng (badge, kết quả quay)
-       Bậc thời gian cách nhau ~1.7x nên các nhịp lồng nhau luôn cùng tốc độ cảm nhận. */
+
+
+
+
+
+
+
     --e-out:  cubic-bezier(0.16, 1, 0.3, 1);
     --e-soft: cubic-bezier(0.4, 0, 0.2, 1);
     --e-back: cubic-bezier(0.34, 1.35, 0.64, 1);
@@ -145,29 +166,29 @@ html[data-theme='light'] {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   }
 
-  /* Tắt scroll anchoring ở scroller gốc. Section ngoài tầm nhìn mang
-     content-visibility:auto + contain-intrinsic-size, nên lúc route mới render xong thì
-     chiều cao trang còn nhảy (đo trên / : 6579px → 8762px trong ~25ms). Bể nhảy sau cú
-     ghi vị trí đúng một khung hình, Chrome lấy nội dung trên đầu làm mốc và tự dời
-     scrollY bù 171px — 800 ta xin thành 971 khi Back. App đã sở hữu vị trí cuộn rồi
-     (history-key + Lenis ghi mỗi frame), để trình duyệt làm người viết thứ hai thì không
-     bao giờ đoán được đích. Scroller TRONG (modal, panel) vẫn giữ anchoring của nó. */
+
+
+
+
+
+
+
   html {
     overflow-anchor: none;
   }
 
-  /* Lenis (khi sống) tự nội từng khung hình VÀ gắn class `lenis` lên <html>. Để cả
-     scroll-behavior: smooth nữa là hai bộ làm mượt đánh nhau: mỗi cú nhảy đi hai nhịp,
-     đích cuối vẫn đúng nhưng giữa đường bị khựng. */
+
+
+
   html.lenis {
     scroll-behavior: auto;
   }
 
-  /* Hộp cuộn TRONG (modal, panel lịch sử, rail chip…) phải tự cuộn bằng native và
-     không kéo trang nền đi theo. Không import lenis/dist/lenis.css vì file đó chứa
-     `.lenis.lenis-smooth iframe { pointer-events: none }` — đúng cái làm nút Google
-     Sign-In và hCaptcha trong iframe chết click lúc đang cuộn mượt. Chỉ lấy mỗi dòng
-     overscroll này, `height:auto` với `scroll-behavior` thì repo đã tự xử. */
+
+
+
+
+
   .lenis [data-lenis-prevent] {
     overscroll-behavior: contain;
   }
@@ -188,9 +209,15 @@ html[data-theme='light'] {
   }
 }
 
-/* Đọc biến --grad-* để chế độ sáng đẩy đậm lên mà không phải sửa từng component. */
+
 .bg-brand-gradient {
   background: linear-gradient(135deg, var(--grad-1) 0%, var(--grad-2) 50%, var(--grad-3) 100%);
+}
+
+/* Cặp với .bg-brand-gradient. Dùng thay cho text-white ở mọi surface brand:
+   trắng chỉ an toàn ở light theme, dark theme phải đổi mực (xem --on-brand). */
+.text-on-brand {
+  color: var(--on-brand);
 }
 
 .text-brand-gradient {
@@ -200,7 +227,7 @@ html[data-theme='light'] {
   background-clip: text;
 }
 
-/* clip-corner-* clips a small diagonal on the top-right + bottom-left. */
+
 .clip-corner-btn {
   --extrude: var(--extrude-btn);
   clip-path: polygon(
@@ -240,7 +267,7 @@ html[data-theme='light'] {
   border-radius: 0 !important;
 }
 
-/* Light mode uses a subtle dark side face to show depth without a heavy border. */
+
 .clip-corner-btn,
 .clip-corner-card,
 .clip-corner-lg,
@@ -249,14 +276,14 @@ html[data-theme='light'] {
   border-bottom: var(--extrude) solid var(--extrude-face);
 }
 
-/* Only card-3d needs a containing block; :where() keeps Tailwind positioning utilities dominant. */
+
 @layer utilities {
   :where(.card-3d) {
     position: relative;
   }
 }
 
-/* Brand buttons use a tinted side face to avoid muddy colors and keep depth on hover. */
+
 .btn-3d {
   --extrude-face: color-mix(in srgb, var(--grad-1) 62%, #000);
   transition: transform 0.12s ease, border-color 0.12s ease;
@@ -265,22 +292,22 @@ html[data-theme='light'] {
 .btn-3d:hover {
   transform: translate(-1px, -1px);
 }
-/* Press: khối hạ xuống sát mặt nền — mặt border mỏng lại bằng cách đổi màu,
-   không đổi width (width là layout). */
+
+
 .btn-3d:active {
   transform: translate(1px, 1px);
   --extrude-face: color-mix(in srgb, var(--grad-1) 78%, #000);
 }
 
-/* card-3d adds tilt, lift, and spotlight over the existing extruded border. */
+
 .card-3d {
   transform: perspective(700px)
     rotateX(var(--rx, 0deg))
     rotateY(var(--ry, 0deg))
     translateY(var(--lift, 0px));
-  /* transform chỉ --t-1 (140ms): card nghiêng THEO con trỏ, độ trễ 250ms làm mặt card
-     đi sau chuột một quãng — nhìn như trễ mạng. Nâng/border/filter vẫn nhịp chậm vì
-     chúng đổi một lần rồi đứng, còn transform đổi liên tục lúc di chuột. */
+
+
+
   transition:
     transform var(--t-1) var(--e-soft),
     scale var(--t-1) var(--e-soft),
@@ -288,8 +315,8 @@ html[data-theme='light'] {
     filter var(--t-2) var(--e-soft);
 }
 
-/* Vệt hồng dọc đáy thẻ: opacity 0 ở trạng thái thường, bật lên khi hover (dưới) hoặc
-   thường trực với thẻ chủ đích phát sáng (.card-3d-glow). */
+
+
 .card-3d:not(.card-3d-dim)::before {
   content: '';
   position: absolute;
@@ -304,83 +331,83 @@ html[data-theme='light'] {
   z-index: 5;
 }
 
-/* Dimmer variant for secondary / non-interactive cards */
+
 .card-3d-dim {
   --extrude-face: var(--extrude-face-dim);
 }
 
 @media (hover: hover) {
-  /* Vệt hồng ở đáy thẻ vẫn bật khi hover: một linear-gradient cố định, opacity đổi MỘT
-     lần lúc vào/ra nên compositor giữ nguyên lớp đã raster. Cái đã bỏ là đèn radial
-     chạy theo con trỏ — lớp đó vẽ lại cả thẻ mỗi khung hình mousemove. */
+
+
+
   .card-3d:not(.card-3d-dim):not([data-disabled]):not([aria-disabled="true"]):hover {
     --lift: -3px;
     filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.5));
-    /* The side face follows the brand color when a card lifts. */
+
     border-right-color:  rgba(255, 107, 74, 0.8);
     border-bottom-color: rgba(255, 107, 74, 0.8);
   }
   .card-3d:not(.card-3d-dim):not([data-disabled]):not([aria-disabled="true"]):hover::before {
     opacity: 1;
   }
-  /* Press feedback: card hạ xuống sát mặt nền và thu rất nhẹ — 0.99 đủ để tay biết
-     đã bấm vào đúng thẻ, không làm chữ rung như scale 0.95. */
+
+
   .card-3d:not(.card-3d-dim):active {
     --lift: 0px;
     scale: 0.99;
   }
 }
 
-/* Panels that should always show the streak, not only on hover (e.g. donate card). */
+
 .card-3d.card-3d-glow::before {
   opacity: 1;
 }
 
-/* ============ Lớp con trỏ: nghiêng thẻ ============
-   cardMotion.ts (init từ main.tsx) ghi --rx/--ry lên mọi .card-tilt; rule ĐỌC chúng là
-   transform của .card-3d ở trên. Trước đây còn cặp --gx/--gy cho đèn bám chuột, đã gỡ. */
 
-/* Đèn nền + viền sáng bám chuột đã bỏ: hover là mỗi thẻ vẽ lại hai lớp radial-gradient
-   theo từng khung hình mousemove, hàng chục thẻ ở /tools thì thấy rõ trên máy yếu. Thẻ
-   vẫn tự báo "bấm được" bằng lift, tilt và đổi màu border. */
 
-/* Keyboard focus stays visible despite the clip-path */
+
+
+
+
+
+
+
 .card-3d:focus-visible {
   outline: none;
   box-shadow: inset 0 0 0 2px var(--border-brand-vivid);
 }
 
-/* Disabled: dimmed, no hover behavior (hover rules above exclude it) */
+
 .card-3d[data-disabled],
 .card-3d[aria-disabled="true"] {
   opacity: 0.55;
   filter: none;
 }
 
-/* input-3d uses a dimmer side face on upload and URL fields. */
+
 .input-3d {
   --extrude-face: var(--extrude-face-dim);
 }
 
-/* Ô tìm kiếm chính ở hero: viền phải/dưới do .clip-corner-btn lấy từ --extrude-face, mà
-   .input-3d khai báo biến đó ngoài layer nên utility Tailwind không thắng — phải đặt ở
-   đây và đứng SAU .input-3d. Không có dòng này thì khung chỉ đỏ hai cạnh trên/trái. */
+
+
+
 .search-brand {
   --extrude-face: rgba(255, 59, 48, 0.22);
 }
 
-/* Ô tìm kiếm có nút X riêng (màu brand + aria-label + xóa được cả bàn phím), nên tắt
-   nút xóa mặc định của WebKit — hai con X cùng lúc là thừa và chồng lên nhau. */
+
+
 input[type='search']::-webkit-search-cancel-button,
 input[type='search']::-webkit-search-decoration {
   -webkit-appearance: none;
   appearance: none;
 }
 
-/* Danh sách kết quả của ô tìm công cụ. Mặc định nở xuống; ToolSearch đo chỗ trống thật
-   quanh ô (visualViewport co lại khi bàn phím ảo hiện) rồi bật .drop-up — trên mobile
-   đang gõ, danh sách hiện lên phía trên thay vì bị bàn phím che mất. max-height đặt trên
-   listbox chứ không đặt trên hộp: đặt trên hộp thì phần tràn bị cắt luôn, không cuộn được. */
+
+
+
+
 .tool-search-list {
   top: 100%;
   margin-top: 0.5rem;
@@ -397,7 +424,7 @@ input[type='search']::-webkit-search-decoration {
   margin-bottom: 0.5rem;
 }
 
-/* Small pill used for section headings — subtle angular clip */
+
 .badge-angular {
   --extrude: 2px;
   clip-path: polygon(
@@ -411,7 +438,7 @@ input[type='search']::-webkit-search-decoration {
   border-radius: 0 !important;
 }
 
-/* Single layout source for standalone workspace pages (image / video / convert). */
+
 .page-container {
   max-width: 56rem;
   margin-inline: auto;
@@ -432,7 +459,7 @@ input[type='search']::-webkit-search-decoration {
   display: none;
 }
 
-/* Independent translate composes with transforms and resets after animation. */
+
 @keyframes page-enter {
   0%   { opacity: 0; translate: 0 6px; }
   100% { opacity: 1; translate: 0 0;   }
@@ -442,12 +469,12 @@ input[type='search']::-webkit-search-decoration {
   animation: page-enter 220ms var(--e-out) backwards;
 }
 
-/* Đổi ngôn ngữ không remount khối nội dung (MainLayout dựng key từ path đã trừ prefix
-   locale) nên page-enter không chạy — chữ mới sẽ pop ngay frame đầu nếu không có nhịp
-   mờ. 140ms chứ không 220ms của page-enter: ở đây không gì dời chỗ, chỉ có chữ khác đi,
-   dài hơn là thành chờ. Gắn lên <main> chứ không gắn lên phần tử đang mang
-   .animate-page-enter: `animation` là một property, một class khác đè nó, và lúc gỡ
-   .lang-swap là page-enter bật lại từ đầu. */
+
+
+
+
+
+
 @keyframes lang-swap {
   from { opacity: 0; }
   to   { opacity: 1; }
@@ -464,12 +491,12 @@ input[type='search']::-webkit-search-decoration {
   animation: heading-in 500ms var(--e-out) backwards;
 }
 
-/* Hero: mỗi từ một inline-block, animation-delay đặt inline nên các từ dựng lên so le.
-   word-wipe chứ không phải fade-dịch: từ hiện dần qua một cửa sổ cắt gắn trên chính nó
-   (inset bottom 100% → -0.6em) trong lúc trồi lên nửa dòng — chữ được "in" ra dòng thay
-   vì trôi vào. Số -0.6em bốn mép là để lề cho dấu tiếng Việt (ế, ụ, ỵ) và quầng
-   drop-shadow của từ tô đậm không bị cắt cạnh; ở frame cuối cửa sổ đã rộng hơn hộp
-   chữ nên nhìn như không có clip nào cả. */
+
+
+
+
+
+
 @keyframes word-wipe {
   from { opacity: 0; translate: 0 0.5em;  clip-path: inset(-0.6em -0.6em 100% -0.6em); }
   to   { opacity: 1; translate: 0 0;      clip-path: inset(-0.6em); }
@@ -482,11 +509,11 @@ input[type='search']::-webkit-search-decoration {
 
 .hero-word-hl {
   --hero-glow: 0.36;
-  /* Gradient đứng yên. Làm nền chảy thì phải đổi background-position trên chữ
-     background-clip:text — không composite được, mỗi khung hình phải vẽ lại cả
-     khối chữ kèm lớp drop-shadow blur của nó, suốt thời gian hero còn trên màn. */
+
+
+
   filter: drop-shadow(0 0 12px rgba(255, 59, 48, var(--hero-glow)));
-  /* background-clip:text chỉ vẽ trong padding box; margin âm giữ nhịp dòng */
+
   padding-block: 0.16em 0.22em;
   margin-block: -0.16em -0.22em;
   animation: word-wipe 620ms var(--e-out) backwards;
@@ -496,12 +523,12 @@ html[data-theme='light'] .hero-word-hl {
   --hero-glow: 0.18;
 }
 
-/* Tiêu đề section dựng chữ theo đúng nhịp hero, nhưng chỉ khi nó lọt vào khung hình:
-   .is-in do SectionHeading thêm một lần bằng IntersectionObserver. Không có .is-in
-   (JS chưa chạy, bản prerender) thì chữ và mô tả vẫn hiện bình thường — không bao giờ
-   trống. --word-step (từ gắn trên h2) là số học nguyên SectionHeading tính từ số từ của
-   nhãn, đã theo ngôn ngữ — xem chú thích ở file đó. Fallback 80ms chỉ dùng khi style
-   inline thiếu. */
+
+
+
+
+
+
 .reveal-heading .reveal-word {
   display: inline-block;
 }
@@ -511,9 +538,9 @@ html[data-theme='light'] .hero-word-hl {
   animation-delay: calc(var(--i) * var(--word-step, 80ms));
 }
 
-/* Mô tả TrƯỢT XUỐNG cùng nhịp với từ đầu tiên của tiêu đề (không chờ dựng chữ xong).
-   560ms cho 12px nên nó trượt tới chứ không rơi. Muốn tách hai khối thì thêm
-   animation-delay vào rule dưới, không sửa gì ở SectionHeading.tsx. */
+
+
+
 @keyframes desc-in {
   from { opacity: 0; translate: 0 -12px; }
   to   { opacity: 1; translate: 0 0; }
@@ -523,16 +550,16 @@ html[data-theme='light'] .hero-word-hl {
   animation: desc-in 560ms var(--e-out) backwards;
 }
 
-/* Demo animation only; live progress remains owned by JobProgress and SSE.
-   Trước đây card còn nhún theo step-lift mãi mãi — một khối 8s lặp vô hạn không kể
-   cho ai điều gì, mà 4 card cùng dao động thì mắt không biết nhìn vào đâu. Luồng sáng
-   (beam) và chớp viền (flare) vẫn chạy: hai thứ đó CÓ thông tin — chúng chỉ chiều
-   1 → 2 → 3 → 4 của pipeline. */
+
+
+
+
+
 .pipeline-step {
   position: relative;
 }
 
-/* Đoạn nối nằm trong gap của grid nên không bao giờ đè card/no bị clip-path cắt */
+
 .pipeline-step::before {
   content: '';
   position: absolute;
@@ -540,8 +567,8 @@ html[data-theme='light'] .hero-word-hl {
   background: rgba(255, 59, 48, 0.15);
 }
 
-/* Luồng sáng: opacity 0 mặc định → reduced-motion (animation:none) là vô hình,
-   chỉ còn line tĩnh */
+
+
 .pipeline-step::after {
   content: '';
   position: absolute;
@@ -556,7 +583,7 @@ html[data-theme='light'] .hero-word-hl {
   display: none;
 }
 
-/* Mobile: pipeline dọc, segment đứng giữa 2 card */
+
 .pipeline-step::before {
   top: -1.5rem;
   left: 50%;
@@ -574,11 +601,11 @@ html[data-theme='light'] .hero-word-hl {
   box-shadow: 0 0 10px rgba(255, 59, 48, 0.75), 0 0 20px rgba(255, 107, 74, 0.45);
 }
 
-/* Khung sáng trên card khi luồng chạy tới (overlay riêng để không cướp
-   border-hover của .card-3d) */
+
+
 .pipeline-flare {
-  /* Viền + quầng bake sẵn ở đây, keyframe chỉ động opacity: compositor lo được,
-     khỏi vẽ lại cả cái card mỗi khung hình. */
+
+
   border: 1px solid rgba(255, 107, 74, 0.7);
   box-shadow: inset 0 1px 0 rgba(255, 107, 74, 0.5), 0 0 18px rgba(255, 59, 48, 0.1);
   opacity: 0;
@@ -603,8 +630,8 @@ html[data-theme='light'] .hero-word-hl {
   25%, 100%    { transform: translateX(10px); opacity: 0; }
 }
 
-/* Tablet 2 cột: card cột phải nối ngang, card mở đầu hàng mới nối dọc xuống
-   theo đúng hướng luồng 2 → 3 */
+
+
 @media (min-width: 768px) {
   .pipeline-step:not(.pipeline-first)::before {
     top: 50%;
@@ -642,7 +669,7 @@ html[data-theme='light'] .hero-word-hl {
   }
 }
 
-/* Desktop 4 cột: tất cả nối ngang */
+
 @media (min-width: 1024px) {
   .pipeline-step:nth-child(odd):not(.pipeline-first)::before,
   .pipeline-step:not(.pipeline-first)::before {
@@ -675,7 +702,39 @@ html[data-theme='light'] .hero-word-hl {
   animation: loading-sweep 1.4s ease-in-out infinite;
 }
 
-/* Live stats animate on each 30s poll without a JS timer. */
+
+
+
+
+#boot-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 9999;
+  overflow: hidden;
+  pointer-events: none;
+  background: rgba(255, 59, 48, 0.14);
+}
+
+#boot-bar::after {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 30%;
+  background: linear-gradient(90deg, var(--grad-1), var(--grad-2), var(--grad-3));
+  animation: loading-sweep 1.4s ease-in-out infinite;
+}
+
+
+
+
+html:not(.js) #boot-bar {
+  display: none;
+}
+
+
 @keyframes live-value-in {
   from { opacity: 0; transform: translateY(3px); }
   to   { opacity: 1; transform: none; }
@@ -685,8 +744,8 @@ html[data-theme='light'] .hero-word-hl {
   animation: live-value-in 350ms var(--e-out) both;
 }
 
-/* Riêng số ở trang Profile giữ quầng đỏ — hai card live ngoài trang chủ đã
-   được yêu cầu để phẳng. */
+
+
 .live-value-glow {
   text-shadow: 0 0 16px rgba(255, 59, 48, 0.28);
 }
@@ -724,7 +783,7 @@ html[data-theme='light'] .toast-item {
   }
 }
 
-/* Enter animations use independent translate so card transforms remain intact. */
+
 @keyframes in-up {
   from { opacity: 0; translate: 0 10px; }
   to   { opacity: 1; translate: 0 0;    }
@@ -741,78 +800,82 @@ html[data-theme='light'] .toast-item {
 .in-up   { animation: in-up   260ms var(--e-out) backwards; }
 .in-fade { animation: in-fade 200ms ease-out                       backwards; }
 
-/* Dropdown "Công cụ" mở bằng hover: panel trượt XUỐNG từ mép trigger (start ở -10px)
-   thay vì bật ra tại chỗ. 10px đủ để mắt đọc được hướng, 300ms chậm hơn .in-up một bậc
-   vì đây là cả một khối chữ — nhanh quá thành chớp. Đóng vẫn là .out-fade (chỉ opacity):
-   dịch thêm khi đóng là ngược hướng với cú rời chuột. */
+
+
+
+
 @keyframes in-down {
   from { opacity: 0; translate: 0 -10px; }
   to   { opacity: 1; translate: 0 0;    }
 }
 .in-down { animation: in-down 300ms var(--e-out) backwards; }
-/* Keep the faded-out frame until React unmounts the node. */
+
 .in-out  { animation: in-out  180ms ease-in                       forwards; }
 
-/* Animate backdrop opacity only to avoid repainting blur on every frame. */
+
 .in-backdrop { animation: in-fade 160ms ease-out backwards; }
 
-/* Chiều RA. Backdrop/popover chỉ fade opacity: dịch một khối `fixed inset-0` lên 10px là
-   để lộ dải trống ở đầu trang. Panel dùng .in-out (fade + 10px xuống) cho khớp .in-up.
 
-   PHẢI có keyframes riêng, không được viết `in-fade ... reverse`: đổi animation-name mới
-   khởi động một animation, còn đổi mỗi direction/fill trên cùng name thì engine giữ nguyên
-   animation cũ đã chạy xong (currentTime = 160) — reversed nên nó rơi thẳng về frame `from`
-   opacity 0 ngay frame đầu. Hậu quả: mọi nền modal .in-backdrop/.in-fade → .out-fade biến
-   mất cái "bụp" thay vì mờ dần, và vì .in-down (dropdown Công cụ) là name khác nên chỗ đó
-   fade đúng, che luôn bug cho các chỗ còn lại.
-   Giá trị mỗi khung hình của `out-fade` ở dưới bằng đúng `in-fade reverse` (1 - ease(t)). */
+
+
+
+
+
+
+
+
+
 @keyframes out-fade {
   from { opacity: 1; }
   to   { opacity: 0; }
 }
 .out-fade { animation: out-fade 160ms ease-in forwards; }
 
-/* AuthModal đổi tab: chỉ vùng form diễn, khung modal giữ nguyên vị trí. 10px nằm giữa
-   hai ràng buộc — đủ để mắt theo được hướng đổi (8px trở xuống gần như chỉ là chớp),
-   đủ ngắn để chưa kịp xong là người dùng đã gõ chữ đầu tiên. */
+
+
+
 @keyframes auth-swap {
   from { opacity: 0; translate: 0 10px; }
   to   { opacity: 1; translate: 0 0;    }
 }
 .auth-swap { animation: auth-swap 240ms var(--e-out) backwards; }
 
-/* ============ Modal và bàn phím on-screen ============
-   --auth-vh/--auth-vt CHỈ tồn tại khi bàn phím on-screen đang mở (xem AuthModal). Lúc
-   không có bàn phím thì height: auto + top: 0px chính là `fixed inset-0` như cũ, từng
-   pixel — không có chuyện nền tối co lại một dải khi iPhone/Android thu thanh địa chỉ.
-   Kẹp cả hai lớp: nền tối phải dừng đúng vùng nhìn thấy thì panel đứng giữa mới đúng,
-   và max-height của panel phải tính theo cùng số chứ không theo 100dvh cũ.
-   Unlayered nên thắng utility Tailwind (top/height/max-h đã bỏ khỏi JSX để một nguồn).
-   Safe area: iPhone có panel cao tối đa sẽ đè nút "tiếp tục ẩn danh" lên vạch home. */
+
+
+
+
+
+
+
+
 .auth-backdrop {
   top: var(--auth-vt, 0px);
   height: var(--auth-vh, auto);
   padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
 }
-/* Trừ đúng phần backdrop đã chừa: 2rem padding của inset-0 + safe area vừa cộng vào
-   đáy ở trên — không thì panel cao tối đa lại tràn xuống vùng vạch home của iPhone. */
+
+
 .auth-panel {
   max-height: calc(var(--auth-vh, 100dvh) - 2rem - env(safe-area-inset-bottom, 0px));
+
+
+
+  outline: none;
 }
 
-/* Thanh cookie trượt lên từ đáy, không fade cả màn hình như modal cũ. */
+
 @keyframes in-bar-up {
   from { opacity: 0; translate: 0 16px; }
   to   { opacity: 1; translate: 0 0;    }
 }
 .in-bar-up { animation: in-bar-up 260ms var(--e-out) backwards; }
 
-/* Thanh cookie và modal đăng nhập cùng hiện được (thanh không còn chặn màn hình),
-   nên modal phải chừa đúng phần đáy bị che: không nút guest/submit/thông báo nào
-   nằm dưới thanh. Trình duyệt không hỗ trợ :has() thì bỏ qua — modal vẫn dùng được. */
+
+
+
 body:has(.cookie-bar) .auth-backdrop { padding-bottom: 13rem; }
-/* max(): bàn phím mở thì thanh cookie nằm SAU bàn phím, giữ chừa 14rem trong khi
-   vùng nhìn thấy chỉ còn ~340px sẽ bóp panel thành một dải dùng không được. */
+
+
 body:has(.cookie-bar) .auth-panel {
   max-height: max(15rem, calc(var(--auth-vh, 100dvh) - 14rem));
 }
@@ -820,11 +883,11 @@ body:has(.cookie-bar) .auth-panel {
   body:has(.cookie-bar) .auth-backdrop { padding-bottom: 8rem; }
   body:has(.cookie-bar) .auth-panel { max-height: calc(var(--auth-vh, 100dvh) - 9rem); }
 }
-/* Dock "Buy me a coffee" cũng neo đáy; để hai lớp nổi không đè nhau thì nó nhường chỗ
-   cho tới khi khách quyết định xong về cookie. */
+
+
 body:has(.cookie-bar) .coffee-dock { display: none; }
 
-/* Autofill phủ nền vàng + chữ tối lên input; giữ đúng mặt màu của theme. */
+
 .auth-input:-webkit-autofill,
 .auth-input:-webkit-autofill:hover,
 .auth-input:-webkit-autofill:focus {
@@ -834,20 +897,20 @@ body:has(.cookie-bar) .coffee-dock { display: none; }
   transition: background-color 99999s ease-out;
 }
 
-/* Stagger delay caps at 350ms; use only when every child is an item.
-   70ms/card nằm trong nhịp 60–90ms của thiết kế; chặn ở card thứ 6 vì lưới tool mà giãn
-   đều tới cuối thì card hiện sau hơn một giây — người cuộn đã nhìn chỗ khác. Duration
-   720ms: card sau bắt đầu khi card chưa kịp đứng (720 > 350), cả lưới trôi thành một
-   khối liền thay vì "pop" từng cái — đấy là nghĩa của "so le nhưng đồng bộ".
 
-   HAI keyframe cho ĐÚNG một chuyển động, khác nhau ở chỗ cửa sổ cắt sống tới đâu:
-   - card-in: không clip. Bản scroll-driven (view timeline, fill BOTH) dùng bản này vì
-     khi card đã vào hẳn khung nhìn thì timeline đứng ở after-phase và giữ frame cuối
-     vĩnh viễn — một clip-path "vĩnh viễn" biến mỗi card thành layer bị cắt, cắt luôn cả
-     quầng drop-shadow lúc hover và nuốt mọi con position:fixed.
-   - card-wipe: có clip, chỉ dùng cho bản chạy theo ĐỒNG HỒ với fill BACKWARDS — hết
-     nhịp là hiệu ứng bị gỡ, card trở về không clip nên không để lại di sản nào. Thẻ trồi
-     lên khỏi một khe nằm ngay dưới nó thay vì trôi vào: nhìn như lưới được xếp vào ô. */
+
+
+
+
+
+
+
+
+
+
+
+
+
 @keyframes card-in {
   from { opacity: 0; translate: 0 22px; }
   to   { opacity: 1; translate: 0 0;    }
@@ -863,23 +926,23 @@ body:has(.cookie-bar) .coffee-dock { display: none; }
 .stagger > :nth-child(5)   { animation-delay: 280ms; }
 .stagger > :nth-child(n+6) { animation-delay: 350ms; }
 
-/* .stagger diễn ngay khi element mount, nên lưới tool nằm dưới fold chạy xong trước khi
-   người dùng kịp cuộn tới — họ thấy một lưới đứng im. Gắn thêm [data-reveal-items] vào
-   chính lưới: initReveal() thêm .is-in đúng lúc lưới vào khung hình, lúc đó các con mới
-   diễn. Chỉ ghi animation-name để không đè animation-delay (nhịp so le) của .stagger. */
+
+
+
+
 [data-reveal-items] > * { animation-name: none; }
 [data-reveal-items].is-in > * { animation-name: card-wipe; }
 
-/* Section dựng lên khi vào khung nhìn: fade + 22–28px trong 860–960ms, không dịch ngang,
-   không scale (scale trên khối chữ làm nét chữ rung một frame). Dải thời gian này là nhịp
-   "chậm rãi" của cả trang: đủ dài để mắt kịp đọc tiêu đề trước khi khối dưới đứng lại, đủ
-   ngắn để không ai phải chờ. Chỉ diễn sau .is-in nên bản prerender/JS lỗi vẫn thấy hết
-   nội dung — không có kiểu "ẩn chờ JS" vĩnh viễn.
-   Không blur cả section: filter trên hộp cao bằng nửa màn hình là một layer lọc phải
-   raster lại từng khung hình, và nó còn là containing block nên đánh thức mọi thứ đang
-   sticky trong section. Chữ trong section đã có nhịp wipe riêng từng từ (word-wipe) —
-   mask đặt ở đơn vị NHỎ (từ, card) mới sắc; đặt ở đơn vị to thì_edge cắt chạy ngang cả
-   trang, thành hiệu ứng của trình duyệt chứ không của thiết kế. */
+
+
+
+
+
+
+
+
+
+
 @keyframes reveal-up {
   from { opacity: 0; translate: 0 var(--reveal-shift, 28px); }
   to   { opacity: 1; translate: 0 0; }
@@ -892,48 +955,48 @@ body:has(.cookie-bar) .coffee-dock { display: none; }
   [data-reveal].is-in { --reveal-shift: 28px; animation-duration: 960ms; }
 }
 
-/* Section có SectionHeading: tiêu đề TỰ dựng từng từ (word-in 780ms), mô tả TrƯỢT XUỐNG
-   ngay cùng nhịp — hai chuyển động đó đã kể hết phần đầu section nên section không nhún lên
-   nữa (--reveal-shift: 0px), nếu không badge/mô tả bị hai lớp chuyển động cộng dồn kéo
-   cùng lúc. */
+
+
+
+
 section[data-reveal]:has(.reveal-heading) { --reveal-shift: 0px; }
 
-/* ============ Card diễn theo TIẾN TRÌNH CUỘN, không theo đồng hồ ============
-   Bản .stagger ở trên quay bằng thời gian: lưới vừa vào khung hình là đồng hồ bật, ai
-   cuộn nhanh thì bắt gặp card đang dở ở 40% quãng đường — đó là chuyển động của máy,
-   không phải của người đọc. Khối này gắn ĐÚNG keyframe card-in kia lên nguồn tiến trình
-   khác: view(block) của chính từng card, nghĩa là thẻ đi hết 22px đúng bằng quãng nó được
-   cuộn vào khung nhìn, cuộn ngược lại là thẻ lùi lại một phần. Không thêm hệ thống
-   animation thứ hai, chỉ đổi nguồn tiến trình.
 
-   animation-duration: auto không phải cách viết cho đẹp: timeline scroll-driven không có
-   "giây". MDN đo được số <time> đặt trên view progress timeline đẩy animation về phía CUỐI
-   timeline (0s = nhảy cóc một frame, không có quãng nội suy), còn auto = trải kín
-   animation-range đã khai. animation-delay: 0s đi kèm vì delay 70ms/card của .stagger là
-   số THỜI GIAN, để nó sống sót sang đây thì chẳng engine nào hứa đối xử giống nhau — nhịp
-   "lần lượt" chuyển hết sang --card-lag (phần trăm của timeline).
 
-   Range nằm gọn trong phase entry→cover sớm, và khối vẫn khoá bằng đúng cánh cổng
-   `.is-in` của bản thời gian, nên không có cảnh nội dung ẩn vĩnh viễn: initReveal() BỎ
-   QUA lưới đã nằm trong khung nhìn lúc tải trang (revealMotion.ts lọc top > 90%
-   innerHeight) → không có .is-in → không có animation → card hiện đặc, không mờ hờ half
-   -half suốt cho tới khi ai đó cuộn. Lưới dưới fold thì .is-in tới đúng lúc card sắp nhô
-   vào, và card nào chưa từng được cuộn tới vẫn còn nguyên frame đầu (opacity 0) — muốn
-   thấy thì cuộn, đó là toàn bộ cái giá của scroll-linked. Không có JS (bản prerender) thì
-   không có .is-in: `[data-reveal-items] > * { animation-name: none }` ở trên vẫn còn hiệu
-   lực, lưới hiện hết. Browser chưa có timeline (Firefox) bỏ nguyên khối @supports và vẫn
-   dùng bản thời gian + IntersectionObserver: đúng MỘT cơ chế trên một máy, không có cảnh
-   hai bên cùng giành transform.
 
-   :not([data-pin] *) loại dải card đã bị ghim (ValueBandSection) — trong .pin-viewport
-   overflow:hidden thì view() đo theo quãng dải card bị đẩy ngang chứ không theo cuộn dọc
-   trang, card sẽ đứng chết ở một frame thay vì dựng lên; dải đó có animation-range riêng.
 
-   Cả khối nằm trong @media (prefers-reduced-motion: no-preference): không ai chắc
-   `animation: none` có đặt lại animation-timeline/animation-range hay không (shorthand
-   theo css-animations-1 không chứa hai longhand này, còn bộ gom CSS của dự án thì bỏ
-   luôn dòng animation-timeline khi gộp selector — thấy rõ trong dist). Khoá ở điều kiện
-   media thì không cần đoán: máy giảm chuyển động không áp khối này ngay từ đầu. */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @media (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: view()) {
     [data-reveal-items].is-in > *:not([data-pin] *) {
@@ -943,17 +1006,17 @@ section[data-reveal]:has(.reveal-heading) { --reveal-shift: 0px; }
       animation-timing-function: var(--e-out);
       animation-fill-mode: both;
       animation-timeline: view(block);
-      /* var có fallback 0% thay vì khai --card-lag: 0% ở đây: khai thì rule này (đặc hiệu
-         bằng rule nth-child, lại đứng trước) nuốt luôn số của nth-child và mất nhịp so le. */
+
+
       animation-range:
         entry calc(10% + var(--card-lag, 0%))
         cover calc(28% + var(--card-lag, 0%));
     }
 
-    /* So le theo vị trí trong timeline chứ không theo giờ: card 1 đứng trước card 6 một
-       quãng cuộn nhỏ. Chặn ở 20% (bản thời gian chặn ở 350ms) — lưới 12 thẻ mà giãn đều tới
-       cuối thì thẻ số 12 phải cuộn thêm nửa màn hình mới xong, thành "card chạy bằng bánh
-       xe" thay vì dựng lên. Dùng % nên bản dịch dài/ngắn vẫn cùng một nhịp. */
+
+
+
+
     [data-reveal-items] > :nth-child(2)   { --card-lag: 5%; }
     [data-reveal-items] > :nth-child(3)   { --card-lag: 10%; }
     [data-reveal-items] > :nth-child(4)   { --card-lag: 15%; }
@@ -961,7 +1024,7 @@ section[data-reveal]:has(.reveal-heading) { --reveal-shift: 0px; }
   }
 }
 
-/* Accordion uses a 0fr-to-1fr grid transition; hidden content stays out of the accessibility tree. */
+
 .acc {
   display: grid;
   grid-template-rows: 0fr;
@@ -982,7 +1045,7 @@ section[data-reveal]:has(.reveal-heading) { --reveal-shift: 0px; }
     opacity 180ms ease-out;
 }
 
-/* Light mode uses a subtle shadow and spotlight on white cards. */
+
 html[data-theme='light'] .card-3d:not(.card-3d-dim):not([data-disabled]):not([aria-disabled="true"]):hover {
   filter: drop-shadow(0 8px 20px rgba(15, 23, 42, 0.16));
 }
@@ -991,9 +1054,9 @@ html[data-theme='light'] .card-3d:not(.card-3d-dim)::before {
   background: linear-gradient(to top, rgba(200, 30, 23, 0.10) 0%, transparent 100%);
 }
 
-/* Modern Eye-Catching Cyber Utilities */
+
 .bg-grid-cyber {
-  background-image: 
+  background-image:
     linear-gradient(to right, rgba(255, 59, 48, 0.05) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 59, 48, 0.05) 1px, transparent 1px);
   background-size: 36px 36px;
@@ -1002,7 +1065,7 @@ html[data-theme='light'] .card-3d:not(.card-3d-dim)::before {
 }
 
 html[data-theme='light'] .bg-grid-cyber {
-  background-image: 
+  background-image:
     linear-gradient(to right, rgba(200, 30, 23, 0.04) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(200, 30, 23, 0.04) 1px, transparent 1px);
   mask-image: radial-gradient(ellipse 70% 60% at 50% 20%, #000 40%, transparent 100%);
@@ -1016,8 +1079,8 @@ html[data-theme='light'] .bg-grid-cyber {
   transform: translateX(-50%);
   width: min(850px, 94vw);
   height: 400px;
-  /* Bỏ blur(65px): radial-gradient đã mềm sẵn, mà lớp blur chạy cùng animation
-     scale thì mỗi khung hình phải lọc lại từ đầu. Lớp này có mặt trên 5 trang. */
+
+
   background: radial-gradient(ellipse at center, rgba(255, 59, 48, 0.15) 0%, rgba(255, 107, 74, 0.06) 45%, transparent 72%);
   pointer-events: none;
   z-index: 0;
@@ -1035,16 +1098,16 @@ html[data-theme='light'] .hero-ambient-glow {
   100% { transform: translateX(-50%) scale(0.95); opacity: 0.7; }
 }
 
-/* ============ Quầng sáng TĨNH cho CTA ============
-   Bản cũ là animation vô hạn trên thuộc tính không composite được: pulse-glow đổi
-   box-shadow, float-glow đổi filter — nghĩa là vẽ lại liên tục cho tới lúc người dùng
-   rời trang. Đắt hơn nữa: .btn-glow-pulse khi nào cũng đi kèm clip-corner-btn, mà
-   clip-path CẮT box-shadow — nhịp đập 3.5s đó chưa hiện ra lấy một lần, chỉ trả giá
-   vẽ lại. Nên ở đây là quầng tĩnh bằng drop-shadow (ôm theo góc vát, box-shadow làm
-   không được), còn "sự sống" của CTA đã có nhịp shimmer lúc hover lo — nút phải phản
-   ứng với tay người, không được tự thở một mình giữa trang.
-   Button đã mang `transition-all duration-200` nên hover đổi filter là mượt, không
-   cần khai transition ở đây. */
+
+
+
+
+
+
+
+
+
+
 .btn-glow-pulse {
   filter: drop-shadow(0 0 12px rgba(255, 59, 48, 0.42));
 }
@@ -1053,14 +1116,14 @@ html[data-theme='light'] .hero-ambient-glow {
   filter: drop-shadow(0 0 18px rgba(255, 59, 48, 0.6));
 }
 
-/* Nút ủng hộ nổi một mình nên phải tách khỏi nền: quầng đỏ cộng bóng đổ, cả hai ôm
-   theo góc vát. */
+
+
 .float-glow {
   filter: drop-shadow(0 0 10px rgba(255, 59, 48, 0.5))
           drop-shadow(0 4px 10px rgba(0, 0, 0, 0.55));
 }
 
-/* Button Shimmer Sweep Effect */
+
 .btn-shimmer {
   position: relative;
   overflow: hidden;
@@ -1092,8 +1155,8 @@ html[data-theme='light'] .hero-ambient-glow {
   100% { left: 140%; }
 }
 
-/* Pill điều hướng trên navbar: gạch gradient chạy từ trái sang khi hover/đang ở
-   trang công cụ (data-active), thay cho việc đổi nền đột ngột. */
+
+
 .nav-pill {
   position: relative;
   display: inline-flex;
@@ -1124,8 +1187,8 @@ html[data-theme='light'] .hero-ambient-glow {
   transform: scaleX(1);
 }
 
-/* Chữ giữ màu sáng, chỉ icon ăn màu brand: tô đỏ cả nhãn lẫn icon thì hai thứ
-   dính một vệt, nhãn 14px kèm dấu tiếng Việt (ô, ụ) chìm xuống nền. */
+
+
 .nav-pill[data-active='true'] {
   color: var(--text-primary);
   font-weight: 600;
@@ -1135,20 +1198,20 @@ html[data-theme='light'] .hero-ambient-glow {
   color: var(--text-brand-active);
 }
 
-/* Knob của công tắc giao diện: cùng ngôn ngữ vát góc + mặt 3D bên phải/dưới như
-   nút thường, chỉ thu số đo xuống cho vừa ô 24px. */
+
+
 .theme-knob {
   clip-path: polygon(0 0, calc(100% - 4px) 0, 100% 4px, 100% 100%, 4px 100%, 0 calc(100% - 4px));
   border-right: 2px solid color-mix(in srgb, var(--grad-1) 62%, #000);
   border-bottom: 2px solid color-mix(in srgb, var(--grad-1) 62%, #000);
 }
 
-/* Dải đổi theme: View Transition chụp sẵn hai theme, ta cắt lớp mới từ trên xuống
-   và cắt lớp cũ từ dưới lên, chừa một khe 21px ngay mép quét. Khe đó để lộ nền
-   của ::view-transition-group — ba hàng brand, hàng cuối vụn thành ô vuông — nên
-   dải pixel chạy theo đường quét mà không cần lớp phủ che nội dung.
-   --wipe-y là biến đăng ký @property để animation nội suy được và các lớp con
-   (old/new/group) cùng đọc một giá trị -> ba chuyển động luôn khớp nhau. */
+
+
+
+
+
+
 @property --wipe-y {
   syntax: '<length>';
   inherits: true;
@@ -1188,18 +1251,18 @@ html[data-theme='light'] .hero-ambient-glow {
       0 calc(var(--wipe-y) + 14px);
   }
 
-  /* Lớp mới chỉ hiện phần đã quét qua. */
+
   ::view-transition-new(root) {
     clip-path: inset(0 0 calc(100% - var(--wipe-y)) 0);
   }
 
-  /* Lớp cũ giữ phần chưa quét; 21px = đúng chiều cao dải pixel. */
+
   ::view-transition-old(root) {
     clip-path: inset(calc(var(--wipe-y) + 21px) 0 0 0);
   }
 }
 
-/* Cyber Badge Radar Pulse */
+
 .badge-radar {
   position: relative;
 }
@@ -1219,13 +1282,13 @@ html[data-theme='light'] .hero-ambient-glow {
   100% { background-position: 200% center; }
 }
 
-/* Chỉ còn nhịp chuyển: hover phát sáng đã bỏ — shadow đỏ phủ lên cả thẻ mỗi lần rê chuột
-   làm trang nặng hẳn lên trên máy yếu, trong khi border/tilt đã đủ báo "thẻ này bấm được". */
+
+
 .card-hover-glow {
   transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
 }
 
-/* ===== Random Case Opening: chỉ mô phỏng cơ chế mở hòm, không dùng tài sản của game nào ===== */
+
 .case-page-container {
   max-width: min(78rem, 100%);
 }
@@ -1248,7 +1311,7 @@ html[data-theme='light'] .hero-ambient-glow {
   overflow: hidden;
 }
 
-/* Hòm 3D: sáu mặt dựng bằng CSS transform, không ảnh, không canvas */
+
 @property --lid {
   syntax: '<angle>';
   inherits: false;
@@ -1340,7 +1403,7 @@ html[data-theme='light'] .hero-ambient-glow {
   transform: rotateX(-90deg) translateZ(calc(var(--ch) / 2));
   background-image: linear-gradient(180deg, #04050a, color-mix(in srgb, var(--case-bg) 80%, #000));
 }
-/* lòng hộp: chỉ lộ ra khi nắp bật mở */
+
 .case-crate-inside {
   inset: 6%;
   height: calc(var(--cd) * 0.88);
@@ -1352,7 +1415,7 @@ html[data-theme='light'] .hero-ambient-glow {
   box-shadow: inset 0 0 26px color-mix(in srgb, var(--case-accent) 55%, transparent);
 }
 
-/* giá đỡ nằm trên mặt đỉnh: cạnh trên của tấm nắp trùng mép sau hộp */
+
 .case-lid-mount {
   position: absolute;
   left: 0;
@@ -1399,7 +1462,7 @@ html[data-theme='light'] .hero-ambient-glow {
 }
 .case-box[data-shaking='true'] .case-lid { animation: case-lid-open 620ms cubic-bezier(0.3, 0.9, 0.25, 1) both; }
 
-/* đinh tán ở bốn góc mọi mặt */
+
 .case-crate-face::after,
 .case-lid::after {
   content: '';
@@ -1459,7 +1522,7 @@ html[data-theme='light'] .hero-ambient-glow {
   pointer-events: none;
 }
 
-/* Vòng quay: chỉ một CSS transition trên transform, không có frame JS nào re-render */
+
 .case-roulette {
   position: relative;
   width: 100%;
@@ -1563,7 +1626,7 @@ html[data-theme='light'] .hero-ambient-glow {
   50% { box-shadow: 0 0 22px rgba(255, 59, 48, 0.45); }
 }
 
-/* Mobile: thanh điều khiển và hàng thẻ tab gọn lại cho vừa màn hình dọc */
+
 @media (max-width: 639px) {
   .case-toolbar > button {
     gap: 5px;
@@ -1590,18 +1653,18 @@ html[data-theme='light'] .hero-ambient-glow {
   .case-open-btn { padding: 7px 12px; font-size: 12px; letter-spacing: 0.08em; }
 }
 
-/* ── Square spin: vòng quay ô vuông ──────────────────────────────
-   Bảng vuông 1:1, ô xếp thành vành đai, không có kim — ánh sáng chạy và dừng ở ô đã chốt.
-   Hình học (--spin-*) và màu (--cell-*) do JS tính để tương phản đo được offline,
-   CSS chỉ vẽ. */
 
-/* Trang cần bảng lớn hơn bản 56rem chuẩn — danh sách dài mới đủ chỗ chữ. */
+
+
+
+
+
 .spin-page-container {
   max-width: min(72rem, 100%);
 }
 
-/* Lưới bố cục: mobile xếp một cột để mỗi vòng lấy hết bề ngang, phần chỉnh sửa
-   nằm dưới; từ sm hai vòng kề nhau, lg một vòng thì thành 2 cột (vòng + kết quả | chỉnh sửa). */
+
+
 .spin-layout {
   display: grid;
   gap: 1rem;
@@ -1632,7 +1695,7 @@ html[data-theme='light'] .hero-ambient-glow {
     'setupA';
 }
 
-/* Mobile: một cột — mỗi vòng lấy hết bề ngang, hai danh sách xếp chồng. */
+
 .spin-layout[data-mode='double'] {
   grid-template-columns: minmax(0, 1fr);
   grid-template-areas:
@@ -1665,8 +1728,8 @@ html[data-theme='light'] .hero-ambient-glow {
   }
 }
 
-/* Vòng chiếm hết bề ngang trên mobile nên toolbar phải gọn: icon loa đã nói
-   lên ô trượt, khỏi thêm nhãn chiếm thêm hàng. */
+
+
 @media (max-width: 639px) {
   .spin-volume label {
     position: absolute;
@@ -1684,8 +1747,8 @@ html[data-theme='light'] .hero-ambient-glow {
   aspect-ratio: 1 / 1;
   margin-inline: auto;
   container-type: inline-size;
-  /* Lưới + quầng brand dưới ô: ô kính vẽ trong suốt nên phải có gì đó sau kính
-     thì mới ra kính, nếu nền bảng chỉ một màu thì mờ đặc hay trong suốt như nhau. */
+
+
   background-color: var(--bg-elevated);
   background-image:
     radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--text-brand) 12%, transparent), transparent 62%),
@@ -1699,7 +1762,7 @@ html[data-theme='light'] .hero-ambient-glow {
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--text-brand) 12%, transparent), 0 18px 44px rgba(0, 0, 0, 0.35);
 }
 
-/* Ô chỉ đổi màu giữa các trạng thái — giữ nguyên hình học để phép đo chữ không lệch. */
+
 .spin-cell {
   position: absolute;
   z-index: 1;
@@ -1707,13 +1770,13 @@ html[data-theme='light'] .hero-ambient-glow {
   align-items: center;
   justify-content: center;
   padding: var(--spin-pad, 2px 3px);
-  /* 72% khớp CELL_TINT: cùng phép pha alpha JS dùng để chọn mực. */
+
   border: 1px solid color-mix(in srgb, var(--cell-color, var(--border-subtle)) 55%, #ffffff);
   background-color: color-mix(in srgb, var(--cell-color, transparent) 72%, transparent);
-  /* Sương trắng mép trên; JS đã kiểm tương phản cho cả dải này. */
+
   background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 55%);
-  /* Kính: gờ sáng trên + quầng neon loá ra ngoài. Không lớp sáng đáy, không
-     transition box-shadow — ô đổi màu liên tục lúc quay, mỗi lớp là một lần vẽ lại ô. */
+
+
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.5),
     0 0 12px -4px color-mix(in srgb, var(--cell-color, transparent) 85%, transparent);
@@ -1731,23 +1794,23 @@ html[data-theme='light'] .hero-ambient-glow {
 .spin-cell-name {
   display: block;
   max-width: 100%;
-  /* --cell-fs do JS đo từ bề ngang thật của bảng; clamp chỉ là giá trị chờ. */
+
   font-size: var(--cell-fs, clamp(8px, calc(100cqi * (1 - var(--spin-depth)) / var(--spin-per) / 4.5), 13px));
   line-height: 1.2;
   font-weight: 600;
   color: var(--cell-ink, var(--text-ink));
-  /* Tên dài xuống dòng trong ô, không cắt. */
+
   overflow-wrap: anywhere;
 }
 
-/* Ô đang rọi: sáng hơn + quầng viền, z-index 2 để quầng đè ô kề. */
+
 .spin-cell[data-lit='true'],
 .spin-cell[data-win='true'] {
   z-index: 2;
 }
 
 .spin-cell[data-lit='true'] {
-  /* 88% khớp CELL_TINT_LIT: kính dày màu hơn khi bị rọi, quầng nhân đôi. */
+
   border-color: color-mix(in srgb, var(--cell-lit, var(--text-brand)) 70%, #ffffff);
   background-color: color-mix(in srgb, var(--cell-lit, transparent) 88%, transparent);
   box-shadow:
@@ -1764,8 +1827,8 @@ html[data-theme='light'] .hero-ambient-glow {
   background-color: color-mix(in srgb, var(--text-brand) 55%, var(--bg-elevated));
 }
 
-/* Ô thắng: đậu lại đúng màu đã rọi, thêm vòng viền dày và nhịp thở để phân biệt
-   với cú rọi đang chạy. */
+
+
 .spin-cell[data-win='true'] {
   border-color: color-mix(in srgb, var(--cell-lit, var(--text-brand)) 70%, #ffffff);
   background-color: color-mix(in srgb, var(--cell-lit, transparent) 88%, transparent);
@@ -1777,7 +1840,7 @@ html[data-theme='light'] .hero-ambient-glow {
 
 .spin-cell[data-win='true'] .spin-cell-name {
   color: var(--cell-lit-ink, var(--cell-ink, #fff));
-  /* Chữ trúng phát sáng theo màu của ô — cùng lối .case-reward-name vẫn dùng. */
+
   text-shadow: 0 0 18px color-mix(in srgb, var(--cell-color, var(--text-brand)) 65%, transparent);
 }
 
@@ -1801,8 +1864,8 @@ html[data-theme='light'] .hero-ambient-glow {
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--text-brand) 22%, transparent), 0 18px 44px rgba(0, 0, 0, 0.35);
 }
 
-/* Hub = hộp kết quả chung: nhãn + trạng thái + kết quả + nút quay nằm trong một
-   khung. Có kết quả thì JS tô nền khung bằng màu kính của ô trúng qua --hub-*. */
+
+
 .spin-hub {
   position: absolute;
   left: 50%;
@@ -1815,7 +1878,7 @@ html[data-theme='light'] .hero-ambient-glow {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  /* --hub-gap do utils/hub.ts tính: dải chật co còn 3px để kết quả không mất chỗ. */
+
   gap: var(--hub-gap, 4px);
   padding: 6px;
   text-align: center;
@@ -1841,8 +1904,8 @@ html[data-theme='light'] .hero-ambient-glow {
   color: var(--hub-meta-ink, var(--text-soft));
 }
 
-/* Nút quay đáy hub: nhỏ, dài — style nút primary của dự án (gradient, vát góc, 3D).
-   Kích thước do utils/hub.ts tính qua --hub-btn-w/h. */
+
+
 .spin-hub-btn {
   --extrude: var(--extrude-btn);
   --extrude-face: color-mix(in srgb, var(--grad-1) 62%, #000);
@@ -1867,7 +1930,7 @@ html[data-theme='light'] .hero-ambient-glow {
   border-right: var(--extrude) solid var(--extrude-face);
   border-bottom: var(--extrude) solid var(--extrude-face);
   background: linear-gradient(135deg, var(--grad-1) 0%, var(--grad-2) 50%, var(--grad-3) 100%);
-  color: #fff;
+  color: var(--on-brand);
   font-size: var(--hub-btn-fs, 11px);
   font-weight: 800;
   line-height: 1;
@@ -1887,7 +1950,7 @@ html[data-theme='light'] .hero-ambient-glow {
   --extrude-face: color-mix(in srgb, var(--grad-1) 78%, #000);
 }
 
-/* clip-path cắt luôn outline — vòng focus phải vẽ bằng inset ring. */
+
 .spin-hub-btn:focus-visible {
   box-shadow: inset 0 0 0 2px #fff;
 }
@@ -1907,8 +1970,8 @@ html[data-theme='light'] .hero-ambient-glow {
   height: calc(var(--hub-btn-h, 28px) * 0.5);
 }
 
-/* Vùng kết quả: không có khung riêng (hub mới là khung), chỉ giữ chỗ và
-   margin auto để nút luôn áp đáy. visibility do JS bật/tắt sau khi đo chữ. */
+
+
 .spin-hub-namebox {
   width: 100%;
   height: var(--hub-name-h, 0px);
@@ -1922,7 +1985,7 @@ html[data-theme='light'] .hero-ambient-glow {
 }
 
 .spin-hub-name {
-  /* Chữ tự co theo bề rộng hộp — kết quả dài không tràn ra ngoài. */
+
   font-size: var(--hub-name-fs, clamp(13px, calc(100cqi * (0.5 - var(--spin-depth)) / 6), 30px));
   font-weight: 800;
   line-height: 1.15;
@@ -1931,7 +1994,7 @@ html[data-theme='light'] .hero-ambient-glow {
   text-shadow: 0 0 18px color-mix(in srgb, var(--text-brand) 40%, transparent);
 }
 
-/* Quầng sáng sau lượt quay: dùng filter vì box-shadow ngoài sẽ bị clip-path cắt mất. */
+
 .spin-wheel[data-phase='stopped'] .spin-hub-btn {
   filter: drop-shadow(0 0 10px color-mix(in srgb, var(--grad-1) 55%, transparent));
 }
@@ -1940,7 +2003,7 @@ html[data-theme='light'] .hero-ambient-glow {
   border-color: color-mix(in srgb, var(--text-brand) 45%, var(--border-subtle));
 }
 
-/* Hai kết quả đặt cạnh nhau từ sm — khỏi phải cuộn qua từng dòng. */
+
 .spin-result-rows {
   display: grid;
   gap: 0.5rem;
@@ -1953,7 +2016,7 @@ html[data-theme='light'] .hero-ambient-glow {
 }
 
 .spin-result-name {
-  /* Không cắt tên ở vùng kết quả — cho phép xuống dòng. */
+
   overflow-wrap: anywhere;
 }
 
@@ -1969,17 +2032,17 @@ html[data-theme='light'] .hero-ambient-glow {
   }
 }
 
-/* ============ Cuộn trang dài ============
-   Trang chủ/landing dài ~13.000px. Không có gì chặn thì mọi section đều nằm
-   trong cây render: mỗi khung hình cuộn phải tính lại style cho hàng chục
-   element đang animation vô hạn bên trong, kể cả phần cách xa màn hình.
-   content-visibility:auto bảo trình duyệt bỏ qua section ngoài tầm nhìn —
-   không layout, không paint. "auto <dài>" nhớ kích thước thật sau lần vẽ đầu
-   nên thanh cuộn không bị nhảy. Lưu ý: nó KHÔNG dừng đồng hồ animation, style
-   recalc bên trong vẫn tick mỗi khung hình — muốn bớt recalc phải giảm số
-   animation vô hạn và chỉ animation thuộc tính compositor (transform/opacity).
-   Hero không có id/data-reveal nên đánh dấu bằng .cv-skip. Browser cũ không
-   hiểu thì bỏ qua rule, không sao. */
+
+
+
+
+
+
+
+
+
+
+
 main section[id],
 main section[data-reveal],
 .cv-skip {
@@ -1987,41 +2050,41 @@ main section[data-reveal],
   contain-intrinsic-size: auto 620px;
 }
 
-/* Section đang ghim dải card: content-visibility:auto nhét containment + chiều cao dự
-   đoán vào section, mà containment trên tổ tiên thì element con sticky bị tính lại vị trí
-   đúng lúc section vào/ra tầm nhìn — lệch một nhịp ngay chỗ bắt đầu ghim, tức là giật.
-   Bỏ cơ chế này cho riêng section có [data-pin] (JS chỉ gắn [data-pin] khi đủ rộng và
-   không reduced-motion, nên mobile/không JS vẫn được content-visibility như cũ). */
+
+
+
+
+
 main section[id][data-pin] {
   content-visibility: visible;
 }
 
-/* Cột ghim của SplitWorkspace dính đúng cái bẫy trên: containment + chiều cao dự đoán của
-   content-visibility:auto làm sticky tính lại vị trí ngay nhịp bắt đầu ghim → giật. */
+
+
 main section[id]:has(.workspace-panel) {
   content-visibility: visible;
 }
 
-/* ============ Dải card cuộn ngang khi bị ghim ============
-   Kết cấu: .pin-root (cao = màn ghim + quãng tràn) > .pin-stage (sticky, cao tối thiểu
-   một màn hình) > .pin-viewport (cắt ngang, gốc tính đơn vị cqi) > .pin-track (dải card,
-   dịch ngang theo cuộn).
-   usePinnedCardScroll đo và viết bốn biến lên .pin-root: --pin-stage-h (chiều cao thật
-   của màn ghim, phòng khi tiêu đề + card dài hơn một màn hình), --pin-shift (quãng tràn
-   ngang, quyết định chiều cao hộp cha và độ dài animation-range), --pin-stick-start
-   (điểm bắt đầu bám tính trong cover phase) và --pin-x (tiến trình — chỉ bản JS fallback
-   viết; bản timeline để engine nội suy). Quãng đường nhả ghim = đúng --pin-shift, nên
-   card chót dừng sát mép phải khung nhìn ngay khung hình section được giải phóng.
-   Không có JS thì mấy biến kia không tồn tại: --pin-shift fallback 0, hộp cao đúng bằng
-   màn ghim, dải card không dịch — và [data-pin] cũng không được gắn, nghĩa là markup
-   trở về lưới grid gốc, toàn bộ card thấy hết. */
+
+
+
+
+
+
+
+
+
+
+
+
+
 :root {
-  /* header sticky = h-[72px] + border-b 1px (Navbar.tsx) — dải ghim phải nằm dưới header. */
+
   --pin-top: 73px;
   --pin-gap: 1rem;
   --pin-card: 30rem;
-  /* Miếng card thứ ba lộ ra mép phải khi đứng yên: không có nó thì ở 1024px hai card
-     choán vừa khít khung nhìn, chỉ còn vạch tiến trình báo là còn nội dung bên phải. */
+
+
   --pin-peek: 3rem;
 }
 
@@ -2049,36 +2112,36 @@ main section[id]:has(.workspace-panel) {
 
 [data-pin] .pin-viewport {
   overflow: hidden;
-  /* cqi là bề rộng CHÍNH XÁC của khung nhìn dải card — `100vw` thì tính cả thanh cuộn
-     đứng nên luôn thừa 6–15px, lệch đủ để card chót dừng sai chỗ. container-type biến
-     hộp này thành gốc tính đơn vị cho card và cho keyframe; inline-size containment
-     không làm nó phụ thuộc vào nội dung, nên không có vòng phản hồi kích thước. */
+
+
+
+
   container-type: inline-size;
 }
 
-/* Basis tính theo cqi chứ không theo %: .pin-track rộng max-content (xem keyframe), %
-   trong một hộp co theo nội dung là vòng tròn không giải được, card sẽ co về bề rộng
-   nội dung. Dải card tràn ra ngoài .pin-viewport và bị hộp này cắt. Hook đo độ tràn bằng
-   rect của card đầu/cuối chứ không đo .pin-track — đo track thì luôn ra 100%, không bao
-   giờ thấy đoạn tràn. */
+
+
+
+
+
 [data-pin] .pin-track {
   display: flex;
   align-items: stretch;
   gap: var(--pin-gap);
-  /* max-content để `100%` trong keyframe = đúng chiều dài dải, bất kể bao nhiêu card.
-     Không đếm số card bằng tay trong CSS: thêm/bớt card là công thức tự đúng theo. */
+
+
   width: max-content;
 }
 
 [data-pin] .pin-track > * {
-  /* Gấp đôi cột lưới cũ nhưng không vượt quá 30rem: chữ mô tả dài hơn nữa là mất nhịp
-     đọc. Trừ thêm --pin-peek để hai card không bao giờ choán kín khung nhìn. */
+
+
   flex: 0 0 min(calc((100cqi - var(--pin-gap) - var(--pin-peek)) / 2), var(--pin-card));
   min-width: 0;
 }
 
-/* Vấn đề duy nhất của kiểu ghim là người dùng không biết còn card phía bên phải.
-   Một vạch tiến trình 2px, cùng họ màu với thanh cuộn đầu trang, chạy bằng scaleX. */
+
+
 .pin-rail {
   display: none;
 }
@@ -2086,9 +2149,9 @@ main section[id]:has(.workspace-panel) {
   display: block;
   margin-top: 22px;
   height: 2px;
-  /* --border-subtle chứ không color-mix(): Lightning CSS hạ color-mix xuống thành MÀU
-     ĐẶC khi engine không hiểu, vạch 2px sẽ sáng chói trên nền tối đúng chỗ lẽ ra nó mờ.
-     Token này cũng là màu viền của chính section và card nên không thêm màu mới. */
+
+
+
   background: var(--border-subtle);
 }
 [data-pin] .pin-rail-fill {
@@ -2099,22 +2162,22 @@ main section[id]:has(.workspace-panel) {
   background: linear-gradient(90deg, var(--grad-1) 0%, var(--grad-2) 55%, var(--grad-3) 100%);
 }
 
-/* ============ Bản mượt: để trình duyệt tự nội suy theo cuộn ============
-   Scroll-driven animation (animation-timeline) chạy trên compositor và lấy số đo cuộn
-   NGAY tại khung hình vẽ, không qua tay JS. Bản JS ở hook bên kia thì mỗi lần cuộn phải
-   chờ một frame rAF: cuộn nhanh là dải card trễ sau nội dung một nhịp, mắt thấy khựng —
-   và mỗi frame còn tốn một lần đọc layout ngay trên main thread, thứ làm cả trang giật
-   theo. Ở đây JS chỉ còn đo lúc layout đổi; việc mỗi khung hình trả hết cho engine.
 
-   Mốc: timeline view của .pin-strip đo quãng subject (.pin-root) đi qua scrollport, tính
-   từ lúc nó nhô vào mép dưới. Quãng bám ghim bắt đầu ở khoảng cách đúng bằng (chiều cao
-   khung nhìn --pin-top) = --pin-stick-start và dài --pin-shift — hai biến JS viết, nên
-   bản này khớp tuyệt đối với hình học sticky.
-   Browser không hiểu (Firefox bản cũ, Safari <26) bỏ qua toàn bộ khối @supports dưới,
-   hook khi đó mới gắn scroll listener: chỉ MỘT trong hai cơ chế tồn tại trên một trình
-   duyệt, không có chuyện cả hai cùng sửa transform.
-   animation-duration: auto là số còn thiếu chứ không phải chữ trang trí — để 0s (mặc định)
-   trên timeline nghĩa là không có quãng nội suy, dải card nhảy thẳng một frame. */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @supports (animation-timeline: view()) {
   [data-pin] .pin-root {
     view-timeline: --pin-strip block;
@@ -2139,9 +2202,9 @@ main section[id]:has(.workspace-panel) {
   }
 }
 
-/* Bản JS (chưa có animation-timeline): lớp riêng cho dải card để mỗi frame chỉ là một
-   lần đổi transform trên compositor. Để trong @supports not cho đúng một cơ chế — bản
-   timeline engine tự promote, khai báo will-change thêm chỉ là một layer thường trực. */
+
+
+
 @supports not (animation-timeline: view()) {
   [data-pin] .pin-track {
     will-change: transform;
@@ -2150,15 +2213,15 @@ main section[id]:has(.workspace-panel) {
 
 @keyframes pin-strip {
   from { transform: translate3d(0, 0, 0); }
-  /* 100cqi = bề rộng khung nhìn dải card, 100% = chính chiều dài dải (track rộng
-     max-content). Hiệu hai số là quãng tràn, CSS tự tính — không lấy --pin-shift của JS
-     nhét vào keyframe: biến custom trong @keyframes phải resolve lại mỗi lần JS đổi số
-     đo, đúng chỗ các engine hành xử không giống nhau, lỡ không resolve là sau một lần
-     resize dải chạy sai vĩnh viễn. Dùng 100% cũng nghĩa là thêm/bớt card không phải
-     sửa công thức.
-     min(0px, …) chặn một hốc thật: dải hẹp hơn khung nhìn (ít card, hoặc bản dịch ngắn)
-     thì hiệu số dương và dải bị đẩy NGANG SANG PHẢI, cắt mất trái; JS bên hook cũng
-     Math.max(0, độ tràn) — hai bản phải chặn cùng một phía. */
+
+
+
+
+
+
+
+
+
   to   { transform: translate3d(min(0px, calc(100cqi - 100%)), 0, 0); }
 }
 @keyframes pin-rail-progress {
@@ -2166,19 +2229,19 @@ main section[id]:has(.workspace-panel) {
   to   { transform: scaleX(1); }
 }
 
-/* ============ Lớp hạt (grain) phủ toàn trang ============
-   Một lớp noise tĩnh, rất mờ, đặt trên mọi nội dung nhưng DƯỚI modal (z-50) và
-   SelectMenu (z-70) để hộp thoại không bị phủ: z 45.
-   body::after chứ không thêm node React: không có trong cây prerender, không phải
-   mount, không repaint theo khung hình (background là ảnh data-URI nên raster một
-   lần, position:fixed nên không cuộn lại).
-   KHÔNG có mix-blend-mode: đo bằng histogram frame lúc cuộn nhanh qua /tools, bản
-   overlay cho p95 22–26ms và p99 36–38ms (SwiftShader của headless buộc trộn lại cả
-   viewport mỗi lần paint), bản thường là 17.8/20ms — y hệt lúc gỡ lớp hạt đi, và ở
-   opacity .05 thì mắt không phân biệt được hai bản. Nền trắng của light theme không
-   còn cần blend gì: hạt xám đặt lên trắng tự tối đi, chỉ cần mờ hơn.
-   Chỉ dành cho máy có chuột: một lớp phủ full-viewport không đáng vẽ trên điện thoại
-   — và cũng không ai nhìn thấy 5% hạt trên màn 6". */
+
+
+
+
+
+
+
+
+
+
+
+
+
 @media (hover: hover) and (pointer: fine) {
   body::after {
     content: '';
@@ -2196,36 +2259,36 @@ main section[id]:has(.workspace-panel) {
   }
 }
 
-/* ============ Máy cảm ứng: tắt hiệu ứng phải vẽ lại mỗi khung hình ============
-   (hover: none) = điện thoại/tablet, không có con trỏ rời — mọi hiệu ứng chỉ
-   chạy lúc :hover ở đây là vô nghĩa, còn animation vô hạn + blur nền toàn
-   chiều ngang thì bắt GPU vẽ lại suốt khi cuộn. Desktop giữ nguyên toàn bộ. */
+
+
+
+
 @media (hover: none) {
-  /* 33 thẻ .card-3d: transform perspective + transition filter tạo layer riêng
-     cho từng thẻ, nhưng không có hover nên không bao giờ được dùng tới.
-     Lớp ::before để nguyên: opacity 0 nên không vẽ, trừ thẻ có chủ đích sáng
-     liên tục (.card-3d-glow). */
+
+
+
+
   .card-3d { transform: none; transition: border-color 0.25s ease-out; }
 
-  /* Quầng sáng toàn trang chạy vô hạn trên lớp 850x400px. */
+
   .hero-ambient-glow { animation: none; }
 
-  /* Pipeline: giữ line tĩnh như bản reduced-motion vẫn hiển thị. */
+
   .pipeline-flare { animation: none; }
   .pipeline-step::after { display: none; }
 
   .badge-radar::before { animation: none; }
 
-  /* .btn-glow-pulse và .float-glow không còn animation nào để tắt: từ bản mới chúng là
-     quầng filter TĨNH, hai khối guard cũ chỉ để chặn nhịp thở vô hạn đã bị bỏ. */
 
-  /* Hòm: crate 3D + bóng đổ nhún nhảy liên tục; cú lắc khi quay vẫn chạy vì
-     selector .case-box[data-shaking='true'] đặc hiệu hơn. */
+
+
+
+
   .case-crate,
   .case-crate-shadow,
   .case-open-btn:not(:disabled) { animation: none; }
 
-  /* Ô thắng vẫn có viền dày + nền sáng + chữ phát sáng, chỉ bỏ nhịp thở. */
+
   .spin-cell[data-win='true'] { animation: none; }
 }
 
@@ -2233,6 +2296,8 @@ main section[id]:has(.workspace-panel) {
   .animate-page-enter { animation: none; translate: none; }
   .toast-enter, .toast-leave { animation: none; }
   .animate-loading-sweep { animation: none; width: 100%; opacity: 0.35; }
+
+  #boot-bar::after { animation: none; width: 100%; opacity: 0.35; }
   .heading-in { animation: none; }
   .animate-fade-in { animation: none; }
   .in-up, .in-out, .in-fade, .in-backdrop,
@@ -2245,12 +2310,12 @@ main section[id]:has(.workspace-panel) {
   [data-reveal-items] > *,
   [data-reveal-items].is-in > *,
   [data-reveal].is-in { animation: none; }
-  /* Khối scroll-driven ở trên đã khoá bằng @media no-preference nên bản giảm chuyển động
-     không áp nó; ba dòng dưới là lưới chặn thứ hai, viết bằng ĐÚNG selector của khối đó
-     (đặc hiệu bằng nhau, quyết bằng thứ tự — khối guard nằm cuối file) vì `animation: none`
-     không được đảm bảo đặt lại animation-timeline/animation-range. Với [data-pin] thì
-     chuyện này là thật: khối @supports của dải card ghim không khoá media, JS chỉ là lớp
-     chặn thứ nhất (hook không gắn [data-pin] khi reduce) — gỡ luôn timeline ở đây. */
+
+
+
+
+
+
   [data-reveal-items].is-in > *:not([data-pin] *) {
     animation: none;
     animation-timeline: auto;
@@ -2267,9 +2332,9 @@ main section[id]:has(.workspace-panel) {
   .hero-word-hl { animation: none; opacity: 1; translate: none; scale: none; filter: none; clip-path: none; }
   .reveal-heading.is-in .reveal-word { animation: none; clip-path: none; }
   .reveal-heading.is-in + .reveal-desc { animation: none; }
-  /* Dải card ghim: hook đã không gắn [data-pin] khi reduced-motion. Đây là lưới chặn
-     cuối cho trường hợp JS ghi nhầm — nhả toàn bộ về layout grid gốc, để không card nào
-     bị nhốt trong hộp overflow:hidden mà người dùng không với tới. */
+
+
+
   [data-pin] .pin-root { height: auto; view-timeline: none; }
   [data-pin] .pin-stage { position: static; top: auto; min-height: 0; display: block; }
   [data-pin] .pin-viewport { overflow: visible; }
@@ -2281,14 +2346,14 @@ main section[id]:has(.workspace-panel) {
   .card-3d::before   { display: none; }
   .card-3d:hover     { filter: none; }
   .live-value { animation: none; }
-  /* Pipeline: giữ line tĩnh + thứ tự số rõ, tắt toàn bộ chuyển động */
+
   .pipeline-flare { animation: none; }
   .pipeline-step::after { display: none; }
   .hero-ambient-glow,
   .badge-radar::before { animation: none; }
   .btn-shimmer:hover::after { animation: none; }
   .nav-pill::after { transition: none; }
-  /* Case opening: giữ nguyên kết quả, chỉ bỏ chuyển động */
+
   .case-box[data-shaking='true'],
   .case-box[data-shaking='true'] .case-lid,
   .case-box[data-shaking='true'] .case-crate,
@@ -2300,7 +2365,7 @@ main section[id]:has(.workspace-panel) {
   .case-roulette-track { transition: none !important; }
   .case-crate-tilt { transition: none; }
   .case-lid { transition: none; }
-  /* Square spin: không chạy ánh sáng, chỉ sáng tĩnh ô trúng. JS cũng cho schedule = 1 bước. */
+
   .spin-cell,
   .spin-cell[data-lit='true'],
   .spin-cell[data-win='true'] { animation: none; transition: none; }

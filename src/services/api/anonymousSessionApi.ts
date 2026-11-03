@@ -4,14 +4,14 @@ import { apiClient } from './client'
 
 type AnonymousSessionResponse = { expires_at: string; captcha_required?: boolean }
 
-// Cho phép mint lại sớm trước 1 phút: một cú submit bay đúng lúc cookie chạm hạn sẽ ăn 401
-// ở BE, trong khi xin lại sớm thì vô hại (route idempotent).
+
+
 const REISSUE_MARGIN_MS = 60_000
 
 let expiresAt: number | null = null
 let inflight: Promise<void> | null = null
 
-/** BE GĐ1 khoá job ẩn danh theo phiên (cookie `ofs_anon`, HttpOnly → FE không đọc được, */
+
 export function ensureAnonymousSession(): Promise<void> {
   if (getAccessToken()) return Promise.resolve()
   if (expiresAt !== null && expiresAt - Date.now() > REISSUE_MARGIN_MS) {
@@ -22,11 +22,11 @@ export function ensureAnonymousSession(): Promise<void> {
       .post<AnonymousSessionResponse>('/v1/anonymous/session')
       .then((session) => {
         const parsed = Date.parse(session.expires_at)
-        // expires_at hỏng (khác múi giờ thiếu offset, BE đổi format) = coi như chưa có phiên.
+
         expiresAt = Number.isNaN(parsed) ? null : parsed
-        // shortcut: flag chỉ cập nhật lúc xin phiên (lần đầu, hoặc hết TTL). BE đổi chính
-        // sách giữa chừng thì flag có thể trễ — ải vẫn không thưa, vì luồng 403 reactive trong
-        // client.ts bắt tiếp. Upgrade khi BE cần FE biết ngay tức thì.
+
+
+
         setCaptchaRequiredByBackend(session.captcha_required === true)
       })
       .finally(() => {

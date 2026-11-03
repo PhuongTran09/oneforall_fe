@@ -6,7 +6,7 @@ const IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp']
 const AUDIO_TYPES = ['audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/x-wav', 'audio/ogg', 'audio/mp4', 'audio/aac', 'audio/webm']
 const AUDIO_EXT = /\.(mp3|wav|ogg|m4a|aac|weba|webm)$/i
 
-/** Trả về key i18n của lỗi, hoặc null khi tệp hợp lệ. */
+
 export function validateImageFile(file: File): string | null {
   const type = file.type.toLowerCase()
   if (!type.startsWith('image/')) return 'case.err.fileNotImage'
@@ -48,10 +48,10 @@ function encode(canvas: HTMLCanvasElement, type: string, quality: number): Promi
   return new Promise((resolve) => canvas.toBlob((blob) => resolve(blob), type, quality))
 }
 
-/**
- * Ảnh tải lên thường là ảnh điện thoại vài MB; ép về ≤512px và WebP trước khi xuống
- * IndexedDB để danh sách dài không nghẽn bộ nhớ. Lỗi bất kỳ bước nào → dùng tệp gốc.
- */
+
+
+
+
 export async function toStorableImage(file: File): Promise<Blob> {
   try {
     const bmp = await loadBitmap(file)

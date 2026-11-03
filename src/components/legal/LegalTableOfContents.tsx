@@ -12,7 +12,7 @@ export function LegalTableOfContents({ sections }: LegalTableOfContentsProps) {
         <li key={s.id}>
           <a
             href={`#${s.id}`}
-            className="group flex items-start gap-2.5 clip-corner-btn px-2.5 py-2 text-sm text-soft hover:bg-brand/5 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand transition-colors"
+            className="group flex items-start gap-2.5 clip-corner-btn px-2.5 py-2 text-sm text-soft hover:bg-brand/5 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand transition-colors"
           >
             <span className="mt-px min-w-5 text-[11px] font-semibold tabular-nums text-soft group-hover:text-brand">
               {String(i + 1).padStart(2, '0')}

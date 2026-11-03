@@ -45,7 +45,7 @@ export function SpinHistoryPanel({ history }: SpinHistoryPanelProps) {
                 {slotLabel(record.slot)}
               </span>
               <span className="min-w-0 text-sm font-semibold text-ink break-words">{record.name}</span>
-              {/* Mobile: dòng phụ dưới tên để tên không bị chèn còn hai ký tự một dòng. */}
+
               <span className="col-span-2 flex flex-wrap items-baseline gap-x-2.5 text-[11px] font-mono text-soft sm:col-span-1 sm:flex-nowrap sm:justify-end">
                 <span>{t('spin.odds', { count: record.poolSize })}</span>
                 <span>{formatStamp(record.at, lang)}</span>

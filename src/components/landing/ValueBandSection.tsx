@@ -3,10 +3,10 @@ import { SectionHeading } from '../common/SectionHeading'
 import { usePinnedCardScroll } from '../../hooks/usePinnedCardScroll'
 import { t } from '../../i18n/langStore'
 
-/**
- * Một dải gộp "Ưu điểm cốt lõi" + "Cách thức hoạt động": hai section trước đây
- * chiếm hơn một viewport cho cùng một message. Toàn bộ 8 dòng copy vẫn còn.
- */
+
+
+
+
 const STEPS = [
   { key: 's1', icon: <CloudUpload className="w-5 h-5 text-brand" /> },
   { key: 's2', icon: <SlidersHorizontal className="w-5 h-5 text-brand" /> },
@@ -28,9 +28,9 @@ export function ValueBandSection() {
     <section
       id="how-it-works"
       data-reveal
-      /* [data-pin] bật toàn bộ layout ghim trong index.css; không có nó thì bốn thẻ vẫn là
-         lưới grid như cũ — mobile, cửa sổ thấp, reduced-motion và trình duyệt tắt JS đều
-         đi theo nhánh này. */
+
+
+
       data-pin={enabled ? 'on' : undefined}
       className="py-14 sm:py-20 bg-page border-y border-edge"
     >

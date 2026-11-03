@@ -40,7 +40,7 @@ export function NotFoundPage() {
           </p>
         </div>
 
-        {/* Popular Tools Navigation */}
+
         <div className="pt-2 border-t border-edge text-left space-y-2">
           <p className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
             {t('notFound.popularTitle')}

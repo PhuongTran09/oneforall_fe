@@ -86,8 +86,8 @@ export function ResetPasswordPage() {
   const context = useOutletContext<LayoutContext | null>()
   const navigate = useNavigate()
   const { session, ready, recovery: recoveryActive } = useAuth()
-  // Nguồn sự thật = sự kiện PASSWORD_RECOVERY (flag trong authStore), không phải
-  // recovery_sent — supabase-js không set flag này trên session recovery.
+
+
   const recovery = recoveryActive && session != null
 
   const [password, setPassword] = useState('')
@@ -95,8 +95,8 @@ export function ResetPasswordPage() {
   const [busy, setBusy] = useState(false)
   const [done, setDone] = useState(false)
 
-  // GoTrue có thể để lại hash lỗi nếu chưa kịp xử lý → xoá khỏi URL (không lặp lại
-  // lỗi khi reload/chia sẻ link) nhưng vẫn giữ thông điệp hiển thị một lần.
+
+
   useEffect(() => {
     if (window.location.hash.includes('error')) {
       window.history.replaceState(null, '', window.location.pathname + window.location.search)
@@ -210,8 +210,8 @@ export function ResetPasswordPage() {
             </Button>
           </form>
         ) : (
-          // Không cho đổi mật khẩu khi chưa có phiên recovery hợp lệ —
-          // liên kết hết hạn/hỏng → yêu cầu liên kết mới.
+
+
           <div className="space-y-5">
             <div className="p-3 bg-brand-2/10 border border-brand-2/30 text-brand-3 text-xs clip-corner-card">
               {initialAuthUrlError?.code === 'otp_expired'

@@ -12,8 +12,8 @@ import { ApiClientError } from '../services/api/types'
 const CONTACT_URL =
   'https://mail.google.com/mail/?view=cm&fs=1&to=support@oneforall.io.vn&su=Thanh%20toan%20Pro%20One ForAll'
 
-// IPN của SePay là server-to-server nên đơn có thể paid trễ hơn vài chục giây sau khi
-// người dùng quay về tab. Ngưỡng dưới để bắt nhịp đó, không phải để tin 90s = mất tiền.
+
+
 const POLL_MS = 2_000
 const DEADLINE_MS = 90_000
 const MAX_CONSECUTIVE_ERRORS = 3
@@ -64,9 +64,9 @@ export function PaymentReturnPage() {
   const { session, ready } = useAuth()
   const userId = session?.user?.id ?? null
 
-  // Ba nhánh chốt được mà không cần gọi API: chưa có phiên, hoặc SePay tự báo hủy/lỗi
-  // khi redirect. Suy ra từ render (không setState trong effect) nên đổi ngôn ngữ/tab
-  // vẫn đúng, và nút "Kiểm tra lại" không làm chúng nhảy lại.
+
+
+
   const decided: View | null = !ready
     ? null
     : getAccessToken() === null
@@ -79,7 +79,7 @@ export function PaymentReturnPage() {
 
   const [polled, setPolled] = useState<View | null>(null)
   const [orderCode, setOrderCode] = useState<number | null>(null)
-  // Đổi số này là chạy lại cả chu trình poll với deadline mới (nút "Kiểm tra lại").
+
   const [attempt, setAttempt] = useState(0)
   const view = decided ?? polled ?? 'checking'
 
@@ -110,13 +110,13 @@ export function PaymentReturnPage() {
           setOrderCode(payment.order_code)
           if (payment.status === 'paid') {
             checkoutMarker.clear()
-            // Bỏ TTL 60s: quyền lợi Pro phải hiện ngay khi tiền được xác nhận.
+
             void refreshEntitlements(true)
             settle('paid')
             return
           }
-          // Luồng SePay không ghi hai status này (chỉ legacy webhook), nhưng nếu BE
-          // đổi ý thì người dùng phải thấy đơn đã đóng chứ không phải vòng chờ 90s.
+
+
           if (payment.status === 'cancelled' || payment.status === 'expired') {
             settle('cancelled')
             return
@@ -139,7 +139,7 @@ export function PaymentReturnPage() {
         }
         await sleep()
       }
-      // Hết thời gian mà đơn vẫn pending: tiền có thể đang trên đường về qua IPN.
+
       settle('pending')
     }
 
@@ -149,7 +149,7 @@ export function PaymentReturnPage() {
         await poll(marker.paymentId)
         return
       }
-      // Marker mất (tab mới, storage bị chặn) → BE sort created_at desc, đơn đầu là đơn vừa tạo.
+
       try {
         const recent = await paymentsApi.latest(controller.signal)
         if (stopped) return
@@ -171,7 +171,7 @@ export function PaymentReturnPage() {
       if (timer !== null) clearTimeout(timer)
       controller.abort()
     }
-    // userId (chứ không phải session) để đổi tài khoản là poll lại từ đầu.
+
   }, [decided, exit, userId, attempt])
 
   const { title, body } = copyFor(view)

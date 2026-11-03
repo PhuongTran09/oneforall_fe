@@ -1,4 +1,4 @@
-// Common components
+
 export { Button } from './common/Button'
 export type { ButtonProps } from './common/Button'
 export {
@@ -55,7 +55,7 @@ export type { SplitWorkspaceProps } from './common/SplitWorkspace'
 export { TaskStatusWidget } from './common/TaskStatusWidget'
 export type { TaskStatusWidgetProps } from './common/TaskStatusWidget'
 
-// Feedback components
+
 export { AuthModal } from './feedback/AuthModal'
 export type { AuthModalProps } from './feedback/AuthModal'
 export { ProPlanModal } from './feedback/ProPlanModal'
@@ -66,7 +66,7 @@ export { ErrorPopupViewport } from './feedback/ErrorPopupViewport'
 export { showErrorPopup } from './feedback/errorPopupStore'
 export { ErrorBoundary } from './feedback/ErrorBoundary'
 
-// Landing page sections
+
 export { HeroSection } from './landing/HeroSection'
 export type { HeroSectionProps } from './landing/HeroSection'
 export { ToolsSection } from './landing/ToolsSection'

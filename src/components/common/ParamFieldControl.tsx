@@ -4,7 +4,7 @@ import { t } from '../../i18n/langStore'
 
 export interface ParamFieldControlProps {
   field: ParamField
-  /** Field id is namespaced so the same key can appear in several panels. */
+
   idPrefix: string
   value: string | boolean | undefined
   onChange: (key: string, value: string | boolean) => void
@@ -14,7 +14,7 @@ export interface ParamFieldControlProps {
 const chipClass = (active: boolean): string =>
   `px-2.5 py-1 font-mono text-xs font-semibold transition-all cursor-pointer clip-corner-btn disabled:cursor-not-allowed ${
     active
-      ? 'bg-brand-gradient text-white'
+      ? 'bg-brand-gradient text-on-brand'
       : 'bg-elev text-slate-200 border border-edge hover:bg-brand/15 hover:border-[rgba(255,59,48,0.40)]'
   }`
 

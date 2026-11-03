@@ -32,8 +32,8 @@ interface LayoutContext {
 const PAGE_SIZE = 20
 
 const STATUS_KEYS = ['queued', 'processing', 'completed', 'failed', 'cancelled', 'expired'] as const
-// Giá trị khớp đúng chữ backend ghi vào jobs.type (image.py / media.py / convert_file.py)
-// — filter gửi lên là so sánh bằng nhau ở BE, nên lệch một ký tự là ra danh sách trống.
+
+
 const TYPE_KEYS = ['image_process', 'video', 'convert_file'] as const
 
 function formatDateTime(iso: string | null): string {
@@ -94,7 +94,6 @@ interface FilterOption {
   label: string
 }
 
-// Dropdown custom theo style web — icon sát ngay nhãn (gap-1), menu vát góc.
 function FilterSelect({
   ariaLabel,
   value,
@@ -109,7 +108,6 @@ function FilterSelect({
   const [open, setOpen] = useState(false)
   const rootRef = useRef<HTMLDivElement>(null)
   const selected = options.find((o) => o.value === value) ?? options[0]
-  // Chọn xong / Esc / click ra ngoài: listbox mờ ra chứ không cắt cụt.
   const { show, closing } = useExitFade(open)
 
   useEffect(() => {
@@ -190,9 +188,9 @@ export function HistoryPage() {
   const [status, setStatus] = useState('')
   const [type, setType] = useState('')
   const [q, setQ] = useState('')
-  const [query, setQuery] = useState('') // giá trị đã debounce, mới đưa vào request
+  const [query, setQuery] = useState('')
   const [busyIds, setBusyIds] = useState<Set<string>>(new Set())
-  const [reloadTick, setReloadTick] = useState(0) // popup lỗi "Thử lại" → tăng để fetch lại
+  const [reloadTick, setReloadTick] = useState(0)
   const [confirmAction, setConfirmAction] = useState<{ item: JobHistoryItem; kind: 'delete' | 'cancel' } | null>(null)
   const searchTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 
@@ -219,11 +217,9 @@ export function HistoryPage() {
     [user, status, type, query, page],
   )
 
-  // Fetch khi đổi filter/page — KHÔNG auto-poll (§8). q đã debounce vào query.
   useEffect(() => {
     if (!user) return
     const controller = new AbortController()
-    // defer 1 microtask: setLoading trong load không chạy đồng bộ trong effect body.
     void Promise.resolve().then(() => load(controller.signal))
     return () => controller.abort()
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -244,7 +240,6 @@ export function HistoryPage() {
   const handleDownload = async (item: JobHistoryItem) => {
     setBusyIds((s) => new Set(s).add(item.id))
     try {
-      // Bearer qua apiClient, backend tự lấy output_key theo quyền sở hữu (§4).
       const res = await filesApi.getPresignedDownloadUrl(item.id)
       if (res.url) {
         const a = document.createElement('a')
@@ -255,7 +250,6 @@ export function HistoryPage() {
         a.remove()
       }
     } catch (err) {
-      // 404/410: job đã bị dọn / hết hạn giữa chừng → báo không khả dụng (§6/§9).
       if (err instanceof ApiClientError && (err.status === 404 || err.status === 410)) {
         markGone(item.id, false)
       } else {
@@ -270,7 +264,6 @@ export function HistoryPage() {
     }
   }
 
-  // Hủy job đang chờ/xử lý: BE CAS theo trạng thái, 409 = vừa hoàn tất → refresh lại.
   const handleCancel = async (item: JobHistoryItem) => {
     setBusyIds((s) => new Set(s).add(item.id))
     try {
@@ -290,9 +283,6 @@ export function HistoryPage() {
   const isRunning = (item: JobHistoryItem) =>
     item.status === 'queued' || item.status === 'processing'
 
-  // BE giữ §5: không xóa row đang queued/processing (worker còn có thể ghi kết quả).
-  // Nên xóa một job đang chạy = hủy trước (worker dừng subprocess + nhả slot) rồi xóa.
-  // 409 ở bước hủy = job vừa tự hoàn tất/fail trong nhịp vừa rồi → xóa tiếp bình thường.
   const handleDelete = async (item: JobHistoryItem) => {
     setBusyIds((s) => new Set(s).add(item.id))
     try {
@@ -308,7 +298,6 @@ export function HistoryPage() {
       setItems((prev) => prev.filter((it) => it.id !== item.id))
     } catch (err) {
       if (err instanceof ApiClientError && err.status === 404) {
-        // Đã bị dọn trước đó → xóa khỏi UI và làm mới để đồng bộ.
         forgetJobInToolSnapshots(item.id)
         setItems((prev) => prev.filter((it) => it.id !== item.id))
         void load()
@@ -342,7 +331,6 @@ export function HistoryPage() {
     )
   }
 
-  // Job còn queued/processing: xóa = dừng rồi xóa, nên lời xác nhận phải nói rõ.
   const confirmMessage = !confirmAction
     ? ''
     : confirmAction.kind === 'cancel'
@@ -356,7 +344,7 @@ export function HistoryPage() {
       <h1 className="text-2xl sm:text-3xl font-bold text-ink tracking-tight mb-1">{t('history.title')}</h1>
       <p className="text-soft mb-6">{t('history.subtitle')}</p>
 
-      {/* Toolbar: search + filters */}
+
       <div className="flex flex-col sm:flex-row gap-3 mb-4">
         <div className="relative flex-1">
           <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-soft pointer-events-none z-10" />
@@ -417,8 +405,8 @@ export function HistoryPage() {
         </div>
       ) : (
         <div className="in-fade bg-surface border border-[rgba(255,59,48,0.35)] clip-corner-lg overflow-hidden divide-y divide-edge">
-          {/* in-fade cho cả khối, không stagger từng dòng: bảng này người dùng mở ra để
-              bấm tiếp vào file, dòng thứ 6 chờ 350ms rồi trồi lên 720ms là chậm tay. */}
+
+
           {items.map((item) => (
             <div
               key={item.id}
@@ -481,7 +469,7 @@ export function HistoryPage() {
         </div>
       )}
 
-      {/* Pagination */}
+
       {!loading && totalPages > 1 && (
         <div className="flex items-center justify-center gap-4 mt-6">
           <Button size="sm" variant="secondary" disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>

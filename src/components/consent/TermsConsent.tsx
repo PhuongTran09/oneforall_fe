@@ -2,14 +2,16 @@ import { hasAcceptedTerms, setTermsAccepted, useConsent } from './consentStorage
 import { LocaleLink } from '../../i18n/LocaleLink'
 import { getLang, t } from '../../i18n/langStore'
 
-// Checkbox điều khoản tách riêng khỏi các nút cookie (spec: không gộp hai loại đồng ý).
-// Trong thanh cookie nó bỏ khung và nền: một dòng kiểm là đủ, thêm thẻ nữa là hai lớp đè lên nhau.
+
+
 export function TermsConsent() {
   const { record } = useConsent()
   const accepted = hasAcceptedTerms()
 
   return (
-    <label className="flex items-start gap-2.5 cursor-pointer select-none">
+    <label className="flex min-h-6 cursor-pointer select-none items-start gap-2.5">
+
+
       <input
         type="checkbox"
         checked={accepted}

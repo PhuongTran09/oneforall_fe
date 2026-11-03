@@ -19,6 +19,6 @@ export function setTheme(theme: Theme) {
   try {
     localStorage.setItem(STORAGE_KEY, theme)
   } catch {
-    // shortcut: storage blocked (private mode) -> theme applies for this pageview only, upgrade if persistence matters
+    // Private mode / hết quota: theme vẫn áp suốt phiên, chỉ mất khi reload
   }
 }

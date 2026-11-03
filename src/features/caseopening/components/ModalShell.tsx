@@ -1,8 +1,9 @@
-import { useEffect, type ReactNode } from 'react'
+import { useRef, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
 import { t } from '../../../i18n/langStore'
 import { useExitFade } from '../../../hooks/useExitFade'
+import { useDialogFocus } from '../../../hooks/useDialogFocus'
 
 export interface ModalShellProps {
   isOpen: boolean
@@ -13,19 +14,17 @@ export interface ModalShellProps {
   widthClass?: string
 }
 
-/**
- * Shell cho các form dài (sửa item, cấu hình hòm). Portal ra body vì mọi `.card-3d`
- * cha đều có `perspective()` — nằm trong card thì backdrop chỉ phủ cái card.
- */
-export function ModalShell({ isOpen, title, onClose, children, footer, widthClass = 'max-w-2xl' }: ModalShellProps) {
-  useEffect(() => {
-    if (!isOpen) return
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
-    document.addEventListener('keydown', onKey)
-    return () => document.removeEventListener('keydown', onKey)
-  }, [isOpen, onClose])
 
-  // Chiều ra: node ở lại 180ms (đúng bằng .in-out) để fade-out chạy xong mới bị gỡ.
+
+
+
+export function ModalShell({ isOpen, title, onClose, children, footer, widthClass = 'max-w-2xl' }: ModalShellProps) {
+
+
+  const panelRef = useRef<HTMLDivElement>(null)
+  useDialogFocus({ panelRef, open: isOpen, onEscape: onClose })
+
+
   const { show, closing } = useExitFade(isOpen)
 
   if (!show) return null
@@ -39,10 +38,12 @@ export function ModalShell({ isOpen, title, onClose, children, footer, widthClas
     >
       <div
         onClick={(e) => e.stopPropagation()}
+        ref={panelRef}
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className={`relative w-full ${widthClass} max-h-[88vh] flex flex-col p-5 sm:p-6 bg-surface border border-[rgba(255,59,48,0.35)] clip-corner-lg card-3d ${
+        tabIndex={-1}
+        className={`relative w-full ${widthClass} max-h-[88vh] flex flex-col p-5 sm:p-6 bg-surface border border-[rgba(255,59,48,0.35)] clip-corner-lg card-3d outline-none ${
           closing ? 'in-out' : 'in-up'
         }`}
       >

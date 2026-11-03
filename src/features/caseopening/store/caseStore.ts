@@ -152,12 +152,12 @@ let warnedQuota = false
 let state: CaseState | null = null
 const listeners = new Set<() => void>()
 
-/** Đọc localStorage ở lần truy cập đầu tiên (chứ không phải lúc import) để `t()` đã có ngôn ngữ. */
+
 function ensureLoaded(): CaseState {
   if (!state) {
     const stored = readStored()
     state = stored ?? normalizeState(null)
-    // Ghi lại bản seed để id hòm/vật phẩm ổn định giữa các lần tải trang.
+
     if (!stored) writeStored(state)
   }
   return state
@@ -226,7 +226,7 @@ export function duplicateCase(id: string): void {
   }
   const source = s.cases.find((c) => c.id === id)
   if (!source) return
-  // Ảnh là Blob dùng chung theo assetId — nhân bản case không được xoá asset của bản gốc.
+
   const copy: CaseConfig = {
     ...source,
     id: uid('case'),
@@ -253,7 +253,6 @@ export async function deleteCase(id: string): Promise<void> {
   commit({ ...s, cases, activeCaseId: cases.some((c) => c.id === s.activeCaseId) ? s.activeCaseId : cases[0].id })
 }
 
-/** Trả hòm về cấu hình hệ thống: giữ id và tên, xoá asset không còn hòm/lịch sử nào tham chiếu. */
 export function resetCase(id: string): void {
   const s = ensureLoaded()
   const target = s.cases.find((c) => c.id === id)
@@ -362,7 +361,6 @@ export function deleteRarity(id: string, rarityId: string): void {
   )
 }
 
-/** Đổi slot âm thanh: asset cũ không còn ai tham chiếu thì xoá khỏi IDB. */
 export async function setSound(id: string, slot: SoundSlot, assetId: string | undefined): Promise<void> {
   const s = ensureLoaded()
   const c = s.cases.find((x) => x.id === id)
@@ -392,7 +390,6 @@ export function clearHistory(): void {
   commit({ ...s, history: [] })
 }
 
-/** Trả về asset id đã lưu, hoặc null khi IndexedDB bị chặn. */
 export async function uploadAsset(kind: AssetKind, blob: Blob, name: string): Promise<string | null> {
   const id = uid('ast')
   const ok = await saveAsset({ id, kind, blob, name: name.slice(0, 80), size: blob.size, createdAt: Date.now() })

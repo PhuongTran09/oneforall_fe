@@ -1,30 +1,40 @@
-import { useEffect, useState } from 'react'
+import { useRef, useState } from 'react'
 import { OctagonAlert, X } from 'lucide-react'
 import { Button } from '../common/Button'
 import { dismissErrorPopup, useErrorPopups } from './errorPopupStore'
 import { t } from '../../i18n/langStore'
 import { useExitFade } from '../../hooks/useExitFade'
+import { useDialogFocus } from '../../hooks/useDialogFocus'
 
-// Popup lỗi toàn cục: mọi nơi trong app gọi showErrorPopup(message) thay vì
-// banner/toast tự biến mất — user buộc phải xác nhận nên không lỡ mất thông báo.
-// z-[75]: trên AuthModal (z-50) và ConsentModal (z-70), dưới toast (z-80).
+
+
+
 export function ErrorPopupViewport() {
   const queue = useErrorPopups()
   const head = queue[0] ?? null
   const { show, closing } = useExitFade(head !== null)
 
-  // Queue rỗng là React gỡ panel ngay, nên phải giữ lại thông báo vừa tắt: các frame
-  // fade-out vẽ đúng nội dung cũ thay vì một khoảng không.
+
+
   const [last, setLast] = useState(head)
   if (head !== null && head !== last) setLast(head)
   const current = head ?? last
 
-  useEffect(() => {
-    if (!head) return
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && dismissErrorPopup(head.id)
-    document.addEventListener('keydown', onKey)
-    return () => document.removeEventListener('keydown', onKey)
-  }, [head])
+  const panelRef = useRef<HTMLDivElement>(null)
+
+
+  useDialogFocus({
+    panelRef,
+
+
+
+
+
+
+
+    open: show ? (current?.id ?? false) : false,
+    onEscape: () => head && dismissErrorPopup(head.id),
+  })
 
   if (!show || !current) return null
 
@@ -36,14 +46,15 @@ export function ErrorPopupViewport() {
       onClick={() => dismissErrorPopup(current.id)}
     >
       <div
-        // queue không remount panel → không có key thì popup thứ 2, 3 hiện ra
-        // không hiệu ứng gì
         key={current.id}
         onClick={(e) => e.stopPropagation()}
+        ref={panelRef}
         role="alertdialog"
         aria-modal="true"
-        aria-label={current.title ?? t('errorPopup.title')}
-        className={`relative w-full max-w-sm p-6 bg-surface border border-[rgba(255,59,48,0.35)] clip-corner-lg card-3d ${
+        aria-labelledby="error-popup-title"
+        aria-describedby="error-popup-message"
+        tabIndex={-1}
+        className={`relative w-full max-w-sm p-6 bg-surface border border-[rgba(255,59,48,0.35)] clip-corner-lg card-3d outline-none ${
           closing ? 'in-out' : 'in-up'
         }`}
       >
@@ -61,8 +72,12 @@ export function ErrorPopupViewport() {
             <OctagonAlert className="w-6 h-6" />
           </div>
           <div className="min-w-0 space-y-1">
-            <h3 className="text-base font-bold text-ink leading-snug">{current.title ?? t('errorPopup.title')}</h3>
-            <p className="text-sm text-slate-400 leading-relaxed">{current.message}</p>
+            <h3 id="error-popup-title" className="text-base font-bold text-ink leading-snug">
+              {current.title ?? t('errorPopup.title')}
+            </h3>
+            <p id="error-popup-message" className="text-sm text-slate-400 leading-relaxed">
+              {current.message}
+            </p>
           </div>
         </div>
 

@@ -19,17 +19,17 @@ export interface SquareWheelProps {
   slot: WheelSlot
   layout: WheelLayout
   phase: SpinPhase
-  /** Ô đang sáng giữa lượt quay, null khi đứng. */
+
   litSlot: number | null
   winnerEntryId: string | null
-  /** Kết quả — truyền thẳng vì ô có thể đã bị xoá (remove-winner). */
+
   winnerName: string | null
-  /** Nhãn vòng khi quay đôi. */
+
   label: string
-  /** Số tên hợp lệ trên vành. */
+
   count: number
   onSpin: () => void
-  /** Đang quay: dùng aria-disabled thay vì disabled để không đá focus về body. */
+
   busy: boolean
 }
 
@@ -59,24 +59,24 @@ interface HubStyle extends CSSProperties {
   '--hub-meta-ink'?: string
 }
 
-/** Ô theo % của bảng, trừ padding + viền để ra hộp thật. */
+
 function cellBox(cell: WheelCell, boardPx: number, pad: number) {
   const loss = 2 * (pad + CELL_BORDER)
   return { w: (cell.width / 100) * boardPx - loss, h: (cell.height / 100) * boardPx - loss }
 }
 
-/**
- * Cặp tint + mực cho một màu nền: tint là gì CSS sẽ vẽ trong suốt `alpha` trên nền
- * bảng, mực kiểm trên màu ghép thật. board chưa đọc được (lần render đầu) thì bỏ
- * qua phép pha, dùng màu nguyên chất.
- */
+
+
+
+
+
 function cellGlass(board: string | null, hex: string, alpha: number) {
   if (board === null) return { tint: hex, ink: pickInk(hex) }
   const tint = glassTint(board, hex, alpha)
   return { tint, ink: pickInk(glassFill(board, tint, alpha)) }
 }
 
-/** Nền bảng đổi theo theme — đọc hex đã phân giải để JS tính tương phản đúng. */
+
 function readBoardBg(): string | null {
   if (typeof document === 'undefined') return null
   return toHex(getComputedStyle(document.documentElement).getPropertyValue('--bg-elevated'))
@@ -98,7 +98,7 @@ export function SquareWheel({
   const [boardPx, setBoardPx] = useState(0)
   const [boardHex, setBoardHex] = useState(readBoardBg)
 
-  // Theme đổi qua data-theme trên <html>, không có event nào khác — phải tự theo dõi.
+
   useEffect(() => {
     const sync = () => {
       const next = readBoardBg()
@@ -110,7 +110,7 @@ export function SquareWheel({
     return () => observer.disconnect()
   }, [])
 
-  // Cỡ chữ phụ thuộc bề ngang thật của bảng.
+
   useEffect(() => {
     const el = boardRef.current
     if (!el) return
@@ -130,7 +130,7 @@ export function SquareWheel({
   const hubFs = hub.inner > 0 && winnerName !== null ? fitFontSize(winnerName, hub.inner - 16, Math.max(0, hub.nameH - 8)) : MAX_FONT
   const showLabel = hubBtnShowsLabel(hub.btnW, hub.btnH, hub.btnFs, cta)
 
-  // Hub cũng là hộp kết quả — có trúng thì kính của ô trúng tô luôn khung, mực đổi theo.
+
   const winnerColor = winnerEntryId !== null ? layout.cells.find((c) => c.entry?.id === winnerEntryId)?.entry?.color ?? null : null
   const hubGlass = winnerColor === null ? null : cellGlass(boardHex, winnerColor, CELL_TINT)
 
@@ -158,8 +158,6 @@ export function SquareWheel({
       : {}),
   }
 
-  // Mô hình chữ trong utils/wheel chỉ là ước lượng; đo lại trên DOM và hạ cỡ chữ
-  // cho tới khi tên nằm gọn — không bao giờ bị cắt hay đè sang ô kề.
   useEffect(() => {
     const board = boardRef.current
     if (!board || boardPx <= 0) return
@@ -185,7 +183,6 @@ export function SquareWheel({
     const btnEl = board.querySelector<HTMLElement>('.spin-hub-btn')
     if (btnEl?.querySelector('.spin-hub-btn-text')) shrink(btnEl, '--hub-btn-fs', hub.btnFs)
 
-    // Đo trên namebox, không đo trên .spin-hub — hub còn chứa nút quay.
     const nameBox = board.querySelector<HTMLElement>('.spin-hub-namebox')
     if (nameBox) {
       const fits = shrink(nameBox, '--hub-name-fs', fitFontSize(winnerName ?? '', hub.inner - 16, Math.max(0, hub.nameH - 8)))
@@ -205,7 +202,6 @@ export function SquareWheel({
             height: `${cell.height}%`,
           }
           if (cell.entry) {
-            // tint + mực là hex JS trộn sẵn để tương phản đúng trên cả hai theme.
             const base = cell.entry.color
             const rest = cellGlass(boardHex, base, CELL_TINT)
             const lit = cellGlass(boardHex, litColor(base), CELL_TINT_LIT)
@@ -239,11 +235,11 @@ export function SquareWheel({
           <span className={hub.tight ? 'spin-hub-state sr-only' : 'spin-hub-state'}>
             {phase === 'spinning' ? t('spin.state.spinning') : phase === 'stopped' ? t('spin.state.stopped') : t('spin.state.idle', { count })}
           </span>
-          {/* Vùng kết quả luôn được render để giữ chỗ — nút không dịch khi có kết quả. */}
+
           <div className="spin-hub-namebox" key={winnerEntryId ?? 'win'}>
             {winnerName !== null && nameFits ? <span className="spin-hub-name">{winnerName}</span> : null}
           </div>
-          {/* Nút quay đáy hub: nhỏ, dài, style nút primary của dự án (gradient + vát góc + 3D). */}
+
           <button
             type="button"
             className="spin-hub-btn"

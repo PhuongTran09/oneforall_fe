@@ -8,12 +8,8 @@ const distDir = path.resolve(rootDir, 'dist')
 const SITE = 'https://oneforall.io.vn'
 const canonicalToolPath = (slug) => `/${slug.replace(/^\/+|\/+$/g, '')}/`
 
-// ─── Cấu hình chỉnh tay ──────────────────────────────────────────────────────
-// Dict là nguồn copy duy nhất: HTML tĩnh lấy nhãn từ đây thay vì soạn lại trong
-// file này, nên bản prerender và bản hydrate không thể nói khác nhau về cùng một URL.
 const DICTS = { vi: loadDict('dict.vi.ts', 'vi'), en: loadDict('dict.en.ts', 'en') }
 
-// Title/description/OG của trang chủ giữ nguyên theo index.html; chỉ h1 + intro là đọc dict.
 const HOME = { h1: DICTS.vi.hero.title, intro: DICTS.vi.hero.description }
 const HOME_EN = {
   title: 'One ForAll - The Versatile Online Tools Platform for Every Need',
@@ -22,14 +18,8 @@ const HOME_EN = {
   h1: DICTS.en.hero.title,
   intro: DICTS.en.hero.description,
 }
-// URL tĩnh khác muốn đưa vào sitemap (vd. '/privacy', '/terms', '/contact').
-// '/case-opening' và '/square-spin' là trang tính năng: không có landing page prerender,
-// chỉ khai báo để crawler biết đường này tồn tại; nội dung do SPA render.
 const EXTRA_SITEMAP_PATHS = ['/privacy', '/terms', '/case-opening', '/square-spin']
 
-// Nhóm công cụ cho '/tools/<id>'. Phải khớp GROUP_MAP trong src/config/toolCategories.ts;
-// checkDirectory() dưới kia bắt buộc các nhóm phủ đúng danh sách slug đã parse, nên nếu
-// registry thêm category mà chưa thêm vào đây thì build chết thay vì âm thầm thiếu trang.
 const GROUP_BY_CATEGORY = {
   youtube: 'downloader',
   tiktok: 'downloader',
@@ -45,29 +35,22 @@ const GROUP_BY_CATEGORY = {
 }
 const CATEGORY_ORDER = ['downloader', 'converter', 'image', 'document', 'data', 'archive']
 
-// 7 trang danh mục: '/tools' (null = gộp hết) và 6 nhóm. path là đường dẫn locale-relative
-// không có '/' cuối — canonical tự thêm. Nhãn đọc từ dict nên HTML tĩnh trùng từng ký tự
-// với những gì SPA render, giống cách validateLegal() so chuỗi pháp lý.
 const DIRECTORY = [
   { path: '/tools', group: null },
   ...CATEGORY_ORDER.map((group) => ({ path: `/tools/${group}`, group })),
 ]
 
-// Trang pháp lý: nội dung lấy nguyên văn từ src/content/legal (module data thuần). Không soạn
-// chính sách trong file này — prerender chỉ render lại đúng những gì SPA đang render.
 const LEGAL = [
   { file: 'privacy.vi.ts', name: 'privacyVi', lang: 'vi', dir: 'privacy' },
   { file: 'privacy.en.ts', name: 'privacyEn', lang: 'en', dir: 'en/privacy' },
   { file: 'terms.vi.ts', name: 'termsVi', lang: 'vi', dir: 'terms' },
   { file: 'terms.en.ts', name: 'termsEn', lang: 'en', dir: 'en/terms' },
 ]
-// Nhãn dùng cho HTML tĩnh; validateLegal() so từng chuỗi với dict để không lệch SPA.
 const LEGAL_LABELS = {
   vi: { toc: 'Mục lục', updatedOn: 'Cập nhật ngày:', home: 'Trang chủ' },
   en: { toc: 'Contents', updatedOn: 'Last updated:', home: 'Home' },
 }
 
-// ─── Tiện ích ────────────────────────────────────────────────────────────────
 const esc = (s = '') =>
   String(s)
     .replace(/&/g, '&amp;')
@@ -76,10 +59,8 @@ const esc = (s = '') =>
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;')
 
-// JSON-LD nằm trong <script>: chỉ cần chặn "<" để không thoát được thẻ script.
 const jsonLd = (obj) => JSON.stringify(obj).replace(/</g, '\\u003c')
 
-// ─── Parser seoTools.ts (đọc đúng chuỗi, không phụ thuộc regex lười) ─────────
 function readString(src, i) {
   const q = src[i]
   let out = ''
@@ -177,12 +158,12 @@ function parseTools(src) {
   return tools
 }
 
-// ─── Đọc module pháp lý + nhãn dict ──────────────────────────────────────────
-// Bỏ `import type` rồi biến `export const X: LegalDoc =` thành `const X =`, chạy qua
-// new Function: không thêm dependency build, và nếu dạng khai báo đổi thì build chết tại đây
-// thay vì âm thinh sinh HTML rỗng. shortcut: thân hàm chỉ là một file data đã chốt trong repo,
-// không có input lúc build; nếu ai đó cho nội dung pháp lý vào chỗ có input ngoài thì phải
-// chuyển sang đọc JSON bằng fs.readFileSync + JSON.parse.
+
+
+
+
+
+
 function loadLegal(file, name) {
   const src = fs.readFileSync(path.resolve(rootDir, 'src/content/legal', file), 'utf8')
   const js = src
@@ -194,9 +175,6 @@ function loadLegal(file, name) {
   return new Function(`${js}\nreturn ${name}`)()
 }
 
-// Dict i18n cũng là module data thuần (chỉ có `import type`/`export type`) → đọc bằng cùng
-// trick. Trang danh mục lấy nhãn từ đây thay vì soạn lại trong file này: soạn lại là có
-// ngay bản copy khác với SPA cho cùng một URL.
 function loadDict(file, name) {
   const src = fs.readFileSync(path.resolve(rootDir, 'src/i18n', file), 'utf8')
   const js = src
@@ -206,9 +184,6 @@ function loadDict(file, name) {
   if (!js.includes(`const ${name} =`)) {
     throw new Error(`${file}: không nhận dạng "export const ${name}" — cập nhật loadDict()`)
   }
-  // new Function chỉ an toàn vì thứ nó compile là module data đã chốt trong repo. Chặn dấu
-  // hiệu code runtime SAU khi đã bỏ nội dung chuỗi — không chặn thì prose như
-  // "Paste the URL to process..." bị bắt làm `process.` và build chết oan.
   const codeOnly = js.replace(/"(?:[^"\\]|\\.)*"/g, '""').replace(/'(?:[^'\\]|\\.)*'/g, "''")
   if (/`|\brequire\s*\(|\bimport\s*\(|\beval\s*\(|\bnew\s+Function\b|\bprocess\.|\bglobalThis\b/.test(codeOnly)) {
     throw new Error(`${file}: không phải module data thuần — loadDict() từ chối compile`)
@@ -263,7 +238,6 @@ function validateLegal(entries) {
   return errors
 }
 
-// ─── Kiểm tra dữ liệu: lỗi → fail build, cảnh báo → chỉ in ra ────────────────
 function validate(tools, src) {
   const errors = []
   const warns = []
@@ -289,37 +263,16 @@ function validate(tools, src) {
     seenDesc.set(t.metaDescription, slug)
   }
 
-  // Trang mồ côi: không trang nào trỏ tới (ngoài trang chủ vốn liệt kê hết).
   const linked = new Set(slugs.flatMap((s) => tools[s].related))
   for (const slug of slugs) if (!linked.has(slug)) warns.push(`${slug}: không có trang công cụ nào link tới (chỉ có link từ trang chủ)`)
 
   return { errors, warns }
 }
 
-// ─── HTML helpers ────────────────────────────────────────────────────────────
-// Shell tĩnh = nội dung sơn thẳng từ byte của HTML response, chạy TRƯỚC khi một byte JS nào
-// được tải. Đây là thứ quyết định LCP của trang landing: hero thật phải chờ ~290KB gz JS
-// boot, còn shell thì không.
-//
-// LCP khoá vào cú sơn đầu của shell ở MỌI template (shell sơn tại FCP, và ứng viên LCP chỉ
-// bị thay khi phần tử sau LỚN HƠN). Nên khối hình học dưới đây không phải chuyện điểm số —
-// nó là chuyện headline có trượt trên màn hình lúc swap hay không: shell là overlay
-// position:fixed, gỡ đi thì nội dung app hiện tại chỗ của nó, lệch 100px là nhảy 100px.
-//
-// Số đo h1 của APP ở 412px, lấy bằng `node scratch/geo.mjs <url>` (khối "JS BẬT"):
-//   /                   HeroSection.tsx:66     text-3xl leading-[1.15] → 30px/34.5, y=156, w=380
-//   /twitter-downloader/ ToolLandingPage.tsx:493 text-2xl leading-tight  → 24px/30,   y=204, w=380
-//   /tools/ + /tools/*   ToolsPage/CategoryPage text-2xl                  → 24px/32,   y=137, w=380
-//   /privacy/            LegalLayout            text-2xl, trái            → 24px/32,   y=168, x=37 w=335
-// --pr-top là PADDING TRÊN .pr, chưa trừ chiều cao breadcrumb nằm phía trên <header> ở các
-// template có nav — vì vậy nó phải hiệu chỉnh theo shell thật, không lấy thẳng y của app.
-// --pr-top của từng template do scratch/lh-calib.mjs đo và đề xuất số hiệu chỉnh.
 const SHELL_GEOMETRY = {
   home: { top: '156px', size: '30px', lh: '1.15', align: 'center' },
   landing: { top: '173px', size: '24px', lh: '1.25', align: 'center' },
   directory: { top: '105.5px', size: '24px', lh: '1.3333', align: 'center' },
-  // LegalLayout.tsx:27 bọc <header> trong card `border p-5` → h1 app nằm ở x=37 w=338 chứ
-  // không phải x=16 w=380. Không tái hiện cái hộp thì headline nhảy 21px ngang lúc swap.
   legal: {
     top: '115.5px',
     size: '24px',
@@ -327,7 +280,6 @@ const SHELL_GEOMETRY = {
     align: 'start',
     box: '--pr-hpad:20px;--pr-hbd:1px solid rgba(255,59,48,.35);--pr-hbg:var(--bg-surface,#14141b)',
   },
-  // Trang 404 căn giữa theo viewport nên không có số đo tĩnh đúng — xem notFoundBody().
   notfound: { top: '120px', size: '24px', lh: '1.25', align: 'center' },
 }
 
@@ -337,12 +289,13 @@ const CSS = `<style>
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
   -webkit-font-smoothing:antialiased}
 html[data-theme='light'] #prerender-shell{background:#f3f4f9;color:#171a24}
-/* Đang boot (JS bật): shell là overlay phủ kín màn hình, thay luôn #boot-loader cũ.
-   Tắt JS / crawler không render: shell ở lại trong flow và CUỘN được — đó chính là bản
-   HTML đầy đủ mà Google index, thay vì bị display:none như trước. */
+
+
+
+
 .js #prerender-shell{position:fixed;inset:0;z-index:9998;overflow:hidden}
-/* main.tsx gỡ shell lúc app đã sơn. Nếu module JS không chạy nổi (CDN chắn, build hỏng)
-   thì sau 10s shell phải chuyển về cuộn được, không được thành overlay chặn cả khung hình. */
+
+
 .js #prerender-shell[data-stuck]{position:static;overflow:visible}
 .pr{max-width:80rem;margin:0 auto;padding:var(--pr-top) 16px 24px;box-sizing:border-box}
 .pr>header{max-width:48rem;margin:0 auto;text-align:var(--pr-align);box-sizing:border-box;
@@ -353,7 +306,7 @@ html[data-theme='light'] .pr>header>h1{color:#171a24}
 .pr>header>p{font-size:14px;line-height:1.625;margin:20px auto 0;max-width:42rem;color:#cbd5e1;
   text-align:var(--pr-align)}
 html[data-theme='light'] .pr>header>p{color:#475569}
-/* nav pháp lý trong prerender trang chủ không có ở hero thật — hiện ra là thừa một dòng. */
+
 .pr>header>nav{display:none}
 .pr nav{font-size:13px;color:#9ca3af;margin:0 0 12px;text-align:left}
 .pr a{color:#ff3b30}
@@ -366,20 +319,20 @@ html[data-theme='light'] .pr p{color:#475569}
 .pr .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
 .pr .card{border:1px solid #2a2a35;border-radius:12px;padding:16px;background:#14141b;text-align:left}
 html[data-theme='light'] .pr .card{border-color:#d8dbe8;background:#ffffff}
-/* Nửa sau của H1 trang chủ chạy gradient thương hiệu (HeroSection.tsx:70 -> .text-brand-gradient,
-   index.css:196-201 với --grad-* theo theme ở :47-49 light và :104-106 dark). Không sơn cùng
-   màu thì đúng phần tử LCP đổi màu giữa chừng lúc swap. padding/margin-block lặp lại lề của
-   .hero-word-hl (index.css:490-491) để background-clip:text không cắt dấu tiếng Việt.
-   Hai đầu phải sửa cùng nhau: xem titleWords() trong HeroSection.tsx. */
+
+
+
+
+
+
+
 .pr>header>h1 .hl{background:linear-gradient(135deg,#ff3b30 0%,#ff6b4a 50%,#ff8a65 100%);
   -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;
   padding-block:0.16em 0.22em;margin-block:-0.16em -0.22em}
-html[data-theme='light'] .pr>header>h1 .hl{background:linear-gradient(135deg,#cf2216 0%,#d8431c 50%,#c8571d 100%);
+html[data-theme='light'] .pr>header>h1 .hl{background:linear-gradient(135deg,#cf2216 0%,#d4421c 50%,#c2541c 100%);
   -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
 </style>`
 
-// Mirror của titleWords() trong src/components/landing/HeroSection.tsx:25-33 — sửa một đầu là
-// phải sửa đầu kia, nếu không shell và app tô sáng khác nhau trên đúng phần tử LCP.
 function h1Html(title) {
   const dash = title.search(/[–—-]/)
   let offset = 0
@@ -398,9 +351,6 @@ function injectRoot(html, body, geom = 'directory') {
   if (!re.test(html)) throw new Error('Không tìm thấy <div id="root"></div> trong dist/index.html')
   const g = SHELL_GEOMETRY[geom]
   if (!g) throw new Error(`SHELL_GEOMETRY thiếu template "${geom}"`)
-  // Shell PHẢI là ANH EM của #root chứ không phải CON của nó: main.tsx gọi
-  // createRoot(#root).render(), và commit đầu tiên dọn sạch mọi con của #root — đặt shell
-  // bên trong là để React huỷ đúng thứ vừa sơn ra LCP.
   const vars =
     `--pr-top:${g.top};--pr-h1:${g.size};--pr-lh:${g.lh};--pr-align:${g.align}` +
     (g.box ? `;${g.box}` : '')
@@ -412,8 +362,6 @@ function injectHead(html, tags) {
   return html.replace('</head>', () => `${tags}\n  </head>`)
 }
 
-// index.html mang head của trang chủ. Trang con tự sinh bộ thẻ riêng nên phải bỏ bản kế thừa,
-// nếu không một URL sẽ có 2 canonical. og:image giữ lại. JSON-LD WebSite chỉ thuộc trang chủ.
 const INHERITED_SEO =
   /rel=["']canonical["']|name=["']description["']|name=["']twitter:[^"']+["']|property=["']og:(?!image)[^"']*["']/
 
@@ -462,10 +410,6 @@ function localePath(slug, lang) {
   return `${lang === 'en' ? '/en' : ''}${canonicalToolPath(slug)}`
 }
 
-/**
- * Breadcrumb trang tool: Home → Tools → nhóm → tool. SPA thêm Home sẵn ở cả 2 nơi
- * (Breadcrumbs + SEOHead), nên phần còn lại lấy đúng nhãn mà dict SPA đang đọc.
- */
 function toolCrumbTrail(tool, lang) {
   const dict = DICTS[lang]
   const trail = [
@@ -532,11 +476,11 @@ function landingBodyEnglish(tool, tools) {
 </div></div>`
 }
 
-/**
- * Khối danh mục trên trang chủ: đúng 6 nhóm theo thứ tự SPA, nhãn lấy từ dict mà
- * SPA đọc. Trước đây nhóm theo category (8 nhãn soạn tay trong file này) nên HTML
- * tĩnh và bản hydrate mô tả trang chủ khác nhau.
- */
+
+
+
+
+
 function homeSections(tools, lang) {
   const byGroup = groupTools(tools)
   const dict = DICTS[lang]
@@ -550,7 +494,6 @@ function homeSections(tools, lang) {
     .join('')
 }
 
-/** Dải "vì sao chọn" — cùng bộ copy với ValueBandSection của SPA, đọc từ dict. */
 function homeValueBand(lang) {
   const dict = DICTS[lang]
   const steps = ['s1', 's2', 's3', 's4']
@@ -567,23 +510,25 @@ function homeValueBand(lang) {
   return `<section id="how-it-works"><h2>${esc(dict.homeBand.title)}</h2><p>${esc(dict.homeBand.desc)}</p><ol>${steps}</ol><ul>${values}</ul></section>`
 }
 
+function homeSafetyContent(lang) {
+  const dict = DICTS[lang]
+  const termsPath = lang === 'en' ? '/en/terms' : '/terms'
+  const privacyPath = lang === 'en' ? '/en/privacy' : '/privacy'
+  return `<section id="signin-safety"><h2>${esc(dict.googleApi.title)}</h2><article class="card"><h3>${esc(dict.googleApi.purposeTitle)}</h3><p>${esc(dict.googleApi.purposeDesc)}</p><p><strong>${esc(dict.googleApi.authTitle)}:</strong> ${esc(dict.googleApi.authDesc)}</p><p><strong>${esc(dict.googleApi.nciiTitle)}:</strong> ${esc(dict.googleApi.nciiDesc)}</p><p>${esc(dict.googleApi.policySee)} <a href="${termsPath}">${esc(dict.common.terms)}</a> · <a href="${privacyPath}">${esc(dict.common.privacy)}</a></p></article></section>`
+}
+
 function homeBodyEnglish(tools) {
   const sections = homeSections(tools, 'en')
   const valueBand = homeValueBand('en')
   return `<div id="root">${CSS}
-<div class="pr prerendered-content"><header><h1>${h1Html(HOME_EN.h1)}</h1><p>${esc(HOME_EN.intro)}</p><p>Google Sign-In lets you authenticate and use supported account features.</p><nav aria-label="Legal and support"><a href="/en/privacy">Privacy Policy</a> · <a href="/en/terms">Terms of Use</a> · <a href="mailto:support@oneforall.io.vn">support@oneforall.io.vn</a></nav></header>${sections}${valueBand}<section id="google-api"><h2>Google API usage and content safety commitment</h2><p>One ForAll is an online tools platform: downloading media from supported links, converting file and document formats, and processing images such as compression, resizing and background removal.</p><p>Google Sign-In is used only to verify identity and support account sign-in, with the openid, email and profile scopes. Data received through Google APIs is not used to train AI models, is not shared with third parties, and is not used for advertising.</p><p><strong>One ForAll does not use Google APIs to create, edit, generate, or distribute AI-generated Non-Consensual Intimate Imagery (AI NCII). This conduct is strictly prohibited across the platform; violating accounts are permanently locked and their data is deleted immediately.</strong></p><p>See the full rules in the <a href="/en/terms">Terms of Use</a> and <a href="/en/privacy">Privacy Policy</a>.</p></section></div></div>`
+<div class="pr prerendered-content"><header><h1>${h1Html(HOME_EN.h1)}</h1><p>${esc(HOME_EN.intro)}</p><p>Google sign-in is handled through Supabase.</p><nav aria-label="Legal and support"><a href="/en/privacy">Privacy Policy</a> · <a href="/en/terms">Terms of Use</a> · <a href="mailto:support@oneforall.io.vn">support@oneforall.io.vn</a></nav></header>${sections}${valueBand}${homeSafetyContent('en')}</div></div>`
 }
 
 function homeBody(tools) {
   const sections = homeSections(tools, 'vi')
   const valueBand = homeValueBand('vi')
   return `<div id="root">${CSS}
-<div class="pr prerendered-content">
-  <header><h1>${h1Html(HOME.h1)}</h1><p>${esc(HOME.intro)}</p><p>Google Sign-In giúp bạn xác thực và sử dụng các chức năng tài khoản được hỗ trợ.</p><nav aria-label="Chính sách và hỗ trợ"><a href="/privacy">Chính sách quyền riêng tư</a> · <a href="/terms">Điều khoản sử dụng</a> · <a href="mailto:support@oneforall.io.vn">support@oneforall.io.vn</a></nav></header>
-  ${sections}
-  ${valueBand}
-  <section id="google-api"><h2>Mục đích sử dụng Google API và cam kết an toàn nội dung</h2><p>One ForAll là nền tảng công cụ trực tuyến: tải media từ những liên kết được hỗ trợ, chuyển đổi định dạng tệp và tài liệu, xử lý hình ảnh như nén, đổi kích thước và xóa nền.</p><p>Google Sign-In chỉ được dùng để xác minh danh tính và hỗ trợ đăng nhập tài khoản, với các quyền openid, email và profile. Dữ liệu nhận qua Google API không dùng để huấn luyện mô hình AI, không chia sẻ cho bên thứ ba và không dùng cho mục đích quảng cáo.</p><p><strong>One ForAll không sử dụng Google API để tạo, chỉnh sửa, sinh hoặc phát tán hình ảnh thân mật cá nhân không có sự đồng thuận do AI tạo ra (AI-generated Non-Consensual Intimate Imagery – AI NCII). Hành vi này bị nghiêm cấm trên toàn nền tảng; tài khoản vi phạm sẽ bị khóa vĩnh viễn và dữ liệu bị xóa ngay lập tức.</strong></p><p>Xem quy định chi tiết trong <a href="/terms">Điều khoản sử dụng</a> và <a href="/privacy">Chính sách quyền riêng tư</a>.</p></section>
-</div></div>`
+<div class="pr prerendered-content"><header><h1>${h1Html(HOME.h1)}</h1><p>${esc(HOME.intro)}</p><p>Đăng nhập Google được xử lý qua Supabase.</p><nav aria-label="Chính sách và hỗ trợ"><a href="/privacy">Chính sách quyền riêng tư</a> · <a href="/terms">Điều khoản sử dụng</a> · <a href="mailto:support@oneforall.io.vn">support@oneforall.io.vn</a></nav></header>${sections}${valueBand}${homeSafetyContent('vi')}</div></div>`
 }
 
 function legalBody(doc, lang) {
@@ -607,9 +552,6 @@ function legalBody(doc, lang) {
 </div></div>`
 }
 
-// 404.html từng ăn theo #boot-loader của index.html; Stage 1 gỡ loader nên trang này trắng
-// suốt lượt boot JS. NotFoundPage căn giữa theo viewport (min-h-[70vh]) — không có số đo tĩnh
-// nào khớp nổi, nên shell 404 chỉ cần ĐÚNG CHỮ (lấy từ dict, cùng nguồn SPA), không cần đúng chỗ.
 function notFoundBody(dict) {
   const n = dict.notFound
   if (!n?.title || !n?.desc) throw new Error('dict thiếu notFound.title / notFound.desc')
@@ -620,8 +562,6 @@ function notFoundBody(dict) {
 }
 
 function legalHead(doc, lang, ogImage) {
-  // Host phục vụ thư mục kèm 307 /privacy -> /privacy/, nên canonical/hreflang phải mang dấu /
-  // cuối và trỏ đúng URL của chính ngôn ngữ đang render.
   const clean = doc.route.replace(/^\/en/, '')
   const viUrl = `${SITE}${clean}/`
   const enUrl = `${SITE}/en${clean}/`
@@ -647,8 +587,6 @@ function legalHead(doc, lang, ogImage) {
 `
 }
 
-// ─── Trang danh mục '/tools' + 6 nhóm ────────────────────────────────────────
-/** Tool của từng nhóm, suy từ category đã parse — cùng GROUP_MAP với toolCategories.ts. */
 function groupTools(tools) {
   const groups = Object.fromEntries(CATEGORY_ORDER.map((g) => [g, []]))
   for (const tool of Object.values(tools)) {
@@ -661,7 +599,6 @@ function groupTools(tools) {
   return groups
 }
 
-/** title/mô tả/h1/intros của một trang danh mục, đọc theo dict đang dùng. */
 function directoryMeta(entry, dict) {
   if (entry.group === null) {
     const d = dict.directory
@@ -678,7 +615,6 @@ function directoryMeta(entry, dict) {
   return { title: cat.seoTitle, description: cat.desc, h1: cat.h1, intro: cat.desc, label: cat.name }
 }
 
-/** URL locale-relative, có '/' cuối như host 307 về. */
 function directoryUrl(path, lang) {
   return `${lang === 'en' ? '/en' : ''}${path}/`
 }
@@ -777,11 +713,6 @@ function directoryHead(entry, dict, lang, ogImage) {
 `
 }
 
-/**
- * Trang danh mục không được trùng title/description với trang tool — Google coi 2 URL cùng
- * bộ metadata là một trang. Đây cũng là chỗ duy nhất phát hiện nhóm rỗng hoặc slug rơi khỏi
- * danh mục (thêm category mới vào registry mà quên GROUP_BY_CATEGORY thì build chết ở groupTools()).
- */
 function checkDirectory(dict, tools, label) {
   const errors = []
   const titles = new Map(Object.values(tools).map((t) => [t.title, `tool ${t.slug}`]))
@@ -953,9 +884,6 @@ function setHtmlLang(html, lang) {
 }
 
 function buildSitemap(slugs) {
-  // Mọi URL prerender đều có bản /en thật (dist/en/...), nên khai cả hai locale.
-  // '/case-opening' và '/square-spin' do SPA render qua rewrite của host: vẫn khai, vì
-  // người dùng truy cập được — thiếu '/case-opening' là bug có sẵn sửa luôn ở đây.
   const paths = [
     '/',
     ...slugs.map(canonicalToolPath),
@@ -963,12 +891,10 @@ function buildSitemap(slugs) {
     ...EXTRA_SITEMAP_PATHS.map(canonicalToolPath),
   ]
   const urls = paths.flatMap((p) => (p === '/' ? ['/', '/en/'] : [p, `/en${p}`]))
-  // Không ghi changefreq/priority (Google bỏ qua) và không ghi lastmod giả.
   const body = urls.map((u) => `  <url>\n    <loc>${SITE}${u}</loc>\n  </url>`).join('\n')
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${body}\n</urlset>\n`
 }
 
-// ─── Main ────────────────────────────────────────────────────────────────────
 export function runPrerender() {
   const indexPath = path.resolve(distDir, 'index.html')
   if (!fs.existsSync(indexPath)) {
@@ -986,14 +912,12 @@ export function runPrerender() {
     throw new Error(`Locale route mismatch. Missing EN: ${missingEnglish.join(', ') || 'none'}; unknown EN: ${unknownEnglish.join(', ') || 'none'}`)
   }
 
-  // EN ghi đè nguyên khối → thiếu mảng nào thì /en lộ text VI mảng đó
   const arrayLeaks = slugs.filter((slug) => tools[slug].introParagraphs.length > 0 && !Array.isArray(englishOverrides[slug].introParagraphs))
   if (arrayLeaks.length) {
     throw new Error(`tools.en.json thiếu introParagraphs cho: ${arrayLeaks.join(', ')}`)
   }
 
   const { errors, warns } = validate(tools, src)
-  // validate() chỉ quét seoTools.ts (bản VI); EN là lớp ghi đè nên lọt lưới.
   for (const slug of slugs) {
     const en = englishOverrides[slug].title
     if (en.length > 65) warns.push(`/en${slug}: title ${en.length} ký tự (>65, dễ bị cắt)`)
@@ -1017,7 +941,6 @@ export function runPrerender() {
   const childBase = stripInheritedSeo(rawHtml)
   const ogImage = rawHtml.match(/property=["']og:image["'][^>]*content=["']([^"']+)["']/i)?.[1]
 
-  // 1. Trang chủ: giữ nguyên head của index.html, chỉ thêm nội dung tĩnh.
   const viHomeHead = `
     <link rel="alternate" hreflang="vi" href="${SITE}/" data-hreflang="vi" />
     <link rel="alternate" hreflang="en" href="${SITE}/en/" data-hreflang="en" />
@@ -1025,7 +948,6 @@ export function runPrerender() {
   `
   fs.writeFileSync(indexPath, injectRoot(injectHead(rawHtml, viHomeHead), homeBody(tools), 'home'), 'utf8')
 
-  // English home route has its own localized content and metadata.
   const enHomeDir = path.resolve(distDir, 'en')
   fs.mkdirSync(enHomeDir, { recursive: true })
   const englishTools = Object.fromEntries(
@@ -1037,7 +959,6 @@ export function runPrerender() {
   enHomeHtml = injectRoot(enHomeHtml, homeBodyEnglish(englishTools), 'home')
   fs.writeFileSync(path.resolve(enHomeDir, 'index.html'), enHomeHtml, 'utf8')
 
-  // 2. Landing pages
   for (const slug of slugs) {
     const tool = tools[slug]
     let html = childBase.replace(/<title>[\s\S]*?<\/title>/i, '')
@@ -1057,8 +978,6 @@ export function runPrerender() {
     fs.writeFileSync(path.resolve(englishOutDir, 'index.html'), englishHtml, 'utf8')
   }
 
-  // 3. Trang danh mục '/tools' + 6 nhóm. Cùng bộ nhãn dict mà SPA đọc, nên HTML tĩnh và
-  //    bản hydrate không thể nói khác nhau về cùng một URL.
   const dicts = { vi: loadDict('dict.vi.ts', 'vi'), en: loadDict('dict.en.ts', 'en') }
   const groups = groupTools(tools)
   const englishGroups = groupTools(englishTools)
@@ -1090,8 +1009,6 @@ export function runPrerender() {
     }
   }
 
-  // 4. Trang pháp lý. Thiếu mấy file này là mọi URL /privacy, /terms bị host rewrite về
-  //    index.html — curl và crawler nhận đúng trang chủ tiếng Việt.
   for (const { doc, lang, dir } of LEGAL) {
     const head = legalHead(doc, lang, ogImage)
     const want = `${SITE}${doc.route}/`
@@ -1105,8 +1022,6 @@ export function runPrerender() {
     fs.writeFileSync(path.resolve(outDir, 'index.html'), html, 'utf8')
   }
 
-  // 5. 404.html — shell lấy từ dict.vi để trang lỗi cũng có nội dung sơn được ngay; 404 là
-  //    trang duy nhất KHÔNG có gate hình học (viewheight-dependent, xem notFoundBody).
   const notFound = injectRoot(
     injectHead(
       childBase.replace(/<title>[\s\S]*?<\/title>/i, '<title>404 - Trang không tồn tại | One ForAll</title>'),
@@ -1117,7 +1032,6 @@ export function runPrerender() {
   )
   fs.writeFileSync(path.resolve(distDir, '404.html'), notFound, 'utf8')
 
-  // 6. sitemap.xml sinh từ config (nhớ xóa public/sitemap.xml cũ để khỏi nhầm nguồn)
   const sitemap = buildSitemap(slugs)
   fs.writeFileSync(path.resolve(distDir, 'sitemap.xml'), sitemap, 'utf8')
   const locCount = (sitemap.match(/<loc>/g) ?? []).length
