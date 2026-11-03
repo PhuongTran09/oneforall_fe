@@ -1,5 +1,5 @@
 import { useSyncExternalStore } from 'react'
-import { getSupabase, isSupabaseConfigured } from './supabase'
+import { loadSupabase, isSupabaseConfigured } from './supabase'
 import { withLocale } from '../i18n/langStore'
 import type { Session } from '@supabase/supabase-js'
 
@@ -53,29 +53,71 @@ function getSnapshot(): AuthState {
   return state
 }
 
-// Bootstrap MỘT lần duy nhất (module singleton — không subscription trùng lặp):
-// onAuthStateChange luôn phát INITIAL_SESSION hoặc SIGNED_OUT khi khởi động,
-// nên ready chỉ bật sau khi phiên đầu tiên được xác định → UI không nhấp nháy.
-if (isSupabaseConfigured) {
-  const auth = getSupabase().auth
-  state = { ...state, recovery: readRecoveryFlag() }
-  auth.onAuthStateChange((event, session) => {
-    if (event === 'PASSWORD_RECOVERY') writeRecoveryFlag(true)
-    if (event === 'SIGNED_OUT') writeRecoveryFlag(false)
-    const recovery = event === 'PASSWORD_RECOVERY' ? true : session ? readRecoveryFlag() : false
-    // Phải lưu session TRƯỚC khi phát event: listener (vd. entitlementsStore) gọi API
-    // ngay tại đây và apiClient đọc token từ state này — đảo ngược thứ tự là request
-    // đầu tiên của phiên gửi đi không có Authorization → 401 → fetch lại mỗi lần focus tab.
-    setState({ session, ready: true, recovery })
-    eventListeners.forEach((l) => l(event, session))
-  })
-  // Fallback: nếu supabase-js không phát sự kiện khởi tạo (edge case), vẫn mở khóa UI.
-  auth
-    .getSession()
-    .then(({ data }) => {
-      if (!state.ready) setState({ session: data.session, ready: true, recovery: readRecoveryFlag() })
+// "Máy này từng có phiên trên trình duyệt này". supabase-js v2 lưu dưới key
+// `sb-<ref>-auth-token`; format ấy là API riêng của package, nên package.json phải khoá đúng
+// major ^2.109.0 — package đổi format mà chỗ này không đổi thì người đang đăng nhập bấm F5
+// sẽ bị hiện ra như khách.
+function hasStoredSession(): boolean {
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i)
+      if (k?.startsWith('sb-') && k.includes('auth-token')) return true
+    }
+  } catch {
+    return false // storage bị chặn → supabase cũng không persist được, coi như khách
+  }
+  return false
+}
+
+// PKCE trả ?code=, implicit trả #access_token=, magic link ?token=&type=, recovery
+// #type=recovery, lỗi #error_code=. Liệt kê tên tham số là tự đặt rủi ro: thiếu một biến thể
+// là mất phiên. URL landing sạch của ta KHÔNG có query lẫn hash, còn mọi callback thì có ít
+// nhất một trong hai — nên "có bất kỳ query hoặc hash nào" là tập phủ an toàn; thừa chỉ tốn
+// thêm một chunk, còn thiếu thì người dùng không vào được tài khoản.
+function urlMayCarryAuth(): boolean {
+  return window.location.search !== '' || window.location.hash !== ''
+}
+
+let bootstrapped: Promise<void> | null = null
+
+/**
+ * Bootstrap MỘT lần duy nhất (module singleton — không subscription trùng lặp):
+ * onAuthStateChange luôn phát INITIAL_SESSION hoặc SIGNED_OUT khi khởi động,
+ * nên ready chỉ bật sau khi phiên đầu tiên được xác định → UI không nhấp nháy.
+ * Chạy ở đây chứ không ở đầu module vì supabase-js là dynamic import: chỉ trang nào thực sự
+ * cần tới phiên (xem điều kiện bên dưới) mới trả 67KB gz của nó.
+ */
+function ensureAuthBoot(): Promise<void> {
+  bootstrapped ??= (async () => {
+    const auth = (await loadSupabase()).auth
+    state = { ...state, recovery: readRecoveryFlag() }
+    auth.onAuthStateChange((event, session) => {
+      if (event === 'PASSWORD_RECOVERY') writeRecoveryFlag(true)
+      if (event === 'SIGNED_OUT') writeRecoveryFlag(false)
+      const recovery = event === 'PASSWORD_RECOVERY' ? true : session ? readRecoveryFlag() : false
+      // Phải lưu session TRƯỚC khi phát event: listener (vd. entitlementsStore) gọi API
+      // ngay tại đây và apiClient đọc token từ state này — đảo ngược thứ tự là request
+      // đầu tiên của phiên gửi đi không có Authorization → 401 → fetch lại mỗi lần focus tab.
+      setState({ session, ready: true, recovery })
+      eventListeners.forEach((l) => l(event, session))
     })
-    .catch(() => setState({ ...state, ready: true }))
+    // Fallback: nếu supabase-js không phát sự kiện khởi tạo (edge case), vẫn mở khóa UI.
+    auth
+      .getSession()
+      .then(({ data }) => {
+        if (!state.ready) setState({ session: data.session, ready: true, recovery: readRecoveryFlag() })
+      })
+      .catch(() => setState({ ...state, ready: true }))
+  })().catch(() => setState({ ...state, ready: true }))
+  return bootstrapped
+}
+
+if (isSupabaseConfigured) {
+  if (hasStoredSession() || urlMayCarryAuth()) void ensureAuthBoot()
+  // Không có gì để khôi phục → MỞ KHOÁ UI NGAY. Bỏ quên nhánh này là Navbar và MainLayout
+  // (đều gate trên `ready`) kẹt lại ở khung tĩnh: khách thấy màn chờ vĩnh viễn thay vì nút
+  // "Đăng nhập", vì chẳng có promise nào được await để rồi setState.
+  else setState({ ...state, ready: true })
 }
 
 /** Read GoTrue auth errors from the URL hash before Supabase removes it. */
@@ -113,7 +155,9 @@ export function getAccessToken(): string | null {
 }
 
 export async function signInWithGoogle(): Promise<void> {
-  const { error } = await getSupabase().auth.signInWithOAuth({
+  await ensureAuthBoot()
+  const supabase = await loadSupabase()
+  const { error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: { redirectTo: `${window.location.origin}${window.location.pathname}` },
   })
@@ -126,7 +170,9 @@ export async function signInWithGoogle(): Promise<void> {
  * false nếu phiên có ngay (tắt xác minh) — KHÔNG tự coi tài khoản đã xác minh khi chưa có session.
  */
 export async function signUp(email: string, password: string): Promise<boolean> {
-  const { data, error } = await getSupabase().auth.signUp({
+  await ensureAuthBoot()
+  const supabase = await loadSupabase()
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: { emailRedirectTo: `${window.location.origin}${window.location.pathname}` },
@@ -137,13 +183,17 @@ export async function signUp(email: string, password: string): Promise<boolean> 
 
 /** Gửi lại email xác minh đăng ký (audience 'signup' — link hoặc code tùy cấu hình). */
 export async function resendSignupOtp(email: string): Promise<void> {
-  const { error } = await getSupabase().auth.resend({ type: 'signup', email })
+  await ensureAuthBoot()
+  const supabase = await loadSupabase()
+  const { error } = await supabase.auth.resend({ type: 'signup', email })
   if (error) throw error
 }
 
 /** Đăng nhập bằng email + mật khẩu. */
 export async function signInWithPassword(email: string, password: string): Promise<void> {
-  const { error } = await getSupabase().auth.signInWithPassword({ email, password })
+  await ensureAuthBoot()
+  const supabase = await loadSupabase()
+  const { error } = await supabase.auth.signInWithPassword({ email, password })
   if (error) throw error
 }
 
@@ -154,7 +204,9 @@ export async function signInWithPassword(email: string, password: string): Promi
  * đăng nhập thành đường vòng của đăng ký (và bỏ ngoài tầm kiểm soát của form Đăng ký).
  */
 export async function sendLoginOtp(email: string): Promise<void> {
-  const { error } = await getSupabase().auth.signInWithOtp({
+  await ensureAuthBoot()
+  const supabase = await loadSupabase()
+  const { error } = await supabase.auth.signInWithOtp({
     email,
     options: { shouldCreateUser: false },
   })
@@ -163,14 +215,18 @@ export async function sendLoginOtp(email: string): Promise<void> {
 
 /** Xác minh OTP đăng nhập — type 'email' (magic link/OTP), khác luồng signup. */
 export async function verifyLoginOtp(email: string, token: string): Promise<void> {
-  const { error } = await getSupabase().auth.verifyOtp({ email, token, type: 'email' })
+  await ensureAuthBoot()
+  const supabase = await loadSupabase()
+  const { error } = await supabase.auth.verifyOtp({ email, token, type: 'email' })
   if (error) throw error
 }
 
 /** Yêu cầu liên kết đặt lại mật khẩu, redirect về route reset-password của frontend. */
 export async function requestPasswordReset(email: string): Promise<void> {
+  await ensureAuthBoot()
   const redirectTo = `${window.location.origin}${withLocale('/auth/reset-password')}`
-  const { error } = await getSupabase().auth.resetPasswordForEmail(email, { redirectTo })
+  const supabase = await loadSupabase()
+  const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo })
   if (error) throw error
 }
 
@@ -185,14 +241,18 @@ export function hasRecoverySession(): boolean {
 
 /** Đổi mật khẩu bằng updateUser — chỉ hợp lệ trong phiên recovery; xong là xóa cờ. */
 export async function updatePassword(newPassword: string): Promise<void> {
-  const { error } = await getSupabase().auth.updateUser({ password: newPassword })
+  await ensureAuthBoot()
+  const supabase = await loadSupabase()
+  const { error } = await supabase.auth.updateUser({ password: newPassword })
   if (error) throw error
   writeRecoveryFlag(false)
   setState({ ...state, recovery: false })
 }
 
 export async function signOut(): Promise<void> {
+  await ensureAuthBoot()
+  const supabase = await loadSupabase()
   writeRecoveryFlag(false)
   setState({ ...state, recovery: false })
-  await getSupabase().auth.signOut()
+  await supabase.auth.signOut()
 }

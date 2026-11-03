@@ -1,5 +1,5 @@
 import { useEffect, type ReactNode } from 'react'
-import Lenis from 'lenis'
+import type Lenis from 'lenis'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
 import { setLenisInstance } from '../../hooks/useSmoothScroll'
 import { HEADER_OFFSET } from '../../utils/scrollMotion'
@@ -45,28 +45,37 @@ export function SmoothScrollProvider({
 
   useEffect(() => {
     if (reducedMotion) return
-    const lenis = new Lenis({
-      autoRaf: true,
-      duration,
-      easing: EASE_OUT_QUINT,
-      wheelMultiplier,
-      // Nhảy theo #hash đi qua đường Lenis thay vì cắt cổ, và trừ 73px header sticky —
-      // mặc định của anchors là 0 nên bấm "Khám phá" ở hero đáp sát mép trên, tiêu đề
-      // section nằm dưới navbar.
-      anchors: { offset: HEADER_OFFSET },
-      // Cảm ứng giữ cuộn gốc của hệ điều hành: iOS/Android đã có quán tính riêng, bọc thêm
-      // một lớp nội suy nữa là đơ theo từng khung hình.
-      syncTouch: false,
-      // Bấm <Link> đổi pathname là đích mới; mặc định của Lenis thì cục quán tính đang bay
-      // vẫn còn và tiếp tục đẩy trang sau khi MainLayout đã đưa về đầu trang — người dùng
-      // thấy trang mới tuột xuống một nhịp.
-      stopInertiaOnNavigate: true,
+    let disposed = false
+    let lenis: Lenis | null = null
+    // Lenis là tăng cường cuộn, không phải nội dung: động vào nó không làm thay đổi một pixel
+    // nào của cú sơn đầu. Nhập tĩnh thì nó bị inline thẳng vào entry — chunk mà MỌI route,
+    // kể cả trang landing, phải tải và parse trước khi sơn.
+    void import('lenis').then(({ default: LenisClass }) => {
+      if (disposed) return
+      lenis = new LenisClass({
+        autoRaf: true,
+        duration,
+        easing: EASE_OUT_QUINT,
+        wheelMultiplier,
+        // Nhảy theo #hash đi qua đường Lenis thay vì cắt cổ, và trừ 73px header sticky —
+        // mặc định của anchors là 0 nên bấm "Khám phá" ở hero đáp sát mép trên, tiêu đề
+        // section nằm dưới navbar.
+        anchors: { offset: HEADER_OFFSET },
+        // Cảm ứng giữ cuộn gốc của hệ điều hành: iOS/Android đã có quán tính riêng, bọc thêm
+        // một lớp nội suy nữa là đơ theo từng khung hình.
+        syncTouch: false,
+        // Bấm <Link> đổi pathname là đích mới; mặc định của Lenis thì cục quán tính đang bay
+        // vẫn còn và tiếp tục đẩy trang sau khi MainLayout đã đưa về đầu trang — người dùng
+        // thấy trang mới tuột xuống một nhịp.
+        stopInertiaOnNavigate: true,
+      })
+      setLenisInstance(lenis)
     })
-    setLenisInstance(lenis)
 
     return () => {
+      disposed = true
       setLenisInstance(null)
-      lenis.destroy()
+      lenis?.destroy()
     }
   }, [reducedMotion, duration, wheelMultiplier])
 
