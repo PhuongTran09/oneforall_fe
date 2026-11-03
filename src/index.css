@@ -2043,27 +2043,15 @@ html[data-theme='light'] .hero-ambient-glow {
 
 
 
-main section[id],
-main section[data-reveal],
-.cv-skip {
-  content-visibility: auto;
-  contain-intrinsic-size: auto 620px;
-}
+/* Không bật content-visibility cho section: subtree chưa layout trả rect sai, đích chạm
+   bị đánh giá trùng lấn (Lighthouse target-size) và điểm a11y tụt. A/B 5 run: bỏ cv
+   LCP 1.952s (có cv 1.965s), FCP vẫn == LCP, CLS 0.000 — không mất gì. */
 
 
 
 
 
 
-main section[id][data-pin] {
-  content-visibility: visible;
-}
-
-
-
-main section[id]:has(.workspace-panel) {
-  content-visibility: visible;
-}
 
 
 
