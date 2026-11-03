@@ -34,14 +34,25 @@ export function CategoryNav() {
   useEffect(() => {
     const rail = railRef.current
     if (!rail) return
-    const measure = () =>
-      setRailHasMore(rail.scrollLeft + rail.clientWidth < rail.scrollWidth - 4)
-    rail.addEventListener('scroll', measure, { passive: true })
-    const observer = new ResizeObserver(measure)
+    let raf = 0
+    const measure = () => {
+      raf = 0
+      const next = rail.scrollLeft + rail.clientWidth < rail.scrollWidth - 4
+      // Scroll và resize bắn dày hơn khung hình; đọc ba số đo hình học ngay trong callback là
+      // forced layout giữa cú vuốt. Gom về một lần mỗi frame, và trả về đúng giá trị cũ khi
+      // không đổi để React khỏi render lại cả dải chip.
+      setRailHasMore((prev) => (prev === next ? prev : next))
+    }
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(measure)
+    }
+    rail.addEventListener('scroll', onScroll, { passive: true })
+    const observer = new ResizeObserver(onScroll)
     observer.observe(rail)
     measure()
     return () => {
-      rail.removeEventListener('scroll', measure)
+      if (raf) cancelAnimationFrame(raf)
+      rail.removeEventListener('scroll', onScroll)
       observer.disconnect()
     }
   }, [])

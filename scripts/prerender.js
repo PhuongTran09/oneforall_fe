@@ -297,20 +297,115 @@ function validate(tools, src) {
 }
 
 // ─── HTML helpers ────────────────────────────────────────────────────────────
+// Shell tĩnh = nội dung sơn thẳng từ byte của HTML response, chạy TRƯỚC khi một byte JS nào
+// được tải. Đây là thứ quyết định LCP của trang landing: hero thật phải chờ ~290KB gz JS
+// boot, còn shell thì không.
+//
+// LCP khoá vào cú sơn đầu của shell ở MỌI template (shell sơn tại FCP, và ứng viên LCP chỉ
+// bị thay khi phần tử sau LỚN HƠN). Nên khối hình học dưới đây không phải chuyện điểm số —
+// nó là chuyện headline có trượt trên màn hình lúc swap hay không: shell là overlay
+// position:fixed, gỡ đi thì nội dung app hiện tại chỗ của nó, lệch 100px là nhảy 100px.
+//
+// Số đo h1 của APP ở 412px, lấy bằng `node scratch/geo.mjs <url>` (khối "JS BẬT"):
+//   /                   HeroSection.tsx:66     text-3xl leading-[1.15] → 30px/34.5, y=156, w=380
+//   /twitter-downloader/ ToolLandingPage.tsx:493 text-2xl leading-tight  → 24px/30,   y=204, w=380
+//   /tools/ + /tools/*   ToolsPage/CategoryPage text-2xl                  → 24px/32,   y=137, w=380
+//   /privacy/            LegalLayout            text-2xl, trái            → 24px/32,   y=168, x=37 w=335
+// --pr-top là PADDING TRÊN .pr, chưa trừ chiều cao breadcrumb nằm phía trên <header> ở các
+// template có nav — vì vậy nó phải hiệu chỉnh theo shell thật, không lấy thẳng y của app.
+// --pr-top của từng template do scratch/lh-calib.mjs đo và đề xuất số hiệu chỉnh.
+const SHELL_GEOMETRY = {
+  home: { top: '156px', size: '30px', lh: '1.15', align: 'center' },
+  landing: { top: '173px', size: '24px', lh: '1.25', align: 'center' },
+  directory: { top: '105.5px', size: '24px', lh: '1.3333', align: 'center' },
+  // LegalLayout.tsx:27 bọc <header> trong card `border p-5` → h1 app nằm ở x=37 w=338 chứ
+  // không phải x=16 w=380. Không tái hiện cái hộp thì headline nhảy 21px ngang lúc swap.
+  legal: {
+    top: '115.5px',
+    size: '24px',
+    lh: '1.3333',
+    align: 'start',
+    box: '--pr-hpad:20px;--pr-hbd:1px solid rgba(255,59,48,.35);--pr-hbg:var(--bg-surface,#14141b)',
+  },
+  // Trang 404 căn giữa theo viewport nên không có số đo tĩnh đúng — xem notFoundBody().
+  notfound: { top: '120px', size: '24px', lh: '1.25', align: 'center' },
+}
+
 const CSS = `<style>
-body{margin:0;background:#f5f6fa}
-.pr{max-width:1100px;margin:0 auto;padding:24px 16px;font-family:system-ui,-apple-system,sans-serif;color:#0f172a;line-height:1.6;background:#f5f6fa;min-height:100vh;box-sizing:border-box}
-.pr nav{font-size:13px;color:#64748b;margin-bottom:24px}.pr a{color:#2563eb}
-.pr h1{font-size:34px;line-height:1.2;margin:0 0 12px}.pr h2{font-size:22px;margin:36px 0 14px}.pr h3{font-size:16px;margin:0 0 6px}
-.pr p{margin:0 0 8px;color:#475569}.pr ul{padding-left:20px}
+#prerender-shell{--pr-top:24px;--pr-h1:24px;--pr-lh:1.3333;--pr-align:center;--pr-hpad:0px;--pr-hbd:0;--pr-hbg:transparent;box-sizing:border-box;
+  background:#0a0a0f;color:#ffffff;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  -webkit-font-smoothing:antialiased}
+html[data-theme='light'] #prerender-shell{background:#f3f4f9;color:#171a24}
+/* Đang boot (JS bật): shell là overlay phủ kín màn hình, thay luôn #boot-loader cũ.
+   Tắt JS / crawler không render: shell ở lại trong flow và CUỘN được — đó chính là bản
+   HTML đầy đủ mà Google index, thay vì bị display:none như trước. */
+.js #prerender-shell{position:fixed;inset:0;z-index:9998;overflow:hidden}
+/* main.tsx gỡ shell lúc app đã sơn. Nếu module JS không chạy nổi (CDN chắn, build hỏng)
+   thì sau 10s shell phải chuyển về cuộn được, không được thành overlay chặn cả khung hình. */
+.js #prerender-shell[data-stuck]{position:static;overflow:visible}
+.pr{max-width:80rem;margin:0 auto;padding:var(--pr-top) 16px 24px;box-sizing:border-box}
+.pr>header{max-width:48rem;margin:0 auto;text-align:var(--pr-align);box-sizing:border-box;
+  padding:var(--pr-hpad);border:var(--pr-hbd);background:var(--pr-hbg)}
+.pr>header>h1{font-size:var(--pr-h1);line-height:var(--pr-lh);letter-spacing:-0.025em;font-weight:800;
+  margin:0;text-align:var(--pr-align);color:#ffffff}
+html[data-theme='light'] .pr>header>h1{color:#171a24}
+.pr>header>p{font-size:14px;line-height:1.625;margin:20px auto 0;max-width:42rem;color:#cbd5e1;
+  text-align:var(--pr-align)}
+html[data-theme='light'] .pr>header>p{color:#475569}
+/* nav pháp lý trong prerender trang chủ không có ở hero thật — hiện ra là thừa một dòng. */
+.pr>header>nav{display:none}
+.pr nav{font-size:13px;color:#9ca3af;margin:0 0 12px;text-align:left}
+.pr a{color:#ff3b30}
+html[data-theme='light'] .pr a{color:#c81e17}
+.pr h2{font-size:22px;margin:36px 0 14px;text-align:left}
+.pr h3{font-size:16px;margin:0 0 6px}
+.pr p{margin:0 0 8px;color:#94a3b8}
+html[data-theme='light'] .pr p{color:#475569}
+.pr ul,.pr ol{padding-left:20px}
 .pr .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
-.pr .card{border:1px solid #e2e8f0;border-radius:12px;padding:16px;background:#f8fafc}
+.pr .card{border:1px solid #2a2a35;border-radius:12px;padding:16px;background:#14141b;text-align:left}
+html[data-theme='light'] .pr .card{border-color:#d8dbe8;background:#ffffff}
+/* Nửa sau của H1 trang chủ chạy gradient thương hiệu (HeroSection.tsx:70 -> .text-brand-gradient,
+   index.css:196-201 với --grad-* theo theme ở :47-49 light và :104-106 dark). Không sơn cùng
+   màu thì đúng phần tử LCP đổi màu giữa chừng lúc swap. padding/margin-block lặp lại lề của
+   .hero-word-hl (index.css:490-491) để background-clip:text không cắt dấu tiếng Việt.
+   Hai đầu phải sửa cùng nhau: xem titleWords() trong HeroSection.tsx. */
+.pr>header>h1 .hl{background:linear-gradient(135deg,#ff3b30 0%,#ff6b4a 50%,#ff8a65 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;
+  padding-block:0.16em 0.22em;margin-block:-0.16em -0.22em}
+html[data-theme='light'] .pr>header>h1 .hl{background:linear-gradient(135deg,#cf2216 0%,#d8431c 50%,#c8571d 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
 </style>`
 
-function injectRoot(html, body) {
+// Mirror của titleWords() trong src/components/landing/HeroSection.tsx:25-33 — sửa một đầu là
+// phải sửa đầu kia, nếu không shell và app tô sáng khác nhau trên đúng phần tử LCP.
+function h1Html(title) {
+  const dash = title.search(/[–—-]/)
+  let offset = 0
+  return title
+    .split(' ')
+    .map((word) => {
+      const at = offset
+      offset += word.length + 1
+      return dash >= 0 && at > dash ? `<span class="hl">${esc(word)}</span>` : esc(word)
+    })
+    .join(' ')
+}
+
+function injectRoot(html, body, geom = 'directory') {
   const re = /<div id="root">\s*<\/div>/i
   if (!re.test(html)) throw new Error('Không tìm thấy <div id="root"></div> trong dist/index.html')
-  return html.replace(re, () => body) // dùng hàm: tránh "$&", "$1" trong nội dung bị hiểu là pattern
+  const g = SHELL_GEOMETRY[geom]
+  if (!g) throw new Error(`SHELL_GEOMETRY thiếu template "${geom}"`)
+  // Shell PHẢI là ANH EM của #root chứ không phải CON của nó: main.tsx gọi
+  // createRoot(#root).render(), và commit đầu tiên dọn sạch mọi con của #root — đặt shell
+  // bên trong là để React huỷ đúng thứ vừa sơn ra LCP.
+  const vars =
+    `--pr-top:${g.top};--pr-h1:${g.size};--pr-lh:${g.lh};--pr-align:${g.align}` +
+    (g.box ? `;${g.box}` : '')
+  const shell = body.replace(/^<div id="root">/, `<div id="prerender-shell" style="${vars}">`)
+  return html.replace(re, () => `${shell}<div id="root"></div>`)
 }
 
 function injectHead(html, tags) {
@@ -476,7 +571,7 @@ function homeBodyEnglish(tools) {
   const sections = homeSections(tools, 'en')
   const valueBand = homeValueBand('en')
   return `<div id="root">${CSS}
-<div class="pr prerendered-content"><header><h1>${esc(HOME_EN.h1)}</h1><p>${esc(HOME_EN.intro)}</p><p>Google Sign-In lets you authenticate and use supported account features.</p><nav aria-label="Legal and support"><a href="/en/privacy">Privacy Policy</a> · <a href="/en/terms">Terms of Use</a> · <a href="mailto:support@oneforall.io.vn">support@oneforall.io.vn</a></nav></header>${sections}${valueBand}<section id="google-api"><h2>Google API usage and content safety commitment</h2><p>One ForAll is an online tools platform: downloading media from supported links, converting file and document formats, and processing images such as compression, resizing and background removal.</p><p>Google Sign-In is used only to verify identity and support account sign-in, with the openid, email and profile scopes. Data received through Google APIs is not used to train AI models, is not shared with third parties, and is not used for advertising.</p><p><strong>One ForAll does not use Google APIs to create, edit, generate, or distribute AI-generated Non-Consensual Intimate Imagery (AI NCII). This conduct is strictly prohibited across the platform; violating accounts are permanently locked and their data is deleted immediately.</strong></p><p>See the full rules in the <a href="/en/terms">Terms of Use</a> and <a href="/en/privacy">Privacy Policy</a>.</p></section></div></div>`
+<div class="pr prerendered-content"><header><h1>${h1Html(HOME_EN.h1)}</h1><p>${esc(HOME_EN.intro)}</p><p>Google Sign-In lets you authenticate and use supported account features.</p><nav aria-label="Legal and support"><a href="/en/privacy">Privacy Policy</a> · <a href="/en/terms">Terms of Use</a> · <a href="mailto:support@oneforall.io.vn">support@oneforall.io.vn</a></nav></header>${sections}${valueBand}<section id="google-api"><h2>Google API usage and content safety commitment</h2><p>One ForAll is an online tools platform: downloading media from supported links, converting file and document formats, and processing images such as compression, resizing and background removal.</p><p>Google Sign-In is used only to verify identity and support account sign-in, with the openid, email and profile scopes. Data received through Google APIs is not used to train AI models, is not shared with third parties, and is not used for advertising.</p><p><strong>One ForAll does not use Google APIs to create, edit, generate, or distribute AI-generated Non-Consensual Intimate Imagery (AI NCII). This conduct is strictly prohibited across the platform; violating accounts are permanently locked and their data is deleted immediately.</strong></p><p>See the full rules in the <a href="/en/terms">Terms of Use</a> and <a href="/en/privacy">Privacy Policy</a>.</p></section></div></div>`
 }
 
 function homeBody(tools) {
@@ -484,7 +579,7 @@ function homeBody(tools) {
   const valueBand = homeValueBand('vi')
   return `<div id="root">${CSS}
 <div class="pr prerendered-content">
-  <header><h1>${esc(HOME.h1)}</h1><p>${esc(HOME.intro)}</p><p>Google Sign-In giúp bạn xác thực và sử dụng các chức năng tài khoản được hỗ trợ.</p><nav aria-label="Chính sách và hỗ trợ"><a href="/privacy">Chính sách quyền riêng tư</a> · <a href="/terms">Điều khoản sử dụng</a> · <a href="mailto:support@oneforall.io.vn">support@oneforall.io.vn</a></nav></header>
+  <header><h1>${h1Html(HOME.h1)}</h1><p>${esc(HOME.intro)}</p><p>Google Sign-In giúp bạn xác thực và sử dụng các chức năng tài khoản được hỗ trợ.</p><nav aria-label="Chính sách và hỗ trợ"><a href="/privacy">Chính sách quyền riêng tư</a> · <a href="/terms">Điều khoản sử dụng</a> · <a href="mailto:support@oneforall.io.vn">support@oneforall.io.vn</a></nav></header>
   ${sections}
   ${valueBand}
   <section id="google-api"><h2>Mục đích sử dụng Google API và cam kết an toàn nội dung</h2><p>One ForAll là nền tảng công cụ trực tuyến: tải media từ những liên kết được hỗ trợ, chuyển đổi định dạng tệp và tài liệu, xử lý hình ảnh như nén, đổi kích thước và xóa nền.</p><p>Google Sign-In chỉ được dùng để xác minh danh tính và hỗ trợ đăng nhập tài khoản, với các quyền openid, email và profile. Dữ liệu nhận qua Google API không dùng để huấn luyện mô hình AI, không chia sẻ cho bên thứ ba và không dùng cho mục đích quảng cáo.</p><p><strong>One ForAll không sử dụng Google API để tạo, chỉnh sửa, sinh hoặc phát tán hình ảnh thân mật cá nhân không có sự đồng thuận do AI tạo ra (AI-generated Non-Consensual Intimate Imagery – AI NCII). Hành vi này bị nghiêm cấm trên toàn nền tảng; tài khoản vi phạm sẽ bị khóa vĩnh viễn và dữ liệu bị xóa ngay lập tức.</strong></p><p>Xem quy định chi tiết trong <a href="/terms">Điều khoản sử dụng</a> và <a href="/privacy">Chính sách quyền riêng tư</a>.</p></section>
@@ -509,6 +604,18 @@ function legalBody(doc, lang) {
   <header><h1>${esc(doc.title)}</h1><p>${esc(L.updatedOn)} ${esc(doc.lastUpdated)}</p><p>${esc(doc.intro)}</p></header>
   <nav aria-label="${esc(L.toc)}"><p><strong>${esc(L.toc)}</strong></p><ol>${toc}</ol></nav>
   ${sections}
+</div></div>`
+}
+
+// 404.html từng ăn theo #boot-loader của index.html; Stage 1 gỡ loader nên trang này trắng
+// suốt lượt boot JS. NotFoundPage căn giữa theo viewport (min-h-[70vh]) — không có số đo tĩnh
+// nào khớp nổi, nên shell 404 chỉ cần ĐÚNG CHỮ (lấy từ dict, cùng nguồn SPA), không cần đúng chỗ.
+function notFoundBody(dict) {
+  const n = dict.notFound
+  if (!n?.title || !n?.desc) throw new Error('dict thiếu notFound.title / notFound.desc')
+  return `<div id="root">${CSS}
+<div class="pr prerendered-content">
+  <header><h1>${esc(n.title)}</h1><p>${esc(n.desc)}</p></header>
 </div></div>`
 }
 
@@ -916,7 +1023,7 @@ export function runPrerender() {
     <link rel="alternate" hreflang="en" href="${SITE}/en/" data-hreflang="en" />
     <link rel="alternate" hreflang="x-default" href="${SITE}/" data-hreflang="x-default" />
   `
-  fs.writeFileSync(indexPath, injectRoot(injectHead(rawHtml, viHomeHead), homeBody(tools)), 'utf8')
+  fs.writeFileSync(indexPath, injectRoot(injectHead(rawHtml, viHomeHead), homeBody(tools), 'home'), 'utf8')
 
   // English home route has its own localized content and metadata.
   const enHomeDir = path.resolve(distDir, 'en')
@@ -927,7 +1034,7 @@ export function runPrerender() {
   let enHomeHtml = stripInheritedSeo(rawHtml).replace(/<title>[\s\S]*?<\/title>/i, '')
   enHomeHtml = setHtmlLang(enHomeHtml, 'en')
   enHomeHtml = injectHead(enHomeHtml, englishHomeHead(ogImage))
-  enHomeHtml = injectRoot(enHomeHtml, homeBodyEnglish(englishTools))
+  enHomeHtml = injectRoot(enHomeHtml, homeBodyEnglish(englishTools), 'home')
   fs.writeFileSync(path.resolve(enHomeDir, 'index.html'), enHomeHtml, 'utf8')
 
   // 2. Landing pages
@@ -935,7 +1042,7 @@ export function runPrerender() {
     const tool = tools[slug]
     let html = childBase.replace(/<title>[\s\S]*?<\/title>/i, '')
     html = injectHead(html, landingHead(tool, ogImage))
-    html = injectRoot(html, landingBody(tool, tools))
+    html = injectRoot(html, landingBody(tool, tools), 'landing')
     const outDir = path.resolve(distDir, slug.replace(/^\//, ''))
     fs.mkdirSync(outDir, { recursive: true })
     fs.writeFileSync(path.resolve(outDir, 'index.html'), html, 'utf8')
@@ -944,7 +1051,7 @@ export function runPrerender() {
     let englishHtml = childBase.replace(/<title>[\s\S]*?<\/title>/i, '')
     englishHtml = setHtmlLang(englishHtml, 'en')
     englishHtml = injectHead(englishHtml, landingHeadEnglish(englishTool, ogImage))
-    englishHtml = injectRoot(englishHtml, landingBodyEnglish(englishTool, englishTools))
+    englishHtml = injectRoot(englishHtml, landingBodyEnglish(englishTool, englishTools), 'landing')
     const englishOutDir = path.resolve(distDir, 'en', slug.replace(/^\//, ''))
     fs.mkdirSync(englishOutDir, { recursive: true })
     fs.writeFileSync(path.resolve(englishOutDir, 'index.html'), englishHtml, 'utf8')
@@ -976,7 +1083,7 @@ export function runPrerender() {
       let html = childBase.replace(/<title>[\s\S]*?<\/title>/i, '')
       html = setHtmlLang(html, lang)
       html = injectHead(html, head)
-      html = injectRoot(html, directoryBody(entry, dicts[lang], lang, lang === 'en' ? englishGroups : groups))
+      html = injectRoot(html, directoryBody(entry, dicts[lang], lang, lang === 'en' ? englishGroups : groups), 'directory')
       const outDir = path.resolve(distDir, directoryUrl(entry.path, lang).replace(/^\/+/, '').replace(/\/+$/, ''))
       fs.mkdirSync(outDir, { recursive: true })
       fs.writeFileSync(path.resolve(outDir, 'index.html'), html, 'utf8')
@@ -992,16 +1099,21 @@ export function runPrerender() {
     let html = childBase.replace(/<title>[\s\S]*?<\/title>/i, '')
     html = setHtmlLang(html, lang)
     html = injectHead(html, head)
-    html = injectRoot(html, legalBody(doc, lang))
+    html = injectRoot(html, legalBody(doc, lang), 'legal')
     const outDir = path.resolve(distDir, dir)
     fs.mkdirSync(outDir, { recursive: true })
     fs.writeFileSync(path.resolve(outDir, 'index.html'), html, 'utf8')
   }
 
-  // 5. 404.html
-  const notFound = injectHead(
-    childBase.replace(/<title>[\s\S]*?<\/title>/i, '<title>404 - Trang không tồn tại | One ForAll</title>'),
-    '    <meta name="robots" content="noindex, nofollow" />',
+  // 5. 404.html — shell lấy từ dict.vi để trang lỗi cũng có nội dung sơn được ngay; 404 là
+  //    trang duy nhất KHÔNG có gate hình học (viewheight-dependent, xem notFoundBody).
+  const notFound = injectRoot(
+    injectHead(
+      childBase.replace(/<title>[\s\S]*?<\/title>/i, '<title>404 - Trang không tồn tại | One ForAll</title>'),
+      '    <meta name="robots" content="noindex, nofollow" />',
+    ),
+    notFoundBody(dicts.vi),
+    'notfound',
   )
   fs.writeFileSync(path.resolve(distDir, '404.html'), notFound, 'utf8')
 
