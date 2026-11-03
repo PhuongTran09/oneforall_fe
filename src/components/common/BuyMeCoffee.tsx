@@ -7,7 +7,8 @@ import { useReducedMotion } from '../../hooks/useReducedMotion'
 const BANK = 'TPBank'
 const ACCOUNT = '14781478177'
 const HOLDER = 'TRAN HOANG PHUONG'
-const NOTE_PREFIX = 'TKPOFA UNG HO'
+const NOTE_PREFIX = 'TKPOFA'
+const MOMO_LINK = 'https://me.momo.vn/MRI4ubs7CgtBuQfEi6T8'
 const PRESETS = [5000, 10000, 20000]
 
 const EXTRA_MAX = 6
@@ -41,6 +42,7 @@ function InfoRow({ label, value, onCopy }: { label: string; value: string; onCop
 export function BuyMeCoffee() {
   const [phase, setPhase] = useState<'closed' | 'open' | 'closing'>('closed')
   const [intl, setIntl] = useState(false)
+  const [domesticMethod, setDomesticMethod] = useState<'bank' | 'momo'>('bank')
   const [amountText, setAmountText] = useState(String(PRESETS[1]))
   const [noteExtra, setNoteExtra] = useState('')
   const lang = getLang()
@@ -70,6 +72,7 @@ export function BuyMeCoffee() {
     `https://vietqr.app/img?bank=${BANK}&acc=${ACCOUNT}&template=` +
     `${amount ? `&amount=${amount}` : ''}&des=${encodeURIComponent(content)}` +
     `&showinfo=true&fullacc=true&holder=${encodeURIComponent(HOLDER)}`
+  const momoQrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=224x224&data=${encodeURIComponent(MOMO_LINK)}`
 
   const copy = async (value: string, message: string) => {
     try {
@@ -144,6 +147,52 @@ export function BuyMeCoffee() {
                 >
                   <Download className="w-3.5 h-3.5" />
                   {t('coffee.download')}
+                </a>
+              </div>
+            ) : (
+              <>
+                <div className="grid grid-cols-2 gap-2 border-b border-edge">
+                  {[
+                    { id: 'bank' as const, label: t('coffee.tabBank') },
+                    { id: 'momo' as const, label: t('coffee.tabMomo') },
+                  ].map((tab) => (
+                    <button
+                      key={tab.id}
+                      type="button"
+                      onClick={() => setDomesticMethod(tab.id)}
+                      aria-pressed={domesticMethod === tab.id}
+                      className={`-mb-px border-b-2 py-1.5 text-xs font-semibold transition-colors cursor-pointer ${
+                        domesticMethod === tab.id
+                          ? 'border-brand text-brand-active'
+                          : 'border-transparent text-soft hover:text-ink'
+                      }`}
+                    >
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
+                {domesticMethod === 'momo' ? (
+              <div className="space-y-3">
+                <p className="text-xs text-soft leading-relaxed">{t('coffee.momoDesc')}</p>
+                <a href={MOMO_LINK} target="_blank" rel="noopener noreferrer" className="block">
+                  <img
+                    src={momoQrUrl}
+                    alt={t('coffee.momoQrAlt')}
+                    width={224}
+                    height={224}
+                    loading="lazy"
+                    decoding="async"
+                    referrerPolicy="no-referrer"
+                    className="mx-auto w-56 h-56 bg-white p-1.5 clip-corner-btn"
+                  />
+                </a>
+                <a
+                  href={MOMO_LINK}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full inline-flex items-center justify-center gap-1.5 text-xs px-3 py-1.5 font-medium bg-brand-gradient text-on-brand btn-3d clip-corner-btn"
+                >
+                  {t('coffee.momoOpen')}
                 </a>
               </div>
             ) : (
@@ -236,6 +285,8 @@ export function BuyMeCoffee() {
                   {t('coffee.download')}
                 </a>
               </div>
+                )}
+              </>
             )}
           </div>
         </div>
