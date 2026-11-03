@@ -42,7 +42,7 @@ export function HeroSection({ onTryFree }: HeroSectionProps) {
   })
 
   return (
-    <section className="cv-skip relative pt-8 pb-10 sm:pt-12 sm:pb-14 bg-page">
+    <section className="relative pt-8 pb-10 sm:pt-12 sm:pb-14 bg-page">
 
 
       <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">

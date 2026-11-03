@@ -429,7 +429,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
       </div>
 
 
-      <section className="cv-skip relative pt-6 pb-14 sm:pb-20 overflow-hidden">
+      <section className="relative pt-6 pb-14 sm:pb-20 overflow-hidden">
 
 
 
