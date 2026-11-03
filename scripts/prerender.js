@@ -284,7 +284,7 @@ const SHELL_GEOMETRY = {
 }
 
 const CSS = `<style>
-#prerender-shell{--pr-top:24px;--pr-h1:24px;--pr-lh:1.3333;--pr-align:center;--pr-hpad:0px;--pr-hbd:0;--pr-hbg:transparent;box-sizing:border-box;
+#prerender-shell{--pr-top:24px;--pr-h1:24px;--pr-lh:1.3333;--pr-align:center;--pr-hpad:0px;--pr-hbd:0;--pr-hbg:transparent;box-sizing:border-box;position:relative;
   background:#0a0a0f;color:#ffffff;
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
   -webkit-font-smoothing:antialiased}
@@ -331,7 +331,45 @@ html[data-theme='light'] .pr .card{border-color:#d8dbe8;background:#ffffff}
   padding-block:0.16em 0.22em;margin-block:-0.16em -0.22em}
 html[data-theme='light'] .pr>header>h1 .hl{background:linear-gradient(135deg,#cf2216 0%,#d4421c 50%,#c2541c 100%);
   -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+
+/* Hàng thương hiệu vẽ sẵn trong shell: React mount sau mới có Navbar, nên khoảng
+   --pr-top phía trên h1 vốn trống. Bar này overlay (position:absolute) đúng khoảng trống đó,
+   không đẩy nội dung -> CLS vẫn 0. */
+.pr-brand{position:absolute;top:0;left:0;right:0;height:72px;box-sizing:border-box;
+  border-bottom:1px solid #2a2a35;background:#0a0a0f}
+html[data-theme='light'] .pr-brand{border-bottom-color:#d8dbe8;background:#f3f4f9}
+.pr-brand-in{display:flex;align-items:center;gap:10px;box-sizing:border-box;
+  width:100%;max-width:80rem;height:100%;margin:0 auto;padding:0 16px}
+@media (min-width:640px){.pr-brand-in{padding:0 24px}}
+@media (min-width:1024px){.pr-brand-in{padding:0 32px}}
+.pr-brand-in .mark{width:36px;height:36px;flex:none}
+.pr-brand-in .word{display:flex;align-items:center;gap:6px;font-size:20px;font-weight:700;
+  letter-spacing:-0.025em;color:#ffffff}
+html[data-theme='light'] .pr-brand-in .word{color:#171a24}
+.pr-brand-in .word .hl{background:linear-gradient(135deg,#ff3b30 0%,#ff6b4a 50%,#ff8a65 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+html[data-theme='light'] .pr-brand-in .word .hl{background:linear-gradient(135deg,#cf2216 0%,#d4421c 50%,#c2541c 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+.pr-brand-in .tag{display:none;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:10px;font-weight:600;line-height:1;padding:3px 6px;border:1px solid rgba(255,59,48,.35);
+  background:rgba(255,59,48,.10);color:#ff3b30}
+html[data-theme='light'] .pr-brand-in .tag{border-color:rgba(200,30,23,.35);background:rgba(200,30,23,.10);color:#c81e17}
+@media (min-width:640px){.pr-brand-in .tag{display:inline-block}}
 </style>`
+
+/* Logo nội tuyến trong shell: không phải chờ thêm một round trip /oneforall.svg
+   (tệp này phục vụ max-age=0 nên ảnh <img> phải revalidate), mark vẽ ngay cùng khung
+   với chữ. id gradient đổi thành prBrandGrad để không đụng tài nguyên khác. */
+const BRAND_ROW =
+  `<div class="pr-brand"><div class="pr-brand-in">` +
+  `<svg class="mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1072 1072" width="36" height="36" role="img" aria-label="One ForAll Logo">` +
+  `<defs><linearGradient id="prBrandGrad" x1="0%" y1="0%" x2="100%" y2="100%">` +
+  `<stop offset="0%" stop-color="#ff3b30"/><stop offset="50%" stop-color="#ff6b4a"/><stop offset="100%" stop-color="#ff8a65"/>` +
+  `</linearGradient></defs>` +
+  `<path fill="url(#prBrandGrad)" d="M503.2 83.2C272.2 313.1 72.8 512.9 73.2 514.1L73.7 515.5L151.4 515.8L229.2 516L240.2 505.3C246.3 499.3 253.8 492.1 256.9 489.1C260 486.1 280.9 465.6 303.4 443.6C325.9 421.5 345.6 402.5 347.2 401.3L350.1 399.2L467.3 399.7L584.5 400.3L585.9 401.4L587.3 402.5L586.6 735.8L585.8 1069.2L587.8 1068.8C589.9 1068.5 594 1064.6 680 979.9C709.4 950.9 744.6 916.2 758.3 902.8L783 878.5L783 639.9L783 401.2L784.6 400.6C785.5 400.3 809.9 400 838.9 400L891.7 400L927.1 363.9C946.6 344 963.8 326.3 965.4 324.6C967 322.9 975.1 314.6 983.3 306.2C992.5 296.7 997.9 290.5 997.3 289.9C996.7 289.3 954.7 289 890.8 289L785.3 289L784.1 287.7L783 286.3L782.8 144.4L782.5 2.5L683.7 2.2L584.9 2L503.2 83.2ZM589.1 223.2L588.9 285.5L587.4 287L585.9 288.5L524.1 288.7L462.2 289L461.1 287.6L460 286.3L523.1 223.9C585.5 162.2 588.1 159.7 588.8 160.5C589.1 160.7 589.2 188.9 589.1 223.2Z"/>` +
+  `</svg>` +
+  `<span class="word">One<span class="hl">ForAll</span><span class="tag">Tools</span></span>` +
+  `</div></div>`
 
 function h1Html(title) {
   const dash = title.search(/[–—-]/)
@@ -354,7 +392,10 @@ function injectRoot(html, body, geom = 'directory') {
   const vars =
     `--pr-top:${g.top};--pr-h1:${g.size};--pr-lh:${g.lh};--pr-align:${g.align}` +
     (g.box ? `;${g.box}` : '')
-  const shell = body.replace(/^<div id="root">/, `<div id="prerender-shell" style="${vars}">`)
+  const shell = body
+    .replace(/^<div id="root">/, `<div id="prerender-shell" style="${vars}">`)
+    // Chèn SAU khối <style> để hàng thương hiệu đã có định vị ngay khung vẽ đầu tiên.
+    .replace(/(<\/style>)/, `$1${BRAND_ROW}`)
   return html.replace(re, () => `${shell}<div id="root"></div>`)
 }
 
