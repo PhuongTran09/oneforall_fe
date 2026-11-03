@@ -1,0 +1,9 @@
+{
+  "specVersion": "1.0",
+  "host": {
+    "displayName": "One ForAll",
+    "documentationUrl": "https://oneforall.io.vn/llms.txt",
+    "logoUrl": "https://oneforall.io.vn/oneforall.svg"
+  },
+  "entries": []
+}
