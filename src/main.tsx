@@ -28,8 +28,10 @@ createRoot(document.getElementById('root')!).render(
   </StrictMode>,
 )
 
-// root.render() chỉ lịch công việc chứ chưa chắc đã paint xong; gỡ boot-loader ở hai
-// frame sau để không lộ một nhịp màn hình trống.
+// root.render() chỉ lịch công việc chứ chưa chắc đã paint xong; gỡ shell ở hai frame sau để
+// nội dung thật đã lên màn trước khi lớp phủ biến mất — một nhịp, không phải hai.
+// Shell là #prerender-shell do scripts/prerender.js đặt làm ANH EM của #root (nằm ngoài nên
+// commit đầu của createRoot không xoá được nó), vì vậy chỗ gỡ nó thuộc về file này.
 requestAnimationFrame(() =>
-  requestAnimationFrame(() => document.getElementById('boot-loader')?.remove()),
+  requestAnimationFrame(() => document.getElementById('prerender-shell')?.remove()),
 )

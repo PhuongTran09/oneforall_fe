@@ -106,6 +106,15 @@ const LANG_SWAP_MS = 140
 // mỗi lần reload trang đầu tiên là modal lại nhảy ra.
 const AUTH_PROMPT_KEY = 'ofa-auth-prompt'
 
+// Lượt mount ĐẦU TIÊN của khối nội dung chính là lượt boot: #prerender-shell đã sơn hero từ
+// byte HTML, để .animate-page-enter chạy tiếp chỉ làm đúng thứ đang hiện chớp về opacity:0
+// suốt 220ms (đo được bằng scratch/gap.mjs). Quyền miễn chốt theo KEY của URL lúc module được
+// evaluate — luôn trước render đầu — chứ không theo "lần render đầu tiên": một biến đọc-ghi
+// trong render sẽ lật class giữa chừng (MainLayout re-render vì modal/ngôn ngữ), và đổi
+// animation-name trên phần tử ĐANG sơn thì animation khởi động lại, chớp y như cũ.
+// Giá phải trả: quay lại đúng route boot trong cùng lượt tải trang không chạy nhịp nữa.
+const BOOT_PAGE_KEY = stripLocale(window.location.pathname).path
+
 export function MainLayout() {
   // Navbar/Footer/page con gọi t() trực tiếp (không hook) → layout phải subscribe
   // để cả subtree render lại khi lang đổi.
@@ -264,7 +273,7 @@ export function MainLayout() {
       <LangRouteSync />
       <Navbar onOpenAuth={(mode) => setAuthMode(mode)} onOpenPro={openPro} />
       <main ref={contentRef} className="flex-1 w-full">
-        <div key={pageKey} className="animate-page-enter">
+        <div key={pageKey} className={pageKey === BOOT_PAGE_KEY ? undefined : 'animate-page-enter'}>
           {/* Bọc Outlet chứ không bọc cả <Routes>: chờ chunk của route thì
               Navbar/Footer/modal vẫn đứng nguyên, không chớp cả khung hình. */}
           <Suspense fallback={<RouteFallback />}>
