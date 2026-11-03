@@ -16,6 +16,9 @@
         } catch (e) {
           root.dataset.theme = 'dark'
         }
+        // main.tsx gỡ #prerender-shell sau commit đầu. Nếu module JS không chạy nổi (CDN chắn,
+        // build hỏng, máy khách chặn script) shell vẫn còn trên màn — phải chuyển về CUỘN được,
+        // không được nằm làm overlay chặn cả khung hình như #boot-loader cũ.
         setTimeout(function () {
           var bar = document.getElementById('boot-bar')
           if (bar) bar.remove()
