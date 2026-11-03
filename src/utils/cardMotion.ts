@@ -1,4 +1,4 @@
-/* Pointer tilt updates CSS variables only on hover; touch and reduced-motion users stay static. */
+
 const MAX_TILT_DEG = 5
 
 export function initCardMotion(): void {

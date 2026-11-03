@@ -3,9 +3,9 @@ import { AppRoutes } from './routes/AppRoutes'
 import { statsApi } from './services/api/statsApi'
 import './App.css'
 
-// sid ngẫu nhiên theo tab, chỉ để đếm "bao nhiêu phiên đang mở trang". sessionStorage
-// nên một tab giữ nguyên sid dù điều hướng bao nhiêu lần (không đếm trùng), tab mới
-// là một phiên mới. Không chứa user_id, IP hay bất kỳ định danh nào.
+
+
+
 const SID_KEY = 'ofa-presence-sid'
 const BEAT_MS = 60_000
 const MIN_BEAT_GAP_MS = 5_000
@@ -26,7 +26,7 @@ export function App() {
     }
     beat()
     const timer = setInterval(beat, BEAT_MS)
-    // Quay lại tab: báo ngay thay vì chờ hết nhịp, nếu không 5 phút cửa sổ có khoảng trống.
+
     document.addEventListener('visibilitychange', beat)
     return () => {
       clearInterval(timer)

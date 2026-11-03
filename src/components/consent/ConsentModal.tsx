@@ -13,16 +13,16 @@ import {
   useConsent,
 } from './consentStorage'
 
-// Thanh cookie nằm đáy, render một lần ở MainLayout nên không bị mở lại khi chuyển route.
-// Không có nút đóng: đóng prompt không phải là đồng ý — người dùng phải chọn một phương án
-// cookie. Trước đây đây là modal phủ toàn màn hình và đè lên AuthModal (z-50), khiến form
-// đăng nhập nằm sau lớp tối; ở dạng thanh thì hai thứ dùng được cùng lúc.
+
+
+
+
 export function ConsentModal() {
   const { modalOpen, view } = useConsent()
-  // useConsent đã đăng ký subscribe nên tích/bỏ tích checkbox là render lại ngay.
+
   const termsAccepted = hasAcceptedTerms()
   const visible = modalOpen || needsCookieDecision()
-  // Chiều ra: thanh trượt xuống 180ms sau khi user chọn xong thay vì biến mất tức thì.
+
   const { show, closing } = useExitFade(visible)
 
   if (!show) return null
@@ -38,8 +38,8 @@ export function ConsentModal() {
         role="region"
         aria-labelledby="consent-title"
       >
-        {/* Hai màn hình cookie là hai node khác nhau, nên mỗi lần hiện ra đều chạy .in-fade
-            thay vì nhảy cóc giữa "Cài đặt cookie" và hàng nút chọn. */}
+
+
         {custom ? (
           <div className="in-fade mx-auto max-w-2xl">
             <h2 id="consent-title" className="text-sm font-bold text-ink tracking-tight">
@@ -54,7 +54,7 @@ export function ConsentModal() {
             <button
               type="button"
               onClick={() => (needsCookieDecision() ? openConsentModal('main') : closeConsentModal())}
-              className="mt-3 text-xs font-medium text-slate-400 transition-colors hover:text-ink"
+              className="mt-2 inline-flex min-h-6 items-center text-xs font-medium text-slate-400 transition-colors hover:text-ink"
             >
               {t('consent.back')}
             </button>
@@ -83,8 +83,8 @@ export function ConsentModal() {
               </div>
 
               <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-end">
-                {/* Không cho "Chấp nhận tất cả" tắt khi chưa tích điều khoản: người dùng bấm
-                    xong cứ tưởng đã đồng ý hết, đến lúc bấm xử lý mới bị chặn. */}
+
+
                 <Button
                   variant="glow"
                   size="sm"
@@ -93,8 +93,8 @@ export function ConsentModal() {
                 >
                   {t('consent.acceptAll')}
                 </Button>
-                {/* Chỉ còn hai nút: "Customize" lên thành nút viền thật, vì sau khi bỏ nút từ
-                    chối nhanh đây là đường duy nhất để tắt cookie analytics/quảng cáo. */}
+
+
                 <Button variant="outline" size="sm" onClick={() => openConsentModal('custom')}>
                   {t('consent.customize')}
                 </Button>

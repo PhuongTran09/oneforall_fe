@@ -24,7 +24,7 @@ function formatDate(iso: string): string {
   }
 }
 
-// shortcut: chỉ 10 đơn gần nhất (BE cho phép tới 100), thêm phân trang khi user có nhiều đơn.
+
 const PAYMENT_HISTORY_LIMIT = 10
 
 const PAY_STATUS_KEYS = ['pending', 'paid', 'cancelled', 'expired'] as const
@@ -61,7 +61,6 @@ function planLabel(planId: string): string {
 
 type Plan = 'free' | 'premium'
 
-/** Độ ưu tiên: backend /users/me → Supabase user_metadata → mặc định 'free'. */
 function resolvePlan(me: UserMe | null, meta: Record<string, unknown>): Plan {
   const raw =
     (typeof me?.plan === 'string' && me.plan) ||
@@ -80,7 +79,7 @@ function PlanBadge({ plan, onSelect }: { plan: Plan; onSelect: () => void }) {
       title={t('profile.viewPlan')}
       className={
         plan === 'premium'
-          ? 'inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold badge-angular bg-brand-gradient text-white cursor-pointer hover:opacity-90 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4545]/60'
+          ? 'inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold badge-angular bg-brand-gradient text-on-brand cursor-pointer hover:brightness-95 transition-[filter] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4545]/60'
           : 'inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold badge-angular bg-surface border border-edge text-soft cursor-pointer hover:border-[rgba(255,59,48,0.5)] hover:text-brand-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4545]/60'
       }
     >
@@ -96,8 +95,6 @@ export function ProfilePage() {
   const user = session?.user ?? null
   const userId = user?.id ?? null
 
-  // /users/me là state toàn cục (entitlementsStore) — trang chỉ đọc, không tự gọi
-  // nữa, nếu không mỗi lần focus tab/refresh token sẽ nhân đôi request.
   const { me } = useEntitlements()
   const [stats, setStats] = useState<JobStats | null>(null)
   const [payments, setPayments] = useState<PaymentHistoryItem[] | null>(null)
@@ -106,7 +103,6 @@ export function ProfilePage() {
   useEffect(() => {
     if (!userId) return
     const controller = new AbortController()
-    // Đọc MỘT lần khi mở trang — không polling (§8).
     void (async () => {
       try {
         const statsRes = await jobsApi.getStats(controller.signal)
@@ -169,7 +165,7 @@ export function ProfilePage() {
         <p className="text-soft mt-1">{t('profile.subtitle')}</p>
       </div>
 
-      {/* Header tài khoản — cùng ngôn ngữ vát góc + viền brand của modal/card web */}
+
       <div className="bg-surface border border-[rgba(255,59,48,0.35)] clip-corner-lg card-3d p-6 sm:p-8">
         <div className="flex flex-col sm:flex-row gap-5 sm:items-center">
           <div className="shrink-0">
@@ -237,8 +233,8 @@ export function ProfilePage() {
         </dl>
       </div>
 
-      {/* Thống kê + lối ra lịch sử — MỘT thẻ: trước đây hai KPI nằm trong thẻ riêng còn
-          nút "Xem lịch sử" là nút lơ lửng ngoài mọi card, mobile phải cuộn hai lần. */}
+
+
       <div className="bg-surface border border-edge clip-corner-card p-5 sm:p-6 mt-4">
         <div className="grid grid-cols-2 gap-4 text-center">
           <div>
@@ -272,7 +268,7 @@ export function ProfilePage() {
         </div>
       </div>
 
-      {/* Lịch sử thanh toán — chữ về gói chuyển từ modal Pro sang; chỉ hiện khi request thành công (thất bại đã có popup retry). */}
+
       {payments && (
         <div className="bg-surface border border-edge clip-corner-card p-5 sm:p-6 mt-4">
           <h2 className="text-base font-bold text-ink tracking-tight">{t('profile.paymentsTitle')}</h2>

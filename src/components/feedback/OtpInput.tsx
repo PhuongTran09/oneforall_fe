@@ -1,16 +1,21 @@
 import { useRef, type ClipboardEvent, type KeyboardEvent } from 'react'
+import { t } from '../../i18n/langStore'
 
 export interface OtpInputProps {
-  /** Chuỗi digit tối đa `length` ký tự. */
+
   value: string
   onChange: (next: string) => void
   length?: number
   disabled?: boolean
   describedBy?: string
+
+
+
+  groupLabelledBy: string
 }
 
-/** Six-digit OTP input with auto-advance, paste, Backspace, and arrow-key navigation. */
-export function OtpInput({ value, onChange, length = 6, disabled, describedBy }: OtpInputProps) {
+
+export function OtpInput({ value, onChange, length = 6, disabled, describedBy, groupLabelledBy }: OtpInputProps) {
   const refs = useRef<(HTMLInputElement | null)[]>([])
 
   const setAt = (index: number, char: string) => {
@@ -34,7 +39,7 @@ export function OtpInput({ value, onChange, length = 6, disabled, describedBy }:
       focusBox(index + 1)
       return
     }
-    // Gõ nhanh/nhiều ký tự một lúc → điền tuần tự từ ô hiện tại.
+
     const chars = value.padEnd(length, ' ').split('')
     let cursor = index
     for (const d of digits) {
@@ -69,7 +74,11 @@ export function OtpInput({ value, onChange, length = 6, disabled, describedBy }:
   }
 
   return (
-    <div className="flex justify-center gap-2" role="group" aria-label="OTP">
+    <div
+      className="flex justify-center gap-2"
+      role="group"
+      aria-labelledby={groupLabelledBy}
+    >
       {Array.from({ length }, (_, i) => (
         <input
           key={i}
@@ -87,7 +96,7 @@ export function OtpInput({ value, onChange, length = 6, disabled, describedBy }:
           onPaste={handlePaste}
           onKeyDown={(e) => handleKeyDown(i, e)}
           onFocus={(e) => e.target.select()}
-          aria-label={`Chữ số ${i + 1}`}
+          aria-label={t('auth.otpDigit', { index: i + 1 })}
           aria-describedby={describedBy}
           className="w-11 sm:w-12 py-2.5 px-0 bg-page border border-brand/30 focus:border-brand focus:ring-1 focus:ring-[#ff3b30] text-center text-lg text-slate-100 outline-none transition-all clip-corner-btn font-mono disabled:opacity-50"
         />

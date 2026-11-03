@@ -6,7 +6,7 @@ export interface WheelResult {
   label: string
   phase: SpinPhase
   winner: SpinWinner | null
-  /** Số tên hợp lệ đang quay — hiện cạnh kết quả để chứng minh 1/N. */
+
   count: number
 }
 
@@ -14,7 +14,7 @@ export interface SpinResultPanelProps {
   results: WheelResult[]
 }
 
-/** Vùng kết quả. `role="status"` nên screen reader đọc lại mỗi lần có kết quả mới. */
+
 export function SpinResultPanel({ results }: SpinResultPanelProps) {
   return (
     <div className="spin-results space-y-2" role="status" aria-live="polite">

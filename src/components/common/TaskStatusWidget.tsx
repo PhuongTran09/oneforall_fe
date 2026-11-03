@@ -12,7 +12,7 @@ const STATUS_LABEL_KEYS: readonly string[] = [
   'expired',
 ]
 
-/** Job còn worker đang chạy tới: hiện thanh tiến trình + nút hủy. */
+
 const LIVE_STATUSES: readonly JobStatus[] = ['queued', 'processing']
 
 function statusLabel(status: string): string {
@@ -32,14 +32,6 @@ export interface TaskStatusWidgetProps {
   isCancellingId?: string | null
 }
 
-/**
- * Bảng tiến trình tác vụ nền (Celery/Redis, số liệu từ jobsApi.pollJob — mỗi lượt poll một
- * lần re-render, không có loop rAF nào ở đây).
- *
- * progress là 0–100 và worker chỉ ghi 1 lúc nhận job: dưới 99 nghĩa là "đang chạy", không phải
- * "xong 1%". Vì vậy thanh co theo transform (scaleX), không animate `width` — width là layout
- * property, mỗi frame poll là một lần reflow cả cột.
- */
 export function TaskStatusWidget({ jobs, onCancel, isCancellingId }: TaskStatusWidgetProps) {
   return (
     <section

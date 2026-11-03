@@ -7,11 +7,21 @@ import { env } from '../../utils/env'
 import { getTheme } from '../../utils/theme'
 import { t } from '../../i18n/langStore'
 import { useExitFade } from '../../hooks/useExitFade'
+import { useDialogFocus } from '../../hooks/useDialogFocus'
 
-/** Turnstile opens when the backend requires verification during session setup or after a 403. */
+
 export function CaptchaModal() {
   const challengeId = useCaptchaChallenge()
   const holder = useRef<HTMLDivElement>(null)
+  const panelRef = useRef<HTMLDivElement>(null)
+
+
+
+
+
+
+
+  useDialogFocus({ panelRef, open: challengeId ?? false, onEscape: closeCaptcha })
 
   useEffect(() => {
     if (challengeId === null) return
@@ -28,12 +38,12 @@ export function CaptchaModal() {
           sitekey: env.turnstileSiteKey,
           theme: getTheme(),
           size: 'flexible',
-          // action KHÔNG gửi: BE chỉ so action khi TURNSTILE_EXPECTED_ACTION được khai, và
-          // giá trị phải khớp widget trên Dashboard — để trống là an toàn nhất.
+
+
           callback: fulfillCaptchaToken,
-          // Mã lỗi là chẩn đoán DUY NHẤT đọc được từ iPhone: 110200 = trình duyệt chặn cookie
-          // của bên thứ ba (Cài đặt > Safari > Chặn tất cả cookie). Vứt nó đi thì user chỉ còn
-          // "vui lòng thử lại" và không ai biết vì sao.
+
+
+
           'error-callback': (code) => breakCaptcha(t('captcha.error', { code: code ?? 'unknown' })),
           'expired-callback': () => breakCaptcha(t('captcha.expired')),
           'timeout-callback': () => breakCaptcha(t('captcha.expired')),
@@ -43,28 +53,22 @@ export function CaptchaModal() {
         if (!cancelled) breakCaptcha(t('captcha.error'))
       })
 
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') closeCaptcha()
-    }
-    document.addEventListener('keydown', onKey)
-
     return () => {
       cancelled = true
-      document.removeEventListener('keydown', onKey)
-      // remove() chỉ dọn DOM: challenge đã settle thì promise không còn chủ để nhận token.
+
       if (api && widgetId) api.remove(widgetId)
     }
   }, [challengeId])
 
-  // Chiều ra: giữ panel 180ms cho fade-out chạy xong (widget đã bị remove() ở cleanup của
-  // effect trên, nên khung trống chỉ tồn tại đúng lúc đang biến mất).
+
+
   const { show, closing } = useExitFade(challengeId !== null)
 
   if (!show) return null
 
   return (
-    // KHÔNG bọc widget trong backdrop-filter hay transform 3D (.card-3d): iOS WebKit đưa
-    // iframe cross-origin vào lớp composite đó và mất hit-test — panel hiện mà bấm không ăn.
+
+
     <div
       className={`fixed inset-0 z-[78] flex items-center justify-center p-4 bg-black/80 ${
         closing ? 'out-fade' : 'in-backdrop'
@@ -73,10 +77,12 @@ export function CaptchaModal() {
     >
       <div
         onClick={(event) => event.stopPropagation()}
+        ref={panelRef}
         role="alertdialog"
         aria-modal="true"
         aria-label={t('captcha.title')}
-        className={`relative w-full max-w-sm p-6 bg-surface border border-brand/30 clip-corner-lg ${
+        tabIndex={-1}
+        className={`relative w-full max-w-sm p-6 bg-surface border border-brand/30 clip-corner-lg outline-none ${
           closing ? 'in-out' : 'in-up'
         }`}
       >
@@ -99,6 +105,10 @@ export function CaptchaModal() {
           </div>
         </div>
 
+
+
+
+
         <div ref={holder} className="min-h-[65px] flex items-center justify-center" />
 
         <p className="mt-3 text-xs text-slate-400 leading-relaxed">{t('captcha.loading')}</p>
@@ -113,7 +123,6 @@ export function CaptchaModal() {
   )
 }
 
-/** User đóng panel: request đang chờ chết với thông báo, không treo vô hạn. */
 function closeCaptcha(): void {
   breakCaptcha(t('captcha.cancelled'))
 }

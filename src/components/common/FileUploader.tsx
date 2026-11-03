@@ -20,7 +20,7 @@ import { useEntitlements } from '../../services/entitlementsStore'
 import { humanSize } from '../../utils/apiError'
 import { t } from '../../i18n/langStore'
 
-/** Ô nhập CHỮ giữ paste cho riêng nó (dán link vào ô URL, dán số vào ô width…). Loại input */
+
 const NON_TEXT_INPUT_TYPES = new Set([
   'checkbox',
   'radio',
@@ -43,16 +43,16 @@ export interface FileUploaderProps {
   outputFormats: string[]
   defaultFormat: string
   actionLabel?: string
-  /** Format-conversion tools hide targets the backend has no pair for. */
+
   filterTargetsBySource?: boolean
-  /** Cặp from → to đã qua resolveRoute() — lối tắt chọn sẵn định dạng đích trước khi tải tệp. */
+
   popularConversions?: FormatPair[]
-  /** Extra options the backend honors for the current source + target. Empty list hides the panel. */
+
   resolveFields?: (sourceFormat: string | null, targetFormat: string) => ParamField[]
   initialParams?: ParamValues
-  /** Form đã chọn của lần ghé trước — trang bị unmount khi đổi route nên phải đưa vào lại. */
+
   initialForm?: ToolFormState | null
-  /** Báo lên cha mỗi khi file/định dạng/tùy chọn đổi để nó lưu lại khi người dùng rời trang. */
+
   onFormChange?: (form: ToolFormState | null) => void
   onSubmit: (file: File, format: string, options: ParamOptions) => void
   isLoading?: boolean
@@ -82,8 +82,8 @@ export function FileUploader({
   )
   const [isDragging, setIsDragging] = useState(false)
   const [previewUrl, setPreviewUrl] = useState<string | null>(() =>
-    // shortcut: tạo blob URL cho ảnh khôi phục ngay trong useState init — StrictMode dev
-    // double-render sẽ rò một URL nhẹ; bản build không có vấn đề này.
+
+
     initialForm?.file?.type.startsWith('image/') ? URL.createObjectURL(initialForm.file) : null,
   )
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -97,7 +97,7 @@ export function FileUploader({
     return outputFormats.filter((fmt) => supported.includes(fmt.toLowerCase()))
   }, [selectedFile, sourceFormat, outputFormats, filterTargetsBySource])
 
-  // Derived so a pick that is invalid for the current file can never be submitted.
+
   const activeFormat =
     pickedFormat && availableFormats.includes(pickedFormat)
       ? pickedFormat
@@ -110,8 +110,8 @@ export function FileUploader({
     [resolveFields, sourceFormat, activeFormat],
   )
 
-  // Options are built from the visible fields only, so a value left behind when the user
-  // switches target can never reach the wire.
+
+
   const invalidParam = findInvalidParam(paramFields, paramValues)
 
   useEffect(() => {
@@ -129,8 +129,8 @@ export function FileUploader({
   }
 
   const handleFile = useCallback((file: File) => {
-    // Kéo/chọn/dán tệp là lúc mở ải, không phải lúc bấm nút. BE mới là nguồn của "phiên này có
-    // cần ải không" nên phải xin phiên trước; ensureAnonymousSession idempotent và đã cache.
+
+
     void ensureAnonymousSession().then(
       () => warmCaptchaToken(),
       () => undefined,
@@ -152,9 +152,9 @@ export function FileUploader({
 
   const dragDepth = useRef(0)
 
-  // Thả tệp ở BẤT KỲ đâu trên trang cũng tính: chẳng ai nhìn trúng vùng nét đứt cả, và nếu
-  // không chặn default thì browser điều hướng thẳng tới ảnh vừa thả — mất form đang điền.
-  // Counter vì dragleave bắn trên từng phần tử con, không riêng lúc rời khỏi trang.
+
+
+
   useEffect(() => {
     if (disabled || isLoading) return
     const dragsFiles = (e: DragEvent) =>
@@ -199,9 +199,9 @@ export function FileUploader({
     }
   }, [handleFile, disabled, isLoading])
 
-  // Ctrl+V (⌘V trên macOS): ảnh copy từ Explorer/Finder/ảnh mở ở tab khác vào thẳng công cụ,
-  // không phải mở hộp thoại chọn tệp. Bỏ qua khi người dùng dán CHỮ vào một ô nhập —
-  // paste bắn từ phần tử đó rồi nổi lên document, nên phải xét target.
+
+
+
   useEffect(() => {
     if (disabled || isLoading) return
     const onPaste = (e: ClipboardEvent) => {
@@ -243,9 +243,6 @@ export function FileUploader({
     return `${(bytes / 1024).toFixed(1)} KB`
   }
 
-  // Trần upload hiển thị trong hint lấy từ PLAN_POLICIES mà BE trả qua /users/me. Chưa có dữ
-  // liệu (ẩn danh — BE không trả plan_policy công khai) thì nói chung chung: hardcode số của
-  // gói Free sẽ nói dối user Pro và mâu thuẫn với con số thật trên toast 413 khi BE đổi trần.
   const { me } = useEntitlements()
   const caps = me?.plan_policy?.max_upload_bytes
   const capHint = caps
@@ -257,8 +254,6 @@ export function FileUploader({
       })
     : t('uploader.dropzoneCapsUnknown')
 
-  // Lớp phủ "thả file vào đây" fade cả hai chiều: dragleave bắn liên tục khi con trỏ đi
-  // qua mép con, cắt tức thì thì panel nhấp nháy.
   const { show: dropShow, closing: dropClosing } = useExitFade(isDragging)
 
   return (
@@ -387,7 +382,7 @@ export function FileUploader({
         )}
       </div>
 
-      {/* Format Selection, Advanced Options & Submit Action */}
+
       {selectedFile && (
         <div className="p-4 bg-surface border border-[rgba(255,59,48,0.25)] space-y-4 animate-fade-in clip-corner-lg">
           {availableFormats.length > 0 ? (
@@ -430,8 +425,8 @@ export function FileUploader({
           )}
 
           <div className="flex justify-end">
-            {/* Không có spinner trong nút: bảng JobProgress phía dưới đã nói tiến trình, nút
-                chỉ cần disabled để biết là không bấm được nữa. */}
+
+
             <Button
               variant="primary"
               size="md"

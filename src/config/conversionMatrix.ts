@@ -1,4 +1,4 @@
-/** Mirror of what the backend can actually convert. */
+
 
 export type FileKind = 'image' | 'video' | 'audio' | 'document' | 'other'
 
@@ -7,7 +7,7 @@ export type ConvertRoute =
   | { endpoint: 'media-process'; operation: 'transcode' | 'extract-audio' | 'thumbnail' }
   | { endpoint: 'image-process'; operation: 'compress'; format: string }
 
-/** Backend collapses these to a canonical format before matching pairs. */
+
 const FORMAT_ALIASES: Record<string, string> = {
   jpeg: 'jpg',
   jpe: 'jpg',
@@ -24,8 +24,8 @@ const FORMAT_ALIASES: Record<string, string> = {
   oga: 'ogg',
   ogv: 'ogg',
   m4v: 'mp4',
-  // Backend also aliases mpg/mpeg to mp3. Those are video containers, so we keep them
-  // as-is rather than offer audio targets for a video file.
+
+
 }
 
 const KNOWN_EXTENSIONS: ReadonlySet<string> = new Set([
@@ -48,7 +48,7 @@ const KIND_BY_FORMAT: Record<string, FileKind> = {
   zip: 'other', tar: 'other', gz: 'other', tgz: 'other', '7z': 'other', rar: 'other',
 }
 
-/** `from>to` pairs accepted by POST /api/v1/convert-file (after format normalization). */
+
 const CONVERT_PAIRS: ReadonlySet<string> = new Set([
   'txt>pdf', 'txt>docx', 'txt>doc', 'txt>md',
   'docx>pdf', 'doc>pdf', 'docx>txt',
@@ -68,21 +68,21 @@ const CONVERT_PAIRS: ReadonlySet<string> = new Set([
   'zip>tar', 'tar>zip', 'gz>zip', 'zip>7z',
 ])
 
-/** Containers ffmpeg reaches through transcode with a codec that the container accepts. */
+
 export const VIDEO_TARGETS: readonly string[] = ['mp4', 'mov', 'mkv', 'webm', 'avi', 'gif']
 
-/** Audio targets served by media-process/extract-audio. */
+
 export const AUDIO_TARGETS: readonly string[] = ['mp3', 'wav', 'aac', 'm4a', 'flac', 'ogg']
 
-/** Image worker writes PNG, JPEG, or WebP with matching file extensions. */
+
 const RASTER_IMAGE_TARGETS: readonly string[] = ['png', 'jpg', 'webp']
 
-/** Pillow opens these raster inputs directly; HEIC and SVG use convert-file. */
+
 const RASTER_IMAGE_SOURCES: ReadonlySet<string> = new Set([
   'png', 'jpg', 'webp', 'gif', 'bmp', 'tiff', 'ico',
 ])
 
-/** Still frame that media-process/thumbnail writes out of a video. */
+
 const VIDEO_STILL_TARGET = 'jpg'
 
 export function normalizeFormat(raw: string | null | undefined): string {
@@ -94,7 +94,7 @@ export function classifyFormat(format: string): FileKind {
   return KIND_BY_FORMAT[normalizeFormat(format)] ?? 'other'
 }
 
-/** Extension first, MIME subtype second — the backend re-detects by magic bytes anyway. */
+
 export function detectFileFormat(file: File): string | null {
   const name = file.name ?? ''
   const fromName = normalizeFormat(name.includes('.') ? name.slice(name.lastIndexOf('.') + 1) : '')
@@ -112,7 +112,7 @@ export function detectFileFormat(file: File): string | null {
   return null
 }
 
-/** Target formats offered for a given source format, in chip display order. */
+
 export function getSupportedTargets(sourceFormat: string | null): string[] {
   if (!sourceFormat) return []
 
@@ -133,7 +133,6 @@ export function getSupportedTargets(sourceFormat: string | null): string[] {
     }
   }
 
-  // GIF is an image but ffmpeg animates it into video containers through transcode.
   if (from === 'gif') {
     for (const target of VIDEO_TARGETS) {
       if (target !== 'gif' && !targets.includes(target)) targets.push(target)
@@ -143,12 +142,6 @@ export function getSupportedTargets(sourceFormat: string | null): string[] {
   return targets
 }
 
-/**
- * Which endpoint and operation a conversion needs.
- * Audio targets always go through extract-audio: transcode would feed an audio-only input
- * to a video encoder, and an mp3 container cannot hold H.264.
- * convert-file is tried before image-process, so documented pairs keep their endpoint.
- */
 export function resolveRoute(
   sourceFormat: string | null,
   target: string,

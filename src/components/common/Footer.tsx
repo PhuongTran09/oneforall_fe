@@ -11,8 +11,8 @@ export function Footer() {
   const currentYear = new Date().getFullYear()
   const { lang } = useI18n()
 
-  // Danh mục + nhãn tool lấy hết từ registry: thêm tool vào SEO_TOOLS là nó tự
-  // xuất hiện ở footer. Bốn mảng chép tay trước đây chính là lý do thiếu 2 tool.
+
+
   const columns = TOOL_CATEGORIES.map((cat) => ({
     id: cat.id,
     title: t(cat.nameKey),
@@ -27,7 +27,7 @@ export function Footer() {
     <footer className="w-full border-t border-edge bg-page mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
         <div className="grid gap-8 mb-12 lg:grid-cols-[minmax(0,24rem)_minmax(0,1fr)]">
-          {/* Brand Info */}
+
           <div className="space-y-4">
             <LocaleLink to="/" className="flex items-center gap-2.5">
               <div className="w-10 h-10 grid place-items-center">
@@ -49,24 +49,24 @@ export function Footer() {
                 <Mail className="w-4 h-4" />
               </a>
             </div>
-            <div className="flex flex-col items-start gap-2">
+            <div className="flex flex-col items-start gap-1">
               <LocaleLink
                 to="/tools"
-                className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium text-ink hover:text-brand transition-colors"
+                className="inline-flex min-h-6 items-center gap-1.5 text-xs sm:text-sm font-medium text-ink hover:text-brand transition-colors"
               >
                 <LayoutGrid className="w-3.5 h-3.5" />
                 {t('directory.allTools')}
               </LocaleLink>
               <LocaleLink
                 to="/case-opening"
-                className="inline-flex items-center gap-1.5 text-xs sm:text-sm text-slate-400 hover:text-brand transition-colors"
+                className="inline-flex min-h-6 items-center gap-1.5 text-xs sm:text-sm text-slate-400 hover:text-brand transition-colors"
               >
                 <Sparkles className="w-3.5 h-3.5" />
                 {t('footer.caseOpening')}
               </LocaleLink>
               <LocaleLink
                 to="/square-spin"
-                className="inline-flex items-center gap-1.5 text-xs sm:text-sm text-slate-400 hover:text-brand transition-colors"
+                className="inline-flex min-h-6 items-center gap-1.5 text-xs sm:text-sm text-slate-400 hover:text-brand transition-colors"
               >
                 <Shuffle className="w-3.5 h-3.5" />
                 {t('footer.squareSpin')}
@@ -74,22 +74,32 @@ export function Footer() {
             </div>
           </div>
 
-          {/* 6 nhóm công cụ, mỗi nhóm một cột. Heading là link về trang danh mục
-              nên chân trang điều hướng được theo nhóm chứ không chỉ theo tool. */}
+
+
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-8">
             {columns.map((col) => (
               <div key={col.id}>
-                <h4 className="text-xs font-bold uppercase tracking-wider mb-3">
-                  <LocaleLink to={col.to} className="text-ink hover:text-brand transition-colors">
+
+
+
+                <h2 className="text-xs font-bold uppercase tracking-wider mb-3">
+                  <LocaleLink
+                    to={col.to}
+                    className="inline-flex min-h-6 items-center text-ink hover:text-brand transition-colors"
+                  >
                     {col.title}
                   </LocaleLink>
-                </h4>
-                <ul className="space-y-2">
+                </h2>
+
+
+
+
+                <ul className="space-y-1">
                   {col.items.map((item) => (
                     <li key={item.to}>
                       <LocaleLink
                         to={item.to}
-                        className="text-xs sm:text-sm text-slate-400 hover:text-brand transition-colors"
+                        className="inline-flex min-h-6 items-center text-xs sm:text-sm text-slate-400 hover:text-brand transition-colors"
                       >
                         {item.label}
                       </LocaleLink>
@@ -101,7 +111,7 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Bottom Bar */}
+
         <div className="pt-8 border-t border-edge/60 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
           <div className="flex items-center gap-1.5 text-emerald-600 font-medium">
             <ShieldCheck className="w-4 h-4" />
@@ -109,25 +119,25 @@ export function Footer() {
           </div>
           <div className="flex flex-col items-center gap-2">
             <div className="flex items-center gap-3">
-              <LocaleLink to="/terms" className="text-slate-400 hover:text-brand transition-colors">
+              <LocaleLink to="/terms" className="inline-flex min-h-6 items-center text-slate-400 hover:text-brand transition-colors">
                 {t('common.terms')}
               </LocaleLink>
               <span aria-hidden="true">•</span>
-              <LocaleLink to="/privacy" className="text-slate-400 hover:text-brand transition-colors">
+              <LocaleLink to="/privacy" className="inline-flex min-h-6 items-center text-slate-400 hover:text-brand transition-colors">
                 {t('common.privacy')}
               </LocaleLink>
               <span aria-hidden="true">•</span>
               <button
                 type="button"
                 onClick={() => openConsentModal('custom')}
-                className="text-slate-400 hover:text-brand transition-colors cursor-pointer"
+                className="inline-flex min-h-6 items-center text-slate-400 hover:text-brand transition-colors cursor-pointer"
               >
                 {t('consent.cookieSettings')}
               </button>
             </div>
             <p>{t('footer.copyright', { year: currentYear })}</p>
           </div>
-          {/* 768–1279: navbar chưa đủ chỗ, xem ghi chú ở Navbar */}
+
           <div className="hidden min-[768px]:flex xl:hidden items-center gap-1 text-slate-500">
             <LanguageToggle />
           </div>

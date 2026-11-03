@@ -41,9 +41,6 @@ export function CaseOpeningWorkspace() {
   const reducedMotion = useReducedMotion()
   const [tab, setTab] = useState<Tab>('items')
   const [editor, setEditor] = useState<{ item: CaseItem | null } | null>(null)
-  // Modal sửa vật phẩm chỉ fade ra được nếu node còn sống sau khi đóng: editorShow giữ
-  // subtree thêm 180ms, editorHeld giữ đúng item đang sửa (form không nhảy về trạng thái
-  // trống giữa lúc mờ dần), editorSeq đổi key theo nhịp MỞ để lần sau là instance mới.
   const { show: editorShow } = useExitFade(editor !== null)
   const editorSeq = useOpenSeq(editor !== null)
   const [editorHeld, setEditorHeld] = useState(editor)

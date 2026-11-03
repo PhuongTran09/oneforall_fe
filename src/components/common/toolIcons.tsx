@@ -26,11 +26,11 @@ import type { CategoryId } from '../../config/toolCategories'
 
 export type IconComponent = ComponentType<{ className?: string }>
 
-/**
- * Nhóm nào cũng một nét: toàn bộ là lucide outline, stroke=currentColor, viewBox 24.
- * Brand SVG (fill đặc) từng khiến các tool tải media trông khác hẳn phần còn lại, và
- * nó ăn theo màu nền chứ không theo trạng thái hover của thẻ.
- */
+
+
+
+
+
 const CATEGORY_ICONS_BY_CATEGORY: Record<ToolConfig['category'], IconComponent> = {
   youtube: MonitorPlay,
   tiktok: Clapperboard,
@@ -45,11 +45,11 @@ const CATEGORY_ICONS_BY_CATEGORY: Record<ToolConfig['category'], IconComponent> 
   archive: Archive,
 }
 
-/**
- * Icon riêng theo slug — chỉ khác khi hành kháchác thật, để không phải mở hai trang
- * mới biết thẻ nào là nén ảnh, thẻ nào là đổi kích thước. Tool mới chưa có ở đây
- * tự rơi về icon nhóm, nên menu không bao giờ thiếu mục.
- */
+
+
+
+
+
 const TOOL_ICONS: Record<string, IconComponent> = {
   '/youtube-downloader': Download,
   '/tiktok-downloader': Clapperboard,
@@ -67,7 +67,7 @@ const TOOL_ICONS: Record<string, IconComponent> = {
   '/archive-converter': FileArchive,
 }
 
-/** Icon của một tool: slug đi trước rồi tới category. Không màu hardcode — hộp bao quanh quyết định màu. */
+
 export function ToolIcon({
   category,
   slug,
@@ -81,7 +81,7 @@ export function ToolIcon({
   return <Icon className={className} />
 }
 
-/** Icon nhận diện nhóm — một map duy nhất cho mega-menu, footer, rail chip và trang danh mục. */
+
 export const CATEGORY_ICONS: Record<CategoryId, IconComponent> = {
   downloader: Download,
   converter: ArrowLeftRight,

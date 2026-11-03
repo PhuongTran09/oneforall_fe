@@ -1,10 +1,10 @@
 import type { SpinPlan } from './roulette'
 
-/**
- * Tiếng quay được tổng hợp bằng WebAudio ngay trong trình duyệt (không có tệp mẫu,
- * không tải từ nguồn ngoài). Lịch nhịp lấy từ `spinSchedule` nên mỗi tiếng tách rơi
- * đúng lúc ô đi qua kim, và cú "cạch" cuối đúng lúc băng phanh lại.
- */
+
+
+
+
+
 export interface TickHandle {
   stop(): void
 }
@@ -29,7 +29,7 @@ function context(): AudioContext | null {
   }
 }
 
-/** Biquad bandpass RBJ, hệ số đã chuẩn hoá theo a0 = 1 + alpha. */
+
 function bandpassCoeffs(sampleRate: number, center: number, q: number) {
   const w0 = (2 * Math.PI * center) / sampleRate
   const alpha = Math.sin(w0) / (2 * q)
@@ -62,7 +62,7 @@ function filter(input: Float32Array, sampleRate: number, center: number, q: numb
   return out
 }
 
-/** Tròn âm theo hàm mũ, pha lấy tích phân để tần số trượt được mà không méo. */
+
 function decayingSine(data: Float32Array, sampleRate: number, f0: number, f1: number, tau: number, gain: number, drop = 0.02) {
   let phase = 0
   const life = sampleRate * drop
@@ -82,10 +82,10 @@ function normalize(data: Float32Array, peak: number): void {
   for (let i = 0; i < data.length; i += 1) data[i] *= scale
 }
 
-/**
- * Một cú "tách": gai noise cho phần đầu, nhát gỗ 1.4kHz trượt xuống làm cao độ,
- * hoạ âm kim loại nhẹ và một tiếng "boom" trầm cho có cân nặng.
- */
+
+
+
+
 function buildTick(audio: AudioContext): AudioBuffer {
   const sr = audio.sampleRate
   const buffer = audio.createBuffer(1, Math.round(sr * 0.06), sr)
@@ -101,7 +101,7 @@ function buildTick(audio: AudioContext): AudioBuffer {
   return buffer
 }
 
-/** Cú "cạch" lúc băng hết trớn: trầm giáng từ 120Hz, điểm gỗ 620Hz, chuông ngắn. */
+
 function buildStop(audio: AudioContext): AudioBuffer {
   const sr = audio.sampleRate
   const buffer = audio.createBuffer(1, Math.round(sr * 0.3), sr)
@@ -117,7 +117,7 @@ function buildStop(audio: AudioContext): AudioBuffer {
   return buffer
 }
 
-/** Sột sột nền lúc băng chạy nhanh, đủ để khoảng trống giữa các nhịp không chết. */
+
 function buildBed(audio: AudioContext): AudioBuffer {
   const sr = audio.sampleRate
   const n = Math.round(sr * 0.5)
@@ -152,7 +152,7 @@ export function startTicks(plan: SpinPlan, volume: number): TickHandle | null {
     if (!Number.isFinite(offset) || offset < 0) continue
     const when = Math.max(t0 + offset / 1000, lastAt + 0.018)
     lastAt = when
-    // Càng về cuối càng sáng và rõ hơn một chút: tạo cảm giác hồi hộp khi sắp dừng.
+
     const near = i / Math.max(1, plan.ticks.length - 1)
     const src = audio.createBufferSource()
     src.buffer = tick
@@ -173,7 +173,7 @@ export function startTicks(plan: SpinPlan, volume: number): TickHandle | null {
   brakeGain.connect(master)
   brakeSrc.start(t0 + stopAt / 1000)
 
-  // rè nền: nhỏ dần theo đà hụt của băng, kết thúc ngay trước cú cạch
+
   const bedSrc = audio.createBufferSource()
   bedSrc.buffer = bed
   bedSrc.loop = true
@@ -192,12 +192,12 @@ export function startTicks(plan: SpinPlan, volume: number): TickHandle | null {
   return {
     stop() {
       try {
-        // Nhả nhanh chứ không cắt: cú cạch cuối đúng lúc transitionend nên nếu mute
-        // tức thì thì nó bị nuốt mất, người dùng không nghe thấy vòng quay dừng.
+
+
         master.gain.setTargetAtTime(0, audio.currentTime, 0.05)
         window.setTimeout(() => master.disconnect(), 400)
       } catch {
-        /* đã dừng trước đó */
+        // Node đã disconnect ở lượt stop trước: không còn gì để fade
       }
     },
   }

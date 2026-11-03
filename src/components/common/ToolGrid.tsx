@@ -10,7 +10,7 @@ import { t, withLocale } from '../../i18n/langStore'
 
 export interface ToolGridProps {
   tools: ToolConfig[]
-  /** Dải điều hướng giữa '/tools' và 6 trang danh mục — bật trên các trang đó, tắt ở nơi khác. */
+
   showCategoryNav?: boolean
 }
 
@@ -26,8 +26,6 @@ const chips = [
 export function CategoryNav() {
   const location = useLocation()
 
-  // Mờ dần ở mép phải chỉ hiện khi còn chip bị cuộn ẩn phía sau;
-  // ResizeObserver đo lại khi đổi breakpoint, scroll listener đo khi vuốt.
   const railRef = useRef<HTMLDivElement>(null)
   const [railHasMore, setRailHasMore] = useState(false)
 
@@ -38,9 +36,6 @@ export function CategoryNav() {
     const measure = () => {
       raf = 0
       const next = rail.scrollLeft + rail.clientWidth < rail.scrollWidth - 4
-      // Scroll và resize bắn dày hơn khung hình; đọc ba số đo hình học ngay trong callback là
-      // forced layout giữa cú vuốt. Gom về một lần mỗi frame, và trả về đúng giá trị cũ khi
-      // không đổi để React khỏi render lại cả dải chip.
       setRailHasMore((prev) => (prev === next ? prev : next))
     }
     const onScroll = () => {
@@ -73,12 +68,12 @@ export function CategoryNav() {
               aria-current={isActive ? 'page' : undefined}
               className={`h-9 sm:h-11 shrink-0 inline-flex items-center gap-2 sm:gap-2.5 px-3 sm:px-4 md:px-5 text-xs sm:text-sm whitespace-nowrap cursor-pointer clip-corner-btn transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#FF3B30] ${
                 isActive
-                  ? 'bg-brand-gradient text-white font-semibold border border-[rgba(255,107,74,0.6)]'
+                  ? 'bg-brand-gradient text-on-brand font-semibold border border-[rgba(255,107,74,0.6)]'
                   : 'bg-surface text-slate-400 font-medium border border-edge hover:bg-[rgba(255,59,48,0.08)] hover:text-slate-100 hover:border-[rgba(255,59,48,0.35)] hover:-translate-y-px active:translate-y-0'
               }`}
             >
-              {/* 18px ở desktop: icon lucide chỉ tô trong 16/24 ô, để 16px cạnh
-                  chữ 14px thì nó nhẹ hơn hẳn, trông rời thành hai khối. */}
+
+
               <ChipIcon className="w-4 h-4 sm:w-4.5 sm:h-4.5 shrink-0" />
               {t(labelKey)}
             </LocaleLink>

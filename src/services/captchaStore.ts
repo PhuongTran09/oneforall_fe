@@ -3,7 +3,7 @@ import { t } from '../i18n/langStore'
 import { env } from '../utils/env'
 import { getAccessToken } from './authStore'
 
-/** Challenge Turnstile theo yêu cầu — cùng mô hình singleton với errorPopupStore/toastStore: */
+
 type Slot = {
   resolve: (token: string) => void
   reject: (error: Error) => void
@@ -13,7 +13,7 @@ let nextId = 1
 let active: { id: number; slot: Slot } | null = null
 const queue: Slot[] = []
 const listeners = new Set<() => void>()
-// BE trả lời qua `captcha_required` của /anonymous/session — FE không tự đoán chính sách.
+
 let requiredByBackend = false
 
 function emit() {
@@ -27,12 +27,12 @@ function subscribe(listener: () => void) {
   }
 }
 
-/** id của challenge đang mở (null = không có panel nào). */
+
 function getSnapshot(): number | null {
   return active?.id ?? null
 }
 
-/** BE nói phiên ẩn danh hiện tại phải kèm token ở MỌI job — xem anonymousSessionApi. */
+
 export function setCaptchaRequiredByBackend(required: boolean): void {
   requiredByBackend = required
 }
@@ -41,7 +41,7 @@ export function captchaRequiredByBackend(): boolean {
   return requiredByBackend
 }
 
-/** Mở panel xác minh và chờ token. Cửa này đóng khi FE chưa được cấu hình (cờ tắt/site key */
+
 export function requestCaptchaToken(): Promise<string> {
   if (!env.turnstileEnabled || !env.turnstileSiteKey) {
     return Promise.reject(new Error(t('captcha.unavailable')))
@@ -59,11 +59,11 @@ export function requestCaptchaToken(): Promise<string> {
   return promise
 }
 
-/** Token đã giải sẵn lúc người dùng kéo/chọn tệp. Turnstile thụ token vài phút và BE tính */
+
 const WARM_TTL_MS = 120_000
 let warm: { token: string; at: number } | null = null
 
-/** Mở ải SỚM ngay khi có tệp thay vì đợi bấm "Bắt đầu xử lý": upload vài trăm MB rồi mới ăn */
+
 export function warmCaptchaToken(): void {
   if (!requiredByBackend || warm || getAccessToken()) return
   void requestCaptchaToken().then(
@@ -76,14 +76,14 @@ export function warmCaptchaToken(): void {
   )
 }
 
-/** Ăn token đã giải sẵn; null khi chưa có hoặc đã quá WARM_TTL_MS. */
+
 export function takeWarmCaptchaToken(): string | null {
   const entry = warm
   warm = null
   return entry && Date.now() - entry.at < WARM_TTL_MS ? entry.token : null
 }
 
-/** Resolve the active challenge, then open the next queued request with a fresh token. */
+
 export function fulfillCaptchaToken(token: string): void {
   const current = active
   const next = queue.shift()
@@ -92,7 +92,7 @@ export function fulfillCaptchaToken(token: string): void {
   current?.slot.resolve(token)
 }
 
-/** Modal không lấy được token (Cloudflare từ chối, token hết hạn, user đóng, script lỗi). */
+
 export function breakCaptcha(message: string): void {
   const current = active
   const waiting = queue.splice(0, queue.length)

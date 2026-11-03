@@ -1,6 +1,6 @@
-// Sinh 3 tệp WAV cho tính năng mở hòm bằng DSP thuần (không dùng mẫu âm thanh bên ngoài).
-// Tiếng quay không nằm ở đây — nó được tổng hợp theo easing của lượt quay trong tickSound.ts.
-// Chạy: node scripts/genCaseSounds.mjs  →  public/sounds/*.wav
+
+
+
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -30,7 +30,7 @@ function add(target, src, gain = 1, at = 0) {
   return target
 }
 
-/** Chuông kim loại: hoạ âm bất hoà hợp + suy giảm mũ, đây là màu tiếng chính của hòm. */
+
 function metal(f0, { dur = 0.5, ratios = [1, 1.62, 2.41, 3.72, 5.13, 7.01], decay = 0.35, bend = 0.985 } = {}) {
   const out = buf(dur)
   const n = out.length
@@ -51,7 +51,7 @@ function metal(f0, { dur = 0.5, ratios = [1, 1.62, 2.41, 3.72, 5.13, 7.01], deca
   return out
 }
 
-/** `floor` giữ cao độ không trôi về 0Hz (lệch DC), `rate` là tốc độ giáng của cú đấm trầm. */
+
 function thud(f0 = 62, { dur = 0.28, decay = 0.07, floor = 0, rate = 6 } = {}) {
   const out = buf(dur)
   let phase = 0
@@ -63,7 +63,7 @@ function thud(f0 = 62, { dur = 0.28, decay = 0.07, floor = 0, rate = 6 } = {}) {
   return out
 }
 
-/** Quét cao độ kiểu piston: hoạ âm cộng hạn chế dưới Nyquist + rung biên của mô-tơ. */
+
 function riser(fFrom, fTo, { dur = 0.34, curve = 0.75, trem = 0, depth = 0, partials = 6 } = {}) {
   const out = buf(dur)
   const n = out.length
@@ -85,7 +85,7 @@ function riser(fFrom, fTo, { dur = 0.34, curve = 0.75, trem = 0, depth = 0, part
   return out
 }
 
-/** Biquad bandpass RBJ, cho phép quét tâm tần số theo thời gian (ai tiếng kim loại). */
+
 function bandpass(input, center, q, sweep) {
   const out = new Float64Array(input.length)
   const w0 = (2 * Math.PI * center) / SR
@@ -141,7 +141,7 @@ function shape(input, { attack = 0.002, decay = 0.12, hold = 0, release = 0.2 } 
   return out
 }
 
-/** Vài lược phản hồi có giảm âm → đuôi "phòng" ngắn, đủ để tiếng không bị khô. */
+
 function reverb(input, { wet = 0.28, delays = [0.031, 0.057, 0.093, 0.149], fb = 0.42, damp = 0.35 } = {}) {
   let tail = buf(input.length / SR)
   delays.forEach((d, k) => {
@@ -208,38 +208,29 @@ function encodeWav(input) {
   return out
 }
 
-// ── 1. Mở hòm: chốt nhả, hòm rung, nắp piston bật rồi bùng ───────────────────
 function caseOpen() {
-  // Mốc âm bám frame ảnh: case-shake va ở 15/30/45/60/75%, case-lid-open đạt
-  // 122deg ở 55% rồi hạ 116deg lúc hết 620ms.
   const SHAKE = 0.62
   const IMPACTS = [0.15, 0.3, 0.45, 0.6, 0.75].map((p) => p * SHAKE)
   const PEAK = 0.55 * SHAKE
 
   const t = buf(1.72)
 
-  // nền ầm tích áp lực suốt cú rung
   add(t, shape(bandpass(noise(0.68, 71), 150, 0.55), { attack: 0.34, decay: 0.1, hold: 0.16, release: 0.08 }), 0.36, 0)
 
-  // frame 0: chốt nhả
   add(t, shape(bandpass(noise(0.03, 11), 3200, 1.2), { attack: 0.0004, decay: 0.008, release: 0.014 }), 0.5, 0)
   add(t, metal(2350, { dur: 0.22, decay: 0.04, ratios: [1, 1.73, 2.58, 3.41] }), 0.3, 0.002)
   add(t, thud(74, { dur: 0.2, decay: 0.05 }), 0.72, 0)
 
-  // piston nắp: quét 170Hz → 1.3kHz tới đúng lúc nắp 122deg
   add(t, shape(riser(170, 1300, { dur: PEAK + 0.06, trem: 46, depth: 0.5 }), { attack: 0.05, decay: 0.25, hold: 0.45, release: 0.2 }), 0.4, 0.02)
 
-  // năm cú va, cao độ mỗi cú một khác
   IMPACTS.forEach((at, k) => {
     add(t, shape(bandpass(noise(0.016, 300 + k), 1500 + k * 320, 5), { attack: 0.0005, decay: 0.006, release: 0.01 }), 0.26 + (k % 2) * 0.05, at)
     add(t, metal(1600 + k * 260, { dur: 0.3, decay: 0.05, ratios: [1, 1.62, 2.41, 3.72] }), 0.16, at + 0.004)
   })
 
-  // nắp nảy lại 122 → 116deg
   add(t, thud(96, { dur: 0.24, decay: 0.05 }), 0.5, SHAKE - 0.14)
   add(t, metal(740, { dur: 0.4, decay: 0.07, ratios: [1, 1.57, 2.31, 3.9] }), 0.26, SHAKE - 0.14)
 
-  // 620ms: nắp mở hết — sub giáng, hơi thoát, chuông mở ra
   add(t, thud(46, { dur: 0.8, decay: 0.17, floor: 34, rate: 3.2 }), 1.0, SHAKE)
   add(t, shape(bandpass(noise(0.7, 91), 4200, 1.1, { to: 700 }), { attack: 0.02, decay: 0.22, hold: 0.14, release: 0.3 }), 0.34, SHAKE)
   add(t, bell(880, { dur: 0.9, decay: 0.26 }), 0.24, SHAKE + 0.02)
@@ -249,12 +240,10 @@ function caseOpen() {
   return fadeEdges(master(reverb(t, { wet: 0.32, delays: [0.029, 0.053, 0.087, 0.139], fb: 0.44 }), 0.8))
 }
 
-// ── 2. Công bố kết quả: ba nốt đô trưởng đi lên có đệm ấm bên dưới ───────────
 function bell(f0, { dur = 1.2, decay = 0.42 } = {}) {
   return metal(f0, { dur, decay, ratios: [1, 2.0, 2.99, 4.21, 5.43], bend: 0.998 })
 }
 
-/** Đệm_sin chậm attack dưới chuông, làm nốt không còn khô và hết chói. */
 function pad(freqs, { dur = 1.6, attack = 0.1, decay = 0.75 } = {}) {
   const out = buf(dur)
   const n = out.length
@@ -283,7 +272,6 @@ function caseReward() {
   return fadeEdges(master(reverb(t, { wet: 0.36, delays: [0.037, 0.061, 0.103, 0.167], fb: 0.46 }), 0.78))
 }
 
-// ── 3. Trúng vật phẩm hiếm: dải quét đi lên rồi mở ra hợp trưởng + sub ───────
 function caseRare() {
   const t = buf(2.8)
   add(t, shape(bandpass(noise(1.0, 51), 300, 2.4, { to: 6200 }), { attack: 0.55, decay: 0.28, hold: 0.08, release: 0.1 }), 0.34, 0)
@@ -300,7 +288,6 @@ function caseRare() {
 }
 
 fs.mkdirSync(OUT, { recursive: true })
-// Tiếng quay không sinh ra ở đây: nó được tổng hợp theo easing của lượt quay đang chạy.
 const jobs = [
   ['case-open.wav', caseOpen],
   ['case-reward.wav', caseReward],

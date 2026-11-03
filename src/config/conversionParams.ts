@@ -1,4 +1,4 @@
-/** Which extra parameters the backend actually reads for a given conversion. */
+
 
 import { classifyFormat, normalizeFormat, resolveRoute } from './conversionMatrix'
 import { t } from '../i18n/langStore'
@@ -19,12 +19,12 @@ export interface ParamField {
 
 export type ParamValues = Record<string, string | boolean>
 
-/** Payload sent as the `options`/`params` JSON to the backend. */
+
 export type ParamOptions = Record<string, string | number | boolean>
 
 const TEXT_MAX_LENGTH = 120
 
-/** Tools whose chips select an output format for a fixed operation rather than a conversion pair. */
+
 const RASTER_TOOL_SLUGS: readonly string[] = ['/image-compressor', '/image-resizer']
 
 function qualityField(backendDefault: number): ParamField {
@@ -170,7 +170,7 @@ const THUMBNAIL_FIELDS: ParamField[] = [
 
 const TIME_PATTERN = /^(\d{1,2}:)?(\d{1,2}:)?\d{1,2}(\.\d{1,3})?$/
 
-/** Raster targets are limited to what the image worker names correctly: png, jpg, webp. */
+
 function rasterFields(target: string): ParamField[] {
   const fields: ParamField[] = []
   if (target === 'jpg' || target === 'webp') fields.push(qualityField(85))
@@ -198,7 +198,7 @@ export interface ParamScope {
   toolSlug?: string
 }
 
-/** Controls to show for the current file + chosen target. Empty means "nothing to configure". */
+
 export function getParamFields(scope: ParamScope): ParamField[] {
   const { sourceFormat, toolSlug } = scope
   const target = normalizeFormat(scope.targetFormat)
@@ -223,7 +223,6 @@ export function getParamFields(scope: ParamScope): ParamField[] {
   return CONVERT_FIELDS_BY_PAIR[`${normalizeFormat(sourceFormat)}>${target}`] ?? []
 }
 
-/** Pre-filled values that keep existing tool behaviour after the panel replaced hardcoded options. */
 export function getInitialParamValues(toolSlug?: string): ParamValues {
   if (toolSlug === '/image-compressor') return { quality: '80' }
   if (toolSlug === '/image-resizer') return { width: '1200' }
@@ -253,15 +252,10 @@ export function isParamValid(field: ParamField, value: string | boolean | undefi
   return text.length <= (field.max ?? TEXT_MAX_LENGTH)
 }
 
-/** First field the user filled in wrongly; submit stays blocked while one exists. */
 export function findInvalidParam(fields: ParamField[], values: ParamValues): ParamField | null {
   return fields.find((field) => !isParamValid(field, values[field.key])) ?? null
 }
 
-/**
- * Only keys the visible fields own, and never a default: an absent key is what makes the
- * backend apply its own. Booleans go out as real JSON booleans — `bool("false")` is True there.
- */
 export function buildParamOptions(fields: ParamField[], values: ParamValues): ParamOptions {
   const options: ParamOptions = {}
 

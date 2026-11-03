@@ -29,14 +29,11 @@ interface WheelBlockProps {
   onSpin: () => void
 }
 
-/** Một cột quay: vòng (nút quay nằm trong hub) và nút reset. Kết quả, list, config là phần riêng. */
 function WheelBlock({ slot, label, entries, spin, onSpin }: WheelBlockProps) {
   const count = entries.length
   const [pendingReset, setPendingReset] = useState(false)
 
   const doReset = () => {
-    // Thứ tự quan trọng: ghi danh sách mẫu trước rồi mới bỏ kết quả cũ, nếu không
-    // kết quả của lượt trước vẫn treo trong hub dù danh sách mới không còn nó.
     resetWheel(slot)
     spin.reset()
     setPendingReset(false)
@@ -93,7 +90,6 @@ interface WheelSetupProps {
   busy: boolean
   copyTo?: WheelSlot
   onMutate: () => void
-  /** Chỉ dùng khi có `copyTo`: danh sách wheel nhận vừa bị ghi đè. */
   onCopy?: () => void
 }
 

@@ -14,7 +14,7 @@ export interface RarityTableProps {
   items: CaseItem[]
 }
 
-/** Tỷ lệ trúng KHÔNG nhập tay — nó tính từ trọng số vật phẩm × hệ số cấp độ. */
+
 export function RarityTable({ caseId, rarities, items }: RarityTableProps) {
   const [pendingDelete, setPendingDelete] = useState<Rarity | null>(null)
 

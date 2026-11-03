@@ -11,14 +11,14 @@ export interface ToolFormState {
 export interface ToolSnapshot {
   form: ToolFormState | null
   job: JobPublicResponse | null
-  /** Job đang chạy khi người dùng rời trang — quay lại thì theo dõi tiếp, không gửi lại file. */
+
   pending: { jobId: string; downloadToken?: string | null } | null
   downloadUrl: string | null
   fileName: string
   format: string
   previewUrl: string | null
   errorMessage: string | null
-  /** Ngôn ngữ đã dịch `errorMessage` — chuỗi dịch sẵn không dùng lại cho locale khác được. */
+
   errorLang: Lang | null
   faqIndex: number | null
 }
@@ -37,7 +37,7 @@ export function clearToolSnapshot(slug: string): void {
   snapshots.delete(slug)
 }
 
-/** Job bị xóa ở nơi khác (trang Lịch sử) → gỡ nó khỏi snapshot của mọi tool đang giữ, */
+
 export function forgetJobInToolSnapshots(jobId: string): void {
   for (const [slug, snap] of snapshots) {
     if (snap.job?.id !== jobId && snap.pending?.jobId !== jobId) continue

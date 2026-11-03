@@ -61,13 +61,9 @@ export function JobProgress({ job, onRetry, onCancel, isCancelling }: JobProgres
         ? 'finalizing'
         : 'processing'
 
-  // Chỉ hủy được job đã có id và chưa rơi vào trạng thái cuối: ở stage 'sending'
-  // (job === null) backend chưa có job nào để hủy.
   const canCancel =
     !!onCancel && !!job && (job.status === 'queued' || job.status === 'processing')
 
-  // Worker chỉ ghi progress 1 lúc nhận job (mark_processing); mọi giá trị lớn hơn 1 là
-  // % thật do ffmpeg/yt-dlp báo. Nên 1 vẫn nghĩa là "chưa rõ tiến độ".
   const reportedProgress = !isFailed && job ? job.progress : 0
   const isDeterminate = reportedProgress > 1
 
@@ -117,7 +113,7 @@ export function JobProgress({ job, onRetry, onCancel, isCancelling }: JobProgres
         </div>
       </div>
 
-      {/* Progress Bar */}
+
       {!isFailed && (
         <div className="w-full h-2 bg-page overflow-hidden border border-edge/60">
           {isDeterminate ? (
@@ -131,7 +127,7 @@ export function JobProgress({ job, onRetry, onCancel, isCancelling }: JobProgres
         </div>
       )}
 
-      {/* Hủy tác vụ: backend CAS sang cancelled và worker đang chạy sẽ dừng subprocess */}
+
       {canCancel && (
         <div className="flex justify-end">
           <Button
@@ -146,7 +142,7 @@ export function JobProgress({ job, onRetry, onCancel, isCancelling }: JobProgres
         </div>
       )}
 
-      {/* Error message */}
+
       {isFailed && (
         <div className="p-3.5 bg-brand/10 border border-brand/30 text-red-400 text-xs sm:text-sm space-y-2 clip-corner-btn">
           <p>{describeJobError(job, t('job.errorFallback'))}</p>

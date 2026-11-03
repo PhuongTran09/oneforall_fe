@@ -24,10 +24,10 @@ function contrast(a: string, b: string): number {
   return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05)
 }
 
-/**
- * Nền hòm do người dùng chọn (có thể là #ffffff), nên chữ phải tính độ sáng tương đối
- * thay vì hardcode — nền sáng thì chữ tối, ngược lại chữ trắng.
- */
+
+
+
+
 export function contrastInk(background: string): string {
   return luminance(background) > 0.45 ? INK_DARK : INK_LIGHT
 }
@@ -41,11 +41,6 @@ function mixToward(hex: string, target: string, amount: number): string {
     .join('')}`
 }
 
-/**
- * Chip chữ cỡ nhỏ (tên độ hiếm) thì "tạm đọc được" là chưa đủ: màu độ hiếm giữa dải
- * như #34c759 chỉ đạt ~2:1 với cả chữ đen lẫn chữ trắng. Chọn mực tốt hơn rồi kéo nền
- * về phía đen/trắng cho tới khi đạt AA 4.5:1, vẫn giữ sắc của độ hiếm đó.
- */
 export function chipInk(color: string): { background: string; ink: string } {
   const ink = contrast(color, INK_LIGHT) >= contrast(color, INK_DARK) ? INK_LIGHT : INK_DARK
   let background = color

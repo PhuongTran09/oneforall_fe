@@ -14,7 +14,7 @@ export interface ToolFeature {
   desc: string
 }
 
-/** Nền tảng mà một trang dạng link nhận — cũng là khoá bảng chặn host của UrlInputForm. */
+
 export type UrlPlatform = 'youtube' | 'tiktok' | 'twitter' | 'facebook' | 'threads'
 
 export interface ToolConfig {
@@ -36,7 +36,7 @@ export interface ToolConfig {
   metaDescription: string
   h1: string
   subtitle: string
-  /** Text SEO dưới ô nhập; EN bắt buộc có nếu VI có. */
+
   introParagraphs?: string[]
   inputType: 'url' | 'file'
   urlPlatform?: UrlPlatform
@@ -680,8 +680,8 @@ export function canonicalToolPath(path: string): string {
   const routePath = localePrefix ? pathname.slice(3) || '/' : pathname
   const slug = routePath.replace(/\/+$/, '') || '/'
 
-  // '/tools' và trang danh mục phải có '/' cuối ở cả SPA lẫn prerender (prerender luôn thêm '/'),
-  // nếu không hai bên khai canonical khác nhau trên cùng một URL.
+
+
   const isDirectoryPage = slug === '/tools' || slug.startsWith('/tools/')
   return SEO_TOOLS[slug] || isDirectoryPage ? `${localePrefix}${slug}/${suffix}` : path
 }

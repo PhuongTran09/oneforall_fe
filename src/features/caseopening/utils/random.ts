@@ -9,7 +9,7 @@ export function randomFloat(): number {
   return Math.random()
 }
 
-/** Dữ liệu đến từ localStorage nên có thể là NaN/âm/chuỗi — mọi đường vào đều qua đây. */
+
 export function sanitizeWeight(value: unknown): number {
   const n = typeof value === 'number' ? value : Number(value)
   if (!Number.isFinite(n) || n <= 0) return 0
@@ -22,7 +22,7 @@ export function rarityMap(rarities: Rarity[]): Record<string, Rarity> {
   return out
 }
 
-/** Xác suất thật = trọng số vật phẩm × hệ số cấp độ hiếm. */
+
 export function effectiveWeights(items: CaseItem[], rarities: Rarity[]): number[] {
   const byId = rarityMap(rarities)
   return items.map((item) => sanitizeWeight(item.weight) * sanitizeWeight(byId[item.rarityId]?.weight ?? 0))
@@ -38,7 +38,7 @@ export function shares(weights: number[]): number[] {
   return weights.map((w) => w / total)
 }
 
-/** Trả về index vật phẩm trúng, hoặc null khi không có ứng viên (toàn bộ trọng số 0). */
+
 export function pickWeightedIndex(weights: number[], rnd: () => number = randomFloat): number | null {
   const total = sum(weights)
   if (total <= 0) return null

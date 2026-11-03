@@ -17,7 +17,7 @@ const SIZES: Record<NonNullable<ItemTileProps['size']>, string> = {
   lg: 'w-32 sm:w-40 aspect-square',
 }
 
-/** Ảnh người dùng tải lên là tuỳ chọn — không có ảnh thì ô màu vẫn là vật phẩm hợp lệ. */
+
 export function ItemTile({ name, color, rarityColor, imageUrl, size = 'sm', showName = false, className = '' }: ItemTileProps) {
   return (
     <div className={`flex flex-col gap-1 min-w-0 ${className}`}>

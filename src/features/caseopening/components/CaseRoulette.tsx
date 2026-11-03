@@ -6,21 +6,21 @@ import { ItemTile } from './ItemTile'
 export interface CaseRouletteProps {
   cells: StripCell[]
   imageUrls: Record<string, string>
-  /** Vị trí ô trúng thưởng trên strip — đã biết trước khi quay. */
+
   targetIndex: number
-  /** Tăng lên mỗi lượt; 0 = chưa quay lần nào (chỉ preview tĩnh). */
+
   spinId: number
   spinning: boolean
   durationMs: number
   onDone: () => void
-  /** Báo lịch quay (các ô qua kim + lúc phanh dừng), đúng lúc track bắt đầu chạy. */
+
   onSpinScheduled?: (plan: SpinPlan) => void
 }
 
-/**
- * Track chỉ dịch bằng một CSS transition duy nhất: JS viết transform một lần rồi
- * chờ transitionend, không có frame nào re-render React.
- */
+
+
+
+
 export function CaseRoulette({ cells, imageUrls, targetIndex, spinId, spinning, durationMs, onDone, onSpinScheduled }: CaseRouletteProps) {
   const viewportRef = useRef<HTMLDivElement>(null)
   const trackRef = useRef<HTMLDivElement>(null)
@@ -46,7 +46,7 @@ export function CaseRoulette({ cells, imageUrls, targetIndex, spinId, spinning, 
 
     track.style.transition = 'none'
     track.style.transform = 'translateX(0px)'
-    // Ép reflow để trình duyệt chốt điểm xuất phát trước khi bật transition.
+
     void track.offsetWidth
     const raf = requestAnimationFrame(() => {
       track.style.transition = `transform ${durationMs}ms ${SPIN_EASING}`

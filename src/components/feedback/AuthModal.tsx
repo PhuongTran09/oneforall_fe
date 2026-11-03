@@ -25,6 +25,7 @@ import {
 import { describeAuthError, isAccountNotFoundError } from '../../utils/authError'
 import { getAccountStatus } from '../../services/api/accountStatusApi'
 import { useExitFade } from '../../hooks/useExitFade'
+import { useDialogFocus } from '../../hooks/useDialogFocus'
 
 export interface AuthModalProps {
   isOpen: boolean
@@ -39,12 +40,12 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const MIN_PASSWORD = 8
 const RESEND_COOLDOWN_S = 60
 
-/**
- * Chỉ những gì đã chạy thật: lịch sử đa thiết bị (GET /v1/jobs) · huỷ/xoá và tải lại
- * tác vụ tới hạn expires_at · trần upload + bỏ quảng cáo theo gói · trang hồ sơ và
- * thanh toán. Không có mục "theo dõi hạn mức" vì số hiển thị chỉ là totalCompleted
- * và filesAvailable.
- */
+
+
+
+
+
+
 const BENEFIT_KEYS = ['auth.benefit1', 'auth.benefit2', 'auth.benefit3', 'auth.benefit4'] as const
 
 const TABS = [
@@ -52,7 +53,7 @@ const TABS = [
   { id: 'register', labelKey: 'auth.tabRegister' },
 ] as const
 
-// Lucide v1 bỏ brand icon → giữ SVG Google chính hãng inline (fill currentColor).
+
 function GoogleIcon() {
   return (
     <svg className="w-4 h-4" viewBox="0 0 24 24" aria-hidden="true">
@@ -64,8 +65,8 @@ function GoogleIcon() {
   )
 }
 
-// 44px là mức chạm tối thiểu cho input; chiều cao chốt bằng h-11 thay vì padding để
-// mọi hàng (Google, email, mật khẩu, OTP) cao đúng bằng nhau.
+
+
 const inputClass =
   'auth-input h-11 w-full pl-10 pr-4 bg-page border border-brand/30 text-sm text-slate-100 placeholder-slate-500 outline-none transition-all clip-corner-btn focus:border-brand focus:ring-1 focus:ring-[#ff3b30]'
 
@@ -80,12 +81,12 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
   const [code, setCode] = useState('')
   const [busy, setBusy] = useState(false)
   const [accountMissing, setAccountMissing] = useState(false)
-  // Precheck không chạy được (BE lỗi/mạng) → chưa chắc email tới là mã hay link xác minh.
+
   const [codeTypeUncertain, setCodeTypeUncertain] = useState(false)
   const [cooldown, setCooldown] = useState(0)
 
-  // Đóng modal khi phiên chuyển từ chưa đăng nhập → đã đăng nhập
-  // (bao gồm Google redirect, link xác nhận, OTP verify, password login).
+
+
   const prevSessionRef = useRef(session)
   useEffect(() => {
     const was = prevSessionRef.current
@@ -96,7 +97,7 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
     }
   }, [session, isOpen, onClose])
 
-  // Đồng hồ cooldown gửi lại mã — chạy cả khi modal ẩn (state không mất).
+
   const cooldownActive = cooldown > 0
   useEffect(() => {
     if (!cooldownActive) return
@@ -104,58 +105,32 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
     return () => clearInterval(id)
   }, [cooldownActive])
 
-  // Escape đóng, Tab quay vòng trong panel. Hai call site mount lại theo `key` nên
-  // onClose() là đủ — không cần reset step ở đây.
+
+
+
   const panelRef = useRef<HTMLDivElement>(null)
   const tablistRef = useRef<HTMLDivElement>(null)
-  useEffect(() => {
-    if (!isOpen) return
-    const focusables = () =>
-      Array.from(
-        panelRef.current?.querySelectorAll<HTMLElement>(
-          'a[href], button:not([disabled]), input:not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])',
-        ) ?? [],
-      ).filter((el) => el.offsetParent !== null)
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onClose()
-        return
-      }
-      if (e.key !== 'Tab') return
-      const items = focusables()
-      if (items.length === 0) return
-      const first = items[0]
-      const last = items[items.length - 1]
-      const active = document.activeElement
-      if (e.shiftKey && (active === first || !panelRef.current?.contains(active))) {
-        e.preventDefault()
-        last.focus()
-      } else if (!e.shiftKey && active === last) {
-        e.preventDefault()
-        first.focus()
-      }
-    }
-    document.addEventListener('keydown', onKey)
-    return () => document.removeEventListener('keydown', onKey)
-  }, [isOpen, onClose])
 
-  /**
-   * Android/iOS không thu layout viewport khi mở bàn phím (mặc định là resizes-visual),
-   * nên nền `fixed inset-0` vẫn cao nguyên và panel đứng giữa theo chiều cao CŨ — nút
-   * submit và link "tiếp tục ẩn danh" chui hẳn xuống sau bàn phím. iOS còn pan thêm
-   * visual viewport (offsetTop > 0) để lộ ô đang gõ, kéo mọi phần tử `fixed` trượt khỏi
-   * tầm nhìn. Hai biến --auth-vh/--auth-vt báo đúng vùng nhìn thấy cho CSS.
-   *
-   * Biến CHỈ được gán khi nhận ra bàn phím thật (xem keyboardUp): không có bàn phím thì
-   * biến không tồn tại và CSS rơi về `inset-0`/`height:auto` — y hệt hành vi cũ, không
-   * tự nhiên để lộ một dải sáng cạnh thanh địa chỉ của trình duyệt.
-   *
-   * Viết thẳng vào style của backdrop chứ không qua state: đổi style không kéo theo
-   * render, nên không đụng con trỏ của ô người dùng đang gõ. Nghe cả resize lẫn scroll
-   * nhưng chỉ ghi khi số thật sự đổi — cuộn trang dưới modal vì thế gần như miễn phí.
-   * Listener gỡ theo isOpen; ở chiều đóng ta CỐ Ý không xoá biến, vì node còn sống 180ms
-   * để fade ra và xoá giữa chừng là panel giật size ngay frame đầu của animation.
-   */
+
+  useDialogFocus({ panelRef, open: isOpen, onEscape: onClose })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   const backdropRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
     if (!isOpen) return
@@ -172,10 +147,10 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
       el.style.removeProperty('--auth-vt')
     }
     const sync = () => {
-      // Ngưỡng 120px phân biệt bàn phím (250–400px) với thanh địa chỉ (60–90px); scale
-      // khác 1 là người dùng đang pinch — chiều cao tụt vì zoom chứ không vì bàn phím.
-      // 240px là sàn của một vùng còn dùng được: WebView kỳ cục báo số vụn lúc xoay
-      // màn hình thì thà giữ nguyên bố cục cũ còn hơn để nền tối co về gần 0.
+
+
+
+
       const keyboardUp =
         viewport.scale < 1.001 &&
         viewport.height >= 240 &&
@@ -201,14 +176,11 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
     }
   }, [isOpen])
 
-  // Hooks phải chạy trước early return — không đặt state/effect sau `if (!isOpen)`.
-  // Chiều đóng: node ở lại 180ms (đúng bằng .in-out) để fade ra chạy xong mới bị gỡ.
   const { show, closing } = useExitFade(isOpen)
   if (!show) return null
 
   const startCooldown = () => setCooldown(RESEND_COOLDOWN_S)
 
-  // Thành công qua toast; mọi Lỗi qua popup xác nhận (ErrorPopupViewport) — không render lỗi inline.
   const showError = (msg: string) => showErrorPopup({ message: msg })
 
   const handleError = (err: unknown) => {
@@ -216,7 +188,6 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
     showError(describeAuthError(err))
   }
 
-  // Gợi ý "chưa có tài khoản" gắn với đúng chuỗi email vừa bị từ chối → sửa email là xóa gợi ý.
   const handleEmailChange = (value: string) => {
     setEmail(value)
     setAccountMissing(false)
@@ -236,7 +207,6 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
     setBusy(true)
     try {
       await signInWithPassword(email, password)
-      // Thành công → session phát qua onAuthStateChange, effect trên đóng modal + toast.
       setBusy(false)
     } catch (err) {
       handleError(err)
@@ -261,28 +231,15 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
     try {
       const needsConfirmation = await signUp(email, password)
       if (needsConfirmation) {
-        // Email chưa được xác minh — hiện màn "check inbox", user bấm link
-        // trong email để hoàn tất (session về qua hash → effect phiên đóng modal).
         setStep('verify-email')
         startCooldown()
       }
-      // Nếu không cần xác minh, session sẽ tới qua effect (đóng modal + toast).
       setBusy(false)
     } catch (err) {
       handleError(err)
     }
   }
 
-  /**
-   * Ba nhánh theo precheck của BE (/v1/auth/account-status):
-   * - chưa có tài khoản → báo rõ + mời Đăng ký (GoTrue với shouldCreateUser: false cũng từ
-   *   chối, nhưng chặn ở đây không đốt một email và không để user chờ mail).
-   * - có tài khoản nhưng chưa xác minh → KHÔNG gọi /otp: GoTrue sẽ gửi link xác minh signup
-   *   chứ không gửi mã, và FE không dò được loại email đã gửi. Dắt user sang lane xác minh.
-   * - đã xác minh → mã 6 số, và đây là ca duy nhất chắc chắn email tới là OTP.
-   * Precheck trả null (BE/route phụ lỗi) thì đi theo đường cũ: cứ gửi, hint dưới màn nhập mã
-   * sẽ lo phần còn lại.
-   */
   const handleSendLoginOtp = async () => {
     if (!EMAIL_RE.test(email)) {
       showError(t('auth.emailInvalid'))
@@ -297,7 +254,6 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
       return
     }
     if (status && !status.confirmed) {
-      // Không startCooldown: chưa có email nào được gửi, user phải bấm được ngay.
       setStep('verify-required')
       setBusy(false)
       return
@@ -322,19 +278,12 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
     setBusy(true)
     try {
       await verifyLoginOtp(email, code)
-      // Effect phiên đóng modal + toast sau verify thành công.
       setBusy(false)
     } catch (err) {
       handleError(err)
     }
   }
 
-  /**
-   * Màn nhập mã không phân biệt được email vừa gửi là mã ĐĂNG NHẬP hay link XÁC MINH
-   * đăng ký — magic_link.go đối xử với tài khoản chưa confirm như user mới nhưng vẫn
-   * trả 200, và supabase-js bỏ body response của /otp nên FE không dò được. Để user tự
-   * chuyển sang lane đăng ký: gửi lại email xác minh rồi về step verify-email.
-   */
   const handleFinishSignup = async () => {
     setBusy(true)
     try {
@@ -371,7 +320,6 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
     setBusy(true)
     try {
       await requestPasswordReset(email)
-      // Không tiết lộ email có tồn tại hay không — Supabase gửi thư nếu có.
       setStep('forgot-sent')
       startCooldown()
       setBusy(false)
@@ -390,7 +338,6 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
     setAccountMissing(false)
   }
 
-  // Tablist theo APG: mũi tên + Home/End đổi chế độ, focus đi theo nút được chọn.
   const handleTabListKeyDown = (e: ReactKeyboardEvent<HTMLDivElement>) => {
     const i = TABS.findIndex((item) => item.id === tab)
     let next = -1
@@ -419,8 +366,6 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
           ? t('auth.registerSubtitle')
           : t('auth.loginSubtitle')
 
-  // Tiêu đề đổi theo tab/step; phần mô tả là lời trấn an "không cần tài khoản vẫn dùng
-  // được tiện ích" khi ở form, còn các bước sau thì mô tả đúng bước đó.
   const desc = step === 'form' ? t('auth.upsellDesc') : subtitle
 
   return (
@@ -431,10 +376,10 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
       }`}
       onClick={onClose}
     >
-      {/* Từ 640px là split-screen: cột trái bán giá trị của tài khoản, cột phải là form.
-          Mobile bỏ hẳn cột trái — một panel duy nhất, gọn, không phải cuộn hai lần.
-          max-height không nằm ở class: nó kẹp theo --auth-vh (bàn phím on-screen), nên
-          phải là CSS thật trong index.css — để utility Tailwind khai báo lại là mất kẹp. */}
+
+
+
+
       <div
         ref={panelRef}
         onClick={(e) => e.stopPropagation()}
@@ -444,8 +389,9 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
         role="dialog"
         aria-modal="true"
         aria-label={title}
+        tabIndex={-1}
       >
-        {/* Icon trần, không nền không bóng: thêm khung là thêm một mảng nổi đè lên form. */}
+
         <button
           type="button"
           onClick={onClose}
@@ -483,8 +429,8 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
           )}
         </aside>
 
-        {/* Đỉnh chừa sẵn 44px cho nút đóng: cột phải không có header ở desktop, bám sát
-            mép thì hàng đầu của form nằm ngay dưới nút X. */}
+
+
         <div data-lenis-prevent className="flex-1 min-w-0 min-h-0 overflow-y-auto scrollbar-none p-5 sm:px-6 sm:pb-6 sm:pt-11">
           <div className="sm:hidden mb-4 text-center">
             <div className="mx-auto w-8 h-8">
@@ -500,10 +446,10 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
             </div>
           ) : step === 'form' ? (
             <div className="space-y-3">
-              {/* Một thanh hai lựa chọn 50/50 cao 48px: bấm hoặc phím mũi tên là đổi form
-                  ngay trong modal, không modal mới, không điều hướng, không reload. Nút con
-                  không cắt góc — clip-path của thanh cha cắt luôn góc của chúng, lồng thêm
-                  một lớp nữa chỉ tạo viền răng cưa. */}
+
+
+
+
               <div
                 ref={tablistRef}
                 role="tablist"
@@ -532,8 +478,8 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
                 ))}
               </div>
 
-              {/* Google + phân cách dùng cho cả hai tab và nằm ngoài form: vùng đổi chỉ còn
-                  các trường, nên chuyển tab không làm panel nhảy chiều cao. */}
+
+
               <Button
                 type="button"
                 variant="secondary"
@@ -553,17 +499,19 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
                 <span className="h-px flex-1 bg-edge" />
               </div>
 
-              {/* Khung cao tối thiểu bằng đúng khối đăng ký (3 trường + nút): đổi tab chỉ
-                  đổi nội dung bên trong, panel không co ra → modal đứng nguyên vị trí. */}
-              <div className="flex min-h-[17.5rem] flex-col justify-center">
+
+
+
+
+
+              <div
+                role="tabpanel"
+                id={`auth-panel-${tab}`}
+                aria-labelledby={`auth-tab-${tab}`}
+                className="flex min-h-[17.5rem] flex-col justify-center"
+              >
                 {tab === 'login' && (
-                  <form
-                    onSubmit={handleLogin}
-                    role="tabpanel"
-                    id="auth-panel-login"
-                    aria-labelledby="auth-tab-login"
-                    className="auth-swap space-y-3"
-                  >
+                  <form onSubmit={handleLogin} className="auth-swap space-y-3">
                     <div>
                       <label className="block text-xs font-medium text-slate-300 mb-1.5" htmlFor="auth-email">
                         Email
@@ -593,7 +541,7 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
                           onClick={() => {
                             setStep('forgot')
                           }}
-                          className="text-xs text-brand-2 hover:text-brand font-medium hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4545]/60"
+                          className="-my-1 inline-flex min-h-6 items-center text-xs text-brand-2 hover:text-brand font-medium hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4545]/60"
                         >
                           {t('auth.forgotPassword')}
                         </button>
@@ -610,11 +558,15 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
                           placeholder="••••••••"
                           className={`${inputClass} pr-11`}
                         />
+
+
+
+
                         <button
                           type="button"
                           onClick={() => setShowPassword((v) => !v)}
                           aria-label={showPassword ? t('auth.hidePassword') : t('auth.showPassword')}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4545]/60"
+                          className="absolute right-0 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center text-slate-400 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#FF4545]/60"
                         >
                           {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                         </button>
@@ -633,24 +585,28 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
                       {t('auth.login')}
                     </Button>
 
-                    {/* OTP qua email là phương thức thật, nhưng để dạng liên kết chữ để
-                        nó không cạnh tranh với nút đăng nhập. */}
+
+
+
+
+
+
                     <button
                       type="button"
                       onClick={handleSendLoginOtp}
                       disabled={busy}
-                      className="w-full text-center text-xs text-slate-400 hover:text-brand-2 font-medium hover:underline disabled:opacity-50"
+                      className="inline-flex w-full min-h-6 items-center justify-center text-xs text-slate-400 hover:text-brand-2 font-medium hover:underline disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4545]/60"
                     >
                       {t('auth.loginWithCode')}
                     </button>
 
-                    {/* Mã chỉ gửi được cho email đã có tài khoản → mời đăng ký tại chỗ,
-                        email vừa gõ vẫn còn nguyên vì hai tab chung một trường. */}
+
+
                     {accountMissing && (
                       <button
                         type="button"
                         onClick={() => switchTab('register')}
-                        className="w-full text-center text-xs text-brand-2 hover:text-brand font-medium hover:underline"
+                        className="inline-flex w-full min-h-6 items-center justify-center text-xs text-brand-2 hover:text-brand font-medium hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4545]/60"
                       >
                         {t('auth.registerInstead')}
                       </button>
@@ -659,13 +615,7 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
                 )}
 
                 {tab === 'register' && (
-                  <form
-                    onSubmit={handleRegister}
-                    role="tabpanel"
-                    id="auth-panel-register"
-                    aria-labelledby="auth-tab-register"
-                    className="auth-swap space-y-3"
-                  >
+                  <form onSubmit={handleRegister} className="auth-swap space-y-3">
                     <div>
                       <label className="block text-xs font-medium text-slate-300 mb-1.5" htmlFor="reg-email">
                         Email
@@ -706,7 +656,7 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
                           type="button"
                           onClick={() => setShowPassword((v) => !v)}
                           aria-label={showPassword ? t('auth.hidePassword') : t('auth.showPassword')}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4545]/60"
+                          className="absolute right-0 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center text-slate-400 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#FF4545]/60"
                         >
                           {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                         </button>
@@ -783,7 +733,7 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
                 <button
                   type="button"
                   onClick={goBackToForm}
-                  className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-ink font-medium hover:underline"
+                  className="-my-1 inline-flex min-h-6 items-center gap-1.5 text-xs text-slate-400 hover:text-ink font-medium hover:underline"
                 >
                   <ArrowLeft className="w-3 h-3" />
                   {t('auth.backToLogin')}
@@ -801,7 +751,7 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
                   type="button"
                   onClick={handleResend}
                   disabled={cooldown > 0 || busy}
-                  className="inline-flex items-center gap-1.5 text-brand-2 hover:text-brand font-medium hover:underline disabled:opacity-50 disabled:no-underline"
+                  className="-my-1 inline-flex min-h-6 items-center gap-1.5 text-brand-2 hover:text-brand font-medium hover:underline disabled:opacity-50 disabled:no-underline"
                 >
                   {busy && <Loader2 className="w-3 h-3 animate-spin" />}
                   {cooldown > 0 ? t('auth.resendIn', { seconds: cooldown }) : t('auth.resend')}
@@ -810,7 +760,7 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
                 <button
                   type="button"
                   onClick={goBackToForm}
-                  className="text-slate-400 hover:text-ink font-medium hover:underline"
+                  className="-my-1 inline-flex min-h-6 items-center text-slate-400 hover:text-ink font-medium hover:underline"
                 >
                   {t('auth.backToLogin')}
                 </button>
@@ -828,7 +778,7 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
                   type="button"
                   onClick={handleResend}
                   disabled={cooldown > 0 || busy}
-                  className="inline-flex items-center gap-1.5 text-brand-2 hover:text-brand font-medium hover:underline disabled:opacity-50 disabled:no-underline"
+                  className="-my-1 inline-flex min-h-6 items-center gap-1.5 text-brand-2 hover:text-brand font-medium hover:underline disabled:opacity-50 disabled:no-underline"
                 >
                   {busy && <Loader2 className="w-3 h-3 animate-spin" />}
                   {cooldown > 0 ? t('auth.resendIn', { seconds: cooldown }) : t('auth.resendEmail')}
@@ -837,7 +787,7 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
                 <button
                   type="button"
                   onClick={goBackToForm}
-                  className="text-slate-400 hover:text-ink font-medium hover:underline"
+                  className="-my-1 inline-flex min-h-6 items-center text-slate-400 hover:text-ink font-medium hover:underline"
                 >
                   {t('auth.changeEmail')}
                 </button>
@@ -845,8 +795,8 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
             </div>
           ) : step === 'verify-required' ? (
             <div className="space-y-4">
-              {/* precheck báo chưa xác minh → email tới sẽ là link kích hoạt, không phải mã:
-                  lời nhắn phải nói ĐÚNG thứ user sẽ thấy trong hộp thư, đừng hứa 6 số. */}
+
+
               <div className="p-3 bg-amber-500/10 border border-amber-500/30 text-amber-400 flex items-start gap-2.5 text-xs clip-corner-card">
                 <Mail className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
                 <span>{t('auth.verifyRequiredDesc', { email })}</span>
@@ -857,7 +807,7 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
                   type="button"
                   onClick={handleFinishSignup}
                   disabled={cooldown > 0 || busy}
-                  className="inline-flex items-center gap-1.5 text-brand-2 hover:text-brand font-medium hover:underline disabled:opacity-50 disabled:no-underline"
+                  className="-my-1 inline-flex min-h-6 items-center gap-1.5 text-brand-2 hover:text-brand font-medium hover:underline disabled:opacity-50 disabled:no-underline"
                 >
                   {busy && <Loader2 className="w-3 h-3 animate-spin" />}
                   {cooldown > 0 ? t('auth.resendIn', { seconds: cooldown }) : t('auth.resendEmail')}
@@ -866,7 +816,7 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
                 <button
                   type="button"
                   onClick={goBackToForm}
-                  className="text-slate-400 hover:text-ink font-medium hover:underline"
+                  className="-my-1 inline-flex min-h-6 items-center text-slate-400 hover:text-ink font-medium hover:underline"
                 >
                   {t('auth.changeEmail')}
                 </button>
@@ -880,10 +830,15 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1.5 text-center">
+
+
+                <span
+                  id="otp-group-label"
+                  className="mb-1.5 block text-center text-xs font-medium text-slate-300"
+                >
                   {t('auth.codeLabel')}
-                </label>
-                <OtpInput value={code} onChange={setCode} disabled={busy} describedBy="otp-desc" />
+                </span>
+                <OtpInput value={code} onChange={setCode} disabled={busy} describedBy="otp-desc" groupLabelledBy="otp-group-label" />
               </div>
 
               <Button
@@ -904,7 +859,7 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
                   type="button"
                   onClick={handleResend}
                   disabled={cooldown > 0 || busy}
-                  className="inline-flex items-center gap-1.5 text-brand-2 hover:text-brand font-medium hover:underline disabled:opacity-50 disabled:no-underline"
+                  className="-my-1 inline-flex min-h-6 items-center gap-1.5 text-brand-2 hover:text-brand font-medium hover:underline disabled:opacity-50 disabled:no-underline"
                 >
                   {busy && <Loader2 className="w-3 h-3 animate-spin" />}
                   {cooldown > 0 ? t('auth.resendIn', { seconds: cooldown }) : t('auth.resend')}
@@ -913,15 +868,15 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
                 <button
                   type="button"
                   onClick={goBackToForm}
-                  className="text-slate-400 hover:text-ink font-medium hover:underline"
+                  className="-my-1 inline-flex min-h-6 items-center text-slate-400 hover:text-ink font-medium hover:underline"
                 >
                   {t('auth.changeEmail')}
                 </button>
               </div>
 
-              {/* Chỉ hiện khi precheck không tra được: đã đi qua /account-status thì tài khoản
-                  chưa xác minh bị chặn ở step verify-required, mã tới đây chắc chắn là OTP.
-                  Nút "Xác minh" chỉ bật khi đủ 6 số nên đường còn lại cũng phải có lối ra. */}
+
+
+
               {codeTypeUncertain && (
                 <p className="pt-1 text-center text-xs leading-relaxed text-slate-500">
                   {t('auth.noCodeHint')}{' '}
@@ -938,14 +893,14 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
             </form>
           ) : null}
 
-          {/* Bước form chỉ còn một lối ra: tiếp tục ẩn danh. Đổi chế độ đã có thanh tab
-              ở đầu form lo, nên không lặp lại liên kết "Đăng ký / Đăng nhập" ở đáy. */}
+
+
           {step === 'form' && (
             <div className="mt-4 text-center">
               <button
                 type="button"
                 onClick={onClose}
-                className="text-xs font-medium text-slate-400 underline-offset-2 hover:text-ink hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4545]/60"
+                className="inline-flex min-h-6 items-center text-xs font-medium text-slate-400 underline-offset-2 hover:text-ink hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4545]/60"
               >
                 {t('auth.continueGuest')}
               </button>

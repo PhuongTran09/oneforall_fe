@@ -6,17 +6,17 @@ import { IMAGE_MAX_BYTES, formatBytes, validateImageFile } from '../utils/images
 
 export interface ImagePickerProps {
   label: string
-  /** URL của asset đã lưu trước đó (chế độ sửa). */
+
   existingUrl?: string
   onPick: (file: File | null) => void
   error?: string
   disabled?: boolean
 }
 
-/**
- * Xem trước bằng object URL cục bộ, thu hồi ngay khi đổi tệp hoặc unmount —
- * ảnh chỉ thật sự xuống IndexedDB khi người dùng bấm Lưu.
- */
+
+
+
+
 export function ImagePicker({ label, existingUrl, onPick, error, disabled = false }: ImagePickerProps) {
   const [preview, setPreview] = useState<{ url: string; size: number } | null>(null)
   const [localError, setLocalError] = useState<string | null>(null)

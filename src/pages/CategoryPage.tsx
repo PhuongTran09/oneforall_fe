@@ -24,8 +24,6 @@ export function CategoryPage({ categoryId }: CategoryPageProps) {
     [lang, cat.nameKey, cat.path],
   )
 
-  // Cặp định dạng đã được resolveRoute() kiểm chứng — nhóm nào không chuyển định dạng
-  // (downloader, image_process) thì dải này rỗng và block không render.
   const pairs = useMemo(() => mergePairs(tools), [tools])
 
   return (
@@ -87,7 +85,7 @@ export function CategoryPage({ categoryId }: CategoryPageProps) {
           <div className="mt-12 text-center">
             <LocaleLink
               to="/tools"
-              className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-brand hover:underline"
+              className="inline-flex min-h-6 items-center gap-1.5 text-xs sm:text-sm font-semibold text-brand hover:underline"
             >
               {t('directory.allTools')}
               <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />

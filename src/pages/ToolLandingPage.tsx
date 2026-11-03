@@ -49,9 +49,9 @@ import {
 } from '../utils/toolStateStore'
 import { getLenisInstance } from '../hooks/useSmoothScroll'
 
-// Ảnh xem trước trong DownloadResult hiển thị theo ĐỊNH DẠNG kết quả, không theo nhóm tool:
-// '/threads-downloader' (jpg) và '/image-converter' (webp/png/jpg) cũng xuất ảnh dù không thuộc
-// nhóm image. PDF/SVG để ngoài — <img> không render được (hoặc render nội dung người dùng tải lên).
+
+
+
 const RASTER_PREVIEW_FORMATS = new Set(['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif', 'bmp', 'ico'])
 
 export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfig }) {
@@ -62,12 +62,12 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
     configOverride || SEO_TOOLS[stripLocale(location.pathname).path],
   )
 
-  // Snapshot của tool từ lần trước (chỉ trongmemory theo tab — File và blob không bao giờ
-  // ghi ra disk/sessionStorage). Kết quả đã hết hạn theo TTL backend thì không khôi phục.
+
+
   const snapshot = tool ? getToolSnapshot(tool.slug) : undefined
   const snapshotExpired = isJobExpired(snapshot?.job)
   const resultLive = !!snapshot?.downloadUrl && !snapshotExpired
-  // Điều kiện giống effect resume bên dưới: có job dở và chưa hết hạn thì vào trang là loading.
+
   const hasPendingJob = !!snapshot?.pending && !snapshotExpired
 
   const [isLoading, setIsLoading] = useState(hasPendingJob)
@@ -84,12 +84,12 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
     snapshotExpired ? null : (snapshot?.previewUrl ?? null),
   )
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(snapshot?.faqIndex ?? null)
-  // Lỗi KHÔNG khôi phục vào state: chuỗi đã dịch sẵn mà render lại thì thành lỗi tái hiện mãi sau
-  // khi đã tắt popup. snapshot.errorMessage chỉ là "lỗi còn nhắc dở" — mount effect đọc một lần.
+
+
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
-  // "Home" đã có sẵn ở cả breadcrumb nhìn thấy (Breadcrumbs) lẫn JSON-LD (SEOHead),
-  // nên mảng này chỉ mang phần còn lại: Tools → nhóm → tool.
+
+
   const breadcrumbsData = useMemo(() => {
     if (!tool) return []
     const category = categoryOfSlug(tool.slug)
@@ -100,7 +100,6 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
   }, [tool])
 
   const toolSlug = tool?.slug
-  // Chip "thường dùng": mọi cặp đã được formatSuggestions lọc qua resolveRoute().
   const popularConversions = useMemo(() => (tool ? toolFormatPairs(tool) : []), [tool])
 
   const resolveParamFields = useCallback(
@@ -116,8 +115,6 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
     [tool],
   )
 
-  // Luồng theo dõi hiện tại (SSE, polling là đường lùi). Controller cũ bị hủy mỗi lần gửi
-  // tệp mới, đổi tool, hoặc unmount để không bao giờ có hai luồng theo dõi cùng chạy.
   const trackControllerRef = useRef<AbortController | null>(null)
 
   const beginTracking = useCallback(() => {
@@ -141,14 +138,10 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
       if (tool) updateToolSnapshot(tool.slug, { pending: null })
       setJob(finishedJob)
       if (finishedJob.status === 'completed') {
-        // Token phải nằm trong URL: in-app browser (Facebook/Threads) bàn giao cú tải sang
-        // browser hệ thống, ở đó cookie ofs_anon của phiên ẩn danh không tồn tại → 403.
         setDownloadUrl(filesApi.getDirectDownloadUrl(finishedJob.id, token))
         showToast({ type: 'success', message: t('toolsPage.processSuccess') })
         return
       }
-      // cancelled/expired không mang error text từ backend, nên cần lời riêng.
-      // job.error có thể là traceback worker (tiếng Anh/nội bộ) → chỉ hiện nếu an toàn.
       const fallbackMessage =
         finishedJob.status === 'failed'
           ? failureMessage
@@ -167,7 +160,6 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
     }
   }, [toolSlug])
 
-  // Ghi trạng thái vào snapshot để quay lại trang là khôi phục ngay.
   useEffect(() => {
     if (!tool) return
     updateToolSnapshot(tool.slug, {
@@ -177,18 +169,11 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
       format: resultFormat,
       previewUrl: originalImagePreview,
       errorMessage,
-      // errorMessage là chuỗi ĐÃ DỊCH → gắn ngôn ngữ của nó; lần hiển thị sau chỉ nhắc lại khi
-      // người dùng vẫn đang đọc đúng ngôn ngữ đó.
       errorLang: errorMessage ? lang : null,
       faqIndex: openFaqIndex,
     })
   }, [tool, job, downloadUrl, resultFileName, resultFormat, originalImagePreview, errorMessage, openFaqIndex, lang])
 
-  // Nhắc lại lỗi còn dở (người dùng rời trang khi chưa kịp thấy): đúng MỘT lần rồi mất, vì effect
-  // ghi trạng thái ở trên khôi phục errorMessage = null nên snapshot cũng bị ghi đè theo.
-  // So sánh với locale đọc từ URL chứ không phải `lang` của store: LangRouteSync sync trong effect
-  // của riêng nó, nên ở commit mount này `lang` vẫn là ngôn ngữ CŨ (đo bằng console.trace) — nếu
-  // dùng nó thì mọi cú đổi VI↔EN bị xem là "vẫn ngôn ngữ cũ" và popup bật lại mãi.
   useEffect(() => {
     if (!tool || !snapshot?.errorMessage || !snapshot.errorLang) return
     if (snapshot.errorLang === stripLocale(location.pathname).lang) {
@@ -197,8 +182,6 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
     // eslint-disable-next-line react-hooks/exhaustive-deps -- chỉ chạy trên mount, đọc giá trị khởi tạo
   }, [])
 
-  // Quay lại trang khi job còn chạy: theo dõi tiếp job CŨ qua SSE/polling,
-  // không gửi lại file và không gọi lại API xử lý.
   useEffect(() => {
     if (!tool) return
     const pending = getToolSnapshot(tool.slug)?.pending
@@ -232,8 +215,6 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
     return () => controller.abort()
   }, [tool, snapshotExpired, beginTracking, isCurrentTracking, applyFinishedJob])
 
-  // Blob preview của kết quả đã hết hạn: giải phóng khi vào trang (revoke URL không còn
-  // tham chiếu là no-op, chạy lặp lại vô hại).
   useEffect(() => {
     if (!tool || !snapshot?.previewUrl || !snapshotExpired) return
     URL.revokeObjectURL(snapshot.previewUrl)
@@ -259,12 +240,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
     setOriginalImagePreview(null)
     setErrorMessage(null)
     setIsLoading(false)
-    // Đưa về đầu để rơi đúng khu tải tệp: khối kết quả vừa gỡ nên nếu đứng yên,
-    // người dùng sẽ ở lưng chừng trang. rAF để cuộn sau khi DOM đã thu gọn.
     requestAnimationFrame(() => {
-      // Native smooth trong lúc Lenis đang quyền là hai bộ giành nhau scrollTop:
-      // Lenis đọc scroll event thật rồi nội suy tiếp từ đó, cú về đầu bị khựng giữa
-      // đường. Có Lenis thì nhờ nó, không có thì giữ nguyên bản cũ.
       const lenis = getLenisInstance()
       if (lenis) {
         lenis.scrollTo(0)
@@ -274,7 +250,6 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
     })
   }
 
-  // Hủy job qua Bearer hoặc cookie phiên; SSE/poll vẫn nhận trạng thái cuối.
   const handleCancelCurrent = async () => {
     const jobId = job?.id
     if (!jobId || isCancelling) return
@@ -288,20 +263,12 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
     }
   }
 
-  // Xử lý chạy được cho khách ẩn danh: quyền do BE chốt (AUTH_REQUIRED_* / phiên ẩn
-  // danh), FE không mở modal đăng nhập nữa — 401 hiện qua popup lỗi API. Trang tool vẫn
-  // mở cho khách đọc (SEO).
 
-  // Mọi tab tài trợ đi qua đây: phải gọi ĐỒNG BỘ trong user gesture, trước await
-  // đầu tiên. Popup bị chặn thì window.open trả null — luồng xử lý vẫn chạy.
   const openSponsoredTabs = (key: string) => {
     if (adsGate === 'load') openAffiliateTab(key)
     openSmartlinkTab(adsGate)
   }
 
-  // Điều khoản là cổng bắt buộc trước khi tạo job. Bar cookie dính đáy màn hình, trễ một nhịp
-  // animate-fade-in và không chặn thao tác nào — thiếu toast thì người dùng bấm nút mà thấy
-  // như trang đơ, nên mỗi lần bị chặn phải nói rõ đang thiếu gì.
   const requireTerms = () => {
     if (hasAcceptedTerms()) return true
     openConsentModal('main')
@@ -311,7 +278,6 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
 
   const handleUrlSubmit = async (url: string, format: string, quality: string, slides?: number[]) => {
     if (!requireTerms()) return
-    // Form đã pass validate trước khi gọi đây, nên đây đúng là ý định xử lý của người dùng.
     openSponsoredTabs(tool.slug)
     const controller = beginTracking()
     setIsLoading(true)
@@ -320,10 +286,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
     setDownloadUrl(null)
 
     try {
-      // Job ẩn danh được BE khoá theo phiên (cookie ofs_anon) — xin phiên trước khi tạo
-      // job; có Bearer rồi thì hàm này trả lời ngay, không thêm request.
       await ensureAnonymousSession()
-      // Xác định operation dựa trên tool config
       const operation = tool.backendOperation === 'extract-audio' ? 'extract-audio' : 'url_download'
       const accepted = await mediaApi.processUrl(url, operation, { format, quality, slides })
       updateToolSnapshot(tool.slug, {
@@ -331,7 +294,6 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
       })
 
       setResultFormat(format)
-      // 'sv' locale cho dạng "2026-10-12 15:30" (giờ local) → gọn thành 202610121530
       const stamp = new Date().toLocaleString('sv').slice(0, 16).replace(/[-: ]/g, '')
       setResultFileName(`oneforall_${format}_${stamp}.${format}`)
 
@@ -368,7 +330,6 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
     setJob(null)
     setDownloadUrl(null)
 
-    // Thu hồi blob cũ để không giữ ảnh gốc trong bộ nhớ sau khi thay tệp
     if (originalImagePreview) URL.revokeObjectURL(originalImagePreview)
     setOriginalImagePreview(file.type.startsWith('image/') ? URL.createObjectURL(file) : null)
 
@@ -385,8 +346,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
           | 'remove_background'
           | 'crop'
 
-        // Background removal always returns PNG and ignores every other option.
-        openSponsoredTabs(tool.slug) // đồng bộ, trước await đầu tiên -> còn trong user gesture
+        openSponsoredTabs(tool.slug)
         await ensureAnonymousSession()
         accepted = await imageApi.processImage(
           file,
@@ -406,11 +366,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
           )
         }
 
-        // Route hợp lệ (= dữ liệu đầu vào đạt) mới mở tab tài trợ; vẫn đồng bộ trước await.
         openSponsoredTabs(tool.slug)
-        // Phiên ẩn danh phải có trước khi tạo job (BE từ chối 401 nếu không có); có Bearer
-        // thì không gửi request nào. Đặt SAU openSponsoredTabs: window.open chỉ sống trong
-        // user gesture, await trước đó là tab tài trợ bị trình duyệt chặn.
         await ensureAnonymousSession()
 
         if (route.endpoint === 'media-process') {
@@ -453,12 +409,11 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
     }
   }
 
-  // Breadcrumb hiển thị tên công cụ hiện tại; canonical theo locale đang xem
   const canonicalUrl = `https://oneforall.io.vn${withLocale(tool.slug, lang)}`
 
   return (
     <div className="w-full min-h-screen bg-page">
-      {/* 1. Dynamic SEO Metadata & Schema JSON-LD */}
+
       <SEOHead
         title={tool.title}
         description={tool.metaDescription}
@@ -468,41 +423,41 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
         faqList={tool.faqList}
       />
 
-      {/* Top Banner Navigation: Breadcrumbs */}
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-2">
         <Breadcrumbs items={breadcrumbsData} />
       </div>
 
-      {/* 2. Hero Interactive Workspace */}
+
       <section className="cv-skip relative pt-6 pb-14 sm:pb-20 overflow-hidden">
-        {/* Background Cyber Grid & Radiant Ambient Glow */}
-        {/* Lớp nền dịch chậm hơn nội dung khi hero cuộn qua (xem scrollMotion.ts) —
-            đúng hai lớp trang sức này, không áp cho card hay đoạn text. */}
+
+
+
         <div className="absolute inset-0 bg-grid-cyber pointer-events-none" aria-hidden="true" data-parallax="30" />
         <div className="hero-ambient-glow" aria-hidden="true" data-parallax="48" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center max-w-3xl mx-auto space-y-4 mb-8 sm:mb-10">
-            {/* Badge */}
+
             <div className="inline-flex items-center gap-1.5 px-3.5 py-1 text-xs font-bold bg-surface/90 border border-brand/40 text-brand badge-angular badge-radar shadow-[0_0_12px_rgba(255,59,48,0.2)]">
               <Zap className="w-3.5 h-3.5" />
               <span>{tool.badge}</span>
             </div>
 
-            {/* Semantic Single H1 Header */}
+
             <h1 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold text-ink tracking-tight leading-tight heading-in">
               {tool.h1}
             </h1>
 
-            {/* Subtitle */}
+
             <p className="text-xs sm:text-base text-slate-300 leading-relaxed max-w-2xl mx-auto">
               {tool.subtitle}
             </p>
           </div>
 
-          {/* Interactive Input Form */}
+
           <div className="max-w-3xl mx-auto">
-            {/* Nếu chưa có kết quả thành công, hiển thị Form nhập liệu */}
+
             {!downloadUrl ? (
               <div className="space-y-4">
                 {tool.inputType === 'url' ? (
@@ -532,7 +487,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
                   />
                 )}
 
-                {/* Processing Progress Bar */}
+
                 {isLoading && (
                   <JobProgress
                     job={job}
@@ -543,9 +498,9 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
                 )}
               </div>
             ) : (
-              /* Khi đã xử lý xong: hiển thị kết quả và download */
+
               <div className="space-y-6">
-                {/* Riêng trang xóa nền: hiển thị so sánh trước/sau trực quan */}
+
                 {tool.slug === '/remove-background' && originalImagePreview && (
                   <BeforeAfterPreview
                     originalUrl={originalImagePreview}
@@ -565,12 +520,12 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
                   onReset={handleReset}
                 />
 
-                {/* Khu vực tiện ích: nâng cấp / chia sẻ / copy / liên hệ */}
+
                 <ToolFooterActions />
               </div>
             )}
 
-            {/* "ô bên trên" trong text SEO chỉ đúng khi form còn hiển thị */}
+
             {!downloadUrl && tool.introParagraphs?.length ? (
               <div className="mt-8 space-y-3">
                 {tool.introParagraphs.map((para) => (
@@ -584,7 +539,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
         </div>
       </section>
 
-      {/* 3. How It Works Section */}
+
       <section data-reveal className="py-14 sm:py-20 bg-page border-y border-edge">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16 space-y-3">
@@ -617,7 +572,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
         </div>
       </section>
 
-      {/* 4. Features Section */}
+
       <section data-reveal className="py-14 sm:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-12 space-y-3">
@@ -650,7 +605,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
         </div>
       </section>
 
-      {/* 5. Supported Formats & Security Notice */}
+
       <section data-reveal className="py-12 bg-page border-y border-edge">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="p-6 sm:p-8 bg-surface border border-[rgba(255,59,48,0.25)] space-y-4 clip-corner-lg card-3d card-3d-dim">
@@ -672,13 +627,13 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
         </div>
       </section>
 
-      {/* 6. FAQ Accordion Section */}
+
       {tool.faqList.length > 0 && (
         <section data-reveal className="py-14 sm:py-20">
           <div className="max-w-3xl lg:max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            {/* Hỏi đáp là khối dài nhất trang: từ lg, tiêu đề ghim lại để lúc cuộn qua
-                list câu hỏi vẫn biết mình đang đọc mục nào. top 96px = header 72px +
-                khoảng thở, nên thanh ghim không chui xuống menu. */}
+
+
+
             <div className="lg:grid lg:grid-cols-[minmax(0,18rem)_minmax(0,1fr)] lg:gap-10 lg:items-start">
               <div className="lg:sticky lg:top-[96px]">
                 <div className="text-center mb-10 space-y-2 lg:text-left lg:mb-0">
@@ -727,7 +682,7 @@ export function ToolLandingPage({ configOverride }: { configOverride?: ToolConfi
         </section>
       )}
 
-      {/* 7. Related Tools Section (Internal Linking) */}
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <AdSenseUnit slot={import.meta.env.VITE_ADSENSE_SLOT_BOTTOM ?? ''} />
       </div>

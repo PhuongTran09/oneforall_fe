@@ -20,12 +20,12 @@ export function DownloadResult({
   onReset,
 }: DownloadResultProps) {
   const handleDownload = () => {
-    // Kích hoạt tải tệp trực tiếp
+
     const a = document.createElement('a')
     a.href = downloadUrl
     a.download = fileName
     a.target = '_blank'
-    // Không gửi Referer mang token sang R2/CDN
+
     a.rel = 'noreferrer'
     document.body.appendChild(a)
     a.click()
@@ -34,7 +34,7 @@ export function DownloadResult({
 
   return (
     <div className="w-full max-w-3xl mx-auto p-6 sm:p-8 bg-surface/90 border border-[rgba(255,59,48,0.35)] space-y-6 in-up clip-corner-lg card-3d card-3d-dim card-hover-glow">
-      {/* Header status */}
+
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 pb-6 border-b border-edge/60">
         <div className="flex items-center gap-3.5">
           <div className="w-12 h-12 bg-emerald-900/20 border border-emerald-600/40 flex items-center justify-center text-emerald-400 shrink-0 clip-corner-btn">
@@ -51,7 +51,7 @@ export function DownloadResult({
         </div>
       </div>
 
-      {/* File Details & Preview */}
+
       <div className="p-4 sm:p-5 bg-elev border border-edge flex flex-col sm:flex-row items-center justify-between gap-4 clip-corner-card">
         <div className="flex items-center gap-4 w-full sm:w-auto">
           {previewUrl ? (
@@ -64,12 +64,12 @@ export function DownloadResult({
               />
             </div>
           ) : (
-            <div className="w-14 h-14 bg-brand text-white flex items-center justify-center font-mono font-bold text-xs uppercase shrink-0 clip-corner-btn">
+            <div className="w-14 h-14 bg-brand text-on-brand flex items-center justify-center font-mono font-bold text-xs uppercase shrink-0 clip-corner-btn">
               .{format || 'FILE'}
             </div>
           )}
           <div className="space-y-1 min-w-0 flex-1">
-            {/* Không hiển thị tên file/format trên UI — fileName chỉ dùng cho a.download */}
+
             {fileSize && (
               <div className="flex items-center gap-2 text-xs text-slate-400 font-mono">
                 <span>{fileSize}</span>
@@ -78,8 +78,8 @@ export function DownloadResult({
           </div>
         </div>
 
-        {/* Action Buttons — mobile: xếp chồng, hai nút đúng bằng nhau; label "Chuyển đổi tệp
-            khác" dài hơn nên để cạnh nhau là một nút xuống 2 dòng, lệch chiều cao. */}
+
+
         <div className="flex w-full flex-col items-stretch gap-2.5 sm:w-auto sm:flex-row sm:items-center">
           <Button
             variant="primary"
@@ -105,7 +105,7 @@ export function DownloadResult({
         </div>
       </div>
 
-      {/* Security & TTL Notice */}
+
       <div className="flex items-center gap-2 text-xs text-amber-400 bg-amber-900/15 border border-amber-600/25 px-4 py-3 clip-corner-btn">
         <Clock className="w-4 h-4 text-amber-600 shrink-0" />
         <span>

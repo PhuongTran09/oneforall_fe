@@ -5,10 +5,10 @@ import { isBuiltinSound } from '../utils/builtinSounds'
 
 const NO_URLS: Record<string, string> = {}
 
-/**
- * URL cho một asset. setState chỉ xảy ra trong callback bất đồng bộ; giá trị cũ bị
- * loại bằng cách so id, nên không cần reset state khi id đổi.
- */
+
+
+
+
 export function useAssetUrl(id: string | undefined): string | undefined {
   const [state, setState] = useState<{ id: string; url?: string } | undefined>(undefined)
   useEffect(() => {
@@ -25,7 +25,7 @@ export function useAssetUrl(id: string | undefined): string | undefined {
   return id !== undefined && state?.id === id ? state.url : undefined
 }
 
-/** URL cho nhiều asset — strip roulette có tới 120 ô nên không dùng hook đơn được. */
+
 export function useAssetUrls(ids: Array<string | undefined>): Record<string, string> {
   const key = useMemo(() => [...new Set(ids.filter((x): x is string => Boolean(x)))].sort().join('|'), [ids])
   const [state, setState] = useState<{ key: string; urls: Record<string, string> }>({ key: '', urls: NO_URLS })
@@ -49,7 +49,7 @@ export function useAssetUrls(ids: Array<string | undefined>): Record<string, str
   return state.key === key ? state.urls : NO_URLS
 }
 
-/** Tên tệp gốc của asset, để hiển thị lại sau khi tải trang. */
+
 export function useAssetName(id: string | undefined): string | null {
   const builtin = id !== undefined && isBuiltinSound(id)
   const [state, setState] = useState<{ id: string; name: string | null } | undefined>(undefined)

@@ -1,8 +1,8 @@
-// Audit: mọi message tiếng Việt BE thực sự gửi (rút từ source app/**.py) có được FE dịch
-// sang EN không, hay user EN vẫn rơi về câu chung theo status.
-//   npx esbuild scratch/audit-be-messages.ts --bundle --platform=node --format=esm \
-//     --outfile=scratch/audit-be.mjs --define:import.meta.env='{"DEV":false}' && node scratch/audit-be.mjs
-// File vào: %TEMP%/be_vi_messages.txt (do script Python trích detail=... từ BE).
+
+
+
+
+
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
@@ -19,8 +19,8 @@ const mapped: string[] = []
 const generic: string[] = []
 for (const line of lines) {
   const [file, raw] = line.split('\t')
-  // Nguồn BE chứa f-string placeholder; isSafeUserMessage chặn "{" "}" nên thay bằng giá trị
-  // giả để phản ánh đúng message lúc chạy.
+
+
   const text = raw.replace(/^f?"/, '').replace(/"$/, '').replace(/\{[^{}]*\}/g, '10')
   const out = sanitizeUserMessage(text, '__MISS__')
   if (out === '__MISS__') generic.push(`${file}\t${text}`)

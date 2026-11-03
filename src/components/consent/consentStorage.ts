@@ -2,10 +2,10 @@ import { useSyncExternalStore } from 'react'
 import { termsVi } from '../../content/legal/terms.vi'
 import { privacyVi } from '../../content/legal/privacy.vi'
 
-// Nguồn consent duy nhất cho toàn app: một store module-level + useSyncExternalStore.
-// Không có state React độc lập nào khác về consent (spec: "Không tạo nhiều consent state độc lập").
-// localStorage chỉ lưu QUYẾT ĐỊNH (kèm version + timestamp) — không dùng nó làm bằng chứng
-// pháp lý cho việc đồng ý điều khoản; đó là trách nhiệm của chủ dự án (Consent Mode v2, log server...).
+
+
+
+
 
 const STORAGE_KEY = 'ofa-consent'
 
@@ -32,7 +32,7 @@ export type ConsentView = 'main' | 'custom'
 
 interface ConsentState {
   record: ConsentRecord
-  // Trạng thái modal chỉ ở bộ nhớ: đóng/mở UI không phải quyết định đồng ý.
+
   modalOpen: boolean
   view: ConsentView
 }
@@ -57,7 +57,7 @@ function loadRecord(): ConsentRecord {
       }
     }
   } catch {
-    // Dữ liệu hỏng/thiếu → coi như chưa quyết định, hỏi lại.
+    // JSON hỏng hoặc storage bị chặn: coi như chưa từng consent, mặc định necessary=true
   }
   return base
 }
@@ -69,7 +69,7 @@ function persist(record: ConsentRecord) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(record))
   } catch {
-    // shortcut: trình duyệt chặn storage (private mode) → consent chỉ sống trong phiên, hỏi lại lần sau
+    // Private mode / hết quota: consent có hiệu lực ngay trong phiên, chỉ phải hỏi lại lần sau
   }
 }
 
@@ -103,7 +103,7 @@ export function hasConsented(category: 'analytics' | 'advertising'): boolean {
   return c.decidedAt !== null && c.version === COOKIE_VERSION && c[category]
 }
 
-// Chưa quyết định cookie, hoặc chính sách cookie đã đổi version → phải hiện lại modal.
+
 export function needsCookieDecision(): boolean {
   const c = state.record.cookies
   return c.decidedAt === null || c.version !== COOKIE_VERSION
@@ -119,7 +119,7 @@ export function closeConsentModal() {
   setState({ modalOpen: false, view: 'main' })
 }
 
-// Kiểm/bỏ kiểm checkbox điều khoản — thao tác tường minh của người dùng, không mặc định.
+
 export function setTermsAccepted(accepted: boolean) {
   const terms: ConsentRecord['terms'] = accepted
     ? { acceptedAt: new Date().toISOString(), version: TERMS_VERSION }
@@ -127,7 +127,7 @@ export function setTermsAccepted(accepted: boolean) {
   setState({}, { ...state.record, terms })
 }
 
-// Ghi quyết định cookie (từ "Chấp nhận tất cả", "Chỉ cần thiết", hoặc lưu tùy chỉnh).
+
 export function saveCookieChoices(choices: CookieChoices) {
   const cookies = { ...state.record.cookies, ...choices, decidedAt: new Date().toISOString(), version: COOKIE_VERSION }
   setState({ modalOpen: false, view: 'main' }, { ...state.record, cookies })

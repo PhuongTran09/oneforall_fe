@@ -6,7 +6,7 @@ export interface SegmentedControlProps {
   onChange: (option: string) => void
   ariaLabel: string
   labelFor?: (option: string) => string
-  /** 'sm' = cao 30px, khớp ThemeToggle. */
+
   size?: 'md' | 'sm'
 }
 
@@ -23,7 +23,7 @@ export function SegmentedControl({ options, value, onChange, ariaLabel, labelFor
     if (next >= 0) {
       e.preventDefault()
       onChange(options[next])
-      // roving tabindex: move focus to the newly-selected option
+
       groupRef.current?.querySelectorAll('button')[next]?.focus()
     }
   }
@@ -36,10 +36,10 @@ export function SegmentedControl({ options, value, onChange, ariaLabel, labelFor
       onKeyDown={handleKeyDown}
       data-lenis-prevent
       className={`flex max-w-full items-center gap-[3px] overflow-x-auto scrollbar-none border border-edge bg-surface p-[3px] clip-corner-btn ${
-        compact ? 'h-[30px]' : 'h-10'
+        compact ? 'h-[34px]' : 'h-10'
       }`}
     >
-      {/* shrink-0 mỗi nút: 11 định dạng trong panel hẹp thì flex-1 + overflow-hidden cắt nhãn */}
+
       {options.map((option) => (
         <button
           key={option}
@@ -52,7 +52,7 @@ export function SegmentedControl({ options, value, onChange, ariaLabel, labelFor
             compact ? 'px-2 text-[11px]' : 'px-3 text-xs'
           } ${
             value === option
-              ? 'bg-brand-gradient text-white'
+              ? 'bg-brand-gradient text-on-brand'
               : 'text-slate-300 hover:bg-brand/10 hover:text-ink'
           }`}
         >

@@ -12,15 +12,15 @@ export interface PlayOptions {
   loop?: boolean
   restart?: boolean
   onEnded?: () => void
-  /** Lịch nhịp tính từ easing của lượt quay đang chạy; thiếu thì dùng nhịp demo. */
+
   spinPlan?: SpinPlan
 }
 
-/**
- * Chỉ phát sau thao tác của người dùng (mọi lời gọi đều bắt đầu từ một cú click),
- * nên không có autoplay. Lỗi phát bị nuốt có chủ đích: tiếng là hiệu ứng phụ,
- * không bao giờ được làm hỏng lượt mở hòm.
- */
+
+
+
+
+
 class AudioEngine {
   private enabled = true
   private volume = 0.8
@@ -42,7 +42,7 @@ class AudioEngine {
 
     if (isSynthSound(assetId)) {
       this.stop(slot)
-      // Lịch rỗng là ý đồ (ít chuyển động): chỉ nút "nghe thử" mới không truyền lịch.
+
       const handle = startTicks(opts.spinPlan ?? demoSpinPlan(), this.volume)
       if (handle) this.ticks = { slot, handle }
       return
@@ -81,7 +81,7 @@ class AudioEngine {
       if (opts.restart) player.el.currentTime = 0
       if (player.el.paused) await player.el.play()
     } catch {
-      /* định dạng trình duyệt không phát được / người dùng chặn — bỏ qua */
+      // Autoplay bị trình duyệt chặn hoặc nguồn lỗi: âm thanh là tăng cường, không được ném vào UI
     }
   }
 

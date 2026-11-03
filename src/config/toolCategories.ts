@@ -1,15 +1,15 @@
 import { SEO_TOOLS, type ToolConfig } from './seoTools'
 
-/**
- * Nhóm công cụ hiển thị trên trang chủ, mega-menu, footer và trang danh mục.
- * Nguồn duy nhất là SEO_TOOLS[].category — thêm tool vào registry là tự vào đúng nhóm,
- * không phải sửa danh sách ở nhiều nơi như trước.
- */
+
+
+
+
+
 export type CategoryId = 'downloader' | 'converter' | 'image' | 'document' | 'data' | 'archive'
 
 export interface CategoryDef {
   id: CategoryId
-  /** Path locale-relative cho LocaleLink/withLocale; canonical thật có '/' cuối. */
+
   path: string
   nameKey: string
   h1Key: string
@@ -34,7 +34,7 @@ const GROUP_MAP: Record<ToolConfig['category'], CategoryId> = {
 
 const CATEGORY_ORDER: CategoryId[] = ['downloader', 'converter', 'image', 'document', 'data', 'archive']
 
-/** '/image-converter' có category 'convert' trong registry nên thuộc nhóm converter, không phải image. */
+
 export const TOOL_CATEGORIES: CategoryDef[] = CATEGORY_ORDER.map((id) => ({
   id,
   path: `tools/${id}`,
@@ -61,5 +61,4 @@ export function toolsOfCategory(id: CategoryId): ToolConfig[] {
   return CATEGORY_BY_ID[id].toolSlugs.map((slug) => SEO_TOOLS[slug])
 }
 
-/** Trang '/tools' và 6 trang danh mục — không trùng slug nào trong SEO_TOOLS. */
 export const DIRECTORY_PATHS: string[] = ['/tools', ...TOOL_CATEGORIES.map((cat) => `/${cat.path}`)]

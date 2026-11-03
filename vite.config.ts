@@ -4,12 +4,12 @@ import { fileURLToPath, URL } from 'node:url'
 
 import tailwindcss from '@tailwindcss/vite'
 
-// https://vite.dev/config/
+
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
   const proxyTarget = env.VITE_API_PROXY_TARGET || 'http://localhost:8000'
 
-  // Proxy chuyển tiếp các request /api đến FastAPI backend trong môi trường development
+
   const proxyConfig = {
     '/api': {
       target: proxyTarget,

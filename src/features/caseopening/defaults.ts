@@ -16,7 +16,6 @@ const RARITY_TIERS: Array<Omit<Rarity, 'name'>> = [
   { id: 'mythic', color: '#ff3b30', weight: 3 },
 ]
 
-/** Cấp mặc định cho hòm mới — tên là dữ liệu người dùng sửa được nên theo ngôn ngữ lúc tạo/reset. */
 export function defaultRarities(): Rarity[] {
   return RARITY_TIERS.map((r) => ({ ...r, name: t(`case.seedRarity.${r.id}`) }))
 }

@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { ADS } from '../../config/ads'
 import { loadSocialBar, stopAds, useAdsDecision } from '../../services/adScripts'
 
-/** Single ad script entry point, mounted once in MainLayout so route changes never reload it. */
+
 export function SocialBarAds() {
   const decision = useAdsDecision()
 

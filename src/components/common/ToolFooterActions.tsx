@@ -7,15 +7,15 @@ import { isAdFreeNow, useEntitlements } from '../../services/entitlementsStore'
 import { showToast } from '../feedback/toastStore'
 import { showErrorPopup } from '../feedback/errorPopupStore'
 
-// Dùng lại đúng địa chỉ support mà Footer và trang Privacy đang trỏ tới.
+
 const CONTACT_URL =
   'https://mail.google.com/mail/?view=cm&fs=1&to=support@oneforall.io.vn&su=Ho%20tro%20One ForAll'
 
 const linkBtnStyles =
-  'inline-flex items-center justify-center gap-1.5 text-xs px-3 py-1.5 font-medium transition-all duration-200 cursor-pointer select-none whitespace-nowrap bg-surface text-slate-200 border border-[rgba(255,59,48,0.35)] hover:bg-brand/5 hover:border-[rgba(255,59,48,0.6)] clip-corner-btn focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF3B30]'
+  'inline-flex items-center justify-center gap-1.5 text-xs px-3 py-1.5 font-medium transition-all duration-200 cursor-pointer select-none whitespace-nowrap bg-surface text-slate-200 border border-[rgba(255,59,48,0.35)] hover:bg-brand/5 hover:border-[rgba(255,59,48,0.6)] clip-corner-btn focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#FF3B30]'
 
 const shareChipStyles =
-  'h-8 w-8 inline-flex items-center justify-center bg-surface text-slate-400 border border-edge hover:bg-[rgba(255,59,48,0.08)] hover:text-brand hover:border-[rgba(255,59,48,0.35)] transition-colors clip-corner-btn focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF3B30]'
+  'h-8 w-8 inline-flex items-center justify-center bg-surface text-slate-400 border border-edge hover:bg-[rgba(255,59,48,0.08)] hover:text-brand hover:border-[rgba(255,59,48,0.35)] transition-colors clip-corner-btn focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#FF3B30]'
 
 function FacebookIcon() {
   return (
@@ -70,11 +70,11 @@ function ActionRow({
 }
 
 export function ToolFooterActions() {
-  // Nút "Nâng cấp Pro": layout cung cấp openPro (chưa đăng nhập → bắt đăng ký,
-  // đã đăng nhập → modal gói Pro). href /#pricing vẫn là fallback khi thiếu context.
+
+
   const layout = useOutletContext<{ openPro?: () => void } | null>()
-  // isAdFreeNow đọc cả cache ofa-plan: /users/me về muộn hơn HTML, dùng isAdFree(me) không
-  // thì khách Pro vẫn thấy lời mời nâng cấp trong vài nhịp đầu.
+
+
   const { me } = useEntitlements()
   const showUpgrade = !isAdFreeNow(me)
   const pageUrl = typeof window !== 'undefined' ? window.location.href : ''

@@ -43,7 +43,6 @@ function CategoryRow({ title, description, checked, disabled = false, onChange }
   )
 }
 
-// Màn "Tùy chỉnh cookie" trong ConsentModal. Mặc định tất cả OFF trừ cookie cần thiết.
 export function CookiePreferences() {
   const { record } = useConsent()
   const [analytics, setAnalytics] = useState(record.cookies.analytics)

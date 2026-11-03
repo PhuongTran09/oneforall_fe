@@ -69,7 +69,7 @@ export function PricingSection({ onSelectFree, onSelectPremium }: PricingSection
               }`}
             >
               {plan.isPopular && (
-                <div className="absolute top-0 right-0 bg-brand-gradient text-white text-[10px] font-bold px-3 py-1 tracking-wider uppercase flex items-center gap-1 border-l border-b border-[rgba(255,59,48,0.4)] shadow-[0_0_12px_rgba(255,59,48,0.4)]">
+                <div className="absolute top-0 right-0 bg-brand-gradient text-on-brand text-[10px] font-bold px-3 py-1 tracking-wider uppercase flex items-center gap-1 border-l border-b border-[rgba(255,59,48,0.4)] shadow-[0_0_12px_rgba(255,59,48,0.4)]">
                   <Sparkles className="w-3 h-3" />
                   {plan.badge}
                 </div>

@@ -71,8 +71,8 @@ export function ItemListPanel({ caseId, items, rarities, imageUrls, onAdd, onEdi
         </div>
       ) : (
         <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-          {/* Không .stagger ở đây: đây là danh sách đang sửa, mỗi mục mới phải hiện ngay
-              theo cú bấm. Nhịp so le chỉ có nghĩa với lưới người dùng cuộn tới. */}
+
+
           {items.map((item, index) => {
             const rarity = byRarity[item.rarityId]
             return (

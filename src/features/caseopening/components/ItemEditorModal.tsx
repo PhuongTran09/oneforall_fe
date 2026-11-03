@@ -14,19 +14,19 @@ import { ModalShell } from './ModalShell'
 
 export interface ItemEditorModalProps {
   caseId: string
-  /** false = đang fade ra; parent giữ node thêm một nhịp cho ModalShell mờ dần. */
+
   isOpen: boolean
-  /** null = thêm vật phẩm mới. */
+
   item: CaseItem | null
   rarities: Rarity[]
-  /** Toàn bộ vật phẩm của hòm (kể cả item đang sửa) — dùng tính xác suất hiển thị ngay. */
+
   caseItems: CaseItem[]
   existingImageUrl?: string
   onClose: () => void
 }
 
-/** Parent mount lúc mở và giữ nguyên instance suốt nhịp fade ra (key đổi theo nhịp MỞ), nên
- *  state khởi tạo thẳng từ props, không cần effect reset. */
+
+
 export function ItemEditorModal({ caseId, isOpen, item, rarities, caseItems, existingImageUrl, onClose }: ItemEditorModalProps) {
   const [name, setName] = useState(item?.name ?? '')
   const [description, setDescription] = useState(item?.description ?? '')
@@ -40,7 +40,7 @@ export function ItemEditorModal({ caseId, isOpen, item, rarities, caseItems, exi
 
   const selectedRarity = rarities.find((r) => r.id === rarityId) ?? rarities[0]
 
-  // % hiển thị là xác suất THẬT của chính cấu hình đang soạn, không phải số trang trí.
+
   const chance = useMemo(() => {
     const mine = sanitizeWeight(weight) * sanitizeWeight(selectedRarity?.weight ?? 0)
     if (mine <= 0) return 0

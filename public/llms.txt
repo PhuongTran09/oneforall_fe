@@ -1,0 +1,77 @@
+# One ForAll
+
+> One ForAll là bộ công cụ trực tuyến chạy trên trình duyệt: tải media từ liên kết
+> bài đăng được hỗ trợ, chuyển đổi định dạng tệp, xử lý ảnh / tài liệu / nén dữ liệu.
+> Dùng được ngay không cần cài đặt và không cần tài khoản; gói trả phí bỏ quảng cáo
+> và nâng trần dung lượng tải lên cùng quyền xử lý.
+>
+> One ForAll is a browser-based tool suite: download media from supported post links,
+> convert file formats, and process images, documents and archives. Anonymous use needs
+> no install and no account; the paid plan removes ads and raises upload size and
+> processing limits.
+
+Default interface language is Vietnamese. Every page below also exists in English under
+the `/en/` prefix, e.g. https://oneforall.io.vn/en/youtube-downloader/.
+
+## Pages
+
+- [Home](https://oneforall.io.vn/): entry point, live aggregate system stats, tool index preview.
+- [All tools](https://oneforall.io.vn/tools/): complete list of the tools that are actually live.
+- [Tools by category](https://oneforall.io.vn/tools/downloader/): category index; siblings are `/tools/converter/`, `/tools/image/`, `/tools/document/`, `/tools/data/`, `/tools/archive/`.
+- [Privacy](https://oneforall.io.vn/privacy/): what is collected and for how long.
+- [Terms](https://oneforall.io.vn/terms/): acceptable-use terms.
+
+## Media downloaders
+
+Each page states which hosts it accepts and shows the formats the source actually offers.
+
+- [YouTube](https://oneforall.io.vn/youtube-downloader/)
+- [TikTok](https://oneforall.io.vn/tiktok-downloader/)
+- [X (Twitter)](https://oneforall.io.vn/twitter-downloader/)
+- [Facebook](https://oneforall.io.vn/facebook-downloader/)
+- [Threads](https://oneforall.io.vn/threads-downloader/)
+
+## Converters and processors
+
+- [Any-format convert](https://oneforall.io.vn/convert/)
+- [Image converter](https://oneforall.io.vn/image-converter/)
+- [Video converter](https://oneforall.io.vn/video-converter/)
+- [Audio converter](https://oneforall.io.vn/audio-converter/)
+- [Document converter](https://oneforall.io.vn/document-converter/)
+- [PDF converter](https://oneforall.io.vn/pdf-converter/)
+- [Data converter](https://oneforall.io.vn/data-converter/)
+- [Archive converter](https://oneforall.io.vn/archive-converter/)
+- [Remove background](https://oneforall.io.vn/remove-background/)
+- [Image compressor](https://oneforall.io.vn/image-compressor/)
+- [Image resizer](https://oneforall.io.vn/image-resizer/)
+
+## What is true for every tool
+
+- Input is a public HTTP(S) link or a file you upload. Private, local and link-local
+  addresses are rejected.
+- The platform is decided from the URL on the server; a client-supplied platform name is
+  never trusted.
+- Only formats the source really provides are offered. If a list cannot be retrieved, the
+  tool says so instead of inventing one, and no quality level is fabricated.
+- Media that requires bypassing a login, a paywall, a CAPTCHA or DRM is out of scope.
+  Cookies are never harvested from the visitor's browser and are never stored.
+- Signed content-delivery URLs, cookies and session data are not returned to the page.
+- Jobs and their output files are temporary; run the tool again for a fresh result.
+- The live counters on the home page are aggregate system figures only — no personal data.
+
+## Not offered
+
+- No public or documented API for third-party callers. Paths under `/api/`, `/jobs/` and
+  `/files/` are internal to this site and are disallowed in `robots.txt`; automate through
+  the web pages listed above, not those endpoints.
+- No Spotify or other DRM-protected music download. No "premium quality" that the source
+  does not publish.
+- No batch, CLI or bulk URL processing, and no webhook.
+
+## Machine-readable pointers
+
+- `https://oneforall.io.vn/robots.txt`
+- `https://oneforall.io.vn/sitemap.xml`
+
+This file only describes the site. It grants no access, waives no rule in `robots.txt`,
+and asks for nothing: crawling policy stays with each client.

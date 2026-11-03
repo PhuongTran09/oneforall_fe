@@ -13,10 +13,10 @@ export function Card({
   children,
   ...props
 }: CardProps) {
-  // lift/hover effects come from .card-3d in index.css — no Tailwind transform here
+
   const baseStyles = 'relative bg-surface card-3d'
   const borderStyles = bordered ? 'border border-[rgba(255,59,48,0.25)]' : ''
-  // caller may override the clip size (clip-corner-card and clip-corner-lg both set clip-path)
+
   const clipStyles = className.includes('clip-corner') ? '' : 'clip-corner-card'
   const hoverStyles = hoverEffect ? 'hover:border-[rgba(255,59,48,0.55)]' : ''
 

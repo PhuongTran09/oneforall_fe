@@ -106,7 +106,6 @@ export interface NumberFieldProps {
   disabled?: boolean
 }
 
-/** Giữ chuỗi đang gõ trong state cục bộ: bấm "1." rồi mất dấu thì người dùng không gõ nổi số lẻ. */
 export function NumberField({ label, value, onChange, min = 0, max = 1_000_000, step = 1, hint, error, disabled }: NumberFieldProps) {
   const id = useId()
   return (
@@ -213,7 +212,6 @@ export interface RangeFieldProps {
   min: number
   max: number
   step?: number
-  /** Nhãn đọc được cho giá trị hiện tại, vd. "5.2s". */
   format: (value: number) => string
   hint?: string
   disabled?: boolean

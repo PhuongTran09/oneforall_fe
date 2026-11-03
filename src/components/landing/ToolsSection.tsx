@@ -8,16 +8,16 @@ import { TOOL_CATEGORIES } from '../../config/toolCategories'
 import { LocaleLink } from '../../i18n/LocaleLink'
 import { t } from '../../i18n/langStore'
 
-/**
- * Số thẻ tối đa mỗi nhóm trên trang chủ. Registry thật có 17 tool, chia 6/4/3/2/1/1 —
- * nhóm nào dưới trần thì hiện hết, không giấu cái nào sau một liên kết.
- */
+
+
+
+
 const PREVIEW_SIZE = 3
 
-/**
- * Thừa đúng một thẻ mà vẫn giấu nó rồi bảo "xem tất cả" là tự thêm một cú bấm để tìm lại
- * một công cụ có thật — thà để lưới lẻ một ô.
- */
+
+
+
+
 const visibleSlugs = (slugs: string[]): string[] =>
   slugs.length <= PREVIEW_SIZE + 1 ? slugs : slugs.slice(0, PREVIEW_SIZE)
 
@@ -31,9 +31,9 @@ export function ToolsSection() {
           desc={t('toolsSection.desc')}
         />
 
-        {/* Dải chip của chính trang '/tools' — dùng lại để người đọc thấy hết sáu nhóm
-            trước khi cuộn, thay vì phải lần từng tiêu đề nhóm. Link trỏ đúng trang danh
-            mục đã có trong router, không thêm route mới. */}
+
+
+
         <div className="mt-8 mb-10">
           <CategoryNav />
         </div>
@@ -56,7 +56,7 @@ export function ToolsSection() {
                   {hidden > 0 && (
                     <LocaleLink
                       to={`/${cat.path}`}
-                      className="shrink-0 inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-brand hover:underline"
+                      className="shrink-0 inline-flex min-h-6 items-center gap-1.5 text-xs sm:text-sm font-semibold text-brand hover:underline"
                     >
                       {t('directory.viewAll', { count: cat.toolSlugs.length })}
                       <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />

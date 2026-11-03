@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { getSavedLangPref, syncLangFromPath } from './langStore'
 
-// Chỉ auto-redirect 1 lần mỗi lần tải trang — không loop khi user chủ động về /
+
 let autoRedirectDone = false
 
 export function LangRouteSync() {

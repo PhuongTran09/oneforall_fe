@@ -39,7 +39,7 @@ function normalizeEntry(raw: unknown): SpinEntry | null {
   const e = (raw ?? {}) as Partial<SpinEntry>
   const name = cleanName(text(e.name, NAME_MAX))
   if (!name) return null
-  // Màu sai/không có để trống: normalizeList tô lại theo bảng màu.
+
   return { id: text(e.id, 40) || uid('spn'), name, color: normalizeHex(e.color, '') }
 }
 
@@ -49,8 +49,8 @@ function normalizeList(raw: unknown): SpinList {
     .map(normalizeEntry)
     .filter((e): e is SpinEntry => e !== null)
     .slice(0, ENTRY_CAP)
-  // Bản ghi cũ (trước khi có trường màu) và màu bị loại đều được tô theo vị trí,
-  // nên danh sách cất từ trước vẫn lên màu đúng mà không phải đổi STORAGE_KEY.
+
+
   return { entries: entries.map((e, i) => (e.color ? e : { ...e, color: paletteColor(i) })) }
 }
 
@@ -78,7 +78,7 @@ function normalizeRecord(raw: unknown): SpinRecord | null {
   }
 }
 
-/** Dữ liệu từ localStorage có thể thiếu/tràn/sai kiểu — mọi đường vào đều qua đây. */
+
 function normalizeState(raw: unknown): SpinState {
   const s = (raw ?? {}) as Partial<SpinState>
   const seed = defaultSpinState()
@@ -94,8 +94,8 @@ function normalizeState(raw: unknown): SpinState {
     listA: normalizeList(s.listA ?? seed.listA),
     listB: normalizeList(s.listB ?? seed.listB),
     history,
-    // Bản ghi cất trước khi có hai khoá này đơn giản là thiếu chúng -> mặc định,
-    // nên không phải đổi STORAGE_KEY.
+
+
     soundEnabled: flag(s.soundEnabled, true),
     soundVolume: Math.min(1, Math.max(0, num(s.soundVolume, DEFAULT_VOLUME))),
   }
@@ -127,7 +127,7 @@ function writeStored(next: SpinState): void {
 let state: SpinState | null = null
 const listeners = new Set<() => void>()
 
-/** Đọc localStorage ở lần truy cập đầu (không phải lúc import) để `t()` đã có ngôn ngữ. */
+
 function ensureLoaded(): SpinState {
   if (!state) {
     const stored = readStored()
@@ -184,7 +184,7 @@ export function setMode(mode: SpinMode): void {
   commit({ ...s, mode })
 }
 
-/** `sharedConfig` = True: wheel 2 dùng chung cấu hình với wheel 1. */
+
 export function setSharedConfig(shared: boolean): void {
   const s = ensureLoaded()
   if (s.sharedConfig === shared) return
@@ -214,7 +214,7 @@ export function configFor(s: SpinState, slot: WheelSlot): WheelConfig {
   return s.sharedConfig ? s.wheelA : s[configKey(slot)]
 }
 
-/** Thêm nhiều tên một lượt (bulk/paste). Trả về số tên thực thêm vào được. */
+
 export function addEntries(slot: WheelSlot, names: string[]): number {
   const s = ensureLoaded()
   const room = ENTRY_CAP - s[listKey(slot)].entries.length
@@ -240,14 +240,14 @@ export function addEntry(slot: WheelSlot, name: string): boolean {
   return true
 }
 
-/** Lúc gõ chỉ cắt theo độ dài: trim ở đây sẽ nuốt khoảng trắng giữa hai từ. */
+
 export function renameEntry(slot: WheelSlot, id: string, name: string): void {
   const s = ensureLoaded()
   const entries = s[listKey(slot)].entries.map((e) => (e.id === id ? { ...e, name: name.slice(0, NAME_MAX) } : e))
   commit(withList(s, slot, entries))
 }
 
-/** Màu không hợp lệ (đang gõ dở, "red", chuỗi dài) thì giữ nguyên màu cũ. */
+
 export function setEntryColor(slot: WheelSlot, id: string, color: string): void {
   const s = ensureLoaded()
   const hex = normalizeHex(color, '')
@@ -269,11 +269,11 @@ export function clearEntries(slot: WheelSlot): void {
   commit(withList(s, slot, []))
 }
 
-/**
- * Đưa một vòng về trạng thái lần đầu mở trang (danh sách mẫu + cấu hình mặc định).
- * Lịch sử là dữ liệu của người dùng nên ở lại; "dùng chung cấu hình" thì cả hai
- * vòng cùng về mặc định.
- */
+
+
+
+
+
 export function resetWheel(slot: WheelSlot): void {
   const s = ensureLoaded()
   const withListReset = withList(s, slot, defaultEntries(slot))
@@ -285,7 +285,7 @@ export function resetWheel(slot: WheelSlot): void {
   commit(withConfig(withListReset, slot, config))
 }
 
-/** Sao chép danh sách — bản sao lấy id mới để hai wheel độc lập thật sự. */
+
 export function copyList(from: WheelSlot, to: WheelSlot): number {
   const s = ensureLoaded()
   if (from === to) return 0

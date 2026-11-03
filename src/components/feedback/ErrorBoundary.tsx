@@ -7,8 +7,8 @@ interface State {
   error: Error | null
 }
 
-// Chốt chặn cuối cho lỗi KHÔNG kiểm soát được (throw lúc render/event) —
-// API/job error đã có ErrorPopupViewport lo riêng.
+
+
 export class ErrorBoundary extends Component<{ children: ReactNode }, State> {
   state: State = { error: null }
 
